@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Colombo", "Colombo\Colombo.csproj", "{E828FC62-6CE7-4D54-B20B-63F86E12072B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Colombo.Tests", "Colombo.Tests\Colombo.Tests.csproj", "{FC42FD4C-04C3-4C43-B6F6-1B0A265EA7D0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,10 @@ Global
 		{E828FC62-6CE7-4D54-B20B-63F86E12072B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E828FC62-6CE7-4D54-B20B-63F86E12072B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E828FC62-6CE7-4D54-B20B-63F86E12072B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC42FD4C-04C3-4C43-B6F6-1B0A265EA7D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC42FD4C-04C3-4C43-B6F6-1B0A265EA7D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC42FD4C-04C3-4C43-B6F6-1B0A265EA7D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC42FD4C-04C3-4C43-B6F6-1B0A265EA7D0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
