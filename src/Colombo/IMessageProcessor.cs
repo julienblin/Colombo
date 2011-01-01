@@ -6,9 +6,10 @@ using System.Diagnostics.Contracts;
 
 namespace Colombo
 {
-    [ContractClass(typeof(Contracts.MessageBusContract))]
-    public interface IMessageBus
+    [ContractClass(typeof(Contracts.MessageProcessorContract))]
+    public interface IMessageProcessor
     {
+        bool CanSend<TResponse>(Request<TResponse> request) where TResponse : Response, new();
         TResponse Send<TResponse>(Request<TResponse> request) where TResponse : Response, new();
     }
 }

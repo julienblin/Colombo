@@ -7,7 +7,7 @@ using System.Diagnostics.Contracts;
 namespace Colombo.Contracts
 {
     [ContractClassFor(typeof(IMessageBus))]
-    public abstract class MessageBusContracts : IMessageBus
+    public abstract class MessageBusContract : IMessageBus
     {
         TResponse IMessageBus.Send<TResponse>(Request<TResponse> request)
         {

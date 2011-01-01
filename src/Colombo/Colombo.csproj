@@ -12,7 +12,7 @@
     <AssemblyName>Colombo</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <CodeContractsAssemblyMode>0</CodeContractsAssemblyMode>
+    <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -57,8 +57,12 @@
     <Reference Include="Castle.Core">
       <HintPath>..\..\lib\Castle.Windsor\Castle.Core.dll</HintPath>
     </Reference>
+    <Reference Include="Castle.Windsor">
+      <HintPath>..\..\lib\Castle.Windsor\Castle.Windsor.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
@@ -70,8 +74,22 @@
     </Compile>
     <Compile Include="CallContext.cs" />
     <Compile Include="ColomboException.cs" />
-    <Compile Include="Contracts\MessageBusContracts.cs" />
+    <Compile Include="Contracts\MessageBusContract.cs" />
+    <Compile Include="Contracts\MessageBusSendInterceptorContract.cs" />
+    <Compile Include="Contracts\MessageProcessorContract.cs" />
+    <Compile Include="Contracts\RequestHandlerContract.cs" />
+    <Compile Include="Contracts\RequestHandlerFactoryContract.cs" />
+    <Compile Include="Contracts\RequestHandlerInterceptorContract.cs" />
+    <Compile Include="IInterceptor.cs" />
     <Compile Include="IMessageBus.cs" />
+    <Compile Include="IMessageBusSendInterceptor.cs" />
+    <Compile Include="IMessageProcessor.cs" />
+    <Compile Include="Impl\KernelRequestHandlerFactory.cs" />
+    <Compile Include="Impl\LocalMessageProcessor.cs" />
+    <Compile Include="Impl\MessageBus.cs" />
+    <Compile Include="IRequestHandler.cs" />
+    <Compile Include="IRequestHandlerFactory.cs" />
+    <Compile Include="IRequestHandlerInterceptor.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="Request.cs" />
     <Compile Include="Response.cs" />

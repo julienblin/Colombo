@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Colombo
+namespace Colombo.Tests
 {
-    public abstract class Response : Message
+    public class TestResponse : Response
     {
-        
+
     }
 }
