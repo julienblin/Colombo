@@ -42,6 +42,8 @@ namespace Colombo.Impl
         public virtual TResponse Send<TResponse>(Request<TResponse> request)
             where TResponse : Response, new()
         {
+            if (request == null) throw new ArgumentNullException("request");
+            Contract.EndContractBlock();
             Contract.Assume(messageProcessors != null);
             Contract.Assume(MessageBusSendInterceptors != null);
 
@@ -81,6 +83,7 @@ namespace Colombo.Impl
             Contract.Assert(response != null);
 
             Logger.DebugFormat("Performing AfterMessageProcessorSend on the {0} registered interceptor(s).", MessageBusSendInterceptors.Length);
+            Contract.Assume(MessageBusSendInterceptors != null);
             foreach (var sendInterceptor in MessageBusSendInterceptors.Reverse())
             {
                 Logger.DebugFormat("Calling AfterMessageProcessorSend for interceptor {0} and request {1}...", sendInterceptor, request);

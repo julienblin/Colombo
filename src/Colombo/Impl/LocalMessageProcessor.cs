@@ -43,12 +43,18 @@ namespace Colombo.Impl
         public bool CanSend<TResponse>(Request<TResponse> request)
             where TResponse : Response, new()
         {
+            if (request == null) throw new ArgumentNullException("request");
+            Contract.EndContractBlock();
+
             return requestHandlerFactory.CanCreateRequestHandlerFor(request);
         }
 
         public TResponse Send<TResponse>(Request<TResponse> request)
             where TResponse : Response, new()
         {
+            if (request == null) throw new ArgumentNullException("request");
+            Contract.EndContractBlock();
+
             using (var tx = new TransactionScope())
             {
                 IRequestHandler requestHandler = requestHandlerFactory.CreateRequestHandlerFor(request);
@@ -80,6 +86,7 @@ namespace Colombo.Impl
                     Contract.Assert(response != null);
 
                     Logger.DebugFormat("Performing AfterHandle on the {0} registered interceptor(s).", RequestHandlerInterceptor.Length);
+                    Contract.Assume(RequestHandlerInterceptor != null);
                     foreach (var requestHandlerInterceptor in RequestHandlerInterceptor.Reverse())
                     {
                         Logger.DebugFormat("Calling AfterHandle for interceptor {0} and request {1}...", requestHandlerInterceptor, request);

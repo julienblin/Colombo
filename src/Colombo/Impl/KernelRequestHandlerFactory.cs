@@ -29,12 +29,18 @@ namespace Colombo.Impl
 
         public bool CanCreateRequestHandlerFor(BaseRequest request)
         {
+            if (request == null) throw new ArgumentNullException("request");
+            Contract.EndContractBlock();
+
             var requestHandlerType = CreateIRequestHandlerTypeFrom(request);
             return kernel.HasComponent(requestHandlerType);
         }
 
         public IRequestHandler CreateRequestHandlerFor(BaseRequest request)
         {
+            if (request == null) throw new ArgumentNullException("request");
+            Contract.EndContractBlock();
+
             var requestHandlerType = CreateIRequestHandlerTypeFrom(request);
             try
             {
@@ -49,6 +55,9 @@ namespace Colombo.Impl
 
         public void DisposeRequestHandler(IRequestHandler requestHandler)
         {
+            if (requestHandler == null) throw new ArgumentNullException("requestHandler");
+            Contract.EndContractBlock();
+
             kernel.ReleaseComponent(requestHandler);
         }
 
@@ -57,6 +66,7 @@ namespace Colombo.Impl
             if (request == null) throw new ArgumentNullException("request");
             Contract.EndContractBlock();
             Contract.Assume(typeof(IRequestHandler<,>).IsGenericTypeDefinition);
+            Contract.Assume(typeof(IRequestHandler<,>).GetGenericArguments().Length == 2);
 
             Type responseType = request.GetResponseType();
             Type requestType = request.GetType();

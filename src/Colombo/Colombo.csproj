@@ -62,6 +62,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
@@ -95,7 +96,9 @@
     <Compile Include="Message.cs" />
     <Compile Include="Request.cs" />
     <Compile Include="Response.cs" />
+    <Compile Include="Wcf\IWcfService.cs" />
     <Compile Include="Wcf\WcfClientMessageProcessor.cs" />
+    <Compile Include="Wcf\WcfClientBaseService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Configuration\" />
