@@ -7,7 +7,7 @@ using Colombo.Impl;
 using Rhino.Mocks;
 using System.Transactions;
 
-namespace Colombo.Tests
+namespace Colombo.Tests.Impl
 {
     [TestFixture]
     public class LocalMessageProcessorTest

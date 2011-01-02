@@ -58,11 +58,12 @@
     <Compile Include="..\SolutionVersion.cs">
       <Link>Properties\SolutionVersion.cs</Link>
     </Compile>
-    <Compile Include="KernelRequestHandlerFactoryTest.cs" />
-    <Compile Include="LocalMessageProcessorTest.cs" />
-    <Compile Include="MessageBusTest.cs" />
+    <Compile Include="Impl\KernelRequestHandlerFactoryTest.cs" />
+    <Compile Include="Impl\LocalMessageProcessorTest.cs" />
+    <Compile Include="Impl\MessageBusTest.cs" />
     <Compile Include="MessagesTest.cs" />
     <Compile Include="TestResponse.cs" />
+    <Compile Include="Wcf\WcfClientMessageProcessorTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Colombo\Colombo.csproj">

@@ -8,7 +8,7 @@ using Rhino.Mocks;
 using Castle.MicroKernel;
 using Castle.MicroKernel.Registration;
 
-namespace Colombo.Tests
+namespace Colombo.Tests.Impl
 {
     [TestFixture]
     public class KernelRequestHandlerFactoryTest

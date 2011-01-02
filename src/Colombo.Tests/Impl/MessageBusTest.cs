@@ -6,7 +6,7 @@ using NUnit.Framework;
 using Colombo.Impl;
 using Rhino.Mocks;
 
-namespace Colombo.Tests
+namespace Colombo.Tests.Impl
 {
     [TestFixture]
     public class MessageBusTest

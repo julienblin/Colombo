@@ -12,7 +12,7 @@
     <AssemblyName>Colombo</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
+    <CodeContractsAssemblyMode>0</CodeContractsAssemblyMode>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -22,7 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
+    <CodeContractsEnableRuntimeChecking>False</CodeContractsEnableRuntimeChecking>
     <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
     <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
     <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
@@ -74,12 +74,14 @@
     </Compile>
     <Compile Include="CallContext.cs" />
     <Compile Include="ColomboException.cs" />
+    <Compile Include="Contracts\ColomboConfigurationContract.cs" />
     <Compile Include="Contracts\MessageBusContract.cs" />
     <Compile Include="Contracts\MessageBusSendInterceptorContract.cs" />
     <Compile Include="Contracts\MessageProcessorContract.cs" />
     <Compile Include="Contracts\RequestHandlerContract.cs" />
     <Compile Include="Contracts\RequestHandlerFactoryContract.cs" />
     <Compile Include="Contracts\RequestHandlerInterceptorContract.cs" />
+    <Compile Include="IColomboConfiguration.cs" />
     <Compile Include="IInterceptor.cs" />
     <Compile Include="IMessageBus.cs" />
     <Compile Include="IMessageBusSendInterceptor.cs" />
@@ -93,6 +95,10 @@
     <Compile Include="Message.cs" />
     <Compile Include="Request.cs" />
     <Compile Include="Response.cs" />
+    <Compile Include="Wcf\WcfClientMessageProcessor.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Configuration\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
