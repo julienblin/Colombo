@@ -11,7 +11,9 @@ namespace Colombo.Contracts
     {
         Response IRequestHandler.Handle(BaseRequest request)
         {
-            throw new NotImplementedException();
+            Contract.Requires<ArgumentNullException>(request != null, "request");
+            Contract.Ensures(Contract.Result<Response>() != null);
+            return default(Response);
         }
     }
 }

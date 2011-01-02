@@ -9,7 +9,7 @@ namespace Colombo
     [ContractClass(typeof(Contracts.MessageBusSendInterceptorContract))]
     public interface IMessageBusSendInterceptor : IInterceptor
     {
-        TResponse BeforeSend<TResponse>(Request<TResponse> request) where TResponse : Response, new();
-        void AfterMessageProcessorSend<TResponse>(Request<TResponse> request, Response response) where TResponse : Response, new();
+        Response BeforeSend(BaseRequest request);
+        void AfterMessageProcessorSend(BaseRequest request, Response response);
     }
 }

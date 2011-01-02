@@ -90,6 +90,29 @@ namespace Colombo.Tests.Impl
         }
 
         [Test]
+        public void It_Should_Throw_An_Exception_When_Incompatible_Responses_Are_Returned()
+        {
+            var mocks = new MockRepository();
+            var request = mocks.Stub<Request<TestResponse>>();
+            var response = new TestResponse2();
+
+            var messageProcessor = mocks.StrictMock<IMessageProcessor>();
+
+            With.Mocks(mocks).Expecting(() =>
+            {
+                Expect.Call(messageProcessor.CanSend(request)).Return(true);
+                Expect.Call(messageProcessor.Send(request)).Return(response);
+            }).Verify(() =>
+            {
+                var messageBus = new MessageBus(new IMessageProcessor[] { messageProcessor });
+                Assert.That(() => messageBus.Send<TestResponse>(request),
+                    Throws.Exception.TypeOf<ColomboException>()
+                    .With.Message.Contains(typeof(TestResponse).ToString())
+                    .With.Message.Contains(typeof(TestResponse2).ToString()));
+            });
+        }
+
+        [Test]
         public void It_Should_Run_All_The_IMessageBusSendInterceptor_BeforeSend_And_AfterMessageProcessorSend_Methods()
         {
             var mocks = new MockRepository();
@@ -107,8 +130,8 @@ namespace Colombo.Tests.Impl
 
                 Expect.Call(messageProcessor.CanSend(request)).Return(true);
 
-                Expect.Call(sendInterceptor1.BeforeSend<TestResponse>(request)).Return(null);
-                Expect.Call(sendInterceptor2.BeforeSend<TestResponse>(request)).Return(null);
+                Expect.Call(sendInterceptor1.BeforeSend(request)).Return(null);
+                Expect.Call(sendInterceptor2.BeforeSend(request)).Return(null);
 
                 Expect.Call(messageProcessor.Send(request)).Return(response);
 
@@ -139,7 +162,7 @@ namespace Colombo.Tests.Impl
 
                 Expect.Call(messageProcessor.CanSend(request)).Return(true);
 
-                Expect.Call(sendInterceptor1.BeforeSend<TestResponse>(request)).Return(response);
+                Expect.Call(sendInterceptor1.BeforeSend(request)).Return(response);
 
                 sendInterceptor2.AfterMessageProcessorSend(request, response);
                 sendInterceptor1.AfterMessageProcessorSend(request, response);
@@ -170,9 +193,9 @@ namespace Colombo.Tests.Impl
 
                 Expect.Call(messageProcessor.CanSend(request)).Return(true);
 
-                Expect.Call(sendInterceptor2.BeforeSend<TestResponse>(request)).Return(null);
-                Expect.Call(sendInterceptor3.BeforeSend<TestResponse>(request)).Return(null);
-                Expect.Call(sendInterceptor1.BeforeSend<TestResponse>(request)).Return(null);
+                Expect.Call(sendInterceptor2.BeforeSend(request)).Return(null);
+                Expect.Call(sendInterceptor3.BeforeSend(request)).Return(null);
+                Expect.Call(sendInterceptor1.BeforeSend(request)).Return(null);
 
                 Expect.Call(messageProcessor.Send(request)).Return(response);
 
@@ -184,6 +207,11 @@ namespace Colombo.Tests.Impl
                 messageBus.MessageBusSendInterceptors = new IMessageBusSendInterceptor[] { sendInterceptor1, sendInterceptor2, sendInterceptor3 };
                 messageBus.Send<TestResponse>(request);
             });
+        }
+
+        public class TestResponse2 : Response
+        {
+
         }
     }
 }

@@ -9,13 +9,13 @@ namespace Colombo.Contracts
     [ContractClassFor(typeof(IMessageBusSendInterceptor))]
     public abstract class MessageBusSendInterceptorContract : IMessageBusSendInterceptor
     {
-        TResponse IMessageBusSendInterceptor.BeforeSend<TResponse>(Request<TResponse> request)
+        Response IMessageBusSendInterceptor.BeforeSend(BaseRequest request)
         {
             Contract.Requires<ArgumentNullException>(request != null, "request");
-            return default(TResponse);
+            return default(Response);
         }
 
-        void IMessageBusSendInterceptor.AfterMessageProcessorSend<TResponse>(Request<TResponse> request, Response response)
+        void IMessageBusSendInterceptor.AfterMessageProcessorSend(BaseRequest request, Response response)
         {
             Contract.Requires<ArgumentNullException>(request != null, "request");
             Contract.Requires<ArgumentNullException>(response != null, "response");

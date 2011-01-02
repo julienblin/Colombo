@@ -68,7 +68,7 @@ namespace Colombo.Impl
             foreach (var sendInterceptor in MessageBusSendInterceptors)
             {
                 Logger.DebugFormat("Calling BeforeSend for interceptor {0} and request {1}...", sendInterceptor, request);
-                response = sendInterceptor.BeforeSend<TResponse>(request);
+                response = sendInterceptor.BeforeSend(request);
                 if (response != null)
                 {
                     Logger.DebugFormat("Interceptor {0} has responded in BeforeSend - Request {1} will not be sent.", sendInterceptor, request);

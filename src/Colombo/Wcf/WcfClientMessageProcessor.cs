@@ -30,8 +30,7 @@ namespace Colombo.Wcf
             this.colomboConfiguration = colomboConfiguration;
         }
 
-        public bool CanSend<TResponse>(Request<TResponse> request)
-            where TResponse : Response, new()
+        public bool CanSend(BaseRequest request)
         {
             if (request == null) throw new ArgumentNullException("request");
             Contract.EndContractBlock();
@@ -39,16 +38,21 @@ namespace Colombo.Wcf
             return (colomboConfiguration.GetTargetAddressFor(request, WcfEndPointType) != null);
         }
 
-        public TResponse Send<TResponse>(Request<TResponse> request)
-            where TResponse : Response, new()
+        public Response Send(BaseRequest request)
         {
             if (request == null) throw new ArgumentNullException("request");
             Contract.EndContractBlock();
 
+            Response response = null;
             using (var clientBase = CreateClientBase(request))
             {
-                return (TResponse)clientBase.Send(request);
+                response = clientBase.Send(request);
             }
+
+            if (response == null)
+                throw new ColomboException("Internal error : response should not be null");
+
+            return response;
         }
 
         public WcfClientBaseService CreateClientBase(BaseRequest request)

@@ -85,6 +85,7 @@
     <Compile Include="Contracts\RequestHandlerInterceptorContract.cs" />
     <Compile Include="IColomboConfiguration.cs" />
     <Compile Include="IInterceptor.cs" />
+    <Compile Include="ILocalMessageProcessor.cs" />
     <Compile Include="IMessageBus.cs" />
     <Compile Include="IMessageBusSendInterceptor.cs" />
     <Compile Include="IMessageProcessor.cs" />
@@ -100,6 +101,7 @@
     <Compile Include="Wcf\IWcfService.cs" />
     <Compile Include="Wcf\WcfClientMessageProcessor.cs" />
     <Compile Include="Wcf\WcfClientBaseService.cs" />
+    <Compile Include="Wcf\WcfService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Configuration\" />

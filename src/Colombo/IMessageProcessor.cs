@@ -9,7 +9,7 @@ namespace Colombo
     [ContractClass(typeof(Contracts.MessageProcessorContract))]
     public interface IMessageProcessor
     {
-        bool CanSend<TResponse>(Request<TResponse> request) where TResponse : Response, new();
-        TResponse Send<TResponse>(Request<TResponse> request) where TResponse : Response, new();
+        bool CanSend(BaseRequest request);
+        Response Send(BaseRequest request);
     }
 }

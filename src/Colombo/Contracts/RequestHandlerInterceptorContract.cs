@@ -9,15 +9,13 @@ namespace Colombo.Contracts
     [ContractClassFor(typeof(IRequestHandlerInterceptor))]
     public abstract class RequestHandlerInterceptorContract : IRequestHandlerInterceptor
     {
-        public TResponse BeforeHandle<TResponse>(Request<TResponse> request)
-            where TResponse : Response, new()
+        public Response BeforeHandle(BaseRequest request)
         {
             Contract.Requires<ArgumentNullException>(request != null, "request");
-            return default(TResponse);
+            return default(Response);
         }
 
-        public void AfterHandle<TResponse>(Request<TResponse> request, Response response)
-            where TResponse : Response, new()
+        public void AfterHandle(BaseRequest request, Response response)
         {
             Contract.Requires<ArgumentNullException>(request != null, "request");
             Contract.Requires<ArgumentNullException>(response != null, "response");

@@ -9,7 +9,7 @@ namespace Colombo
     [ContractClass(typeof(Contracts.RequestHandlerInterceptorContract))]
     public interface IRequestHandlerInterceptor : IInterceptor
     {
-        TResponse BeforeHandle<TResponse>(Request<TResponse> request) where TResponse : Response, new();
-        void AfterHandle<TResponse>(Request<TResponse> request, Response response) where TResponse : Response, new();
+        Response BeforeHandle(BaseRequest request);
+        void AfterHandle(BaseRequest request, Response response);
     }
 }

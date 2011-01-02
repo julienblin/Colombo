@@ -8,7 +8,7 @@ using System.Transactions;
 
 namespace Colombo.Impl
 {
-    public class LocalMessageProcessor : IMessageProcessor
+    public class LocalMessageProcessor : ILocalMessageProcessor
     {
         private ILogger logger = NullLogger.Instance;
         public ILogger Logger
@@ -40,8 +40,7 @@ namespace Colombo.Impl
             this.requestHandlerFactory = requestHandlerFactory;
         }
 
-        public bool CanSend<TResponse>(Request<TResponse> request)
-            where TResponse : Response, new()
+        public bool CanSend(BaseRequest request)
         {
             if (request == null) throw new ArgumentNullException("request");
             Contract.EndContractBlock();
@@ -49,8 +48,7 @@ namespace Colombo.Impl
             return requestHandlerFactory.CanCreateRequestHandlerFor(request);
         }
 
-        public TResponse Send<TResponse>(Request<TResponse> request)
-            where TResponse : Response, new()
+        public Response Send(BaseRequest request)
         {
             if (request == null) throw new ArgumentNullException("request");
             Contract.EndContractBlock();
@@ -64,7 +62,7 @@ namespace Colombo.Impl
                 Contract.Assume(requestHandler != null);
                 Logger.DebugFormat("Request {0} is being handled by {1}...", request, requestHandler);
 
-                TResponse response = null;
+                Response response = null;
                 try
                 {
                     Logger.DebugFormat("Performing BeforeHandle on the {0} registered interceptor(s).", RequestHandlerInterceptor.Length);
@@ -81,7 +79,7 @@ namespace Colombo.Impl
 
                     if (response == null)
                     {
-                        response = (TResponse)requestHandler.Handle(request);
+                        response = requestHandler.Handle(request);
                     }
                     Contract.Assert(response != null);
 

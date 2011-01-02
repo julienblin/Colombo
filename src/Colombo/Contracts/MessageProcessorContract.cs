@@ -9,17 +9,17 @@ namespace Colombo.Contracts
     [ContractClassFor(typeof(IMessageProcessor))]
     public abstract class MessageProcessorContract : IMessageProcessor
     {
-        bool IMessageProcessor.CanSend<TResponse>(Request<TResponse> request)
+        bool IMessageProcessor.CanSend(BaseRequest request)
         {
             Contract.Requires<ArgumentNullException>(request != null, "request");
             return default(bool);
         }
 
-        TResponse IMessageProcessor.Send<TResponse>(Request<TResponse> request)
+        Response IMessageProcessor.Send(BaseRequest request)
         {
             Contract.Requires<ArgumentNullException>(request != null, "request");
-            Contract.Ensures(Contract.Result<TResponse>() != null);
-            return default(TResponse);
+            Contract.Ensures(Contract.Result<Response>() != null);
+            return default(Response);
         }
     }
 }
