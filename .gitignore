@@ -4,7 +4,7 @@ bin
 obj
 _ReSharper*
 /test
-/deploy
+/release
 
 *.suo
 *.user 

@@ -19,7 +19,7 @@
   <property name="folder.src" value="${folder.base}\src"/>
   <property name="folder.bin" value="${folder.base}\bin"/>
   <property name="folder.test" value="${folder.base}\test"/>
-  <property name="folder.deploy" value="${folder.base}\deploy"/>
+  <property name="folder.release" value="${folder.base}\release"/>
   <property name="project.solution" value="${folder.src}\${project.name}.sln" />
 
   <property name="now" value="${datetime::now()}"/>
@@ -108,23 +108,17 @@
     </if>
   </target>
 
-  <target name="deploy" depends="build">
+  <target name="release" depends="build">
     <property name="test.open" value="false" />
 
     <call target="test"/>
 
-    <delete dir="${folder.deploy}" includeemptydirs="true" />
-    <copy todir="${folder.deploy}">
+    <delete dir="${folder.release}" includeemptydirs="true" />
+    <copy todir="${folder.release}">
       <fileset basedir="${folder.bin}\${msbuild.configuration}\Colombo">
         <include name="Colombo.*"/>
       </fileset>
     </copy>
-
-    <checksum algorithm="SHA1" fileext="sha1">
-      <fileset>
-        <include name="${folder.deploy}\*.dll"/>
-      </fileset>
-    </checksum>
 
   </target>
 
