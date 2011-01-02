@@ -59,6 +59,7 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Configuration\EmptyColomboConfigurationTest.cs" />
     <Compile Include="Impl\KernelRequestHandlerFactoryTest.cs" />
     <Compile Include="Impl\LocalMessageProcessorTest.cs" />
     <Compile Include="Impl\MessageBusTest.cs" />

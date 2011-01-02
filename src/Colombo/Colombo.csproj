@@ -76,6 +76,7 @@
     </Compile>
     <Compile Include="CallContext.cs" />
     <Compile Include="ColomboException.cs" />
+    <Compile Include="Configuration\EmptyColomboConfiguration.cs" />
     <Compile Include="Contracts\ColomboConfigurationContract.cs" />
     <Compile Include="Contracts\MessageBusContract.cs" />
     <Compile Include="Contracts\MessageBusSendInterceptorContract.cs" />
@@ -103,9 +104,7 @@
     <Compile Include="Wcf\WcfClientBaseService.cs" />
     <Compile Include="Wcf\WcfService.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Configuration\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
