@@ -1,0 +1,131 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<project name="Colombo" xmlns="http://nant.sf.net/release/0.91-alpha2/nant.xsd">
+
+  <property name="nant.settings.currentframework" value="net-4.0" />
+
+  <property name="project.name" value="${project::get-name()}" />
+  <property name="folder.base" value="${project::get-base-directory()}"/>
+
+  <loadtasks assembly="${folder.base}\lib\NAnt\NAnt.Contrib.Tasks.dll" />
+
+  <property name="company.name" value="CGI" />
+  <property name="repository.path" value="git://github.com/julienblin/Colombo.git" overwrite="false" />
+
+  <property name="msbuild.configuration" value="Release" />
+  <property name="version.major" value="0" />
+  <property name="version.minor" value="1" />
+  <property name="version.patch" value="0" />
+
+  <property name="folder.src" value="${folder.base}\src"/>
+  <property name="folder.bin" value="${folder.base}\bin"/>
+  <property name="folder.test" value="${folder.base}\test"/>
+  <property name="folder.deploy" value="${folder.base}\deploy"/>
+  <property name="project.solution" value="${folder.src}\${project.name}.sln" />
+
+  <property name="now" value="${datetime::now()}"/>
+
+  <property name="test.open" value="true" />
+
+  <!-- EXTERNAL TOOLS -->
+  <property name="app.msbuild" value="${framework::get-tool-path('msbuild.exe')}" />
+  <property name="app.sn" value="${framework::get-tool-path('sn.exe')}" />
+  <property name="app.git" value="C:\Program Files\Git\bin\git" />
+  <property name="app.nunit.console" value="${folder.base}\lib\NUnit\nunit-console.exe" />
+
+  <target name="clean">
+    <delete dir="${folder.bin}" includeemptydirs="true" />
+  </target>
+
+  <target name="determine-version">
+    <exec program="${app.git}" output="_git-log.output">
+      <arg line="log -1 --pretty=oneline" />
+    </exec>
+    <loadfile file="_git-log.output" property="version.informational" />
+    <delete file="_git-log.output" />
+    <property name="version.informational" value="${string::substring(string::trim(version.informational), 0, 40)}"/>
+
+    <property name="version.revision" value="${string::substring(int::to-string(datetime::get-year(now)), 2, 2)}${string::pad-left(int::to-string(datetime::get-day-of-year(now)), 3, '0')}"/>
+    <property name="version" value="${version.major}.${version.minor}.${version.patch}.${version.revision}"/>
+  </target>
+
+  <target name="build" depends="clean, determine-version">
+    <echo message="Building ${project.name}..."/>
+    <asminfo output="${folder.src}\GlobalAssemblyInfo.cs" language="CSharp">
+      <imports>
+        <import namespace="System" />
+        <import namespace="System.Reflection" />
+      </imports>
+      <attributes>
+        <attribute type="AssemblyVersionAttribute" value="${version}" />
+        <attribute type="AssemblyFileVersionAttribute" value="${version}" />
+        <attribute type="AssemblyInformationalVersionAttribute" value="${version.informational}" />
+        <attribute type="AssemblyCompanyAttribute" value="${company.name}" />
+        <attribute type="AssemblyTitleAttribute" value="${project.name}" />
+        <attribute type="AssemblyProductAttribute" value="${project.name}" />
+        <attribute type="AssemblyDescriptionAttribute" value="${project.name} is a product of ${company.name} - ${repository.path}" />
+        <attribute type="AssemblyCopyrightAttribute" value="Copyright © ${company.name} ${datetime::get-year(now)}" />
+        <attribute type="CLSCompliantAttribute" value="true" />
+      </attributes>
+    </asminfo>
+
+    <exec program="${app.msbuild}">
+      <arg line='"${project.solution}"' />
+      <arg line="/property:Configuration=${msbuild.configuration}" />
+      <arg value="/verbosity:normal" />
+      <arg value="/nologo" />
+    </exec>
+  </target>
+
+  <target name="test" depends="build">
+    <delete dir="${folder.test}" includeemptydirs="true" />
+    <copy todir="${folder.test}\bin">
+      <fileset basedir="${folder.bin}\${msbuild.configuration}">
+        <include name="Colombo.Tests\**"/>
+      </fileset>
+    </copy>
+    <property name="folder.test.results.xml" value="${folder.test}\results\xml"/>
+    <mkdir dir="${folder.test.results.xml}"/>
+    <foreach item="Folder" in="${folder.test}\bin" property="folder.test.current">
+      <do>
+        <property name="test.current" value="${path::get-file-name(folder.test.current)}" />
+        <exec program="${app.nunit.console}" workingdir="${folder.test.current}">
+          <arg line="${test.current}.dll /xml=&quot;${folder.test.results.xml}\${test.current}.xml&quot;" />
+          <arg line="/nologo" />
+        </exec>
+      </do>
+    </foreach>
+
+    <if test="${test.open == 'true'}">
+      <property name="folder.test.results.html" value="${folder.test}\results\html"/>
+      <mkdir dir="${folder.test.results.html}"/>
+      <nunit2report todir="${folder.test.results.html}">
+        <fileset basedir="${folder.test.results.xml}">
+          <include name="*.xml" />
+        </fileset>
+      </nunit2report>
+
+      <exec program="cmd.exe" commandline="/C ${folder.test.results.html}\index.html" />
+    </if>
+  </target>
+
+  <target name="deploy" depends="build">
+    <property name="test.open" value="false" />
+
+    <call target="test"/>
+
+    <delete dir="${folder.deploy}" includeemptydirs="true" />
+    <copy todir="${folder.deploy}">
+      <fileset basedir="${folder.bin}\${msbuild.configuration}\Colombo">
+        <include name="Colombo.*"/>
+      </fileset>
+    </copy>
+
+    <checksum algorithm="SHA1" fileext="sha1">
+      <fileset>
+        <include name="${folder.deploy}\*.dll"/>
+      </fileset>
+    </checksum>
+
+  </target>
+
+</project>

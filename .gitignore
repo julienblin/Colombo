@@ -1,10 +1,10 @@
 .svn
 .hg
-build_output
-code_drop
 bin
 obj
 _ReSharper*
+/test
+/deploy
 
 *.suo
 *.user 
@@ -20,8 +20,6 @@ _ReSharper*
 *.log
 *.pidb
 *userprefs
- 
-TestResult.xml
-submit.xml
-SolutionVersion.cs
-SolutionVersion.vb
+
+_git-log.output
+GlobalAssemblyInfo.cs
