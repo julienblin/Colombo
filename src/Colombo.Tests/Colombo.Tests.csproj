@@ -65,6 +65,7 @@
     <Compile Include="MessagesTest.cs" />
     <Compile Include="TestResponse.cs" />
     <Compile Include="Wcf\WcfClientMessageProcessorTest.cs" />
+    <Compile Include="Wcf\WcfServiceTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Colombo\Colombo.csproj">
