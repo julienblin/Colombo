@@ -14,7 +14,7 @@ namespace Colombo.Tests.Impl
     public class KernelRequestHandlerFactoryTest
     {
         [Test]
-        public void It_Should_Ensure_That_It_Has_A_IKernel()
+        public void It_should_ensure_that_it_has_a_IKernel()
         {
             Assert.That(() => new KernelRequestHandlerFactory(null),
                 Throws.Exception.TypeOf<ArgumentNullException>()
@@ -22,7 +22,7 @@ namespace Colombo.Tests.Impl
         }
 
         [Test]
-        public void It_Should_Respond_To_CanCreateRequestHandlerFor_Depending_On_The_Kernel()
+        public void It_should_respond_to_cancreaterequesthandlerfor_depending_on_the_kernel()
         {
             var mocks = new MockRepository();
             var requestHandler1 = mocks.Stub<IRequestHandler<Request1, TestResponse>>();
@@ -52,7 +52,7 @@ namespace Colombo.Tests.Impl
         }
 
         [Test]
-        public void It_Should_Use_The_Kernel_To_Create_IRequestHandlers()
+        public void It_should_use_the_kernel_to_create_IRequestHandlers()
         {
             var mocks = new MockRepository();
             var requestHandler1 = mocks.Stub<IRequestHandler<Request1, TestResponse>>();
@@ -68,7 +68,7 @@ namespace Colombo.Tests.Impl
         }
 
         [Test]
-        public void It_Should_Return_Null_When_No_IRequestHandlers_Can_Be_Created()
+        public void It_should_return_null_when_no_IRequestHandlers_can_be_created()
         {
             var mocks = new MockRepository();
 

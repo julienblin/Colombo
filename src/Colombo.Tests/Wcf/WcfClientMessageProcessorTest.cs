@@ -13,7 +13,7 @@ namespace Colombo.Tests.Wcf
     public class WcfClientMessageProcessorTest
     {
         [Test]
-        public void It_Should_Ensure_That_At_A_IColomboConfiguration_Is_Provided()
+        public void It_should_ensure_that_at_a_IColomboConfiguration_is_provided()
         {
             Assert.That(() => new WcfClientMessageProcessor(null),
                 Throws.Exception.TypeOf<ArgumentNullException>()
@@ -21,7 +21,7 @@ namespace Colombo.Tests.Wcf
         }
 
         [Test]
-        public void It_Should_Rely_On_IColomboConfiguration_To_Determine_If_Can_Send()
+        public void It_should_rely_on_IColomboConfiguration_to_determine_if_can_send()
         {
             var mocks = new MockRepository();
             var request = mocks.Stub<Request<TestResponse>>();
@@ -45,7 +45,7 @@ namespace Colombo.Tests.Wcf
         }
 
         [Test]
-        public void It_Should_Create_A_ClientBase_From_IColomboConfiguration()
+        public void It_should_create_a_ClientBase_from_IColomboConfiguration()
         {
             var mocks = new MockRepository();
             var requestHttp = mocks.Stub<Request<TestResponse>>();
@@ -74,7 +74,7 @@ namespace Colombo.Tests.Wcf
         }
 
         [Test]
-        public void It_Should_Raise_An_Error_When_Creating_ClientBase_With_Malformed_Uri()
+        public void It_should_throw_an_exception_when_creating_ClientBase_with_malformed_uri()
         {
             var mocks = new MockRepository();
             var request = mocks.Stub<Request<TestResponse>>();
@@ -94,7 +94,7 @@ namespace Colombo.Tests.Wcf
         }
 
         [Test]
-        public void It_Should_Raise_An_Error_When_Creating_ClientBase_With_Unrecognized_Uri_Scheme()
+        public void It_should_throw_an_exception_when_creating_ClientBase_with_unrecognized_uri_scheme()
         {
             var mocks = new MockRepository();
             var request = mocks.Stub<Request<TestResponse>>();

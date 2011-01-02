@@ -13,7 +13,7 @@ namespace Colombo.Tests.Impl
     public class LocalMessageProcessorTest
     {
         [Test]
-        public void It_Should_Ensure_That_It_Has_A_IRequestHandlerFactory()
+        public void It_should_ensure_that_it_has_a_IRequestHandlerFactory()
         {
             Assert.That(() => new LocalMessageProcessor(null),
                 Throws.Exception.TypeOf<ArgumentNullException>()
@@ -21,7 +21,7 @@ namespace Colombo.Tests.Impl
         }
 
         [Test]
-        public void It_Should_Rely_On_IRequestHandlerFactory_For_CanSend()
+        public void It_should_rely_on_IRequestHandlerFactory_for_CanSend()
         {
             var mocks = new MockRepository();
             var request = mocks.Stub<Request<TestResponse>>();
@@ -39,7 +39,7 @@ namespace Colombo.Tests.Impl
         }
 
         [Test]
-        public void It_Should_Ensure_That_IRequestHandlerFactory_Returns_A_Handler_In_Create()
+        public void It_should_ensure_that_IRequestHandlerFactory_returns_a_handler_in_Create()
         {
             var mocks = new MockRepository();
             var request = mocks.Stub<Request<TestResponse>>();
@@ -58,7 +58,7 @@ namespace Colombo.Tests.Impl
         }
 
         [Test]
-        public void It_Should_Use_The_RequestHandler_That_IRequestHandlerFactory_Returns()
+        public void It_should_use_the_RequestHandler_that_IRequestHandlerFactory_returns()
         {
             var mocks = new MockRepository();
             var request = mocks.Stub<Request<TestResponse>>();
@@ -80,7 +80,7 @@ namespace Colombo.Tests.Impl
         }
 
         [Test]
-        public void It_Should_Create_A_TransactionScope_For_The_RequestHandler()
+        public void It_should_create_a_TransactionScope_for_the_RequestHandler()
         {
             var mocks = new MockRepository();
             var request = mocks.Stub<Request<TestResponse>>();
@@ -108,7 +108,7 @@ namespace Colombo.Tests.Impl
         delegate Response HandleDelegate(BaseRequest request);
 
         [Test]
-        public void It_Should_Run_All_The_IRequestHandlerInterceptor_BeforeHandle_And_AfterHandle_Methods()
+        public void It_should_run_all_the_IRequestHandlerInterceptors_BeforeHandle_and_AfterHandle_methods()
         {
             var mocks = new MockRepository();
             var request = mocks.Stub<Request<TestResponse>>();
@@ -144,7 +144,7 @@ namespace Colombo.Tests.Impl
         }
 
         [Test]
-        public void It_Should_Not_Send_To_RequestHandler_If_IRequestHandlerInterceptor_BeforeHandle_Returns_Non_Null()
+        public void It_should_not_send_to_RequestHandler_if_IRequestHandlerInterceptor_BeforeHandle_returns_non_null()
         {
             var mocks = new MockRepository();
             var request = mocks.Stub<Request<TestResponse>>();
@@ -177,7 +177,7 @@ namespace Colombo.Tests.Impl
         }
 
         [Test]
-        public void It_Should_Reorder_IRequestHandlerInterceptor_Accordingly()
+        public void It_should_reorder_IRequestHandlerInterceptor_accordingly()
         {
             var mocks = new MockRepository();
             var request = mocks.Stub<Request<TestResponse>>();

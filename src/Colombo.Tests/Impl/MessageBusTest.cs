@@ -12,7 +12,7 @@ namespace Colombo.Tests.Impl
     public class MessageBusTest
     {
         [Test]
-        public void It_Should_Ensure_That_At_Least_One_IMessageProcessor_Is_Provided()
+        public void It_should_ensure_that_at_least_one_IMessageProcessor_is_provided()
         {
             Assert.That(() => new MessageBus(null),
                 Throws.Exception.TypeOf<ArgumentException>()
@@ -24,7 +24,7 @@ namespace Colombo.Tests.Impl
         }
 
         [Test]
-        public void It_Should_Throw_An_Exception_When_No_IMessageProcessor_Can_Send()
+        public void It_should_throw_an_exception_when_no_IMessageProcessor_can_send()
         {
             var mocks = new MockRepository();
             var request = mocks.Stub<Request<TestResponse>>();
@@ -44,7 +44,7 @@ namespace Colombo.Tests.Impl
         }
 
         [Test]
-        public void It_Should_Throw_An_Exception_When_Too_Many_IMessageProcessors_Can_Send()
+        public void It_should_throw_an_exception_when_too_many_IMessageProcessors_can_send()
         {
             var mocks = new MockRepository();
             var request = mocks.Stub<Request<TestResponse>>();
@@ -67,7 +67,7 @@ namespace Colombo.Tests.Impl
         }
 
         [Test]
-        public void It_Should_Call_Selected_IMessageProcessors_Send_Method()
+        public void It_should_call_selected_IMessageProcessors_Send_method()
         {
             var mocks = new MockRepository();
             var request = mocks.Stub<Request<TestResponse>>();
@@ -90,7 +90,7 @@ namespace Colombo.Tests.Impl
         }
 
         [Test]
-        public void It_Should_Throw_An_Exception_When_Incompatible_Responses_Are_Returned()
+        public void It_should_throw_an_exception_when_incompatible_responses_are_returned()
         {
             var mocks = new MockRepository();
             var request = mocks.Stub<Request<TestResponse>>();
@@ -113,7 +113,7 @@ namespace Colombo.Tests.Impl
         }
 
         [Test]
-        public void It_Should_Run_All_The_IMessageBusSendInterceptor_BeforeSend_And_AfterMessageProcessorSend_Methods()
+        public void It_should_run_all_the_IMessageBusSendInterceptors_BeforeSend_And_AfterMessageProcessorSend_methods()
         {
             var mocks = new MockRepository();
             var request = mocks.Stub<Request<TestResponse>>();
@@ -145,7 +145,7 @@ namespace Colombo.Tests.Impl
         }
 
         [Test]
-        public void It_Should_Not_Send_To_MessageProcessor_If_IMessageBusSendInterceptor_BeforeSend_Returns_Non_Null()
+        public void It_should_not_send_to_MessageProcessor_if_IMessageBusSendInterceptor_BeforeSend_returns_non_null()
         {
             var mocks = new MockRepository();
             var request = mocks.Stub<Request<TestResponse>>();
@@ -174,7 +174,7 @@ namespace Colombo.Tests.Impl
         }
 
         [Test]
-        public void It_Should_Reorder_IMessageBusSendInterceptor_Accordingly()
+        public void It_should_reorder_IMessageBusSendInterceptor_accordingly()
         {
             var mocks = new MockRepository();
             var request = mocks.Stub<Request<TestResponse>>();
