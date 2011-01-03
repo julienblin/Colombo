@@ -76,8 +76,10 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Alerts\SLABreachedAlert.cs" />
     <Compile Include="ColomboException.cs" />
     <Compile Include="Configuration\ColomboConfigurationSection.cs" />
+    <Compile Include="Contracts\ColomboAlerterContract.cs" />
     <Compile Include="Facilities\ColomboFacility.cs" />
     <Compile Include="Configuration\EmptyColomboConfiguration.cs" />
     <Compile Include="Configuration\EndPointConfigurationElement.cs" />
@@ -89,6 +91,8 @@
     <Compile Include="Contracts\MessageProcessorContract.cs" />
     <Compile Include="Contracts\RequestHandlerContract.cs" />
     <Compile Include="Contracts\RequestHandlerFactoryContract.cs" />
+    <Compile Include="IColomboAlert.cs" />
+    <Compile Include="IColomboAlerter.cs" />
     <Compile Include="IColomboConfiguration.cs" />
     <Compile Include="IColomboInterceptor.cs" />
     <Compile Include="IColomboInvocation.cs" />
@@ -97,6 +101,7 @@
     <Compile Include="IMessageBusSendInterceptor.cs" />
     <Compile Include="IMessageProcessor.cs" />
     <Compile Include="Impl\BaseColomboInvocation.cs" />
+    <Compile Include="Impl\EventLogColomboAlerter.cs" />
     <Compile Include="Impl\KernelRequestHandlerFactory.cs" />
     <Compile Include="Impl\LocalMessageProcessor.cs" />
     <Compile Include="Impl\MessageBus.cs" />
@@ -106,6 +111,8 @@
     <Compile Include="Interceptors\CurrentCultureConstant.cs" />
     <Compile Include="Interceptors\CurrentCultureHandlerInterceptor.cs" />
     <Compile Include="Interceptors\CurrentCultureSendInterceptor.cs" />
+    <Compile Include="Interceptors\RequestExtensions.cs" />
+    <Compile Include="Interceptors\SLASendInterceptor.cs" />
     <Compile Include="Interceptors\TransactionScopeHandlerInterceptor.cs" />
     <Compile Include="IRequestHandler.cs" />
     <Compile Include="IRequestHandlerFactory.cs" />
@@ -113,6 +120,7 @@
     <Compile Include="Message.cs" />
     <Compile Include="Request.cs" />
     <Compile Include="Response.cs" />
+    <Compile Include="SLAAttribute.cs" />
     <Compile Include="Wcf\EmbedTypeInSerializerAttribute.cs" />
     <Compile Include="Wcf\IWcfService.cs" />
     <Compile Include="Wcf\WcfClientMessageProcessor.cs" />

@@ -9,6 +9,7 @@ using Colombo.Wcf;
 using System.Reflection;
 using Castle.MicroKernel;
 using Colombo.Interceptors;
+using Colombo.Impl;
 
 namespace Colombo.Tests.Facilities
 {
@@ -113,6 +114,38 @@ namespace Colombo.Tests.Facilities
                 f.DoNotHandleInsideTransactionScope();
             });
             Assert.That(!container.ResolveAll<IRequestHandlerInterceptor>().Any(x => x is TransactionScopeHandlerInterceptor));
+        }
+
+        [Test]
+        public void It_should_manage_SLAs()
+        {
+            var container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>();
+
+            Assert.That(container.ResolveAll<IMessageBusSendInterceptor>().Any(x => x is SLASendInterceptor));
+
+            container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>(f =>
+            {
+                f.DoNotManageSLA();
+            });
+            Assert.That(!container.ResolveAll<IMessageBusSendInterceptor>().Any(x => x is SLASendInterceptor));
+        }
+
+        [Test]
+        public void It_should_alert_in_Application_event_log()
+        {
+            var container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>();
+
+            Assert.That(container.ResolveAll<IColomboAlerter>().Any(x => x is EventLogColomboAlerter));
+
+            container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>(f =>
+            {
+                f.DoNotAlertInApplicationEventLog();
+            });
+            Assert.That(!container.ResolveAll<IColomboAlerter>().Any(x => x is EventLogColomboAlerter));
         }
     }
 }

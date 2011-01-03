@@ -16,8 +16,23 @@ namespace Colombo.Facilities
     public class ColomboFacility : AbstractFacility
     {
         bool registerLocalProcessing = true;
-        bool addCultureInfoInterceptor = true;
-        bool addTranscationScopeInterceptor = true;
+
+        IList<Type> sendInterceptors = new List<Type>()
+        {
+            typeof(CurrentCultureSendInterceptor),
+            typeof(SLASendInterceptor)
+        };
+
+        IList<Type> handlerInterceptors = new List<Type>()
+        {
+            typeof(CurrentCultureHandlerInterceptor),
+            typeof(TransactionScopeHandlerInterceptor)
+        };
+
+        IList<Type> alerters = new List<Type>()
+        {
+            typeof(EventLogColomboAlerter)
+        };
 
         protected override void Init()
         {
@@ -41,12 +56,21 @@ namespace Colombo.Facilities
                     .ImplementedBy<MessageBus>()
             );
 
-            if (addCultureInfoInterceptor)
+            foreach (var sendType in sendInterceptors)
             {
                 Kernel.Register(
                     Component.For<IMessageBusSendInterceptor>()
                         .LifeStyle.Singleton
-                        .ImplementedBy<CurrentCultureSendInterceptor>()
+                        .ImplementedBy(sendType)
+                );
+            }
+
+            foreach (var alerterType in alerters)
+            {
+                Kernel.Register(
+                    Component.For<IColomboAlerter>()
+                        .LifeStyle.Singleton
+                        .ImplementedBy(alerterType)
                 );
             }
 
@@ -60,23 +84,15 @@ namespace Colombo.Facilities
                         .LifeStyle.Singleton
                         .ImplementedBy<LocalMessageProcessor>()
                 );
+                
                 WcfService.RegisterKernel(Kernel);
 
-                if (addCultureInfoInterceptor)
+                foreach (var handlerType in handlerInterceptors)
                 {
                     Kernel.Register(
                         Component.For<IRequestHandlerInterceptor>()
                             .LifeStyle.Singleton
-                            .ImplementedBy<CurrentCultureHandlerInterceptor>()
-                    );
-                }
-
-                if (addTranscationScopeInterceptor)
-                {
-                    Kernel.Register(
-                        Component.For<IRequestHandlerInterceptor>()
-                            .LifeStyle.Singleton
-                            .ImplementedBy<TransactionScopeHandlerInterceptor>()
+                            .ImplementedBy(handlerType)
                     );
                 }
             }
@@ -89,12 +105,23 @@ namespace Colombo.Facilities
 
         public void DoNotManageCurrentCulture()
         {
-            addCultureInfoInterceptor = false;
+            sendInterceptors.Remove(typeof(CurrentCultureSendInterceptor));
+            handlerInterceptors.Remove(typeof(CurrentCultureHandlerInterceptor));
         }
 
         public void DoNotHandleInsideTransactionScope()
         {
-            addTranscationScopeInterceptor = false;
+            handlerInterceptors.Remove(typeof(TransactionScopeHandlerInterceptor));
+        }
+
+        public void DoNotManageSLA()
+        {
+            sendInterceptors.Remove(typeof(SLASendInterceptor));
+        }
+
+        public void DoNotAlertInApplicationEventLog()
+        {
+            alerters.Remove(typeof(EventLogColomboAlerter));
         }
     }
 }
