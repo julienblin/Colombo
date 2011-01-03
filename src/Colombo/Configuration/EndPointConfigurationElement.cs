@@ -8,7 +8,7 @@ namespace Colombo.Configuration
 {
     public class EndPointConfigurationElement : ConfigurationElement
     {
-        [ConfigurationProperty("type", IsRequired = true)]
+        [ConfigurationProperty("type", IsRequired = false, DefaultValue="wcf")]
         public string EndPointType
         {
             get
