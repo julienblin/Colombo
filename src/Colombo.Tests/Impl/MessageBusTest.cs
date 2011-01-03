@@ -78,9 +78,9 @@ namespace Colombo.Tests.Impl
 
             With.Mocks(mocks).Expecting(() =>
             {
-                Expect.Call(messageProcessor1.CanSend(request)).Return(true);
-                Expect.Call(messageProcessor2.CanSend(request)).Return(false);
-                Expect.Call(messageProcessor1.Send(request)).Return(response);
+                Expect.Call(messageProcessor1.CanSend(request)).Return(false);
+                Expect.Call(messageProcessor2.CanSend(request)).Return(true);
+                Expect.Call(messageProcessor2.Send(request)).Return(response);
             }).Verify(() =>
             {
                 var messageBus = new MessageBus(new IMessageProcessor[] { messageProcessor1, messageProcessor2 });

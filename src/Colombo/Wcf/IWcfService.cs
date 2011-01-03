@@ -10,7 +10,7 @@ namespace Colombo.Wcf
     public interface IWcfService
     {
         [OperationContract(Name = @"Send")]
-        //[ServiceKnownType("GetKnownTypes", typeof(KnownTypeProvider))]
+        [EmbedTypeInSerializer]
         Response Send(BaseRequest request);
     }
 }

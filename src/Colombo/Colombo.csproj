@@ -64,6 +64,7 @@
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
@@ -78,11 +79,13 @@
     <Compile Include="CallContext.cs" />
     <Compile Include="ColomboException.cs" />
     <Compile Include="Configuration\ColomboConfigurationSection.cs" />
+    <Compile Include="Configuration\ColomboFacility.cs" />
     <Compile Include="Configuration\EmptyColomboConfiguration.cs" />
     <Compile Include="Configuration\EndPointConfigurationElement.cs" />
     <Compile Include="Configuration\EndPointsConfigurationCollection.cs" />
     <Compile Include="Contracts\ColomboConfigurationContract.cs" />
     <Compile Include="Contracts\ColomboInterceptorContract.cs" />
+    <Compile Include="Contracts\GenericRequestHandlerContract.cs" />
     <Compile Include="Contracts\MessageBusContract.cs" />
     <Compile Include="Contracts\MessageProcessorContract.cs" />
     <Compile Include="Contracts\RequestHandlerContract.cs" />
@@ -108,6 +111,7 @@
     <Compile Include="Message.cs" />
     <Compile Include="Request.cs" />
     <Compile Include="Response.cs" />
+    <Compile Include="Wcf\EmbedTypeInSerializerAttribute.cs" />
     <Compile Include="Wcf\IWcfService.cs" />
     <Compile Include="Wcf\WcfClientMessageProcessor.cs" />
     <Compile Include="Wcf\WcfClientBaseService.cs" />

@@ -46,6 +46,7 @@ namespace Colombo.Wcf
             Response response = null;
             using (var clientBase = CreateClientBase(request))
             {
+                Logger.DebugFormat("Sending request {0} to {1} using WCF...", request, clientBase.Endpoint.Address.Uri);
                 response = clientBase.Send(request);
             }
 

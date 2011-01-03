@@ -50,16 +50,15 @@ namespace Colombo.Impl
             Logger.DebugFormat("Sending request {0}...", request);
             Logger.DebugFormat("Selecting appropriate processor for request {0}...", request);
 
-            var selectedProcessors = messageProcessors.Where(x => (x != null) && (x.CanSend(request)));
-            var numSelectedProcessors = selectedProcessors.Count();
+            var selectedProcessors = messageProcessors.Where(x => (x != null) && (x.CanSend(request))).ToArray();
 
-            if (numSelectedProcessors == 0)
+            if (selectedProcessors.Length == 0)
                 LogAndThrowError("Unable to select an appropriate IMessageProcessor for request {0} in {1}.", request, string.Join(", ", messageProcessors.Select(x => x.ToString())));
 
-            if (numSelectedProcessors > 1)
+            if (selectedProcessors.Length > 1)
                 LogAndThrowError("Too many IMessageProcessor for request {0} in {1}.", request, string.Join(", ", messageProcessors.Select(x => x.ToString())));
 
-            var messageProcessor = messageProcessors.First();
+            var messageProcessor = selectedProcessors[0];
             Logger.DebugFormat("Using IMessageProcessor {0} to send request {1}.", messageProcessor, request);
 
             IColomboInvocation topInvocation = BuildInvocationChain(request, messageProcessor);
