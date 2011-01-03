@@ -5,9 +5,11 @@ using System.Text;
 using Castle.MicroKernel;
 using System.Diagnostics.Contracts;
 using Castle.Core.Logging;
+using System.ServiceModel;
 
 namespace Colombo.Wcf
 {
+    [ServiceBehavior(IncludeExceptionDetailInFaults = true)]
     public class WcfService : IWcfService
     {
         private static IKernel Kernel { get; set; }

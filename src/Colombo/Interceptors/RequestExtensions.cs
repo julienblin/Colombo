@@ -12,5 +12,11 @@ namespace Colombo.Interceptors
         {
             return (TAttribute)request.GetType().GetCustomAttributes(typeof(TAttribute), inherit).FirstOrDefault();
         }
+
+        public static TAttribute[] GetCustomAttributes<TAttribute>(this BaseRequest request, bool inherit = false)
+            where TAttribute : Attribute
+        {
+            return  (TAttribute[])request.GetType().GetCustomAttributes(typeof(TAttribute), inherit);
+        }
     }
 }

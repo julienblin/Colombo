@@ -181,5 +181,21 @@ namespace Colombo.Tests.Facilities
             });
             Assert.That(container.ResolveAll<IRequestHandlerInterceptor>().Any(x => x is PerfCounterHandlerInterceptor));
         }
+
+        [Test]
+        public void It_should_register_RequiredInContextHandlerInterceptor()
+        {
+            var container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>();
+
+            Assert.That(container.ResolveAll<IRequestHandlerInterceptor>().Any(x => x is RequiredInContextHandlerInterceptor));
+
+            container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>(f =>
+            {
+                f.DoNotEnforceRequiredInContext();
+            });
+            Assert.That(!container.ResolveAll<IRequestHandlerInterceptor>().Any(x => x is RequiredInContextHandlerInterceptor));
+        }
     }
 }

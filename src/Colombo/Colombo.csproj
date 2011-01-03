@@ -81,6 +81,7 @@
     <Compile Include="ColomboException.cs" />
     <Compile Include="Configuration\ColomboConfigurationSection.cs" />
     <Compile Include="Contracts\ColomboAlerterContract.cs" />
+    <Compile Include="RequiredInContextException.cs" />
     <Compile Include="Facilities\ColomboFacility.cs" />
     <Compile Include="Configuration\EmptyColomboConfiguration.cs" />
     <Compile Include="Configuration\EndPointConfigurationElement.cs" />
@@ -117,6 +118,7 @@
     <Compile Include="Interceptors\DataAnnotationSendInterceptor.cs" />
     <Compile Include="Interceptors\PerfCounterHandlerInterceptor.cs" />
     <Compile Include="Interceptors\RequestExtensions.cs" />
+    <Compile Include="Interceptors\RequiredInContextHandlerInterceptor.cs" />
     <Compile Include="Interceptors\SLASendInterceptor.cs" />
     <Compile Include="Interceptors\TransactionScopeHandlerInterceptor.cs" />
     <Compile Include="IRequestHandler.cs" />
@@ -124,6 +126,7 @@
     <Compile Include="IRequestHandlerInterceptor.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="Request.cs" />
+    <Compile Include="RequiredInContextAttribute.cs" />
     <Compile Include="Response.cs" />
     <Compile Include="SLAAttribute.cs" />
     <Compile Include="Wcf\EmbedTypeInSerializerAttribute.cs" />

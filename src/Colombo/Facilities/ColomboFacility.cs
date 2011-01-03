@@ -28,7 +28,8 @@ namespace Colombo.Facilities
         {
             typeof(CurrentCultureHandlerInterceptor),
             typeof(TransactionScopeHandlerInterceptor),
-            typeof(DataAnnotationHandlerInterceptor)
+            typeof(DataAnnotationHandlerInterceptor),
+            typeof(RequiredInContextHandlerInterceptor)
         };
 
         IList<Type> alerters = new List<Type>()
@@ -130,6 +131,11 @@ namespace Colombo.Facilities
         {
             sendInterceptors.Remove(typeof(DataAnnotationSendInterceptor));
             handlerInterceptors.Remove(typeof(DataAnnotationHandlerInterceptor));
+        }
+
+        public void DoNotEnforceRequiredInContext()
+        {
+            handlerInterceptors.Remove(typeof(RequiredInContextHandlerInterceptor));
         }
 
         public void MonitorWithPerformanceCounter()
