@@ -19,8 +19,11 @@ namespace Colombo.Samples.WcfService
         protected void Application_Start(object sender, EventArgs e)
         {
             container = new WindsorContainer();
-            container.AddFacility<LoggingFacility>(f => f.LogUsing(LoggerImplementation.Trace));
-            container.AddFacility<ColomboFacility>();
+            container.AddFacility<LoggingFacility>(f => f.LogUsing(LoggerImplementation.Console));
+            container.AddFacility<ColomboFacility>(f =>
+            {
+                f.MonitorWithPerformanceCounter();
+            });
 
             container.Register(
                 AllTypes.FromThisAssembly().BasedOn<IRequestHandler>()

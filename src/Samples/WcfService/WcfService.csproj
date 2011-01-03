@@ -35,7 +35,8 @@
     <Reference Include="Castle.Core">
       <HintPath>..\..\..\lib\Castle.Windsor\Castle.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Castle.Facilities.Logging">
+    <Reference Include="Castle.Facilities.Logging, Version=2.5.1.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\lib\Castle.Windsor\loggingFacility\Castle.Facilities.Logging.dll</HintPath>
     </Reference>
     <Reference Include="Castle.Windsor">
@@ -63,7 +64,6 @@
   <ItemGroup>
     <Content Include="Colombo.svc" />
     <Content Include="Global.asax" />
-    <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\GlobalAssemblyInfo.cs">

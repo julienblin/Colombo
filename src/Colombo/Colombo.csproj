@@ -115,6 +115,7 @@
     <Compile Include="Interceptors\CurrentCultureSendInterceptor.cs" />
     <Compile Include="Interceptors\DataAnnotationInterceptor.cs" />
     <Compile Include="Interceptors\DataAnnotationSendInterceptor.cs" />
+    <Compile Include="Interceptors\PerfCounterHandlerInterceptor.cs" />
     <Compile Include="Interceptors\RequestExtensions.cs" />
     <Compile Include="Interceptors\SLASendInterceptor.cs" />
     <Compile Include="Interceptors\TransactionScopeHandlerInterceptor.cs" />

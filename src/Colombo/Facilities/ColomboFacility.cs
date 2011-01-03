@@ -131,5 +131,10 @@ namespace Colombo.Facilities
             sendInterceptors.Remove(typeof(DataAnnotationSendInterceptor));
             handlerInterceptors.Remove(typeof(DataAnnotationHandlerInterceptor));
         }
+
+        public void MonitorWithPerformanceCounter()
+        {
+            handlerInterceptors.Add(typeof(PerfCounterHandlerInterceptor));
+        }
     }
 }

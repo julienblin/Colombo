@@ -165,5 +165,21 @@ namespace Colombo.Tests.Facilities
             });
             Assert.That(!container.ResolveAll<IColomboAlerter>().Any(x => x is EventLogColomboAlerter));
         }
+
+        [Test]
+        public void It_should_register_PerfCounterHandlerInterceptor()
+        {
+            var container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>();
+
+            Assert.That(!container.ResolveAll<IRequestHandlerInterceptor>().Any(x => x is PerfCounterHandlerInterceptor));
+
+            container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>(f =>
+            {
+                f.MonitorWithPerformanceCounter();
+            });
+            Assert.That(container.ResolveAll<IRequestHandlerInterceptor>().Any(x => x is PerfCounterHandlerInterceptor));
+        }
     }
 }
