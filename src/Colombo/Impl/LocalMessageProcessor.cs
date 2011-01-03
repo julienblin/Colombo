@@ -58,7 +58,7 @@ namespace Colombo.Impl
                 LogAndThrowError("Internal error : requestHandler should not be null for {0}", request);
 
             Contract.Assume(requestHandler != null);
-            Logger.DebugFormat("Request {0} is being handled by {1}...", request, requestHandler);
+            Logger.DebugFormat("{0} is being handled by {1}...", request, requestHandler);
 
             Response response = null;
             try
@@ -69,7 +69,7 @@ namespace Colombo.Impl
             }
             catch (Exception ex)
             {
-                Logger.ErrorFormat(ex, "An exception occurred inside requestHandler {0} or one of the interceptors.", requestHandler);
+                Logger.ErrorFormat(ex, "An exception occurred inside {0} or one of the interceptors.", requestHandler);
                 throw;
             }
             finally
@@ -78,7 +78,7 @@ namespace Colombo.Impl
             }
 
             if(response == null)
-                LogAndThrowError("Internal error: received a null response for request {0}", request);
+                LogAndThrowError("Internal error: received a null response for {0}", request);
 
             Contract.Assume(response != null);
             return response;

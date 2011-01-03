@@ -18,8 +18,8 @@ namespace Colombo.Tests.Wcf
         public void SetUp()
         {
             // Hack to reset static property value...
-            var registerKernelMethod = typeof(WcfService).GetProperty("Kernel", BindingFlags.Static | BindingFlags.NonPublic);
-            registerKernelMethod.SetValue(null, null, null);
+            var kernelStaticProperty = typeof(WcfService).GetProperty("Kernel", BindingFlags.Static | BindingFlags.NonPublic);
+            kernelStaticProperty.SetValue(null, null, null);
         }
 
         [Test]

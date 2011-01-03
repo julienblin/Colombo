@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.Security;
 using System.Web.SessionState;
 using Castle.Windsor;
-using Colombo.Configuration;
+using Colombo.Facilities;
 using Castle.Facilities.Logging;
 using Castle.MicroKernel.Registration;
 

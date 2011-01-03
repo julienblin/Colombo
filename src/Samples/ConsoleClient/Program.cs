@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Castle.Windsor;
-using Colombo.Configuration;
+using Colombo.Facilities;
 using Castle.Facilities.Logging;
 using Colombo.Samples.Messages;
 
@@ -16,7 +16,10 @@ namespace Colombo.Samples.ConsoleClient
             var container = new WindsorContainer();
 
             container.AddFacility<LoggingFacility>(f => f.LogUsing(LoggerImplementation.Console));
-            container.AddFacility<ColomboFacility>();
+            container.AddFacility<ColomboFacility>(f =>
+            {
+                f.ClientOnly();
+            });
 
             IMessageBus messageBus = container.Resolve<IMessageBus>();
 

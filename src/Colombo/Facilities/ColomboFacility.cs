@@ -8,11 +8,14 @@ using Castle.MicroKernel.Registration;
 using System.Configuration;
 using Colombo.Impl;
 using Colombo.Wcf;
+using Colombo.Configuration;
 
-namespace Colombo.Configuration
+namespace Colombo.Facilities
 {
     public class ColomboFacility : AbstractFacility
     {
+        bool registerLocalProcessing = true;
+
         protected override void Init()
         {
             Kernel.Resolver.AddSubResolver(new ArrayResolver(Kernel, true));
@@ -27,12 +30,6 @@ namespace Colombo.Configuration
                             return new EmptyColomboConfiguration();
                         return config;
                     }),
-                Component.For<IRequestHandlerFactory>()
-                    .LifeStyle.Singleton
-                    .ImplementedBy<KernelRequestHandlerFactory>(),
-                Component.For<ILocalMessageProcessor, IMessageProcessor>()
-                    .LifeStyle.Singleton
-                    .ImplementedBy<LocalMessageProcessor>(),
                 Component.For<IMessageProcessor>()
                     .LifeStyle.Singleton
                     .ImplementedBy<WcfClientMessageProcessor>(),
@@ -41,7 +38,23 @@ namespace Colombo.Configuration
                     .ImplementedBy<MessageBus>()
             );
 
-            WcfService.RegisterKernel(Kernel);
+            if (registerLocalProcessing)
+            {
+                Kernel.Register(
+                    Component.For<IRequestHandlerFactory>()
+                        .LifeStyle.Singleton
+                        .ImplementedBy<KernelRequestHandlerFactory>(),
+                    Component.For<ILocalMessageProcessor, IMessageProcessor>()
+                        .LifeStyle.Singleton
+                        .ImplementedBy<LocalMessageProcessor>()
+                );
+                WcfService.RegisterKernel(Kernel);
+            }
+        }
+
+        public void ClientOnly()
+        {
+            registerLocalProcessing = false;
         }
     }
 }

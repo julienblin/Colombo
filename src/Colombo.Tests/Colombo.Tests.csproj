@@ -62,10 +62,12 @@
     </Compile>
     <Compile Include="Configuration\ColomboConfigurationSectionTest.cs" />
     <Compile Include="Configuration\EmptyColomboConfigurationTest.cs" />
+    <Compile Include="Facilities\ColomboFacilityTest.cs" />
     <Compile Include="Impl\KernelRequestHandlerFactoryTest.cs" />
     <Compile Include="Impl\LocalMessageProcessorTest.cs" />
     <Compile Include="Impl\MessageBusTest.cs" />
     <Compile Include="MessagesTest.cs" />
+    <Compile Include="RequestHandlerTest.cs" />
     <Compile Include="TestResponse.cs" />
     <Compile Include="Wcf\WcfClientMessageProcessorTest.cs" />
     <Compile Include="Wcf\WcfServiceTest.cs" />

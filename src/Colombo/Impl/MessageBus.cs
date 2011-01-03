@@ -26,7 +26,13 @@ namespace Colombo.Impl
                 Contract.EndContractBlock();
 
                 messageBusSendInterceptors = value.OrderBy(x => x.InterceptionPriority).ToArray();
-                Logger.InfoFormat("Using the following interceptors: {0}", string.Join(", ", messageBusSendInterceptors.Select(x => x.GetType().Name)));
+                if (Logger.IsInfoEnabled)
+                {
+                    if(messageBusSendInterceptors.Length == 0)
+                        Logger.Info("No interceptor has been registered for sending.");
+                    else
+                        Logger.InfoFormat("Sending with the following interceptors: {0}", string.Join(", ", messageBusSendInterceptors.Select(x => x.GetType().Name)));
+                }
             }
         }
 
@@ -59,7 +65,7 @@ namespace Colombo.Impl
                 LogAndThrowError("Too many IMessageProcessor for request {0} in {1}.", request, string.Join(", ", messageProcessors.Select(x => x.ToString())));
 
             var messageProcessor = selectedProcessors[0];
-            Logger.DebugFormat("Using IMessageProcessor {0} to send request {1}.", messageProcessor, request);
+            Logger.DebugFormat("Using {0} to send request {1}.", messageProcessor, request);
 
             IColomboInvocation topInvocation = BuildInvocationChain(request, messageProcessor);
             topInvocation.Proceed();
@@ -71,6 +77,7 @@ namespace Colombo.Impl
             if (typedResponse == null)
                 LogAndThrowError("Received a response of type {0}, but expected {1}.", topInvocation.Response.GetType(), typeof(TResponse));
 
+            Logger.DebugFormat("Received {0} initiated by {1}.", typedResponse, request);
             return typedResponse;
         }
 

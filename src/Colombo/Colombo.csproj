@@ -79,7 +79,7 @@
     <Compile Include="CallContext.cs" />
     <Compile Include="ColomboException.cs" />
     <Compile Include="Configuration\ColomboConfigurationSection.cs" />
-    <Compile Include="Configuration\ColomboFacility.cs" />
+    <Compile Include="Facilities\ColomboFacility.cs" />
     <Compile Include="Configuration\EmptyColomboConfiguration.cs" />
     <Compile Include="Configuration\EndPointConfigurationElement.cs" />
     <Compile Include="Configuration\EndPointsConfigurationCollection.cs" />

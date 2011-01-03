@@ -10,7 +10,7 @@ namespace Colombo.Samples.WcfService.Handlers
     {
         public override void Handle()
         {
-            Response.Message = string.Format("Hello, {0}", Request.Name);
+            Response.Message = string.Format("Hello, {0}!", Request.Name);
         }
     }
 }
