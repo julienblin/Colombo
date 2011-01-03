@@ -15,10 +15,18 @@ namespace Colombo.Interceptors
             if (invocation == null) throw new ArgumentNullException("invocation");
             Contract.EndContractBlock();
 
-            if (!string.IsNullOrWhiteSpace(invocation.Request.CallContext.Culture))
+            if (invocation.Request.Context.Keys.Contains(CurrentCultureConstant.CultureContextKey))
             {
-                Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(invocation.Request.CallContext.Culture);
-                Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(invocation.Request.CallContext.Culture);
+                if (!string.IsNullOrWhiteSpace(invocation.Request.Context[CurrentCultureConstant.CultureContextKey]))
+                {
+                    Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(invocation.Request.Context[CurrentCultureConstant.CultureContextKey]);
+                    Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(invocation.Request.Context[CurrentCultureConstant.CultureContextKey]);
+                }
+            }
+            else
+            {
+                Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+                Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
             }
             
             invocation.Proceed();

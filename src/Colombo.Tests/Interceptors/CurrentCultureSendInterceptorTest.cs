@@ -18,7 +18,6 @@ namespace Colombo.Tests.Interceptors
         {
             var mocks = new MockRepository();
             var request = mocks.Stub<Request<TestResponse>>();
-            request.CallContext = new CallContext();
 
             var invocation = mocks.StrictMock<IColomboInvocation>();
 
@@ -33,12 +32,12 @@ namespace Colombo.Tests.Interceptors
 
                 Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo("ar-LB");
                 interceptor.Intercept(invocation);
-                Assert.That(() => request.CallContext.Culture,
+                Assert.That(() => request.Context[CurrentCultureConstant.CultureContextKey],
                     Is.EqualTo("ar-LB"));
 
                 Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo("en-ZW");
                 interceptor.Intercept(invocation);
-                Assert.That(() => request.CallContext.Culture,
+                Assert.That(() => request.Context[CurrentCultureConstant.CultureContextKey],
                     Is.EqualTo("en-ZW"));
             });
         }

@@ -15,7 +15,7 @@ namespace Colombo.Interceptors
             Contract.EndContractBlock();
 
             if (Thread.CurrentThread.CurrentUICulture != null)
-                invocation.Request.CallContext.Culture = Thread.CurrentThread.CurrentUICulture.Name;
+                invocation.Request.Context[CurrentCultureConstant.CultureContextKey] = Thread.CurrentThread.CurrentUICulture.Name;
             invocation.Proceed();
         }
 

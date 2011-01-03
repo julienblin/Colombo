@@ -76,7 +76,6 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="CallContext.cs" />
     <Compile Include="ColomboException.cs" />
     <Compile Include="Configuration\ColomboConfigurationSection.cs" />
     <Compile Include="Facilities\ColomboFacility.cs" />
@@ -104,6 +103,7 @@
     <Compile Include="Impl\InterceptorColomboInvocation.cs" />
     <Compile Include="Impl\MessageProcessorColomboInvocation.cs" />
     <Compile Include="Impl\RequestHandlerColomboInvocation.cs" />
+    <Compile Include="Interceptors\CurrentCultureConstant.cs" />
     <Compile Include="Interceptors\CurrentCultureHandlerInterceptor.cs" />
     <Compile Include="Interceptors\CurrentCultureSendInterceptor.cs" />
     <Compile Include="IRequestHandler.cs" />

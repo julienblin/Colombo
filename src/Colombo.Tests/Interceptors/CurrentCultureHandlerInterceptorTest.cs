@@ -18,7 +18,6 @@ namespace Colombo.Tests.Interceptors
         {
             var mocks = new MockRepository();
             var request = mocks.Stub<Request<TestResponse>>();
-            request.CallContext = new CallContext();
 
             var invocation = mocks.StrictMock<IColomboInvocation>();
 
@@ -31,15 +30,37 @@ namespace Colombo.Tests.Interceptors
             {
                 var interceptor = new CurrentCultureHandlerInterceptor();
 
-                request.CallContext.Culture = "ar-LB";
+                request.Context[CurrentCultureConstant.CultureContextKey] = "ar-LB";
                 interceptor.Intercept(invocation);
                 Assert.That(() => Thread.CurrentThread.CurrentUICulture,
                     Is.EqualTo(CultureInfo.GetCultureInfo("ar-LB")));
 
-                request.CallContext.Culture = "en-ZW";
+                request.Context[CurrentCultureConstant.CultureContextKey] = "en-ZW";
                 interceptor.Intercept(invocation);
                 Assert.That(() => Thread.CurrentThread.CurrentUICulture,
                     Is.EqualTo(CultureInfo.GetCultureInfo("en-ZW")));
+            });
+        }
+
+        [Test]
+        public void It_should_position_an_invariant_Culture_when_no_key_is_present()
+        {
+            var mocks = new MockRepository();
+            var request = mocks.Stub<Request<TestResponse>>();
+
+            var invocation = mocks.StrictMock<IColomboInvocation>();
+
+            With.Mocks(mocks).Expecting(() =>
+            {
+                SetupResult.For(invocation.Request).Return(request);
+                invocation.Proceed();
+            }).Verify(() =>
+            {
+                var interceptor = new CurrentCultureHandlerInterceptor();
+
+                interceptor.Intercept(invocation);
+                Assert.That(() => Thread.CurrentThread.CurrentUICulture,
+                    Is.EqualTo(CultureInfo.InvariantCulture));
             });
         }
     }

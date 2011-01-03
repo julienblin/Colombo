@@ -34,20 +34,14 @@ namespace Colombo.Tests
             {
                 var serializer = new DataContractSerializer(typeof(TestRequest));
                 var reference = new TestRequest();
-                reference.CallContext.UserId = "UserId";
-                reference.CallContext.TenantId = "TenantId";
-                reference.CallContext.Culture = "Culture";
-                reference.CallContext.Properties["Property1"] = "Value1";
+                reference.Context[@"SomeKey"] = "SomeValue";
                 serializer.WriteObject(stream, reference);
                 stream.Position = 0;
                 var deserialized = (TestRequest)serializer.ReadObject(stream);
                 Assert.AreNotSame(deserialized, reference);
                 Assert.AreEqual(deserialized.CorrelationGuid, reference.CorrelationGuid);
                 Assert.AreEqual(deserialized.Timestamp, reference.Timestamp);
-                Assert.AreEqual(deserialized.CallContext.UserId, reference.CallContext.UserId);
-                Assert.AreEqual(deserialized.CallContext.TenantId, reference.CallContext.TenantId);
-                Assert.AreEqual(deserialized.CallContext.Culture, reference.CallContext.Culture);
-                Assert.AreEqual(deserialized.CallContext.Properties["Property1"], reference.CallContext.Properties["Property1"]);
+                Assert.AreEqual(deserialized.Context[@"SomeKey"], reference.Context[@"SomeKey"]);
             }
         }
 

@@ -9,12 +9,24 @@ namespace Colombo
     {
         protected BaseRequest()
         {
-            CallContext = new CallContext();
+            Context = new Dictionary<string, string>();
         }
 
-        public CallContext CallContext { get; set; }
+        public IDictionary<string, string> Context { get; set; }
 
         public abstract Type GetResponseType();
+
+        public override string ToString()
+        {
+            if ((Context != null) && (Context.Count > 0))
+            {
+                return string.Format("{0} | {1}", base.ToString(), string.Join(", ", Context.Select(x => string.Format("{0}={1}", x.Key, x.Value))));
+            }
+            else
+            {
+                return base.ToString();
+            }
+        }
     }
 
     public abstract class Request<TResponse> : BaseRequest
