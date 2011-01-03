@@ -45,6 +45,7 @@
       <HintPath>..\..\lib\Rhino.Mocks\Rhino.Mocks.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
@@ -68,6 +69,7 @@
     <Compile Include="Impl\MessageBusTest.cs" />
     <Compile Include="Interceptors\CurrentCultureHandlerInterceptorTest.cs" />
     <Compile Include="Interceptors\CurrentCultureSendInterceptorTest.cs" />
+    <Compile Include="Interceptors\DataAnnotationInterceptorTest.cs" />
     <Compile Include="Interceptors\SLASendInterceptorTest.cs" />
     <Compile Include="Interceptors\TransactionScopeHandlerInterceptorTest.cs" />
     <Compile Include="MessagesTest.cs" />

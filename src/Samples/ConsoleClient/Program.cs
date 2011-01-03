@@ -31,7 +31,10 @@ namespace Colombo.Samples.ConsoleClient
             {
                 var request = new HelloWorldRequest { Name = name };
                 var response = messageBus.Send(request);
-                Console.WriteLine(response.Message);
+                if (response.IsValid())
+                    Console.WriteLine(response.Message);
+                else
+                    Console.WriteLine(string.Join(", ", response.ValidationResults.Select(x => x.ErrorMessage)));
                 Console.WriteLine("What's your name?");
                 name = Console.ReadLine().Trim();
             }

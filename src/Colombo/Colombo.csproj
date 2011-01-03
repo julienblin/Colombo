@@ -62,6 +62,7 @@
       <HintPath>..\..\lib\Castle.Windsor\Castle.Windsor.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
@@ -108,9 +109,12 @@
     <Compile Include="Impl\InterceptorColomboInvocation.cs" />
     <Compile Include="Impl\MessageProcessorColomboInvocation.cs" />
     <Compile Include="Impl\RequestHandlerColomboInvocation.cs" />
+    <Compile Include="Interceptors\DataAnnotationHandlerInterceptor.cs" />
     <Compile Include="Interceptors\CurrentCultureConstant.cs" />
     <Compile Include="Interceptors\CurrentCultureHandlerInterceptor.cs" />
     <Compile Include="Interceptors\CurrentCultureSendInterceptor.cs" />
+    <Compile Include="Interceptors\DataAnnotationInterceptor.cs" />
+    <Compile Include="Interceptors\DataAnnotationSendInterceptor.cs" />
     <Compile Include="Interceptors\RequestExtensions.cs" />
     <Compile Include="Interceptors\SLASendInterceptor.cs" />
     <Compile Include="Interceptors\TransactionScopeHandlerInterceptor.cs" />

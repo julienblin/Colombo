@@ -76,7 +76,7 @@ namespace Colombo.Tests.Facilities
         }
 
         [Test]
-        public void It_should_manage_current_culture_with_interceptor()
+        public void It_should_register_CurrentCulture_interceptors()
         {
             var container = new WindsorContainer();
             container.AddFacility<ColomboFacility>();
@@ -101,7 +101,7 @@ namespace Colombo.Tests.Facilities
         }
 
         [Test]
-        public void It_should_manage_transaction_with_interceptor()
+        public void It_should_register_TransactionScopeHandlerInterceptor()
         {
             var container = new WindsorContainer();
             container.AddFacility<ColomboFacility>();
@@ -117,7 +117,7 @@ namespace Colombo.Tests.Facilities
         }
 
         [Test]
-        public void It_should_manage_SLAs()
+        public void It_should_register_SLASendInterceptor()
         {
             var container = new WindsorContainer();
             container.AddFacility<ColomboFacility>();
@@ -133,7 +133,25 @@ namespace Colombo.Tests.Facilities
         }
 
         [Test]
-        public void It_should_alert_in_Application_event_log()
+        public void It_should_register_DataAnnotationInterceptors()
+        {
+            var container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>();
+
+            Assert.That(container.ResolveAll<IMessageBusSendInterceptor>().Any(x => x is DataAnnotationSendInterceptor));
+            Assert.That(container.ResolveAll<IRequestHandlerInterceptor>().Any(x => x is DataAnnotationHandlerInterceptor));
+
+            container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>(f =>
+            {
+                f.DoNotValidateDataAnnotations();
+            });
+            Assert.That(!container.ResolveAll<IMessageBusSendInterceptor>().Any(x => x is DataAnnotationInterceptor));
+            Assert.That(!container.ResolveAll<IRequestHandlerInterceptor>().Any(x => x is DataAnnotationHandlerInterceptor));
+        }
+
+        [Test]
+        public void It_should_register_EventLogColomboAlerter()
         {
             var container = new WindsorContainer();
             container.AddFacility<ColomboFacility>();
