@@ -85,7 +85,7 @@ namespace Colombo.Impl
             foreach (var interceptor in MessageBusSendInterceptors.Reverse())
             {
                 if(interceptor != null)
-                    currentInvocation = new MessageBusInterceptorColomboInvocation(request, interceptor, currentInvocation);
+                    currentInvocation = new InterceptorColomboInvocation(request, interceptor, currentInvocation);
             }
             return currentInvocation;
         }

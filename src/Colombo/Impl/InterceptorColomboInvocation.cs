@@ -6,12 +6,12 @@ using System.Diagnostics.Contracts;
 
 namespace Colombo.Impl
 {
-    public class MessageBusInterceptorColomboInvocation : BaseColomboInvocation
+    public class InterceptorColomboInvocation : BaseColomboInvocation
     {
         private readonly IColomboInterceptor interceptor;
         private readonly IColomboInvocation nextInvocation;
 
-        public MessageBusInterceptorColomboInvocation(BaseRequest request, IColomboInterceptor interceptor, IColomboInvocation nextInvocation)
+        public InterceptorColomboInvocation(BaseRequest request, IColomboInterceptor interceptor, IColomboInvocation nextInvocation)
             :base(request)
         {
             if (request == null) throw new ArgumentNullException("request");

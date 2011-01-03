@@ -27,6 +27,7 @@ namespace Colombo.Impl
                 Contract.EndContractBlock();
 
                 requestHandlerInterceptor = value.OrderBy(x => x.InterceptionPriority).ToArray();
+                Logger.InfoFormat("Using the following interceptors: {0}", string.Join(", ", requestHandlerInterceptor.Select(x => x.GetType().Name)));
             }
         }
 
@@ -40,7 +41,7 @@ namespace Colombo.Impl
             this.requestHandlerFactory = requestHandlerFactory;
         }
 
-        public bool CanSend(BaseRequest request)
+        public virtual bool CanSend(BaseRequest request)
         {
             if (request == null) throw new ArgumentNullException("request");
             Contract.EndContractBlock();
@@ -48,62 +49,54 @@ namespace Colombo.Impl
             return requestHandlerFactory.CanCreateRequestHandlerFor(request);
         }
 
-        public Response Send(BaseRequest request)
+        public virtual Response Send(BaseRequest request)
         {
             if (request == null) throw new ArgumentNullException("request");
             Contract.EndContractBlock();
+            IRequestHandler requestHandler = requestHandlerFactory.CreateRequestHandlerFor(request);
+            if (requestHandler == null)
+                LogAndThrowError("Internal error : requestHandler should not be null for {0}", request);
 
-            using (var tx = new TransactionScope())
+            Contract.Assume(requestHandler != null);
+            Logger.DebugFormat("Request {0} is being handled by {1}...", request, requestHandler);
+
+            Response response = null;
+            try
             {
-                IRequestHandler requestHandler = requestHandlerFactory.CreateRequestHandlerFor(request);
-                if (requestHandler == null)
-                    LogAndThrowError("Internal error : requestHandler should not be null for {0}", request);
-
-                Contract.Assume(requestHandler != null);
-                Logger.DebugFormat("Request {0} is being handled by {1}...", request, requestHandler);
-
-                Response response = null;
-                try
-                {
-                    Logger.DebugFormat("Performing BeforeHandle on the {0} registered interceptor(s).", RequestHandlerInterceptor.Length);
-                    foreach (var requestHandlerInterceptor in RequestHandlerInterceptor)
-                    {
-                        Logger.DebugFormat("Calling BeforeHandle for interceptor {0} and request {1}...", requestHandlerInterceptor, request);
-                        response = requestHandlerInterceptor.BeforeHandle(request);
-                        if (response != null)
-                        {
-                            Logger.DebugFormat("Interceptor {0} has responded in BeforeHandle - Request {1} will not be handled by requestHandler.", requestHandlerInterceptor, request);
-                            break;
-                        }
-                    }
-
-                    if (response == null)
-                    {
-                        response = requestHandler.Handle(request);
-                    }
-                    Contract.Assert(response != null);
-
-                    Logger.DebugFormat("Performing AfterHandle on the {0} registered interceptor(s).", RequestHandlerInterceptor.Length);
-                    Contract.Assume(RequestHandlerInterceptor != null);
-                    foreach (var requestHandlerInterceptor in RequestHandlerInterceptor.Reverse())
-                    {
-                        Logger.DebugFormat("Calling AfterHandle for interceptor {0} and request {1}...", requestHandlerInterceptor, request);
-                        requestHandlerInterceptor.AfterHandle(request, response);
-                    }
-
-                    tx.Complete();
-                }
-                catch (Exception ex)
-                {
-                    Logger.ErrorFormat(ex, "An exception occurred inside requestHandler {0} or one of the interceptors.", requestHandler);
-                    throw;
-                }
-                finally
-                {
-                    requestHandlerFactory.DisposeRequestHandler(requestHandler);
-                }
-                return response;
+                IColomboInvocation topInvocation = BuildInvocationChain(request, requestHandler);
+                topInvocation.Proceed();
+                response = topInvocation.Response;
             }
+            catch (Exception ex)
+            {
+                Logger.ErrorFormat(ex, "An exception occurred inside requestHandler {0} or one of the interceptors.", requestHandler);
+                throw;
+            }
+            finally
+            {
+                requestHandlerFactory.DisposeRequestHandler(requestHandler);
+            }
+
+            if(response == null)
+                LogAndThrowError("Internal error: received a null response for request {0}", request);
+
+            Contract.Assume(response != null);
+            return response;
+        }
+
+        private IColomboInvocation BuildInvocationChain(BaseRequest request, IRequestHandler requestHandler)
+        {
+            Contract.Assume(request != null);
+            Contract.Assume(requestHandler != null);
+            Contract.Assume(RequestHandlerInterceptor != null);
+
+            IColomboInvocation currentInvocation = new RequestHandlerColomboInvocation(request, requestHandler);
+            foreach (var interceptor in RequestHandlerInterceptor.Reverse())
+            {
+                if (interceptor != null)
+                    currentInvocation = new InterceptorColomboInvocation(request, interceptor, currentInvocation);
+            }
+            return currentInvocation;
         }
 
         private void LogAndThrowError(string format, params object[] args)

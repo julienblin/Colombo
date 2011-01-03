@@ -80,35 +80,7 @@ namespace Colombo.Tests.Impl
         }
 
         [Test]
-        public void It_should_create_a_TransactionScope_for_the_RequestHandler()
-        {
-            var mocks = new MockRepository();
-            var request = mocks.Stub<Request<TestResponse>>();
-            var requestHandlerFactory = mocks.StrictMock<IRequestHandlerFactory>();
-            var requestHandler = mocks.StrictMock<IRequestHandler>();
-
-            With.Mocks(mocks).Expecting(() =>
-            {
-                Expect.Call(requestHandlerFactory.CreateRequestHandlerFor(request)).Return(requestHandler);
-                Expect.Call(requestHandler.Handle(request)).Do(new HandleDelegate(r =>
-                {
-                    Assert.That(Transaction.Current, Is.Not.Null);
-                    return new TestResponse();
-                }));
-                requestHandlerFactory.DisposeRequestHandler(requestHandler);
-            }).Verify(() =>
-            {
-                var processor = new LocalMessageProcessor(requestHandlerFactory);
-                Assert.That(Transaction.Current, Is.Null);
-                processor.Send(request);
-                Assert.That(Transaction.Current, Is.Null);
-            });
-        }
-
-        delegate Response HandleDelegate(BaseRequest request);
-
-        [Test]
-        public void It_should_run_all_the_IRequestHandlerInterceptors_BeforeHandle_and_AfterHandle_methods()
+        public void It_should_run_all_the_IMessageBusSendInterceptors()
         {
             var mocks = new MockRepository();
             var request = mocks.Stub<Request<TestResponse>>();
@@ -125,14 +97,19 @@ namespace Colombo.Tests.Impl
 
                 Expect.Call(requestHandlerFactory.CreateRequestHandlerFor(request)).Return(requestHandler);
 
-                Expect.Call(requestInterceptor1.BeforeHandle(request)).Return(null);
-                Expect.Call(requestInterceptor2.BeforeHandle(request)).Return(null);
+                requestInterceptor1.Intercept(null);
+                LastCall.IgnoreArguments().Do(new InterceptDelegate((invocation) =>
+                {
+                    invocation.Proceed();
+                }));
+
+                requestInterceptor2.Intercept(null);
+                LastCall.IgnoreArguments().Do(new InterceptDelegate((invocation) =>
+                {
+                    invocation.Proceed();
+                }));
 
                 Expect.Call(requestHandler.Handle(request)).Return(response);
-
-                requestInterceptor2.AfterHandle(request, response);
-                requestInterceptor1.AfterHandle(request, response);
-
                 requestHandlerFactory.DisposeRequestHandler(requestHandler);
             }).Verify(() =>
             {
@@ -143,38 +120,7 @@ namespace Colombo.Tests.Impl
             });
         }
 
-        [Test]
-        public void It_should_not_send_to_RequestHandler_if_IRequestHandlerInterceptor_BeforeHandle_returns_non_null()
-        {
-            var mocks = new MockRepository();
-            var request = mocks.Stub<Request<TestResponse>>();
-            var response = new TestResponse();
-            var requestHandlerFactory = mocks.StrictMock<IRequestHandlerFactory>();
-            var requestHandler = mocks.StrictMock<IRequestHandler>();
-            var requestInterceptor1 = mocks.StrictMock<IRequestHandlerInterceptor>();
-            var requestInterceptor2 = mocks.StrictMock<IRequestHandlerInterceptor>();
-
-            With.Mocks(mocks).ExpectingInSameOrder(() =>
-            {
-                Expect.Call(requestInterceptor1.InterceptionPriority).Return(InterceptorPrority.High);
-                Expect.Call(requestInterceptor2.InterceptionPriority).Return(InterceptorPrority.Medium);
-
-                Expect.Call(requestHandlerFactory.CreateRequestHandlerFor(request)).Return(requestHandler);
-
-                Expect.Call(requestInterceptor1.BeforeHandle(request)).Return(response);
-
-                requestInterceptor2.AfterHandle(request, response);
-                requestInterceptor1.AfterHandle(request, response);
-
-                requestHandlerFactory.DisposeRequestHandler(requestHandler);
-            }).Verify(() =>
-            {
-                var processor = new LocalMessageProcessor(requestHandlerFactory);
-                processor.RequestHandlerInterceptor = new IRequestHandlerInterceptor[] { requestInterceptor1, requestInterceptor2 };
-                Assert.That(() => processor.Send(request),
-                    Is.SameAs(response));
-            });
-        }
+        public delegate void InterceptDelegate(IColomboInvocation invocation);
 
         [Test]
         public void It_should_reorder_IRequestHandlerInterceptor_accordingly()
@@ -196,16 +142,25 @@ namespace Colombo.Tests.Impl
 
                 Expect.Call(requestHandlerFactory.CreateRequestHandlerFor(request)).Return(requestHandler);
 
-                Expect.Call(requestInterceptor2.BeforeHandle(request)).Return(null);
-                Expect.Call(requestInterceptor3.BeforeHandle(request)).Return(null);
-                Expect.Call(requestInterceptor1.BeforeHandle(request)).Return(null);
+                requestInterceptor2.Intercept(null);
+                LastCall.IgnoreArguments().Do(new InterceptDelegate((invocation) =>
+                {
+                    invocation.Proceed();
+                }));
+
+                requestInterceptor3.Intercept(null);
+                LastCall.IgnoreArguments().Do(new InterceptDelegate((invocation) =>
+                {
+                    invocation.Proceed();
+                }));
+
+                requestInterceptor1.Intercept(null);
+                LastCall.IgnoreArguments().Do(new InterceptDelegate((invocation) =>
+                {
+                    invocation.Proceed();
+                }));
 
                 Expect.Call(requestHandler.Handle(request)).Return(response);
-
-                requestInterceptor1.AfterHandle(request, response);
-                requestInterceptor3.AfterHandle(request, response);
-                requestInterceptor2.AfterHandle(request, response);
-
                 requestHandlerFactory.DisposeRequestHandler(requestHandler);
             }).Verify(() =>
             {

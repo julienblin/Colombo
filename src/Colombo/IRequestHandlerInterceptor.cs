@@ -6,10 +6,7 @@ using System.Diagnostics.Contracts;
 
 namespace Colombo
 {
-    [ContractClass(typeof(Contracts.RequestHandlerInterceptorContract))]
-    public interface IRequestHandlerInterceptor : IInterceptor
+    public interface IRequestHandlerInterceptor : IColomboInterceptor
     {
-        Response BeforeHandle(BaseRequest request);
-        void AfterHandle(BaseRequest request, Response response);
     }
 }
