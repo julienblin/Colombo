@@ -98,5 +98,21 @@ namespace Colombo.Tests.Facilities
             Assert.That(!container.ResolveAll<IMessageBusSendInterceptor>().Any(x => x is CurrentCultureSendInterceptor));
             Assert.That(!container.ResolveAll<IRequestHandlerInterceptor>().Any(x => x is CurrentCultureHandlerInterceptor));
         }
+
+        [Test]
+        public void It_should_manage_transaction_with_interceptor()
+        {
+            var container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>();
+
+            Assert.That(container.ResolveAll<IRequestHandlerInterceptor>().Any(x => x is TransactionScopeHandlerInterceptor));
+
+            container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>(f =>
+            {
+                f.DoNotHandleInsideTransactionScope();
+            });
+            Assert.That(!container.ResolveAll<IRequestHandlerInterceptor>().Any(x => x is TransactionScopeHandlerInterceptor));
+        }
     }
 }

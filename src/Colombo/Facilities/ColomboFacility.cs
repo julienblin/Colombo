@@ -17,6 +17,7 @@ namespace Colombo.Facilities
     {
         bool registerLocalProcessing = true;
         bool addCultureInfoInterceptor = true;
+        bool addTranscationScopeInterceptor = true;
 
         protected override void Init()
         {
@@ -69,6 +70,15 @@ namespace Colombo.Facilities
                             .ImplementedBy<CurrentCultureHandlerInterceptor>()
                     );
                 }
+
+                if (addTranscationScopeInterceptor)
+                {
+                    Kernel.Register(
+                        Component.For<IRequestHandlerInterceptor>()
+                            .LifeStyle.Singleton
+                            .ImplementedBy<TransactionScopeHandlerInterceptor>()
+                    );
+                }
             }
         }
 
@@ -80,6 +90,11 @@ namespace Colombo.Facilities
         public void DoNotManageCurrentCulture()
         {
             addCultureInfoInterceptor = false;
+        }
+
+        public void DoNotHandleInsideTransactionScope()
+        {
+            addTranscationScopeInterceptor = false;
         }
     }
 }

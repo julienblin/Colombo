@@ -68,6 +68,7 @@
     <Compile Include="Impl\MessageBusTest.cs" />
     <Compile Include="Interceptors\CurrentCultureHandlerInterceptorTest.cs" />
     <Compile Include="Interceptors\CurrentCultureSendInterceptorTest.cs" />
+    <Compile Include="Interceptors\TransactionScopeHandlerInterceptorTest.cs" />
     <Compile Include="MessagesTest.cs" />
     <Compile Include="RequestHandlerTest.cs" />
     <Compile Include="TestResponse.cs" />
