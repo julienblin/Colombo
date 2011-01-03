@@ -9,12 +9,14 @@ using System.Configuration;
 using Colombo.Impl;
 using Colombo.Wcf;
 using Colombo.Configuration;
+using Colombo.Interceptors;
 
 namespace Colombo.Facilities
 {
     public class ColomboFacility : AbstractFacility
     {
         bool registerLocalProcessing = true;
+        bool addCultureInfoInterceptor = true;
 
         protected override void Init()
         {
@@ -38,6 +40,15 @@ namespace Colombo.Facilities
                     .ImplementedBy<MessageBus>()
             );
 
+            if (addCultureInfoInterceptor)
+            {
+                Kernel.Register(
+                    Component.For<IMessageBusSendInterceptor>()
+                        .LifeStyle.Singleton
+                        .ImplementedBy<CurrentCultureSendInterceptor>()
+                );
+            }
+
             if (registerLocalProcessing)
             {
                 Kernel.Register(
@@ -49,12 +60,26 @@ namespace Colombo.Facilities
                         .ImplementedBy<LocalMessageProcessor>()
                 );
                 WcfService.RegisterKernel(Kernel);
+
+                if (addCultureInfoInterceptor)
+                {
+                    Kernel.Register(
+                        Component.For<IRequestHandlerInterceptor>()
+                            .LifeStyle.Singleton
+                            .ImplementedBy<CurrentCultureHandlerInterceptor>()
+                    );
+                }
             }
         }
 
         public void ClientOnly()
         {
             registerLocalProcessing = false;
+        }
+
+        public void DoNotManageCurrentCulture()
+        {
+            addCultureInfoInterceptor = false;
         }
     }
 }

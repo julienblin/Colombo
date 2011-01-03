@@ -8,6 +8,7 @@ using Castle.Windsor;
 using Colombo.Facilities;
 using Castle.Facilities.Logging;
 using Castle.MicroKernel.Registration;
+using System.Resources;
 
 namespace Colombo.Samples.WcfService
 {

@@ -93,7 +93,6 @@
     <Compile Include="IColomboConfiguration.cs" />
     <Compile Include="IColomboInterceptor.cs" />
     <Compile Include="IColomboInvocation.cs" />
-    <Compile Include="IInterceptor.cs" />
     <Compile Include="ILocalMessageProcessor.cs" />
     <Compile Include="IMessageBus.cs" />
     <Compile Include="IMessageBusSendInterceptor.cs" />
@@ -105,6 +104,8 @@
     <Compile Include="Impl\InterceptorColomboInvocation.cs" />
     <Compile Include="Impl\MessageProcessorColomboInvocation.cs" />
     <Compile Include="Impl\RequestHandlerColomboInvocation.cs" />
+    <Compile Include="Interceptors\CurrentCultureHandlerInterceptor.cs" />
+    <Compile Include="Interceptors\CurrentCultureSendInterceptor.cs" />
     <Compile Include="IRequestHandler.cs" />
     <Compile Include="IRequestHandlerFactory.cs" />
     <Compile Include="IRequestHandlerInterceptor.cs" />

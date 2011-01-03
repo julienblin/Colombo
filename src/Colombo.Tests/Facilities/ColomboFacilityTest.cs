@@ -8,6 +8,7 @@ using Colombo.Facilities;
 using Colombo.Wcf;
 using System.Reflection;
 using Castle.MicroKernel;
+using Colombo.Interceptors;
 
 namespace Colombo.Tests.Facilities
 {
@@ -71,6 +72,31 @@ namespace Colombo.Tests.Facilities
                 Throws.Exception.TypeOf<ComponentNotFoundException>());
             Assert.That(() => container.Resolve<IRequestHandlerFactory>(),
                 Throws.Exception.TypeOf<ComponentNotFoundException>());
+        }
+
+        [Test]
+        public void It_should_manage_current_culture_with_interceptor()
+        {
+            var container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>();
+
+            Assert.That(container.ResolveAll<IMessageBusSendInterceptor>().Any(x => x is CurrentCultureSendInterceptor));
+            Assert.That(container.ResolveAll<IRequestHandlerInterceptor>().Any(x => x is CurrentCultureHandlerInterceptor));
+
+            container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>(f =>
+            {
+                f.ClientOnly();
+            });
+            Assert.That(container.ResolveAll<IMessageBusSendInterceptor>().Any(x => x is CurrentCultureSendInterceptor));
+
+            container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>(f =>
+            {
+                f.DoNotManageCurrentCulture();
+            });
+            Assert.That(!container.ResolveAll<IMessageBusSendInterceptor>().Any(x => x is CurrentCultureSendInterceptor));
+            Assert.That(!container.ResolveAll<IRequestHandlerInterceptor>().Any(x => x is CurrentCultureHandlerInterceptor));
         }
     }
 }

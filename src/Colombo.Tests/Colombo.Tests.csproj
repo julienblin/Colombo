@@ -66,6 +66,8 @@
     <Compile Include="Impl\KernelRequestHandlerFactoryTest.cs" />
     <Compile Include="Impl\LocalMessageProcessorTest.cs" />
     <Compile Include="Impl\MessageBusTest.cs" />
+    <Compile Include="Interceptors\CurrentCultureHandlerInterceptorTest.cs" />
+    <Compile Include="Interceptors\CurrentCultureSendInterceptorTest.cs" />
     <Compile Include="MessagesTest.cs" />
     <Compile Include="RequestHandlerTest.cs" />
     <Compile Include="TestResponse.cs" />

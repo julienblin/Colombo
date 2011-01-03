@@ -23,6 +23,8 @@ namespace Colombo.Samples.ConsoleClient
 
             IMessageBus messageBus = container.Resolve<IMessageBus>();
 
+            System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("fr-CA");
+
             Console.WriteLine("What's your name?");
             var name = Console.ReadLine().Trim();
             while (!string.IsNullOrEmpty(name))
