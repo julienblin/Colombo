@@ -26,6 +26,7 @@ namespace Colombo.Impl
                 Contract.EndContractBlock();
 
                 messageBusSendInterceptors = value.OrderBy(x => x.InterceptionPriority).ToArray();
+                Logger.InfoFormat("Using the following interceptors: {0}", string.Join(", ", messageBusSendInterceptors.Select(x => x.GetType().Name)));
             }
         }
 
@@ -45,7 +46,6 @@ namespace Colombo.Impl
             if (request == null) throw new ArgumentNullException("request");
             Contract.EndContractBlock();
             Contract.Assume(messageProcessors != null);
-            Contract.Assume(MessageBusSendInterceptors != null);
 
             Logger.DebugFormat("Sending request {0}...", request);
             Logger.DebugFormat("Selecting appropriate processor for request {0}...", request);
@@ -62,39 +62,32 @@ namespace Colombo.Impl
             var messageProcessor = messageProcessors.First();
             Logger.DebugFormat("Using IMessageProcessor {0} to send request {1}.", messageProcessor, request);
 
-            Response response = null;
+            IColomboInvocation topInvocation = BuildInvocationChain(request, messageProcessor);
+            topInvocation.Proceed();
 
-            Logger.DebugFormat("Performing BeforeSend on the {0} registered interceptor(s).", MessageBusSendInterceptors.Length);
-            foreach (var sendInterceptor in MessageBusSendInterceptors)
-            {
-                Logger.DebugFormat("Calling BeforeSend for interceptor {0} and request {1}...", sendInterceptor, request);
-                response = sendInterceptor.BeforeSend(request);
-                if (response != null)
-                {
-                    Logger.DebugFormat("Interceptor {0} has responded in BeforeSend - Request {1} will not be sent.", sendInterceptor, request);
-                    break;
-                }
-            }
+            if (topInvocation.Response == null)
+                LogAndThrowError("Internal error: received a null response for request {0}", request);
 
-            if (response == null)
-            {
-                response = messageProcessor.Send(request);
-            }
-            Contract.Assert(response != null);
-
-            Logger.DebugFormat("Performing AfterMessageProcessorSend on the {0} registered interceptor(s).", MessageBusSendInterceptors.Length);
-            Contract.Assume(MessageBusSendInterceptors != null);
-            foreach (var sendInterceptor in MessageBusSendInterceptors.Reverse())
-            {
-                Logger.DebugFormat("Calling AfterMessageProcessorSend for interceptor {0} and request {1}...", sendInterceptor, request);
-                sendInterceptor.AfterMessageProcessorSend(request, response);
-            }
-
-            var typedResponse = response as TResponse;
+            var typedResponse = topInvocation.Response as TResponse;
             if (typedResponse == null)
-                LogAndThrowError("Received a response of type {0}, but expected {1}.", response.GetType(), typeof(TResponse));
+                LogAndThrowError("Received a response of type {0}, but expected {1}.", topInvocation.Response.GetType(), typeof(TResponse));
 
             return typedResponse;
+        }
+
+        private IColomboInvocation BuildInvocationChain(BaseRequest request, IMessageProcessor messageProcessor)
+        {
+            Contract.Assume(request != null);
+            Contract.Assume(messageProcessor != null);
+            Contract.Assume(MessageBusSendInterceptors != null);
+
+            IColomboInvocation currentInvocation = new MessageProcessorColomboInvocation(request, messageProcessor);
+            foreach (var interceptor in MessageBusSendInterceptors.Reverse())
+            {
+                if(interceptor != null)
+                    currentInvocation = new MessageBusInterceptorColomboInvocation(request, interceptor, currentInvocation);
+            }
+            return currentInvocation;
         }
 
         private void LogAndThrowError(string format, params object[] args)

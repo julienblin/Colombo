@@ -113,7 +113,7 @@ namespace Colombo.Tests.Impl
         }
 
         [Test]
-        public void It_should_run_all_the_IMessageBusSendInterceptors_BeforeSend_And_AfterMessageProcessorSend_methods()
+        public void It_should_run_all_the_IMessageBusSendInterceptors()
         {
             var mocks = new MockRepository();
             var request = mocks.Stub<Request<TestResponse>>();
@@ -130,48 +130,28 @@ namespace Colombo.Tests.Impl
 
                 Expect.Call(messageProcessor.CanSend(request)).Return(true);
 
-                Expect.Call(sendInterceptor1.BeforeSend(request)).Return(null);
-                Expect.Call(sendInterceptor2.BeforeSend(request)).Return(null);
+                sendInterceptor1.Intercept(null);
+                LastCall.IgnoreArguments().Do(new InterceptDelegate((invocation) =>
+                {
+                    invocation.Proceed();
+                }));
+
+                sendInterceptor2.Intercept(null);
+                LastCall.IgnoreArguments().Do(new InterceptDelegate((invocation) =>
+                {
+                    invocation.Proceed();
+                }));
 
                 Expect.Call(messageProcessor.Send(request)).Return(response);
-
-                sendInterceptor2.AfterMessageProcessorSend(request, response);
-                sendInterceptor1.AfterMessageProcessorSend(request, response);
             }).Verify(() =>
             {
                 messageBus.MessageBusSendInterceptors = new IMessageBusSendInterceptor[] { sendInterceptor1, sendInterceptor2 };
-                messageBus.Send<TestResponse>(request);
+                Assert.That(() => messageBus.Send<TestResponse>(request),
+                    Is.SameAs(response));
             });
         }
 
-        [Test]
-        public void It_should_not_send_to_MessageProcessor_if_IMessageBusSendInterceptor_BeforeSend_returns_non_null()
-        {
-            var mocks = new MockRepository();
-            var request = mocks.Stub<Request<TestResponse>>();
-            var response = new TestResponse();
-            var messageProcessor = mocks.StrictMock<IMessageProcessor>();
-            var sendInterceptor1 = mocks.StrictMock<IMessageBusSendInterceptor>();
-            var sendInterceptor2 = mocks.StrictMock<IMessageBusSendInterceptor>();
-            var messageBus = new MessageBus(new IMessageProcessor[] { messageProcessor });
-
-            With.Mocks(mocks).ExpectingInSameOrder(() =>
-            {
-                Expect.Call(sendInterceptor1.InterceptionPriority).Return(InterceptorPrority.High);
-                Expect.Call(sendInterceptor2.InterceptionPriority).Return(InterceptorPrority.Medium);
-
-                Expect.Call(messageProcessor.CanSend(request)).Return(true);
-
-                Expect.Call(sendInterceptor1.BeforeSend(request)).Return(response);
-
-                sendInterceptor2.AfterMessageProcessorSend(request, response);
-                sendInterceptor1.AfterMessageProcessorSend(request, response);
-            }).Verify(() =>
-            {
-                messageBus.MessageBusSendInterceptors = new IMessageBusSendInterceptor[] { sendInterceptor1, sendInterceptor2 };
-                messageBus.Send<TestResponse>(request);
-            });
-        }
+        public delegate void InterceptDelegate(IColomboInvocation invocation);
 
         [Test]
         public void It_should_reorder_IMessageBusSendInterceptor_accordingly()
@@ -193,19 +173,30 @@ namespace Colombo.Tests.Impl
 
                 Expect.Call(messageProcessor.CanSend(request)).Return(true);
 
-                Expect.Call(sendInterceptor2.BeforeSend(request)).Return(null);
-                Expect.Call(sendInterceptor3.BeforeSend(request)).Return(null);
-                Expect.Call(sendInterceptor1.BeforeSend(request)).Return(null);
+                sendInterceptor2.Intercept(null);
+                LastCall.IgnoreArguments().Do(new InterceptDelegate((invocation) =>
+                {
+                    invocation.Proceed();
+                }));
+
+                sendInterceptor3.Intercept(null);
+                LastCall.IgnoreArguments().Do(new InterceptDelegate((invocation) =>
+                {
+                    invocation.Proceed();
+                }));
+
+                sendInterceptor1.Intercept(null);
+                LastCall.IgnoreArguments().Do(new InterceptDelegate((invocation) =>
+                {
+                    invocation.Proceed();
+                }));
 
                 Expect.Call(messageProcessor.Send(request)).Return(response);
-
-                sendInterceptor1.AfterMessageProcessorSend(request, response);
-                sendInterceptor3.AfterMessageProcessorSend(request, response);
-                sendInterceptor2.AfterMessageProcessorSend(request, response);
             }).Verify(() =>
             {
                 messageBus.MessageBusSendInterceptors = new IMessageBusSendInterceptor[] { sendInterceptor1, sendInterceptor2, sendInterceptor3 };
-                messageBus.Send<TestResponse>(request);
+                Assert.That(() => messageBus.Send<TestResponse>(request),
+                    Is.SameAs(response));
             });
         }
 
