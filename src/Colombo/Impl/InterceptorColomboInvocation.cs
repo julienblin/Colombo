@@ -11,8 +11,8 @@ namespace Colombo.Impl
         private readonly IColomboInterceptor interceptor;
         private readonly IColomboInvocation nextInvocation;
 
-        public InterceptorColomboInvocation(BaseRequest request, IColomboInterceptor interceptor, IColomboInvocation nextInvocation)
-            :base(request)
+        public InterceptorColomboInvocation(ColomboInvocationType invocationType, BaseRequest request, IColomboInterceptor interceptor, IColomboInvocation nextInvocation)
+            : base(invocationType, request)
         {
             if (request == null) throw new ArgumentNullException("request");
             if (interceptor == null) throw new ArgumentNullException("interceptor");

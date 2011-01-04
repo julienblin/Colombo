@@ -10,8 +10,8 @@ namespace Colombo.Impl
     {
         private readonly IRequestHandler requestHandler;
 
-        public RequestHandlerColomboInvocation(BaseRequest request, IRequestHandler requestHandler)
-            : base(request)
+        public RequestHandlerColomboInvocation(ColomboInvocationType invocationType, BaseRequest request, IRequestHandler requestHandler)
+            : base(invocationType, request)
         {
             if (request == null) throw new ArgumentNullException("request");
             if (requestHandler == null) throw new ArgumentNullException("requestHandler");
