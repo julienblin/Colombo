@@ -9,7 +9,7 @@ using Rhino.Mocks;
 namespace Colombo.Tests.Impl
 {
     [TestFixture]
-    public class MessageBusTest
+    public class MessageBusSendTest
     {
         [Test]
         public void It_should_ensure_that_at_least_one_IMessageProcessor_is_provided()
@@ -37,7 +37,7 @@ namespace Colombo.Tests.Impl
             }).Verify(() =>
             {
                 var messageBus = new MessageBus(new IMessageProcessor[] { messageProcessor });
-                Assert.That(() => messageBus.Send<TestResponse>(request),
+                Assert.That(() => messageBus.Send(request),
                     Throws.Exception.TypeOf<ColomboException>()
                     .With.Message.Contains(messageProcessor.GetType().Name));
             });

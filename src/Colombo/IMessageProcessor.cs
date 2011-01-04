@@ -11,5 +11,7 @@ namespace Colombo
     {
         bool CanSend(BaseRequest request);
         Response Send(BaseRequest request);
+
+        Response[] ParallelSend(BaseRequest[] requests);
     }
 }

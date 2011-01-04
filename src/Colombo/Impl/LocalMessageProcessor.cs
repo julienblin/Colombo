@@ -84,6 +84,14 @@ namespace Colombo.Impl
             return response;
         }
 
+        public Response[] ParallelSend(BaseRequest[] requests)
+        {
+            if (requests == null) throw new ArgumentNullException("requests");
+            Contract.EndContractBlock();
+
+            throw new NotImplementedException();
+        }
+
         private IColomboInvocation BuildInvocationChain(BaseRequest request, IRequestHandler requestHandler)
         {
             Contract.Assume(request != null);

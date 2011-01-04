@@ -21,5 +21,13 @@ namespace Colombo.Contracts
             Contract.Ensures(Contract.Result<Response>() != null);
             return default(Response);
         }
+
+        Response[] IMessageProcessor.ParallelSend(BaseRequest[] requests)
+        {
+            Contract.Requires<ArgumentNullException>(requests != null, "requests");
+            Contract.Ensures(Contract.Result<Response[]>() != null);
+            Contract.Ensures(Contract.Result<Response[]>().Length == requests.Length);
+            return default(Response[]);
+        }
     }
 }

@@ -57,6 +57,14 @@ namespace Colombo.Wcf
             return response;
         }
 
+        public Response[] ParallelSend(BaseRequest[] requests)
+        {
+            if (requests == null) throw new ArgumentNullException("requests");
+            Contract.EndContractBlock();
+
+            throw new NotImplementedException();
+        }
+
         private ClientSection clientSection = null;
         private bool clientSectionHasBeenLoaded = false;
 

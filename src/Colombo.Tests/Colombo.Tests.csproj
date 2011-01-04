@@ -64,7 +64,8 @@
     <Compile Include="Facilities\ColomboFacilityTest.cs" />
     <Compile Include="Impl\KernelRequestHandlerFactoryTest.cs" />
     <Compile Include="Impl\LocalMessageProcessorTest.cs" />
-    <Compile Include="Impl\MessageBusTest.cs" />
+    <Compile Include="Impl\MessageBusParallelSendTest.cs" />
+    <Compile Include="Impl\MessageBusSendTest.cs" />
     <Compile Include="Interceptors\CurrentCultureHandlerInterceptorTest.cs" />
     <Compile Include="Interceptors\CurrentCultureSendInterceptorTest.cs" />
     <Compile Include="Interceptors\DataAnnotationInterceptorTest.cs" />

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Castle.Core.Logging;
 using System.Diagnostics.Contracts;
+using System.Threading.Tasks;
 
 namespace Colombo.Impl
 {
@@ -51,20 +52,11 @@ namespace Colombo.Impl
         {
             if (request == null) throw new ArgumentNullException("request");
             Contract.EndContractBlock();
-            Contract.Assume(messageProcessors != null);
 
             Logger.DebugFormat("Sending request {0}...", request);
             Logger.DebugFormat("Selecting appropriate processor for request {0}...", request);
 
-            var selectedProcessors = messageProcessors.Where(x => (x != null) && (x.CanSend(request))).ToArray();
-
-            if (selectedProcessors.Length == 0)
-                LogAndThrowError("Unable to select an appropriate IMessageProcessor for request {0} in {1}.", request, string.Join(", ", messageProcessors.Select(x => x.ToString())));
-
-            if (selectedProcessors.Length > 1)
-                LogAndThrowError("Too many IMessageProcessor for request {0} in {1}.", request, string.Join(", ", messageProcessors.Select(x => x.ToString())));
-
-            var messageProcessor = selectedProcessors[0];
+            var messageProcessor = SelectAppropriateProcessorFor(request);
             Logger.DebugFormat("Using {0} to send request {1}.", messageProcessor, request);
 
             IColomboInvocation topInvocation = BuildInvocationChain(request, messageProcessor);
@@ -79,6 +71,131 @@ namespace Colombo.Impl
 
             Logger.DebugFormat("Received {0} initiated by {1}.", typedResponse, request);
             return typedResponse;
+        }
+
+        public ResponseGroup<TFirstResponse, TSecondResponse> ParallelSend<TFirstResponse, TSecondResponse>
+            (Request<TFirstResponse> firstRequest, Request<TSecondResponse> secondRequest)
+            where TFirstResponse : Response, new()
+            where TSecondResponse : Response, new()
+        {
+            if (firstRequest == null) throw new ArgumentNullException("firstRequest");
+            if (secondRequest == null) throw new ArgumentNullException("secondRequest");
+            Contract.EndContractBlock();
+
+            var responses = InternalParallelSend(firstRequest, secondRequest);
+            Contract.Assume(responses != null);
+            Contract.Assume(responses.Length == 2);
+            return new ResponseGroup<TFirstResponse, TSecondResponse>(responses);
+        }
+
+        public ResponseGroup<TFirstResponse, TSecondResponse, TThirdResponse> ParallelSend<TFirstResponse, TSecondResponse, TThirdResponse>
+            (Request<TFirstResponse> firstRequest, Request<TSecondResponse> secondRequest, Request<TThirdResponse> thirdRequest)
+            where TFirstResponse : Response, new()
+            where TSecondResponse : Response, new()
+            where TThirdResponse : Response, new()
+        {
+            if (firstRequest == null) throw new ArgumentNullException("firstRequest");
+            if (secondRequest == null) throw new ArgumentNullException("secondRequest");
+            if (thirdRequest == null) throw new ArgumentNullException("thirdRequest");
+            Contract.EndContractBlock();
+
+            var responses = InternalParallelSend(firstRequest, secondRequest, thirdRequest);
+            Contract.Assume(responses != null);
+            Contract.Assume(responses.Length == 3);
+            return new ResponseGroup<TFirstResponse, TSecondResponse, TThirdResponse>(responses);
+        }
+
+        public ResponseGroup<TFirstResponse, TSecondResponse, TThirdResponse, TFourthResponse> ParallelSend<TFirstResponse, TSecondResponse, TThirdResponse, TFourthResponse>
+            (Request<TFirstResponse> firstRequest, Request<TSecondResponse> secondRequest, Request<TThirdResponse> thirdRequest, Request<TFourthResponse> fourthRequest)
+            where TFirstResponse : Response, new()
+            where TSecondResponse : Response, new()
+            where TThirdResponse : Response, new()
+            where TFourthResponse : Response, new()
+        {
+            if (firstRequest == null) throw new ArgumentNullException("firstRequest");
+            if (secondRequest == null) throw new ArgumentNullException("secondRequest");
+            if (thirdRequest == null) throw new ArgumentNullException("thirdRequest");
+            if (fourthRequest == null) throw new ArgumentNullException("fourthRequest");
+            Contract.EndContractBlock();
+
+            var responses = InternalParallelSend(firstRequest, secondRequest, thirdRequest, fourthRequest);
+            Contract.Assume(responses != null);
+            Contract.Assume(responses.Length == 4);
+            return new ResponseGroup<TFirstResponse, TSecondResponse, TThirdResponse, TFourthResponse>(responses);
+        }
+
+        private Response[] InternalParallelSend(params BaseRequest[] requests)
+        {
+            if (requests == null) throw new ArgumentNullException("requests");
+            Contract.EndContractBlock();
+            Contract.Assume(messageProcessors != null);
+
+            if(Logger.IsDebugEnabled)
+                Logger.DebugFormat("Sending {0} requests in parallel: {1}...", requests.Length, string.Join(", ", requests.Select(x => x.ToString())));
+
+            Logger.Debug("Selecting appropriate processors for all the requests...");
+
+            var requestProcessorMapping = new Dictionary<IMessageProcessor, List<BaseRequest>>();
+            foreach (var request in requests)
+            {
+                var processor = SelectAppropriateProcessorFor(request);
+                if (!requestProcessorMapping.ContainsKey(processor))
+                    requestProcessorMapping[processor] = new List<BaseRequest>();
+                requestProcessorMapping[processor].Add(request);
+            }
+
+            if (Logger.IsDebugEnabled)
+            {
+                Logger.Debug("Mapping for processors is the following:");
+                foreach (var processor in requestProcessorMapping.Keys)
+                {
+                    Logger.DebugFormat("{0} => {{", processor);
+                    foreach (var request in requestProcessorMapping[processor])
+                    {
+                        Logger.DebugFormat("  {0}", request);
+                    }
+                    Logger.Debug("}");
+                }
+            }
+
+            var parallelSendActions = new List<ParallelSendAction>();
+            foreach (var processor in requestProcessorMapping.Keys)
+            {
+                Contract.Assume(processor != null);
+                var action = new ParallelSendAction(processor, requestProcessorMapping[processor].ToArray());
+                parallelSendActions.Add(action);
+            }
+
+            Logger.DebugFormat("Executing {0} parallel actions...", parallelSendActions.Count);
+            Parallel.ForEach(parallelSendActions, (action) =>
+            {
+                action.Execute();
+            });
+
+            Logger.Debug("Reconstituing responses...");
+            var responses = new Response[requests.Length];
+
+            for (int i = 0; i < requests.Length; i++)
+            {
+                Response response = parallelSendActions.Where(x => x.GetResponseFor(requests[i]) != null).First().GetResponseFor(requests[i]);
+                responses[i] = response;
+            }
+            
+            return responses;
+        }
+
+        private IMessageProcessor SelectAppropriateProcessorFor(BaseRequest request)
+        {
+            Contract.Assume(messageProcessors != null);
+            var selectedProcessors = messageProcessors.Where(x => (x != null) && (x.CanSend(request))).ToArray();
+
+            if (selectedProcessors.Length == 0)
+                LogAndThrowError("Unable to select an appropriate IMessageProcessor for {0} in {1}.", request, string.Join(", ", messageProcessors.Select(x => x.ToString())));
+
+            if (selectedProcessors.Length > 1)
+                LogAndThrowError("Too many IMessageProcessor for {0} in {1}.", request, string.Join(", ", messageProcessors.Select(x => x.ToString())));
+
+            return selectedProcessors[0];
         }
 
         private IColomboInvocation BuildInvocationChain(BaseRequest request, IMessageProcessor messageProcessor)

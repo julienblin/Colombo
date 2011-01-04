@@ -23,21 +23,23 @@ namespace Colombo.Samples.ConsoleClient
 
             IMessageBus messageBus = container.Resolve<IMessageBus>();
 
-            System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("fr-CA");
+            var responses = messageBus.ParallelSend(new HelloWorldRequest(), new HelloWorldRequest(), new HelloWorldRequest());
 
-            Console.WriteLine("What's your name?");
-            var name = Console.ReadLine().Trim();
-            while (!string.IsNullOrEmpty(name))
-            {
-                var request = new HelloWorldRequest { Name = name };
-                var response = messageBus.Send(request);
-                if (response.IsValid())
-                    Console.WriteLine(response.Message);
-                else
-                    Console.WriteLine(string.Join(", ", response.ValidationResults.Select(x => x.ErrorMessage)));
-                Console.WriteLine("What's your name?");
-                name = Console.ReadLine().Trim();
-            }
+            //System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("fr-CA");
+
+            //Console.WriteLine("What's your name?");
+            //var name = Console.ReadLine().Trim();
+            //while (!string.IsNullOrEmpty(name))
+            //{
+            //    var request = new HelloWorldRequest { Name = name };
+            //    var response = messageBus.Send(request);
+            //    if (response.IsValid())
+            //        Console.WriteLine(response.Message);
+            //    else
+            //        Console.WriteLine(string.Join(", ", response.ValidationResults.Select(x => x.ErrorMessage)));
+            //    Console.WriteLine("What's your name?");
+            //    name = Console.ReadLine().Trim();
+            //}
         }
     }
 }

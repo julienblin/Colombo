@@ -80,6 +80,7 @@
     <Compile Include="Alerts\SLABreachedAlert.cs" />
     <Compile Include="ColomboException.cs" />
     <Compile Include="Contracts\ColomboAlerterContract.cs" />
+    <Compile Include="Impl\ParallelSendAction.cs" />
     <Compile Include="RequiredInContextException.cs" />
     <Compile Include="Facilities\ColomboFacility.cs" />
     <Compile Include="Contracts\ColomboInterceptorContract.cs" />
@@ -122,6 +123,7 @@
     <Compile Include="Request.cs" />
     <Compile Include="RequiredInContextAttribute.cs" />
     <Compile Include="Response.cs" />
+    <Compile Include="ResponseGroup.cs" />
     <Compile Include="SLAAttribute.cs" />
     <Compile Include="Wcf\EmbedTypeInSerializerAttribute.cs" />
     <Compile Include="Wcf\IWcfService.cs" />
