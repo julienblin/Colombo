@@ -59,7 +59,7 @@ namespace Colombo.Impl
             var messageProcessor = SelectAppropriateProcessorFor(request);
             Logger.DebugFormat("Using {0} to send request {1}.", messageProcessor, request);
 
-            IColomboInvocation topInvocation = BuildInvocationChain(request, messageProcessor);
+            IColomboSingleInvocation topInvocation = BuildInvocationChain(request, messageProcessor);
             topInvocation.Proceed();
 
             if (topInvocation.Response == null)
@@ -198,17 +198,17 @@ namespace Colombo.Impl
             return selectedProcessors[0];
         }
 
-        private IColomboInvocation BuildInvocationChain(BaseRequest request, IMessageProcessor messageProcessor)
+        private IColomboSingleInvocation BuildInvocationChain(BaseRequest request, IMessageProcessor messageProcessor)
         {
             Contract.Assume(request != null);
             Contract.Assume(messageProcessor != null);
             Contract.Assume(MessageBusSendInterceptors != null);
 
-            IColomboInvocation currentInvocation = new MessageProcessorColomboInvocation(request, messageProcessor);
+            IColomboSingleInvocation currentInvocation = new MessageProcessorSingleColomboInvocation(request, messageProcessor);
             foreach (var interceptor in MessageBusSendInterceptors.Reverse())
             {
                 if(interceptor != null)
-                    currentInvocation = new InterceptorColomboInvocation(request, interceptor, currentInvocation);
+                    currentInvocation = new InterceptorColomboSingleInvocation(request, interceptor, currentInvocation);
             }
             return currentInvocation;
         }

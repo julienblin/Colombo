@@ -7,9 +7,9 @@ using System.Diagnostics.Contracts;
 namespace Colombo
 {
     [ContractClass(typeof(Contracts.ColomboInterceptorContract))]
-    public interface IColomboInterceptor
+    public interface IColomboSingleInterceptor
     {
-        void Intercept(IColomboInvocation invocation);
+        void Intercept(IColomboSingleInvocation invocation);
         int InterceptionPriority { get; }
     }
 

@@ -40,7 +40,7 @@ namespace Colombo.Interceptors
             }
         }
 
-        public void Intercept(IColomboInvocation invocation)
+        public void Intercept(IColomboSingleInvocation invocation)
         {
             if (invocation == null) throw new ArgumentNullException("invocation");
             Contract.EndContractBlock();

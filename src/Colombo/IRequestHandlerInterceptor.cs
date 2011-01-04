@@ -6,7 +6,7 @@ using System.Diagnostics.Contracts;
 
 namespace Colombo
 {
-    public interface IRequestHandlerInterceptor : IColomboInterceptor
+    public interface IRequestHandlerInterceptor : IColomboSingleInterceptor
     {
     }
 }

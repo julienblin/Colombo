@@ -6,11 +6,11 @@ using System.Diagnostics.Contracts;
 
 namespace Colombo.Impl
 {
-    public abstract class BaseColomboInvocation : IColomboInvocation
+    public abstract class BaseColomboSingleInvocation : IColomboSingleInvocation
     {
         private readonly BaseRequest request;
 
-        protected BaseColomboInvocation(BaseRequest request)
+        protected BaseColomboSingleInvocation(BaseRequest request)
         {
             if (request == null) throw new ArgumentNullException("request");
             Contract.EndContractBlock();

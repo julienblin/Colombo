@@ -6,15 +6,15 @@ using System.Diagnostics.Contracts;
 
 namespace Colombo.Contracts
 {
-    [ContractClassFor(typeof(IColomboInterceptor))]
-    public abstract class ColomboInterceptorContract : IColomboInterceptor
+    [ContractClassFor(typeof(IColomboSingleInterceptor))]
+    public abstract class ColomboInterceptorContract : IColomboSingleInterceptor
     {
-        void IColomboInterceptor.Intercept(IColomboInvocation invocation)
+        void IColomboSingleInterceptor.Intercept(IColomboSingleInvocation invocation)
         {
             Contract.Requires<ArgumentNullException>(invocation != null, "invocation");
         }
 
-        int IColomboInterceptor.InterceptionPriority
+        int IColomboSingleInterceptor.InterceptionPriority
         {
             get { return default(int); }
         }

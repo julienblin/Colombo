@@ -9,7 +9,7 @@ namespace Colombo.Interceptors
 {
     public class TransactionScopeHandlerInterceptor : IRequestHandlerInterceptor
     {
-        public void Intercept(IColomboInvocation invocation)
+        public void Intercept(IColomboSingleInvocation invocation)
         {
             if (invocation == null) throw new ArgumentNullException("invocation");
             Contract.EndContractBlock();

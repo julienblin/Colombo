@@ -19,7 +19,7 @@ namespace Colombo.Tests.Interceptors
             var mocks = new MockRepository();
             var request = mocks.Stub<Request<TestResponse>>();
 
-            var invocation = mocks.StrictMock<IColomboInvocation>();
+            var invocation = mocks.StrictMock<IColomboSingleInvocation>();
 
             With.Mocks(mocks).Expecting(() =>
             {
@@ -48,7 +48,7 @@ namespace Colombo.Tests.Interceptors
             var mocks = new MockRepository();
             var request = mocks.Stub<Request<TestResponse>>();
 
-            var invocation = mocks.StrictMock<IColomboInvocation>();
+            var invocation = mocks.StrictMock<IColomboSingleInvocation>();
 
             With.Mocks(mocks).Expecting(() =>
             {

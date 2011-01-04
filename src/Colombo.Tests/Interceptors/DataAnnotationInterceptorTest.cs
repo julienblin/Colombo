@@ -18,7 +18,7 @@ namespace Colombo.Tests.Interceptors
             var mocks = new MockRepository();
 
             var interceptor = mocks.Stub<DataAnnotationInterceptor>();
-            var invocation = mocks.StrictMock<IColomboInvocation>();
+            var invocation = mocks.StrictMock<IColomboSingleInvocation>();
             var request = new TestRequest();
             request.Name = "Name";
 
@@ -74,7 +74,7 @@ namespace Colombo.Tests.Interceptors
             public string Name { get; set; }
         }
 
-        public class TestInvocation : IColomboInvocation
+        public class TestInvocation : IColomboSingleInvocation
         {
             public TestInvocation(BaseRequest request)
             {

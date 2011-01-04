@@ -10,7 +10,7 @@ namespace Colombo.Interceptors
 {
     public class CurrentCultureHandlerInterceptor : IRequestHandlerInterceptor
     {
-        public void Intercept(IColomboInvocation invocation)
+        public void Intercept(IColomboSingleInvocation invocation)
         {
             if (invocation == null) throw new ArgumentNullException("invocation");
             Contract.EndContractBlock();

@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Reflection;
 
 namespace Colombo
 {
-    public interface IColomboInvocation
+    public interface IColomboParallelInvocation
     {
-        BaseRequest Request { get; }
-        Response Response { get; set; }
+        BaseRequest[] Requests { get; set; }
+        Response[] Responses { get; set; }
         void Proceed();
     }
 }

@@ -151,7 +151,7 @@ namespace Colombo.Tests.Impl
             });
         }
 
-        public delegate void InterceptDelegate(IColomboInvocation invocation);
+        public delegate void InterceptDelegate(IColomboSingleInvocation invocation);
 
         [Test]
         public void It_should_reorder_IMessageBusSendInterceptor_accordingly()

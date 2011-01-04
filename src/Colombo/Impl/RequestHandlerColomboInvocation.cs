@@ -6,7 +6,7 @@ using System.Diagnostics.Contracts;
 
 namespace Colombo.Impl
 {
-    public class RequestHandlerColomboInvocation : BaseColomboInvocation
+    public class RequestHandlerColomboInvocation : BaseColomboSingleInvocation
     {
         private readonly IRequestHandler requestHandler;
 

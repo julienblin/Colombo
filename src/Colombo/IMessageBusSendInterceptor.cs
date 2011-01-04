@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Colombo
 {
-    public interface IMessageBusSendInterceptor : IColomboInterceptor
+    public interface IMessageBusSendInterceptor : IColomboSingleInterceptor
     {
     }
 }

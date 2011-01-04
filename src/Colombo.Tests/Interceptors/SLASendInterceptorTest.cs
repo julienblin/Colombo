@@ -19,7 +19,7 @@ namespace Colombo.Tests.Interceptors
             var mocks = new MockRepository();
             var logger = mocks.DynamicMock<ILogger>();
 
-            var invocation = mocks.StrictMock<IColomboInvocation>();
+            var invocation = mocks.StrictMock<IColomboSingleInvocation>();
             var request = new TestRequest();
 
             With.Mocks(mocks).Expecting(() =>
@@ -42,7 +42,7 @@ namespace Colombo.Tests.Interceptors
             var mocks = new MockRepository();
             var logger = mocks.DynamicMock<ILogger>();
 
-            var invocation = mocks.StrictMock<IColomboInvocation>();
+            var invocation = mocks.StrictMock<IColomboSingleInvocation>();
             var request = new TestRequestSLA();
 
             With.Mocks(mocks).Expecting(() =>
@@ -69,7 +69,7 @@ namespace Colombo.Tests.Interceptors
             var mocks = new MockRepository();
             var logger = mocks.DynamicMock<ILogger>();
 
-            var invocation = mocks.StrictMock<IColomboInvocation>();
+            var invocation = mocks.StrictMock<IColomboSingleInvocation>();
             var request = new TestRequestSLA();
 
             var alerter1 = mocks.StrictMock<IColomboAlerter>();
