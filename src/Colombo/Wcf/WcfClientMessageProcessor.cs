@@ -6,13 +6,13 @@ using Castle.Core.Logging;
 using System.Diagnostics.Contracts;
 using System.ServiceModel.Channels;
 using System.ServiceModel;
+using System.ServiceModel.Configuration;
+using System.Configuration;
 
 namespace Colombo.Wcf
 {
     public class WcfClientMessageProcessor : IMessageProcessor
     {
-        public const string WcfEndPointType = @"wcf";
-
         private ILogger logger = NullLogger.Instance;
         public ILogger Logger
         {
@@ -20,22 +20,23 @@ namespace Colombo.Wcf
             set { logger = value; }
         }
 
-        private readonly IColomboConfiguration colomboConfiguration;
-
-        public WcfClientMessageProcessor(IColomboConfiguration colomboConfiguration)
-        {
-            if (colomboConfiguration == null) throw new ArgumentNullException("colomboConfiguration");
-            Contract.EndContractBlock();
-
-            this.colomboConfiguration = colomboConfiguration;
-        }
-
         public bool CanSend(BaseRequest request)
         {
             if (request == null) throw new ArgumentNullException("request");
             Contract.EndContractBlock();
 
-            return (colomboConfiguration.GetTargetAddressFor(request, WcfEndPointType) != null);
+            if (WcfConfigClientSection == null)
+                return false;
+
+            var requestGroupName = request.GetGroupName();
+
+            foreach (ChannelEndpointElement endPoint in WcfConfigClientSection.Endpoints)
+            {
+                if (endPoint.Name.Equals(requestGroupName, StringComparison.InvariantCultureIgnoreCase))
+                    return true;
+            }
+
+            return false;
         }
 
         public Response Send(BaseRequest request)
@@ -46,7 +47,7 @@ namespace Colombo.Wcf
             Response response = null;
             using (var clientBase = CreateClientBase(request))
             {
-                Logger.DebugFormat("Sending request {0} to {1} using WCF...", request, clientBase.Endpoint.Address.Uri);
+                Logger.DebugFormat("Sending {0} to {1}...", request, clientBase.Endpoint.Address.Uri);
                 response = clientBase.Send(request);
             }
 
@@ -56,45 +57,38 @@ namespace Colombo.Wcf
             return response;
         }
 
+        private ClientSection clientSection = null;
+        private bool clientSectionHasBeenLoaded = false;
+
+        public ClientSection WcfConfigClientSection
+        {
+            get {
+                if (!clientSectionHasBeenLoaded)
+                {
+                    Configuration configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                    ServiceModelSectionGroup serviceModelGroup = ServiceModelSectionGroup.GetSectionGroup(configuration);
+                    if (serviceModelGroup != null)
+                        clientSection = serviceModelGroup.Client;
+
+                    clientSectionHasBeenLoaded = true;
+                }
+                return clientSection;
+            }
+        }
+
         public WcfClientBaseService CreateClientBase(BaseRequest request)
         {
             Contract.Assume(request != null);
-
-            var configAddress = colomboConfiguration.GetTargetAddressFor(request, WcfEndPointType);
-            Uri uri = null;
-            if (!Uri.TryCreate(configAddress, UriKind.Absolute, out uri))
-                LogAndThrowError("Malformed Uri for the endpoint address associated with request {0}: {1}", request, configAddress);
-
-            Binding binding = null;
-            switch (uri.Scheme)
+            try
             {
-                case "http":
-                    binding = new BasicHttpBinding();
-                    break;
-                case "net.tcp":
-                    binding = new NetTcpBinding();
-                    break;
-                default:
-                    LogAndThrowError("Unrecognized Uri scheme for the endpoint address associated with request {0}: {1}. Valid values are: http, net.tcp.",
-                        request,
-                        uri.Scheme);
-                    break;
+                return new WcfClientBaseService(request.GetGroupName());
             }
-
-            var endPointAddress = new EndpointAddress(uri);
-
-            return new WcfClientBaseService(binding, endPointAddress);
-        }
-
-        private void LogAndThrowError(string format, params object[] args)
-        {
-            if (format == null) throw new ArgumentNullException("format");
-            if (args == null) throw new ArgumentNullException("args");
-            Contract.EndContractBlock();
-
-            var errorMessage = string.Format(format, args);
-            Logger.Error(errorMessage);
-            throw new ColomboException(errorMessage);
+            catch (InvalidOperationException ex)
+            {
+                var errorMessage = string.Format("Unable to create a ClientBase for {0}: Did you create a wcf client endPoint with the name {1}?", request, request.GetGroupName());
+                Logger.Error(errorMessage, ex);
+                throw new ColomboException(errorMessage, ex);
+            }
         }
     }
 }

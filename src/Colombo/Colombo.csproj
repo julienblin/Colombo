@@ -79,14 +79,9 @@
     </Compile>
     <Compile Include="Alerts\SLABreachedAlert.cs" />
     <Compile Include="ColomboException.cs" />
-    <Compile Include="Configuration\ColomboConfigurationSection.cs" />
     <Compile Include="Contracts\ColomboAlerterContract.cs" />
     <Compile Include="RequiredInContextException.cs" />
     <Compile Include="Facilities\ColomboFacility.cs" />
-    <Compile Include="Configuration\EmptyColomboConfiguration.cs" />
-    <Compile Include="Configuration\EndPointConfigurationElement.cs" />
-    <Compile Include="Configuration\EndPointsConfigurationCollection.cs" />
-    <Compile Include="Contracts\ColomboConfigurationContract.cs" />
     <Compile Include="Contracts\ColomboInterceptorContract.cs" />
     <Compile Include="Contracts\GenericRequestHandlerContract.cs" />
     <Compile Include="Contracts\MessageBusContract.cs" />
@@ -95,7 +90,6 @@
     <Compile Include="Contracts\RequestHandlerFactoryContract.cs" />
     <Compile Include="IColomboAlert.cs" />
     <Compile Include="IColomboAlerter.cs" />
-    <Compile Include="IColomboConfiguration.cs" />
     <Compile Include="IColomboInterceptor.cs" />
     <Compile Include="IColomboInvocation.cs" />
     <Compile Include="ILocalMessageProcessor.cs" />

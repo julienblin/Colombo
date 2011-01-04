@@ -43,7 +43,7 @@ namespace Colombo.Interceptors
 
             try
             {
-                var instanceName = invocation.Request.GetType().Assembly.GetName().Name;
+                var instanceName = invocation.Request.GetGroupName();
                 using (var numberOfRequestsHandled = new PerformanceCounter())
                 {
                     numberOfRequestsHandled.CategoryName = PerfCounterCategory;

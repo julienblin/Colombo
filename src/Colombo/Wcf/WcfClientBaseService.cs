@@ -9,6 +9,8 @@ namespace Colombo.Wcf
 {
     public class WcfClientBaseService : ClientBase<IWcfService>, IWcfService
     {
+        public WcfClientBaseService(string endpointConfigurationName) : base(endpointConfigurationName) { }
+
         public WcfClientBaseService(Binding binding, EndpointAddress remoteAddress) : base(binding, remoteAddress) { }
 
         public Response Send(BaseRequest request)

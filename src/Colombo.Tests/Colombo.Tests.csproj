@@ -61,8 +61,6 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Configuration\ColomboConfigurationSectionTest.cs" />
-    <Compile Include="Configuration\EmptyColomboConfigurationTest.cs" />
     <Compile Include="Facilities\ColomboFacilityTest.cs" />
     <Compile Include="Impl\KernelRequestHandlerFactoryTest.cs" />
     <Compile Include="Impl\LocalMessageProcessorTest.cs" />
@@ -86,9 +84,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Configuration\Files\Complete.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="App.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

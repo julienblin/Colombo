@@ -8,7 +8,6 @@ using Castle.MicroKernel.Registration;
 using System.Configuration;
 using Colombo.Impl;
 using Colombo.Wcf;
-using Colombo.Configuration;
 using Colombo.Interceptors;
 
 namespace Colombo.Facilities
@@ -42,15 +41,6 @@ namespace Colombo.Facilities
             Kernel.Resolver.AddSubResolver(new ArrayResolver(Kernel, true));
 
             Kernel.Register(
-                Component.For<IColomboConfiguration>()
-                    .LifeStyle.Singleton
-                    .UsingFactoryMethod<IColomboConfiguration>(() =>
-                    {
-                        var config = (ColomboConfigurationSection)ConfigurationManager.GetSection(ColomboConfigurationSection.SectionName);
-                        if (config == null)
-                            return new EmptyColomboConfiguration();
-                        return config;
-                    }),
                 Component.For<IMessageProcessor>()
                     .LifeStyle.Singleton
                     .ImplementedBy<WcfClientMessageProcessor>(),

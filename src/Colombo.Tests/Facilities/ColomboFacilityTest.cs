@@ -30,8 +30,6 @@ namespace Colombo.Tests.Facilities
                 Is.Not.Null);
             Assert.That(() => container.Resolve<IRequestHandlerFactory>(),
                 Is.Not.Null);
-            Assert.That(() => container.Resolve<IColomboConfiguration>(),
-                Is.Not.Null);
         }
 
         [Test]
@@ -65,9 +63,6 @@ namespace Colombo.Tests.Facilities
                 Assert.That(() => processor,
                 Is.Not.AssignableFrom<ILocalMessageProcessor>());
             }
-
-            Assert.That(() => container.Resolve<IColomboConfiguration>(),
-                Is.Not.Null);
 
             Assert.That(() => container.Resolve<ILocalMessageProcessor>(),
                 Throws.Exception.TypeOf<ComponentNotFoundException>());

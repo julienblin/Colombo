@@ -16,6 +16,11 @@ namespace Colombo
 
         public abstract Type GetResponseType();
 
+        public virtual string GetGroupName()
+        {
+            return GetType().Assembly.GetName().Name;
+        }
+
         public override string ToString()
         {
             if ((Context != null) && (Context.Count > 0))
