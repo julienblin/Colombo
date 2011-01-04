@@ -5,6 +5,7 @@ using System.Text;
 using Castle.Core.Logging;
 using System.Diagnostics.Contracts;
 using System.Transactions;
+using System.Threading.Tasks;
 
 namespace Colombo.Impl
 {
@@ -63,7 +64,7 @@ namespace Colombo.Impl
             Response response = null;
             try
             {
-                IColomboSingleInvocation topInvocation = BuildInvocationChain(request, requestHandler);
+                IColomboSingleInvocation topInvocation = BuildSingleInvocationChain(request, requestHandler);
                 topInvocation.Proceed();
                 response = topInvocation.Response;
             }
@@ -84,15 +85,7 @@ namespace Colombo.Impl
             return response;
         }
 
-        public Response[] ParallelSend(BaseRequest[] requests)
-        {
-            if (requests == null) throw new ArgumentNullException("requests");
-            Contract.EndContractBlock();
-
-            throw new NotImplementedException();
-        }
-
-        private IColomboSingleInvocation BuildInvocationChain(BaseRequest request, IRequestHandler requestHandler)
+        private IColomboSingleInvocation BuildSingleInvocationChain(BaseRequest request, IRequestHandler requestHandler)
         {
             Contract.Assume(request != null);
             Contract.Assume(requestHandler != null);
@@ -105,6 +98,28 @@ namespace Colombo.Impl
                     currentInvocation = new InterceptorColomboSingleInvocation(request, interceptor, currentInvocation);
             }
             return currentInvocation;
+        }
+
+        public Response[] ParallelSend(BaseRequest[] requests)
+        {
+            if (requests == null) throw new ArgumentNullException("requests");
+            Contract.EndContractBlock();
+
+            var actions = new List<ParallelHandleAction>();
+            foreach (var request in requests)
+            {
+                actions.Add(new ParallelHandleAction(this, request));
+            }
+
+            Parallel.ForEach(actions, (action) => action.Execute());
+
+            var responses = new Response[requests.Length];
+
+            for (int i = 0; i < requests.Length; i++)
+            {
+                responses[i] = actions[i].Response;
+            }
+            return responses;
         }
 
         private void LogAndThrowError(string format, params object[] args)
