@@ -80,6 +80,7 @@
     <Compile Include="Alerts\SLABreachedAlert.cs" />
     <Compile Include="ColomboException.cs" />
     <Compile Include="Contracts\ColomboAlerterContract.cs" />
+    <Compile Include="IColomboInterceptor.cs" />
     <Compile Include="IColomboParallelInterceptor.cs" />
     <Compile Include="IColomboParallelInvocation.cs" />
     <Compile Include="Impl\BaseColomboParallelInvocation.cs" />

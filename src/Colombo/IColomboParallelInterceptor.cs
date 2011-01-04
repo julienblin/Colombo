@@ -5,9 +5,8 @@ using System.Text;
 
 namespace Colombo
 {
-    public interface IColomboParallelInterceptor
+    public interface IColomboParallelInterceptor : IColomboInterceptor
     {
         void Intercept(IColomboParallelInvocation invocation);
-        int InterceptionPriority { get; }
     }
 }

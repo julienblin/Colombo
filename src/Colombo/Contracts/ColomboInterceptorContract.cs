@@ -14,7 +14,7 @@ namespace Colombo.Contracts
             Contract.Requires<ArgumentNullException>(invocation != null, "invocation");
         }
 
-        int IColomboSingleInterceptor.InterceptionPriority
+        int IColomboInterceptor.InterceptionPriority
         {
             get { return default(int); }
         }

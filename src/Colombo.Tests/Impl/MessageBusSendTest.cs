@@ -130,13 +130,14 @@ namespace Colombo.Tests.Impl
 
                 Expect.Call(messageProcessor.CanSend(request)).Return(true);
 
-                sendInterceptor1.Intercept(null);
+                IColomboSingleInvocation singleInvocation = null;
+                sendInterceptor1.Intercept(singleInvocation);
                 LastCall.IgnoreArguments().Do(new InterceptDelegate((invocation) =>
                 {
                     invocation.Proceed();
                 }));
 
-                sendInterceptor2.Intercept(null);
+                sendInterceptor2.Intercept(singleInvocation);
                 LastCall.IgnoreArguments().Do(new InterceptDelegate((invocation) =>
                 {
                     invocation.Proceed();
@@ -173,19 +174,20 @@ namespace Colombo.Tests.Impl
 
                 Expect.Call(messageProcessor.CanSend(request)).Return(true);
 
-                sendInterceptor2.Intercept(null);
+                IColomboSingleInvocation singleInvocation = null;
+                sendInterceptor2.Intercept(singleInvocation);
                 LastCall.IgnoreArguments().Do(new InterceptDelegate((invocation) =>
                 {
                     invocation.Proceed();
                 }));
 
-                sendInterceptor3.Intercept(null);
+                sendInterceptor3.Intercept(singleInvocation);
                 LastCall.IgnoreArguments().Do(new InterceptDelegate((invocation) =>
                 {
                     invocation.Proceed();
                 }));
 
-                sendInterceptor1.Intercept(null);
+                sendInterceptor1.Intercept(singleInvocation);
                 LastCall.IgnoreArguments().Do(new InterceptDelegate((invocation) =>
                 {
                     invocation.Proceed();

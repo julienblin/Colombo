@@ -19,6 +19,11 @@ namespace Colombo.Interceptors
             invocation.Proceed();
         }
 
+        public void Intercept(IColomboParallelInvocation invocation)
+        {
+            invocation.Proceed();
+        }
+
         public int InterceptionPriority
         {
             get { return InterceptorPrority.Medium; }
