@@ -63,7 +63,7 @@ namespace Colombo.Impl
             Response response = null;
             try
             {
-                IColomboInvocation topInvocation = BuildSendInvocationChain(request, requestHandler);
+                IColomboInvocation topInvocation = BuildInvocationChain(request, requestHandler);
                 topInvocation.Proceed();
                 response = topInvocation.Response;
             }
@@ -92,17 +92,17 @@ namespace Colombo.Impl
             throw new NotImplementedException();
         }
 
-        private IColomboInvocation BuildSendInvocationChain(BaseRequest request, IRequestHandler requestHandler)
+        private IColomboInvocation BuildInvocationChain(BaseRequest request, IRequestHandler requestHandler)
         {
             Contract.Assume(request != null);
             Contract.Assume(requestHandler != null);
             Contract.Assume(RequestHandlerInterceptor != null);
 
-            IColomboInvocation currentInvocation = new RequestHandlerColomboInvocation(ColomboInvocationType.Send, request, requestHandler);
+            IColomboInvocation currentInvocation = new RequestHandlerColomboInvocation(request, requestHandler);
             foreach (var interceptor in RequestHandlerInterceptor.Reverse())
             {
                 if (interceptor != null)
-                    currentInvocation = new InterceptorColomboInvocation(ColomboInvocationType.Send, request, interceptor, currentInvocation);
+                    currentInvocation = new InterceptorColomboInvocation(request, interceptor, currentInvocation);
             }
             return currentInvocation;
         }

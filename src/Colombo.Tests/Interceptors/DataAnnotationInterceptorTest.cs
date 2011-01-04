@@ -86,19 +86,10 @@ namespace Colombo.Tests.Interceptors
 
             public Response Response { get; set; }
 
-            public BaseRequest[] Requests { get; set; }
-
-            public Response[] Responses { get; set; }
-
             public bool ProceedCalled { get; set; }
             public void Proceed()
             {
                 ProceedCalled = true;
-            }
-
-            public ColomboInvocationType InvocationType
-            {
-                get { return ColomboInvocationType.Send; }
             }
         }
 

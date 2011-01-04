@@ -6,12 +6,12 @@ using System.Diagnostics.Contracts;
 
 namespace Colombo.Impl
 {
-    public class MessageProcessorSendColomboInvocation : BaseColomboInvocation
+    public class MessageProcessorColomboInvocation : BaseColomboInvocation
     {
         private readonly IMessageProcessor processor;
 
-        public MessageProcessorSendColomboInvocation(ColomboInvocationType invocationType, BaseRequest request, IMessageProcessor processor)
-            : base(invocationType, request)
+        public MessageProcessorColomboInvocation(BaseRequest request, IMessageProcessor processor)
+            : base(request)
         {
             if (request == null) throw new ArgumentNullException("request");
             if (processor == null) throw new ArgumentNullException("processor");

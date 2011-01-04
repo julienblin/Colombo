@@ -8,12 +8,13 @@ namespace Colombo.Impl
 {
     public abstract class BaseColomboInvocation : IColomboInvocation
     {
-        private readonly ColomboInvocationType invocationType;
         private readonly BaseRequest request;
 
-        protected BaseColomboInvocation(ColomboInvocationType invocationType, BaseRequest request)
+        protected BaseColomboInvocation(BaseRequest request)
         {
-            this.invocationType = invocationType;
+            if (request == null) throw new ArgumentNullException("request");
+            Contract.EndContractBlock();
+
             this.request = request;
         }
 
@@ -24,15 +25,6 @@ namespace Colombo.Impl
 
         public Response Response { get; set; }
 
-        public BaseRequest[] Requests { get; set; }
-
-        public Response[] Responses { get; set; }
-
         public abstract void Proceed();
-
-        public ColomboInvocationType InvocationType
-        {
-            get { return invocationType; }
-        }
     }
 }
