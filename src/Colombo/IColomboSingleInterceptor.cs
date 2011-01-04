@@ -6,7 +6,7 @@ using System.Diagnostics.Contracts;
 
 namespace Colombo
 {
-    [ContractClass(typeof(Contracts.ColomboInterceptorContract))]
+    [ContractClass(typeof(Contracts.ColomboSingleInterceptorContract))]
     public interface IColomboSingleInterceptor : IColomboInterceptor
     {
         void Intercept(IColomboSingleInvocation invocation);

@@ -21,6 +21,9 @@ namespace Colombo.Interceptors
 
         public void Intercept(IColomboParallelInvocation invocation)
         {
+            if (invocation == null) throw new ArgumentNullException("invocation");
+            Contract.EndContractBlock();
+
             invocation.Proceed();
         }
 
