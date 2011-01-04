@@ -18,7 +18,6 @@ namespace Colombo.Wcf
             return Channel.Send(request);
         }
 
-
         public Response[] ParallelSend(BaseRequest[] requests)
         {
             return Channel.ParallelSend(requests);

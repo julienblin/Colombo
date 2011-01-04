@@ -135,6 +135,7 @@
     <Compile Include="SLAAttribute.cs" />
     <Compile Include="Wcf\EmbedTypeInSerializerAttribute.cs" />
     <Compile Include="Wcf\IWcfService.cs" />
+    <Compile Include="Wcf\ParallelSendAction.cs" />
     <Compile Include="Wcf\WcfClientMessageProcessor.cs" />
     <Compile Include="Wcf\WcfClientBaseService.cs" />
     <Compile Include="Wcf\WcfService.cs" />

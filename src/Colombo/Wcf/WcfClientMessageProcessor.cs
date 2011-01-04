@@ -8,6 +8,7 @@ using System.ServiceModel.Channels;
 using System.ServiceModel;
 using System.ServiceModel.Configuration;
 using System.Configuration;
+using System.Threading.Tasks;
 
 namespace Colombo.Wcf
 {
@@ -62,7 +63,26 @@ namespace Colombo.Wcf
             if (requests == null) throw new ArgumentNullException("requests");
             Contract.EndContractBlock();
 
-            throw new NotImplementedException();
+            var requestsGroups = requests.GroupBy(x => x.GetGroupName());
+
+            var actions = new List<ParallelSendAction>();
+            foreach (var requestsGroup in requestsGroups)
+            {
+                var clientBase = CreateClientBase(requestsGroup.First());
+                actions.Add(new ParallelSendAction(requestsGroup.ToArray(), clientBase));
+            }
+
+            Parallel.ForEach(actions, (action) => action.Execute());
+
+            var responses = new Response[requests.Length];
+
+            for (int i = 0; i < requests.Length; i++)
+            {
+                Response response = actions.Where(x => x.GetResponseFor(requests[i]) != null).First().GetResponseFor(requests[i]);
+                responses[i] = response;
+            }
+
+            return responses;
         }
 
         private ClientSection clientSection = null;
@@ -70,7 +90,8 @@ namespace Colombo.Wcf
 
         public ClientSection WcfConfigClientSection
         {
-            get {
+            get
+            {
                 if (!clientSectionHasBeenLoaded)
                 {
                     Configuration configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);

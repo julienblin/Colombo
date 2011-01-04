@@ -8,7 +8,7 @@ using Colombo.Interceptors;
 namespace Colombo.Samples.Messages
 {
     [SLA(500)]
-    [RequiredInContext(CurrentCultureConstant.CultureContextKey)]
+    //[RequiredInContext(CurrentCultureConstant.CultureContextKey)]
     public class HelloWorldRequest : Request<HelloWorldResponse>
     {
         [Required]
