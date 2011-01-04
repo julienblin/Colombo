@@ -12,5 +12,9 @@ namespace Colombo.Wcf
         [OperationContract(Name = @"Send")]
         [EmbedTypeInSerializer]
         Response Send(BaseRequest request);
+
+        [OperationContract(Name = @"ParallelSend")]
+        [EmbedTypeInSerializer]
+        Response[] ParallelSend(BaseRequest[] requests);
     }
 }
