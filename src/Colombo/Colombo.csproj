@@ -85,8 +85,8 @@
     <Compile Include="IColomboParallelInvocation.cs" />
     <Compile Include="Impl\BaseColomboParallelInvocation.cs" />
     <Compile Include="Impl\InterceptorColomboParallelInvocation.cs" />
-    <Compile Include="Impl\MessageProcessorParallelColomboInvocation.cs" />
     <Compile Include="Impl\ParallelSendAction.cs" />
+    <Compile Include="Impl\ParallelSendActionsColomboParallelInvocation.cs" />
     <Compile Include="RequiredInContextException.cs" />
     <Compile Include="Facilities\ColomboFacility.cs" />
     <Compile Include="Contracts\ColomboInterceptorContract.cs" />

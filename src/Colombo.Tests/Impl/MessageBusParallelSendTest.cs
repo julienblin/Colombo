@@ -184,6 +184,58 @@ namespace Colombo.Tests.Impl
             });
         }
 
+        [Test]
+        public void It_should_run_all_the_IMessageBusSendInterceptors()
+        {
+            var mocks = new MockRepository();
+            var request1 = mocks.Stub<Request<TestResponse>>();
+            var request2 = mocks.Stub<Request<TestResponse>>();
+            var requests = new BaseRequest[] { request1, request2 };
+
+            var response1 = new TestResponse();
+            var response2 = new TestResponse();
+            var responses = new Response[] { response1, response2 };
+
+            var messageProcessor = mocks.StrictMock<IMessageProcessor>();
+            var sendInterceptor1 = mocks.StrictMock<IMessageBusSendInterceptor>();
+            var sendInterceptor2 = mocks.StrictMock<IMessageBusSendInterceptor>();
+            var messageBus = new MessageBus(new IMessageProcessor[] { messageProcessor });
+
+            With.Mocks(mocks).ExpectingInSameOrder(() =>
+            {
+                Expect.Call(sendInterceptor1.InterceptionPriority).Return(InterceptorPrority.High);
+                Expect.Call(sendInterceptor2.InterceptionPriority).Return(InterceptorPrority.Medium);
+
+                IColomboParallelInvocation parallelInvocation = null;
+                sendInterceptor1.Intercept(parallelInvocation);
+                LastCall.IgnoreArguments().Do(new InterceptDelegate((invocation) =>
+                {
+                    invocation.Proceed();
+                }));
+
+                sendInterceptor2.Intercept(parallelInvocation);
+                LastCall.IgnoreArguments().Do(new InterceptDelegate((invocation) =>
+                {
+                    invocation.Proceed();
+                }));
+
+                Expect.Call(messageProcessor.CanSend(request1)).Return(true);
+                Expect.Call(messageProcessor.CanSend(request2)).Return(true);
+
+                Expect.Call(messageProcessor.ParallelSend(requests)).Return(responses);
+            }).Verify(() =>
+            {
+                messageBus.MessageBusSendInterceptors = new IMessageBusSendInterceptor[] { sendInterceptor1, sendInterceptor2 };
+                var responseGroup = messageBus.ParallelSend(request1, request2);
+                Assert.That(() => responseGroup.First,
+                    Is.SameAs(response1));
+                Assert.That(() => responseGroup.Second,
+                    Is.SameAs(response2));
+            });
+        }
+
+        public delegate void InterceptDelegate(IColomboParallelInvocation invocation);
+
         public class TestResponse2 : Response
         {
 
