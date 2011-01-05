@@ -80,8 +80,12 @@
     <Compile Include="BaseMessage.cs" />
     <Compile Include="BaseRequest.cs" />
     <Compile Include="ColomboException.cs" />
+    <Compile Include="Contracts\MessageBusContract.cs" />
+    <Compile Include="IMessageBus.cs" />
+    <Compile Include="Impl\MessageBus.cs" />
     <Compile Include="Request.cs" />
     <Compile Include="Response.cs" />
+    <Compile Include="ResponseGroup.cs" />
     <Compile Include="SideEffectFreeRequest.cs" />
   </ItemGroup>
   <ItemGroup />
