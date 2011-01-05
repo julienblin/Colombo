@@ -90,5 +90,60 @@ namespace Colombo.Tests.Impl
                     Is.SameAs(response2));
             });
         }
+
+        [Test]
+        public void It_should_run_all_the_IRequestHandlerHandleInterceptors()
+        {
+            var mocks = new MockRepository();
+            var request1 = mocks.Stub<Request<TestResponse>>();
+            var request2 = mocks.Stub<Request<TestResponse>>();
+            var requests = new List<BaseRequest> { request1, request2 };
+            var response1 = new TestResponse();
+            var response2 = new TestResponse();
+            var requestHandlerFactory = mocks.StrictMock<IRequestHandlerFactory>();
+            var requestHandler1 = mocks.StrictMock<IRequestHandler>();
+            var requestHandler2 = mocks.StrictMock<IRequestHandler>();
+
+            var interceptor1 = mocks.StrictMock<IRequestHandlerHandleInterceptor>();
+            var interceptor2 = mocks.StrictMock<IRequestHandlerHandleInterceptor>();
+
+            With.Mocks(mocks).Expecting(() =>
+            {
+                Expect.Call(interceptor1.InterceptionPriority).Return(InterceptorPrority.High);
+                Expect.Call(interceptor2.InterceptionPriority).Return(InterceptorPrority.Medium);
+
+                interceptor1.Intercept(null);
+                LastCall.IgnoreArguments().Repeat.Twice().Do(new InterceptDelegate((invocation) =>
+                {
+                    invocation.Proceed();
+                }));
+
+                interceptor2.Intercept(null);
+                LastCall.IgnoreArguments().Repeat.Twice().Do(new InterceptDelegate((invocation) =>
+                {
+                    invocation.Proceed();
+                    invocation.Response = response2;
+                }));
+
+                Expect.Call(requestHandlerFactory.CreateRequestHandlerFor(request1)).Return(requestHandler1);
+                Expect.Call(requestHandlerFactory.CreateRequestHandlerFor(request2)).Return(requestHandler2);
+                Expect.Call(requestHandler1.Handle(request1)).Return(response1);
+                Expect.Call(requestHandler2.Handle(request2)).Return(response1);
+                requestHandlerFactory.DisposeRequestHandler(requestHandler1);
+                requestHandlerFactory.DisposeRequestHandler(requestHandler2);
+            }).Verify(() =>
+            {
+                var processor = new LocalRequestProcessor(requestHandlerFactory);
+                processor.Logger = GetConsoleLogger();
+                processor.RequestHandlerInterceptors = new IRequestHandlerHandleInterceptor[] { interceptor1, interceptor2 };
+                var responses = processor.Process(requests);
+                Assert.That(() => responses[request1],
+                    Is.SameAs(response2));
+                Assert.That(() => responses[request2],
+                    Is.SameAs(response2));
+            });
+        }
+
+        public delegate void InterceptDelegate(IColomboHandleInvocation invocation);
     }
 }

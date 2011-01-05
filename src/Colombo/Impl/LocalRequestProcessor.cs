@@ -20,6 +20,23 @@ namespace Colombo.Impl
             set { logger = value; }
         }
 
+        private IRequestHandlerHandleInterceptor[] requestHandlerInterceptors = new IRequestHandlerHandleInterceptor[0];
+        /// <summary>
+        /// The list of <see cref="IRequestHandlerHandleInterceptor"/> to use.
+        /// </summary>
+        public IRequestHandlerHandleInterceptor[] RequestHandlerInterceptors
+        {
+            get { return requestHandlerInterceptors; }
+            set
+            {
+                if (value == null) throw new ArgumentNullException("RequestHandlerInterceptors");
+                Contract.EndContractBlock();
+
+                requestHandlerInterceptors = value.OrderBy(x => x.InterceptionPriority).ToArray();
+                Logger.InfoFormat("Using the following interceptors: {0}", string.Join(", ", requestHandlerInterceptors.Select(x => x.GetType().Name)));
+            }
+        }
+
         private readonly IRequestHandlerFactory requestHandlerFactory;
 
         /// <summary>
@@ -91,9 +108,16 @@ namespace Colombo.Impl
 
         private IColomboHandleInvocation BuildHandleInvocationChain()
         {
+            Contract.Assume(RequestHandlerInterceptors != null);
+
             var requestHandlerInvocation = new RequestHandlerHandleInvocation(requestHandlerFactory);
             requestHandlerInvocation.Logger = Logger;
             IColomboHandleInvocation currentInvocation = requestHandlerInvocation;
+            foreach (var interceptor in RequestHandlerInterceptors.Reverse())
+            {
+                if (interceptor != null)
+                    currentInvocation = new RequestHandlerHandleInterceptorInvocation(interceptor, currentInvocation);
+            }
             return currentInvocation;
         }
     }
