@@ -7,6 +7,9 @@ using System.Diagnostics.Contracts;
 
 namespace Colombo.Impl
 {
+    /// <summary>
+    /// Default implementaion of <see cref="IMessageBus"/>.
+    /// </summary>
     public class MessageBus : IMessageBus
     {
         private ILogger logger = NullLogger.Instance;
@@ -18,6 +21,10 @@ namespace Colombo.Impl
 
         private readonly IRequestProcessor[] requestProcessors;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="requestProcessors">List of <see cref="IRequestProcessor"/> that could process the request.</param>
         public MessageBus(IRequestProcessor[] requestProcessors)
         {
             if ((requestProcessors == null) || (requestProcessors.Length == 0)) throw new ArgumentException("requestProcessors should have at least one IRequestProcessor.");
@@ -50,7 +57,10 @@ namespace Colombo.Impl
 
             var listRequests = new List<BaseRequest> { request1, request2 };
             listRequests.AddRange(followingRequests);
-            return InternalSend(listRequests);
+            var responsesGroup = InternalSend(listRequests);
+            
+            Contract.Assume(responsesGroup != null);
+            return responsesGroup;
         }
 
         protected virtual ResponsesGroup InternalSend(IList<BaseRequest> requests)
@@ -58,6 +68,9 @@ namespace Colombo.Impl
             var topInvocation = BuildSendInvocationChain();
             topInvocation.Requests = requests;
             topInvocation.Proceed();
+
+            if (topInvocation.Responses == null)
+                throw new ColomboException("Internal error: responses should not be null");
 
             return topInvocation.Responses;
         }

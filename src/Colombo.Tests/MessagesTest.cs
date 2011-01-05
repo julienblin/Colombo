@@ -10,7 +10,7 @@ using System.ComponentModel.DataAnnotations;
 namespace Colombo.Tests
 {
     [TestFixture]
-    public class MessagesTest
+    public class MessagesTest : BaseTest
     {
         [Test]
         public void Responses_should_be_serializables_using_the_DataContractSerializer()

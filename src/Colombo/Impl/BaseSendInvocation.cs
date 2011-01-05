@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Colombo.Impl
 {
+    /// <summary>
+    /// Base class for <see cref="IColomboSendInvocation"></see>.
+    /// </summary>
     public abstract class BaseSendInvocation : IColomboSendInvocation
     {
         public IList<BaseRequest> Requests { get; set; }

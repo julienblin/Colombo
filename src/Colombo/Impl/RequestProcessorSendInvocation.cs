@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace Colombo.Impl
 {
+    /// <summary>
+    /// A <see cref="IColomboSendInvocation"/> that can invoke <see cref="IRequestProcessor"/>.
+    /// </summary>
     public class RequestProcessorSendInvocation : BaseSendInvocation
     {
         private readonly IRequestProcessor[] requestProcessors;
@@ -19,6 +22,10 @@ namespace Colombo.Impl
             set { logger = value; }
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="requestProcessors">List of <see cref="IRequestProcessor"/> that could process the request.</param>
         public RequestProcessorSendInvocation(IRequestProcessor[] requestProcessors)
         {
             if ((requestProcessors == null) || (requestProcessors.Length == 0)) throw new ArgumentException("requestProcessors should have at least one IRequestProcessor.");

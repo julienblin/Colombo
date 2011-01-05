@@ -6,6 +6,10 @@ using System.Runtime.Serialization;
 
 namespace Colombo
 {
+    /// <summary>
+    /// An exception that include several inner exceptions.
+    /// Used when multiple exceptions are raised inside parallel execution.
+    /// </summary>
     [Serializable]
     public class ComposedColomboException : ColomboException
     {
@@ -22,6 +26,9 @@ namespace Colombo
             : base(info, context)
         { }
 
+        /// <summary>
+        /// All the inner exceptions.
+        /// </summary>
         public Exception[] InnerExceptions { get; private set; }
     }
 }

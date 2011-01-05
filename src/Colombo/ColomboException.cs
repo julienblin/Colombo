@@ -6,6 +6,9 @@ using System.Runtime.Serialization;
 
 namespace Colombo
 {
+    /// <summary>
+    /// An exception that occured inside Colombo.
+    /// </summary>
     [Serializable]
     public class ColomboException : Exception
     {
