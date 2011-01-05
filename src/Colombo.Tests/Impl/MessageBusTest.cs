@@ -212,5 +212,136 @@ namespace Colombo.Tests.Impl
                     Is.SameAs(response4));
             });
         }
+
+        [Test]
+        public void It_should_run_all_the_IMessageBusSendInterceptors()
+        {
+            var mocks = new MockRepository();
+            var request = mocks.Stub<Request<TestResponse>>();
+            var requests = new BaseRequest[] { request };
+            var newCorrelationGuid = Guid.NewGuid();
+            var responseFromProcessor = new TestResponse();
+            var responsesFromProcessor = new ResponsesGroup
+            {
+                { request, responseFromProcessor}
+            };
+
+            var responseFromInterceptor = new TestResponse();
+            var responsesFromInterceptor = new ResponsesGroup
+            {
+                { request, responseFromInterceptor}
+            };
+
+            var requestProcessor = mocks.StrictMock<IRequestProcessor>();
+
+            var interceptor1 = mocks.StrictMock<IMessageBusSendInterceptor>();
+            var interceptor2 = mocks.StrictMock<IMessageBusSendInterceptor>();
+
+            With.Mocks(mocks).ExpectingInSameOrder(() =>
+            {
+                Expect.Call(interceptor1.InterceptionPriority).Return(InterceptorPrority.High);
+                Expect.Call(interceptor2.InterceptionPriority).Return(InterceptorPrority.Medium);
+
+                interceptor1.Intercept(null);
+                LastCall.IgnoreArguments().Do(new InterceptDelegate((invocation) =>
+                {
+                    Assert.That(() => invocation.Requests[0].CorrelationGuid,
+                        Is.EqualTo(request.CorrelationGuid));
+                    invocation.Requests[0].CorrelationGuid = newCorrelationGuid;
+                    invocation.Proceed();
+                }));
+
+                interceptor2.Intercept(null);
+                LastCall.IgnoreArguments().Do(new InterceptDelegate((invocation) =>
+                {
+                    Assert.That(() => invocation.Requests[0].CorrelationGuid,
+                        Is.EqualTo(newCorrelationGuid));
+                    invocation.Proceed();
+                    invocation.Responses = responsesFromInterceptor;
+                }));
+
+                Expect.Call(requestProcessor.CanSend(request)).Return(true);
+                Expect.Call(requestProcessor.Process(requests)).Return(responsesFromProcessor);
+            }).Verify(() =>
+            {
+                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor });
+                messageBus.Logger = GetConsoleLogger();
+                messageBus.MessageBusSendInterceptors = new IMessageBusSendInterceptor[] { interceptor1, interceptor2 };
+                Assert.That(() => messageBus.Send(request),
+                    Is.SameAs(responseFromInterceptor));
+            });
+        }
+
+        [Test]
+        public void It_should_run_all_the_IMessageBusSendInterceptors_multiple_requests()
+        {
+            var mocks = new MockRepository();
+            var request1 = mocks.Stub<SideEffectFreeRequest<TestResponse>>();
+            var request2 = mocks.Stub<SideEffectFreeRequest<TestResponse>>();
+            var requests = new BaseRequest[] { request1, request2 };
+            var newCorrelationGuid = Guid.NewGuid();
+            
+            var responseFromProcessor1 = new TestResponse();
+            var responseFromProcessor2 = new TestResponse();
+            var responsesFromProcessor = new ResponsesGroup
+            {
+                { request1, responseFromProcessor1},
+                { request2, responseFromProcessor2}
+            };
+
+            var responseFromInterceptor1 = new TestResponse();
+            var responseFromInterceptor2 = new TestResponse();
+            var responsesFromInterceptor = new ResponsesGroup
+            {
+                { request1, responseFromInterceptor1},
+                { request2, responseFromInterceptor2}
+            };
+
+            var requestProcessor = mocks.StrictMock<IRequestProcessor>();
+
+            var interceptor1 = mocks.StrictMock<IMessageBusSendInterceptor>();
+            var interceptor2 = mocks.StrictMock<IMessageBusSendInterceptor>();
+
+            With.Mocks(mocks).ExpectingInSameOrder(() =>
+            {
+                Expect.Call(interceptor1.InterceptionPriority).Return(InterceptorPrority.Low);
+                Expect.Call(interceptor2.InterceptionPriority).Return(InterceptorPrority.High);
+
+                interceptor2.Intercept(null);
+                LastCall.IgnoreArguments().Do(new InterceptDelegate((invocation) =>
+                {
+                    Assert.That(() => invocation.Requests[0].CorrelationGuid,
+                        Is.EqualTo(request1.CorrelationGuid));
+                    Assert.That(() => invocation.Requests[1].CorrelationGuid,
+                        Is.EqualTo(request2.CorrelationGuid));
+                    invocation.Requests[1].CorrelationGuid = newCorrelationGuid;
+                    invocation.Proceed();
+                }));
+
+                interceptor1.Intercept(null);
+                LastCall.IgnoreArguments().Do(new InterceptDelegate((invocation) =>
+                {
+                    Assert.That(() => invocation.Requests[0].CorrelationGuid,
+                        Is.EqualTo(request1.CorrelationGuid));
+                    Assert.That(() => invocation.Requests[1].CorrelationGuid,
+                        Is.EqualTo(newCorrelationGuid));
+                    invocation.Proceed();
+                    invocation.Responses = responsesFromInterceptor;
+                }));
+
+                Expect.Call(requestProcessor.CanSend(request1)).Return(true);
+                Expect.Call(requestProcessor.CanSend(request2)).Return(true);
+                Expect.Call(requestProcessor.Process(requests)).Return(responsesFromProcessor);
+            }).Verify(() =>
+            {
+                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor });
+                messageBus.Logger = GetConsoleLogger();
+                messageBus.MessageBusSendInterceptors = new IMessageBusSendInterceptor[] { interceptor1, interceptor2 };
+                Assert.That(() => messageBus.Send(request1, request2),
+                    Is.SameAs(responsesFromInterceptor));
+            });
+        }
+
+        public delegate void InterceptDelegate(IColomboSendInvocation invocation);
     }
 }

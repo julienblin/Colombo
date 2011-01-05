@@ -19,6 +19,29 @@ namespace Colombo.Impl
             set { logger = value; }
         }
 
+        private IMessageBusSendInterceptor[] messageBusSendInterceptors = new IMessageBusSendInterceptor[0];
+        /// <summary>
+        /// The list of <see cref="IMessageBusSendInterceptor"/> to use.
+        /// </summary>
+        public IMessageBusSendInterceptor[] MessageBusSendInterceptors
+        {
+            get { return messageBusSendInterceptors; }
+            set
+            {
+                if (value == null) throw new ArgumentNullException("MessageBusSendInterceptors");
+                Contract.EndContractBlock();
+
+                messageBusSendInterceptors = value.OrderBy(x => x.InterceptionPriority).ToArray();
+                if (Logger.IsInfoEnabled)
+                {
+                    if (messageBusSendInterceptors.Length == 0)
+                        Logger.Info("No interceptor has been registered for sending.");
+                    else
+                        Logger.InfoFormat("Sending with the following interceptors: {0}", string.Join(", ", messageBusSendInterceptors.Select(x => x.GetType().Name)));
+                }
+            }
+        }
+
         private readonly IRequestProcessor[] requestProcessors;
 
         /// <summary>
@@ -56,7 +79,8 @@ namespace Colombo.Impl
             Contract.EndContractBlock();
 
             var listRequests = new List<BaseRequest> { request1, request2 };
-            listRequests.AddRange(followingRequests);
+            if(followingRequests != null)
+                listRequests.AddRange(followingRequests);
             var responsesGroup = InternalSend(listRequests);
             
             Contract.Assume(responsesGroup != null);
@@ -79,10 +103,18 @@ namespace Colombo.Impl
         {
             Contract.Assume(requestProcessors != null);
             Contract.Assume(requestProcessors.Length != 0);
+            Contract.Assume(MessageBusSendInterceptors != null);
 
             var requestProcessorInvocation = new RequestProcessorSendInvocation(requestProcessors);
             requestProcessorInvocation.Logger = Logger;
             IColomboSendInvocation currentInvocation = requestProcessorInvocation;
+
+            foreach (var interceptor in MessageBusSendInterceptors.Reverse())
+            {
+                if (interceptor != null)
+                    currentInvocation = new MessageBusSendInterceptorInvocation(interceptor, currentInvocation);
+            }
+
             return currentInvocation;
         }
 
