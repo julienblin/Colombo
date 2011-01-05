@@ -62,11 +62,11 @@ namespace Colombo.Impl
             }
 
             Logger.Debug("Parallel processing of the requests with the selected processors...");
-            var tasks = new List<Task<IDictionary<BaseRequest, Response>>>();
-            var tasksProcessorAssociation = new Dictionary<IRequestProcessor, Task<IDictionary<BaseRequest, Response>>>();
+            var tasks = new List<Task<ResponsesGroup>>();
+            var tasksProcessorAssociation = new Dictionary<IRequestProcessor, Task<ResponsesGroup>>();
             foreach (var processor in requestProcessorMapping.Keys)
             {
-                var task = Task.Factory.StartNew<IDictionary<BaseRequest, Response>>((proc) => 
+                var task = Task.Factory.StartNew<ResponsesGroup>((proc) => 
                     {
                         return ((IRequestProcessor)proc).Process(requestProcessorMapping[(IRequestProcessor)proc].ToArray());
                     },
@@ -75,19 +75,17 @@ namespace Colombo.Impl
                 tasks.Add(task);
                 tasksProcessorAssociation[processor] = task;
             }
-            Task.WaitAll(tasks.ToArray());
-
-            if (tasks.Any(t => t.IsFaulted))
+            try
             {
-                var faultedTasks = tasks.Where(t => t.IsFaulted);
-                var message = string.Format("The following exceptions where raised during the treatment of the requests: {0}", string.Join(", ", faultedTasks.Select(t => t.Exception.ToString())));
-                Logger.Error(message);
-                throw new ComposedColomboException(message, faultedTasks.Select(t => t.Exception).ToArray());
+                Task.WaitAll(tasks.ToArray());
             }
-            else
+            catch (AggregateException ex)
             {
-                Logger.Debug("All the processors have executed successfully.");
+                string message = "An exception occured inside one or several processors";
+                Logger.Error(message, ex);
+                throw new ColomboException(message, ex);
             }
+            Logger.Debug("All the processors have executed successfully.");
 
             Logger.Debug("Reconstituing responses...");
             Responses = new ResponsesGroup();

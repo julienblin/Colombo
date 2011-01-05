@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Diagnostics.Contracts;
 
 namespace Colombo
 {
     /// <summary>
     /// A components that can process requests into responses
     /// </summary>
+    [ContractClass(typeof(Contracts.RequestProcessorContract))]
     public interface IRequestProcessor
     {
         /// <summary>
