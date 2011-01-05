@@ -61,31 +61,12 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Facilities\ColomboFacilityTest.cs" />
-    <Compile Include="Impl\KernelRequestHandlerFactoryTest.cs" />
-    <Compile Include="Impl\LocalMessageProcessorTest.cs" />
-    <Compile Include="Impl\MessageBusParallelSendTest.cs" />
-    <Compile Include="Impl\MessageBusSendTest.cs" />
-    <Compile Include="Interceptors\CurrentCultureHandlerInterceptorTest.cs" />
-    <Compile Include="Interceptors\CurrentCultureSendInterceptorTest.cs" />
-    <Compile Include="Interceptors\DataAnnotationInterceptorTest.cs" />
-    <Compile Include="Interceptors\RequiredInContextHandlerInterceptorTest.cs" />
-    <Compile Include="Interceptors\SLASendInterceptorTest.cs" />
-    <Compile Include="Interceptors\TransactionScopeHandlerInterceptorTest.cs" />
-    <Compile Include="MessagesTest.cs" />
-    <Compile Include="RequestHandlerTest.cs" />
-    <Compile Include="TestResponse.cs" />
-    <Compile Include="Wcf\WcfClientMessageProcessorTest.cs" />
-    <Compile Include="Wcf\WcfServiceTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Colombo\Colombo.csproj">
       <Project>{E828FC62-6CE7-4D54-B20B-63F86E12072B}</Project>
       <Name>Colombo</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

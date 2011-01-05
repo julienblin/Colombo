@@ -8,7 +8,7 @@
 
   <loadtasks assembly="${folder.base}\lib\NAnt\NAnt.Contrib.Tasks.dll" />
 
-  <property name="company.name" value="CGI" />
+  <property name="author.name" value="Julien Blin" />
   <property name="repository.path" value="git://github.com/julienblin/Colombo.git" overwrite="false" />
 
   <property name="msbuild.configuration" value="Release" />
@@ -59,11 +59,11 @@
         <attribute type="AssemblyVersionAttribute" value="${version}" />
         <attribute type="AssemblyFileVersionAttribute" value="${version}" />
         <attribute type="AssemblyInformationalVersionAttribute" value="${version.informational}" />
-        <attribute type="AssemblyCompanyAttribute" value="${company.name}" />
+        <attribute type="AssemblyCompanyAttribute" value="${project.name}" />
         <attribute type="AssemblyTitleAttribute" value="${project.name}" />
         <attribute type="AssemblyProductAttribute" value="${project.name}" />
-        <attribute type="AssemblyDescriptionAttribute" value="${project.name} is a product of ${company.name} - ${repository.path}" />
-        <attribute type="AssemblyCopyrightAttribute" value="Copyright © ${company.name} ${datetime::get-year(now)}" />
+        <attribute type="AssemblyDescriptionAttribute" value="${project.name} - ${author.name} - ${repository.path}" />
+        <attribute type="AssemblyCopyrightAttribute" value="Copyright © ${author.name} ${datetime::get-year(now)}" />
         <attribute type="CLSCompliantAttribute" value="true" />
       </attributes>
     </asminfo>
