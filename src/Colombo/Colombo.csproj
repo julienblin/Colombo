@@ -93,6 +93,7 @@
     <Compile Include="IMessageBusSendInterceptor.cs" />
     <Compile Include="Impl\BaseHandleInvocation.cs" />
     <Compile Include="Impl\BaseSendInvocation.cs" />
+    <Compile Include="Impl\KernelRequestHandlerFactory.cs" />
     <Compile Include="Impl\LocalRequestProcessor.cs" />
     <Compile Include="Impl\MessageBus.cs" />
     <Compile Include="Impl\MessageBusSendInterceptorInvocation.cs" />
