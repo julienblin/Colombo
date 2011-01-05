@@ -32,7 +32,7 @@ namespace Colombo.Wcf
             try
             {
                 var localRequestProcessor = Kernel.Resolve<ILocalRequestProcessor>();
-                var undispatchableRequests = requests.Where(r => !localRequestProcessor.CanSend(r));
+                var undispatchableRequests = requests.Where(r => !localRequestProcessor.CanProcess(r));
                 if (undispatchableRequests.Count() > 0)
                     throw new ColomboException(string.Format("Unable to dispatch requests {0} locally.", string.Join(", ", undispatchableRequests.Select(x => x.ToString()))));
 

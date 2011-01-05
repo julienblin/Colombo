@@ -101,7 +101,7 @@ namespace Colombo.Impl
         private IRequestProcessor SelectAppropriateProcessorFor(BaseRequest request)
         {
             Contract.Assume(requestProcessors != null);
-            var selectedProcessors = requestProcessors.Where(x => (x != null) && (x.CanSend(request))).ToArray();
+            var selectedProcessors = requestProcessors.Where(x => (x != null) && (x.CanProcess(request))).ToArray();
 
             if (selectedProcessors.Length == 0)
                 LogAndThrowError("Unable to select an appropriate IRequestProcessor for {0} in {1}.", request, string.Join(", ", requestProcessors.Select(x => x.ToString())));

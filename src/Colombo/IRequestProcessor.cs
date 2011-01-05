@@ -15,7 +15,7 @@ namespace Colombo
         /// <summary>
         /// <c>true</c> if the processor can process the request, <c>false</c> otherwise.
         /// </summary>
-        bool CanSend(BaseRequest request);
+        bool CanProcess(BaseRequest request);
 
         /// <summary>
         /// Process the requests.

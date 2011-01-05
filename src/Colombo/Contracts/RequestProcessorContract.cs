@@ -9,7 +9,7 @@ namespace Colombo.Contracts
     [ContractClassFor(typeof(IRequestProcessor))]
     public abstract class RequestProcessorContract : IRequestProcessor
     {
-        public bool CanSend(BaseRequest request)
+        public bool CanProcess(BaseRequest request)
         {
             Contract.Requires<ArgumentNullException>(request != null, "request");
             throw new NotImplementedException();

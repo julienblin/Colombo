@@ -20,7 +20,7 @@ namespace Colombo.Tests.Impl
         }
 
         [Test]
-        public void It_should_rely_on_IRequestHandlerFactory_for_CanSend()
+        public void It_should_rely_on_IRequestHandlerFactory_for_CanProcess()
         {
             var mocks = new MockRepository();
             var request = mocks.Stub<Request<TestResponse>>();
@@ -33,7 +33,7 @@ namespace Colombo.Tests.Impl
             {
                 var processor = new LocalRequestProcessor(requestHandlerFactory);
                 processor.Logger = GetConsoleLogger();
-                Assert.That(() => processor.CanSend(request),
+                Assert.That(() => processor.CanProcess(request),
                     Is.False);
             });
         }

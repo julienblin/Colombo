@@ -51,7 +51,7 @@ namespace Colombo.Impl
             this.requestHandlerFactory = requestHandlerFactory;
         }
 
-        public bool CanSend(BaseRequest request)
+        public bool CanProcess(BaseRequest request)
         {
             if (request == null) throw new ArgumentNullException("request");
             Contract.EndContractBlock();

@@ -24,7 +24,7 @@ namespace Colombo.Tests.Impl
         }
 
         [Test]
-        public void It_should_throw_an_exception_when_no_IRequestProcessor_can_send()
+        public void It_should_throw_an_exception_when_no_IRequestProcessor_can_process()
         {
             var mocks = new MockRepository();
             var request = mocks.Stub<Request<TestResponse>>();
@@ -33,7 +33,7 @@ namespace Colombo.Tests.Impl
 
             With.Mocks(mocks).Expecting(() =>
             {
-                Expect.Call(requestProcessor.CanSend(request)).Return(false);
+                Expect.Call(requestProcessor.CanProcess(request)).Return(false);
             }).Verify(() =>
             {
                 var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor });
@@ -45,7 +45,7 @@ namespace Colombo.Tests.Impl
         }
 
         [Test]
-        public void It_should_throw_an_exception_when_no_IRequestProcessor_can_send_with_multiple_requests()
+        public void It_should_throw_an_exception_when_no_IRequestProcessor_can_process_with_multiple_requests()
         {
             var mocks = new MockRepository();
             var request1 = mocks.Stub<SideEffectFreeRequest<TestResponse>>();
@@ -56,10 +56,10 @@ namespace Colombo.Tests.Impl
 
             With.Mocks(mocks).Expecting(() =>
             {
-                Expect.Call(requestProcessor1.CanSend(request1)).Return(false);
-                Expect.Call(requestProcessor1.CanSend(request2)).Return(false);
-                Expect.Call(requestProcessor2.CanSend(request1)).Return(true);
-                Expect.Call(requestProcessor2.CanSend(request2)).Return(false);
+                Expect.Call(requestProcessor1.CanProcess(request1)).Return(false);
+                Expect.Call(requestProcessor1.CanProcess(request2)).Return(false);
+                Expect.Call(requestProcessor2.CanProcess(request1)).Return(true);
+                Expect.Call(requestProcessor2.CanProcess(request2)).Return(false);
             }).Verify(() =>
             {
                 var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor1, requestProcessor2 });
@@ -72,7 +72,7 @@ namespace Colombo.Tests.Impl
         }
 
         [Test]
-        public void It_should_throw_an_exception_when_too_many_IRequestProcessors_can_send()
+        public void It_should_throw_an_exception_when_too_many_IRequestProcessors_can_process()
         {
             var mocks = new MockRepository();
             var request = mocks.Stub<Request<TestResponse>>();
@@ -82,8 +82,8 @@ namespace Colombo.Tests.Impl
 
             With.Mocks(mocks).Expecting(() =>
             {
-                Expect.Call(requestProcessor1.CanSend(request)).Return(true);
-                Expect.Call(requestProcessor2.CanSend(request)).Return(true);
+                Expect.Call(requestProcessor1.CanProcess(request)).Return(true);
+                Expect.Call(requestProcessor2.CanProcess(request)).Return(true);
             }).Verify(() =>
             {
                 var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor1, requestProcessor2 });
@@ -96,7 +96,7 @@ namespace Colombo.Tests.Impl
         }
 
         [Test]
-        public void It_should_throw_an_exception_when_too_many_IRequestProcessors_can_send_multiple_requests()
+        public void It_should_throw_an_exception_when_too_many_IRequestProcessors_can_process_multiple_requests()
         {
             var mocks = new MockRepository();
             var request1 = mocks.Stub<SideEffectFreeRequest<TestResponse>>();
@@ -107,10 +107,10 @@ namespace Colombo.Tests.Impl
 
             With.Mocks(mocks).Expecting(() =>
             {
-                Expect.Call(requestProcessor1.CanSend(request1)).Return(false);
-                Expect.Call(requestProcessor1.CanSend(request2)).Return(true);
-                Expect.Call(requestProcessor2.CanSend(request1)).Return(true);
-                Expect.Call(requestProcessor2.CanSend(request2)).Return(true);
+                Expect.Call(requestProcessor1.CanProcess(request1)).Return(false);
+                Expect.Call(requestProcessor1.CanProcess(request2)).Return(true);
+                Expect.Call(requestProcessor2.CanProcess(request1)).Return(true);
+                Expect.Call(requestProcessor2.CanProcess(request2)).Return(true);
             }).Verify(() =>
             {
                 var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor1, requestProcessor2 });
@@ -139,8 +139,8 @@ namespace Colombo.Tests.Impl
 
             With.Mocks(mocks).Expecting(() =>
             {
-                Expect.Call(requestProcessor1.CanSend(request)).Return(false);
-                Expect.Call(requestProcessor2.CanSend(request)).Return(true);
+                Expect.Call(requestProcessor1.CanProcess(request)).Return(false);
+                Expect.Call(requestProcessor2.CanProcess(request)).Return(true);
                 Expect.Call(requestProcessor2.Process(requests)).Return(responses);
             }).Verify(() =>
             {
@@ -185,15 +185,15 @@ namespace Colombo.Tests.Impl
 
             With.Mocks(mocks).Expecting(() =>
             {
-                Expect.Call(requestProcessor1.CanSend(request1)).Return(true);
-                Expect.Call(requestProcessor1.CanSend(request2)).Return(false);
-                Expect.Call(requestProcessor1.CanSend(request3)).Return(true);
-                Expect.Call(requestProcessor1.CanSend(request4)).Return(false);
+                Expect.Call(requestProcessor1.CanProcess(request1)).Return(true);
+                Expect.Call(requestProcessor1.CanProcess(request2)).Return(false);
+                Expect.Call(requestProcessor1.CanProcess(request3)).Return(true);
+                Expect.Call(requestProcessor1.CanProcess(request4)).Return(false);
 
-                Expect.Call(requestProcessor2.CanSend(request1)).Return(false);
-                Expect.Call(requestProcessor2.CanSend(request2)).Return(true);
-                Expect.Call(requestProcessor2.CanSend(request3)).Return(false);
-                Expect.Call(requestProcessor2.CanSend(request4)).Return(true);
+                Expect.Call(requestProcessor2.CanProcess(request1)).Return(false);
+                Expect.Call(requestProcessor2.CanProcess(request2)).Return(true);
+                Expect.Call(requestProcessor2.CanProcess(request3)).Return(false);
+                Expect.Call(requestProcessor2.CanProcess(request4)).Return(true);
 
                 Expect.Call(requestProcessor1.Process(requestsForProcessor1)).Return(responsesForProcessor1);
                 Expect.Call(requestProcessor2.Process(requestsForProcessor2)).Return(responsesForProcessor2);
@@ -260,7 +260,7 @@ namespace Colombo.Tests.Impl
                     invocation.Responses = responsesFromInterceptor;
                 }));
 
-                Expect.Call(requestProcessor.CanSend(request)).Return(true);
+                Expect.Call(requestProcessor.CanProcess(request)).Return(true);
                 Expect.Call(requestProcessor.Process(requests)).Return(responsesFromProcessor);
             }).Verify(() =>
             {
@@ -329,8 +329,8 @@ namespace Colombo.Tests.Impl
                     invocation.Responses = responsesFromInterceptor;
                 }));
 
-                Expect.Call(requestProcessor.CanSend(request1)).Return(true);
-                Expect.Call(requestProcessor.CanSend(request2)).Return(true);
+                Expect.Call(requestProcessor.CanProcess(request1)).Return(true);
+                Expect.Call(requestProcessor.CanProcess(request2)).Return(true);
                 Expect.Call(requestProcessor.Process(requests)).Return(responsesFromProcessor);
             }).Verify(() =>
             {

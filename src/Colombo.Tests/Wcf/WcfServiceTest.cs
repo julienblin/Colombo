@@ -78,7 +78,7 @@ namespace Colombo.Tests.Wcf
 
             With.Mocks(mocks).Expecting(() =>
             {
-                Expect.Call(processor.CanSend(request)).Return(false).Repeat.Twice();
+                Expect.Call(processor.CanProcess(request)).Return(false).Repeat.Twice();
             }).Verify(() =>
             {
                 Assert.That(() => service.Process(requests),
@@ -114,8 +114,8 @@ namespace Colombo.Tests.Wcf
 
             With.Mocks(mocks).Expecting(() =>
             {
-                Expect.Call(processor.CanSend(request1)).Return(true);
-                Expect.Call(processor.CanSend(request2)).Return(true);
+                Expect.Call(processor.CanProcess(request1)).Return(true);
+                Expect.Call(processor.CanProcess(request2)).Return(true);
                 Expect.Call(processor.Process(null)).IgnoreArguments().Return(responsesGroup);
             }).Verify(() =>
             {
