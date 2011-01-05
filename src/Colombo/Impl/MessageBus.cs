@@ -44,6 +44,10 @@ namespace Colombo.Impl
 
         public ResponsesGroup Send(BaseSideEffectFreeRequest request1, BaseSideEffectFreeRequest request2, params BaseSideEffectFreeRequest[] followingRequests)
         {
+            if (request1 == null) throw new ArgumentNullException("request1");
+            if (request2 == null) throw new ArgumentNullException("request2");
+            Contract.EndContractBlock();
+
             var listRequests = new List<BaseRequest> { request1, request2 };
             listRequests.AddRange(followingRequests);
             return InternalSend(listRequests);

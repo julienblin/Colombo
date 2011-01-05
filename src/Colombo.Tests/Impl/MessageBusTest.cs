@@ -9,7 +9,7 @@ using Rhino.Mocks;
 namespace Colombo.Tests.Impl
 {
     [TestFixture]
-    public class MessageBusTest
+    public class MessageBusTest : BaseTest
     {
         [Test]
         public void It_should_ensure_that_at_least_one_IRequestProcessor_is_provided()
@@ -37,6 +37,7 @@ namespace Colombo.Tests.Impl
             }).Verify(() =>
             {
                 var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor });
+                messageBus.Logger = GetConsoleLogger();
                 Assert.That(() => messageBus.Send(request),
                     Throws.Exception.TypeOf<ColomboException>()
                     .With.Message.Contains(requestProcessor.GetType().Name));
@@ -62,6 +63,7 @@ namespace Colombo.Tests.Impl
             }).Verify(() =>
             {
                 var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor1, requestProcessor2 });
+                messageBus.Logger = GetConsoleLogger();
                 Assert.That(() => messageBus.Send(request1, request2),
                     Throws.Exception.TypeOf<ColomboException>()
                     .With.Message.Contains(requestProcessor1.GetType().Name)
@@ -85,6 +87,7 @@ namespace Colombo.Tests.Impl
             }).Verify(() =>
             {
                 var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor1, requestProcessor2 });
+                messageBus.Logger = GetConsoleLogger();
                 Assert.That(() => messageBus.Send(request),
                     Throws.Exception.TypeOf<ColomboException>()
                     .With.Message.Contains(requestProcessor1.GetType().Name)
@@ -111,6 +114,7 @@ namespace Colombo.Tests.Impl
             }).Verify(() =>
             {
                 var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor1, requestProcessor2 });
+                messageBus.Logger = GetConsoleLogger();
                 Assert.That(() => messageBus.Send(request1, request2),
                     Throws.Exception.TypeOf<ColomboException>()
                     .With.Message.Contains(requestProcessor1.GetType().Name)
@@ -141,6 +145,7 @@ namespace Colombo.Tests.Impl
             }).Verify(() =>
             {
                 var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor1, requestProcessor2 });
+                messageBus.Logger = GetConsoleLogger();
                 Assert.That(() => messageBus.Send(request),
                     Is.SameAs(response));
             });
@@ -195,6 +200,7 @@ namespace Colombo.Tests.Impl
             }).Verify(() =>
             {
                 var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor1, requestProcessor2 });
+                messageBus.Logger = GetConsoleLogger();
                 var responses = messageBus.Send(request1, request2, request3, request4);
                 Assert.That(() => responses[request1],
                     Is.SameAs(response1));
