@@ -70,6 +70,7 @@
     <Compile Include="Impl\MessageBusTest.cs" />
     <Compile Include="MessagesTest.cs" />
     <Compile Include="TestResponse.cs" />
+    <Compile Include="Wcf\WcfServiceTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Colombo\Colombo.csproj">

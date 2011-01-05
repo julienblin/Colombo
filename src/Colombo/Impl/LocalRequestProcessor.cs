@@ -11,7 +11,7 @@ namespace Colombo.Impl
     /// <summary>
     /// Default implementation for processing requests locally.
     /// </summary>
-    public class LocalRequestProcessor : IRequestProcessor
+    public class LocalRequestProcessor : ILocalRequestProcessor
     {
         private ILogger logger = NullLogger.Instance;
         public ILogger Logger
