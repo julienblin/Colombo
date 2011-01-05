@@ -19,12 +19,12 @@ namespace Colombo
         /// <summary>
         /// Represents an identifier that could relate several messages together.
         /// </summary>
-        public Guid CorrelationGuid { get; set; }
+        public virtual Guid CorrelationGuid { get; set; }
 
         /// <summary>
         /// Timestamp for the creation of the message, expressed as UTC.
         /// </summary>
-        public DateTime UtcTimestamp { get; set; }
+        public virtual DateTime UtcTimestamp { get; set; }
 
         public override string ToString()
         {

@@ -16,109 +16,57 @@ namespace Colombo.Impl
             set { logger = value; }
         }
 
+        private readonly IRequestProcessor[] requestProcessors;
+
+        public MessageBus(IRequestProcessor[] requestProcessors)
+        {
+            if ((requestProcessors == null) || (requestProcessors.Length == 0)) throw new ArgumentException("requestProcessors should have at least one IRequestProcessor.");
+            Contract.EndContractBlock();
+
+            this.requestProcessors = requestProcessors;
+        }
+
         public TResponse Send<TResponse>(Request<TResponse> request) where TResponse : Response, new()
         {
             if (request == null) throw new ArgumentNullException("request");
             Contract.EndContractBlock();
 
-            var responses = InternalSend(request);
+            var responses = InternalSend(new List<BaseRequest> { request });
             Contract.Assume(responses != null);
-            Contract.Assume(responses.Length == 1);
+            Contract.Assume(responses.Count == 1);
 
-            var typedResponse = responses[0] as TResponse;
+            var typedResponse = responses[request] as TResponse;
             if(typedResponse == null)
-                LogAndThrowError("Internal error: InternalSend returned null or incorrect response type: expected {0}, actual {1}.", typeof(TResponse), responses[0].GetType());
+                LogAndThrowError("Internal error: InternalSend returned null or incorrect response type: expected {0}, actual {1}.", typeof(TResponse), responses[request].GetType());
 
             return typedResponse;
         }
 
-        public ResponseGroup<TFirstResponse, TSecondResponse>
-            Send<TFirstResponse, TSecondResponse>
-            (SideEffectFreeRequest<TFirstResponse> firstRequest, SideEffectFreeRequest<TSecondResponse> secondRequest)
-            where TFirstResponse : Response, new()
-            where TSecondResponse : Response, new()
+        public ResponsesGroup Send(BaseSideEffectFreeRequest request1, BaseSideEffectFreeRequest request2, params BaseSideEffectFreeRequest[] followingRequests)
         {
-            if (firstRequest == null) throw new ArgumentNullException("firstRequest");
-            if (secondRequest == null) throw new ArgumentNullException("secondRequest");
-            Contract.EndContractBlock();
-
-            var responses = InternalSend(firstRequest, secondRequest);
-            Contract.Assume(responses != null);
-            Contract.Assume(responses.Length == 2);
-
-            return new ResponseGroup<TFirstResponse, TSecondResponse>(responses);
+            var listRequests = new List<BaseRequest> { request1, request2 };
+            listRequests.AddRange(followingRequests);
+            return InternalSend(listRequests);
         }
 
-        public ResponseGroup<TFirstResponse, TSecondResponse, TThirdResponse>
-            Send<TFirstResponse, TSecondResponse, TThirdResponse>
-            (SideEffectFreeRequest<TFirstResponse> firstRequest, SideEffectFreeRequest<TSecondResponse> secondRequest,
-             SideEffectFreeRequest<TThirdResponse> thirdRequest)
-            where TFirstResponse : Response, new()
-            where TSecondResponse : Response, new()
-            where TThirdResponse : Response, new()
+        protected virtual ResponsesGroup InternalSend(IList<BaseRequest> requests)
         {
-            if (firstRequest == null) throw new ArgumentNullException("firstRequest");
-            if (secondRequest == null) throw new ArgumentNullException("secondRequest");
-            if (thirdRequest == null) throw new ArgumentNullException("thirdRequest");
-            Contract.EndContractBlock();
+            var topInvocation = BuildSendInvocationChain();
+            topInvocation.Requests = requests;
+            topInvocation.Proceed();
 
-            var responses = InternalSend(firstRequest, secondRequest, thirdRequest);
-            Contract.Assume(responses != null);
-            Contract.Assume(responses.Length == 3);
-
-            return new ResponseGroup<TFirstResponse, TSecondResponse, TThirdResponse>(responses);
+            return topInvocation.Responses;
         }
 
-        public ResponseGroup<TFirstResponse, TSecondResponse, TThirdResponse, TFourthResponse>
-            Send<TFirstResponse, TSecondResponse, TThirdResponse, TFourthResponse>
-            (SideEffectFreeRequest<TFirstResponse> firstRequest, SideEffectFreeRequest<TSecondResponse> secondRequest,
-             SideEffectFreeRequest<TThirdResponse> thirdRequest, SideEffectFreeRequest<TFourthResponse> fourthRequest)
-            where TFirstResponse : Response, new()
-            where TSecondResponse : Response, new()
-            where TThirdResponse : Response, new()
-            where TFourthResponse : Response, new()
+        private IColomboSendInvocation BuildSendInvocationChain()
         {
-            if (firstRequest == null) throw new ArgumentNullException("firstRequest");
-            if (secondRequest == null) throw new ArgumentNullException("secondRequest");
-            if (thirdRequest == null) throw new ArgumentNullException("thirdRequest");
-            if (fourthRequest == null) throw new ArgumentNullException("fourthRequest");
-            Contract.EndContractBlock();
+            Contract.Assume(requestProcessors != null);
+            Contract.Assume(requestProcessors.Length != 0);
 
-            var responses = InternalSend(firstRequest, secondRequest, thirdRequest, fourthRequest);
-            Contract.Assume(responses != null);
-            Contract.Assume(responses.Length == 4);
-
-            return new ResponseGroup<TFirstResponse, TSecondResponse, TThirdResponse, TFourthResponse>(responses);
-        }
-
-        public ResponseGroup<TFirstResponse, TSecondResponse, TThirdResponse, TFourthResponse, TFifthResponse>
-            Send<TFirstResponse, TSecondResponse, TThirdResponse, TFourthResponse, TFifthResponse>
-            (SideEffectFreeRequest<TFirstResponse> firstRequest, SideEffectFreeRequest<TSecondResponse> secondRequest,
-             SideEffectFreeRequest<TThirdResponse> thirdRequest, SideEffectFreeRequest<TFourthResponse> fourthRequest,
-             SideEffectFreeRequest<TFifthResponse> fifthRequest)
-            where TFirstResponse : Response, new()
-            where TSecondResponse : Response, new()
-            where TThirdResponse : Response, new()
-            where TFourthResponse : Response, new()
-            where TFifthResponse : Response, new()
-        {
-            if (firstRequest == null) throw new ArgumentNullException("firstRequest");
-            if (secondRequest == null) throw new ArgumentNullException("secondRequest");
-            if (thirdRequest == null) throw new ArgumentNullException("thirdRequest");
-            if (fourthRequest == null) throw new ArgumentNullException("fourthRequest");
-            if (fifthRequest == null) throw new ArgumentNullException("fifthRequest");
-            Contract.EndContractBlock();
-
-            var responses = InternalSend(firstRequest, secondRequest, thirdRequest, fourthRequest, fifthRequest);
-            Contract.Assume(responses != null);
-            Contract.Assume(responses.Length == 5);
-
-            return new ResponseGroup<TFirstResponse, TSecondResponse, TThirdResponse, TFourthResponse, TFifthResponse>(responses);
-        }
-
-        protected virtual Response[] InternalSend(params BaseRequest[] requests)
-        {
-            throw new NotImplementedException();
+            var requestProcessorInvocation = new RequestProcessorSendInvocation(requestProcessors);
+            requestProcessorInvocation.Logger = Logger;
+            IColomboSendInvocation currentInvocation = requestProcessorInvocation;
+            return currentInvocation;
         }
 
         protected virtual void LogAndThrowError(string format, params object[] args)

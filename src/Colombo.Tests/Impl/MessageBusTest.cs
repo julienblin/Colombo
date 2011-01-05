@@ -1,0 +1,210 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using NUnit.Framework;
+using Colombo.Impl;
+using Rhino.Mocks;
+
+namespace Colombo.Tests.Impl
+{
+    [TestFixture]
+    public class MessageBusTest
+    {
+        [Test]
+        public void It_should_ensure_that_at_least_one_IRequestProcessor_is_provided()
+        {
+            Assert.That(() => new MessageBus(null),
+                Throws.Exception.TypeOf<ArgumentException>()
+                .With.Message.Contains("requestProcessors"));
+
+            Assert.That(() => new MessageBus(new IRequestProcessor[] { }),
+                Throws.Exception.TypeOf<ArgumentException>()
+                .With.Message.Contains("requestProcessors"));
+        }
+
+        [Test]
+        public void It_should_throw_an_exception_when_no_IRequestProcessor_can_send()
+        {
+            var mocks = new MockRepository();
+            var request = mocks.Stub<Request<TestResponse>>();
+
+            var requestProcessor = mocks.DynamicMock<IRequestProcessor>();
+
+            With.Mocks(mocks).Expecting(() =>
+            {
+                Expect.Call(requestProcessor.CanSend(request)).Return(false);
+            }).Verify(() =>
+            {
+                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor });
+                Assert.That(() => messageBus.Send(request),
+                    Throws.Exception.TypeOf<ColomboException>()
+                    .With.Message.Contains(requestProcessor.GetType().Name));
+            });
+        }
+
+        [Test]
+        public void It_should_throw_an_exception_when_no_IRequestProcessor_can_send_with_multiple_requests()
+        {
+            var mocks = new MockRepository();
+            var request1 = mocks.Stub<SideEffectFreeRequest<TestResponse>>();
+            var request2 = mocks.Stub<SideEffectFreeRequest<TestResponse>>();
+
+            var requestProcessor1 = mocks.DynamicMock<IRequestProcessor>();
+            var requestProcessor2 = mocks.DynamicMock<IRequestProcessor>();
+
+            With.Mocks(mocks).Expecting(() =>
+            {
+                Expect.Call(requestProcessor1.CanSend(request1)).Return(false);
+                Expect.Call(requestProcessor1.CanSend(request2)).Return(false);
+                Expect.Call(requestProcessor2.CanSend(request1)).Return(true);
+                Expect.Call(requestProcessor2.CanSend(request2)).Return(false);
+            }).Verify(() =>
+            {
+                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor1, requestProcessor2 });
+                Assert.That(() => messageBus.Send(request1, request2),
+                    Throws.Exception.TypeOf<ColomboException>()
+                    .With.Message.Contains(requestProcessor1.GetType().Name)
+                    .With.Message.Contains(requestProcessor2.GetType().Name));
+            });
+        }
+
+        [Test]
+        public void It_should_throw_an_exception_when_too_many_IRequestProcessors_can_send()
+        {
+            var mocks = new MockRepository();
+            var request = mocks.Stub<Request<TestResponse>>();
+
+            var requestProcessor1 = mocks.StrictMock<IRequestProcessor>();
+            var requestProcessor2 = mocks.StrictMock<IRequestProcessor>();
+
+            With.Mocks(mocks).Expecting(() =>
+            {
+                Expect.Call(requestProcessor1.CanSend(request)).Return(true);
+                Expect.Call(requestProcessor2.CanSend(request)).Return(true);
+            }).Verify(() =>
+            {
+                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor1, requestProcessor2 });
+                Assert.That(() => messageBus.Send(request),
+                    Throws.Exception.TypeOf<ColomboException>()
+                    .With.Message.Contains(requestProcessor1.GetType().Name)
+                    .With.Message.Contains(requestProcessor2.GetType().Name));
+            });
+        }
+
+        [Test]
+        public void It_should_throw_an_exception_when_too_many_IRequestProcessors_can_send_multiple_requests()
+        {
+            var mocks = new MockRepository();
+            var request1 = mocks.Stub<SideEffectFreeRequest<TestResponse>>();
+            var request2 = mocks.Stub<SideEffectFreeRequest<TestResponse>>();
+
+            var requestProcessor1 = mocks.StrictMock<IRequestProcessor>();
+            var requestProcessor2 = mocks.StrictMock<IRequestProcessor>();
+
+            With.Mocks(mocks).Expecting(() =>
+            {
+                Expect.Call(requestProcessor1.CanSend(request1)).Return(false);
+                Expect.Call(requestProcessor1.CanSend(request2)).Return(true);
+                Expect.Call(requestProcessor2.CanSend(request1)).Return(true);
+                Expect.Call(requestProcessor2.CanSend(request2)).Return(true);
+            }).Verify(() =>
+            {
+                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor1, requestProcessor2 });
+                Assert.That(() => messageBus.Send(request1, request2),
+                    Throws.Exception.TypeOf<ColomboException>()
+                    .With.Message.Contains(requestProcessor1.GetType().Name)
+                    .With.Message.Contains(requestProcessor2.GetType().Name));
+            });
+        }
+
+        [Test]
+        public void It_should_call_selected_IRequestProcessors_Process_method()
+        {
+            var mocks = new MockRepository();
+            var request = mocks.Stub<Request<TestResponse>>();
+            var requests = new BaseRequest[] { request };
+            var response = new TestResponse();
+            var responses = new ResponsesGroup
+            {
+                { request, response}
+            };
+
+            var requestProcessor1 = mocks.StrictMock<IRequestProcessor>();
+            var requestProcessor2 = mocks.StrictMock<IRequestProcessor>();
+
+            With.Mocks(mocks).Expecting(() =>
+            {
+                Expect.Call(requestProcessor1.CanSend(request)).Return(false);
+                Expect.Call(requestProcessor2.CanSend(request)).Return(true);
+                Expect.Call(requestProcessor2.Process(requests)).Return(responses);
+            }).Verify(() =>
+            {
+                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor1, requestProcessor2 });
+                Assert.That(() => messageBus.Send(request),
+                    Is.SameAs(response));
+            });
+        }
+
+        [Test]
+        public void It_should_call_selected_IRequestProcessors_Process_method_multiple_requests()
+        {
+            var mocks = new MockRepository();
+            var request1 = mocks.Stub<SideEffectFreeRequest<TestResponse>>();
+            var request2 = mocks.Stub<SideEffectFreeRequest<TestResponse>>();
+            var request3 = mocks.Stub<SideEffectFreeRequest<TestResponse>>();
+            var request4 = mocks.Stub<SideEffectFreeRequest<TestResponse>>();
+            var requestsForProcessor1 = new BaseRequest[] { request1, request3 };
+            var requestsForProcessor2 = new BaseRequest[] { request2, request4 };
+            var response1 = new TestResponse();
+            response1.CorrelationGuid = request1.CorrelationGuid;
+            var response2 = new TestResponse();
+            response2.CorrelationGuid = request2.CorrelationGuid;
+            var response3 = new TestResponse();
+            response3.CorrelationGuid = request3.CorrelationGuid;
+            var response4 = new TestResponse();
+            response4.CorrelationGuid = request4.CorrelationGuid;
+            var responsesForProcessor1 = new ResponsesGroup
+            {
+                { request1, response1 },
+                { request3, response3 },
+            };
+            var responsesForProcessor2 = new ResponsesGroup
+            {
+                { request2, response2 },
+                { request4, response4 },
+            };
+
+            var requestProcessor1 = mocks.StrictMock<IRequestProcessor>();
+            var requestProcessor2 = mocks.StrictMock<IRequestProcessor>();
+
+            With.Mocks(mocks).Expecting(() =>
+            {
+                Expect.Call(requestProcessor1.CanSend(request1)).Return(true);
+                Expect.Call(requestProcessor1.CanSend(request2)).Return(false);
+                Expect.Call(requestProcessor1.CanSend(request3)).Return(true);
+                Expect.Call(requestProcessor1.CanSend(request4)).Return(false);
+
+                Expect.Call(requestProcessor2.CanSend(request1)).Return(false);
+                Expect.Call(requestProcessor2.CanSend(request2)).Return(true);
+                Expect.Call(requestProcessor2.CanSend(request3)).Return(false);
+                Expect.Call(requestProcessor2.CanSend(request4)).Return(true);
+
+                Expect.Call(requestProcessor1.Process(requestsForProcessor1)).Return(responsesForProcessor1);
+                Expect.Call(requestProcessor2.Process(requestsForProcessor2)).Return(responsesForProcessor2);
+            }).Verify(() =>
+            {
+                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor1, requestProcessor2 });
+                var responses = messageBus.Send(request1, request2, request3, request4);
+                Assert.That(() => responses[request1],
+                    Is.SameAs(response1));
+                Assert.That(() => responses[request2],
+                    Is.SameAs(response2));
+                Assert.That(() => responses[request3],
+                    Is.SameAs(response3));
+                Assert.That(() => responses[request4],
+                    Is.SameAs(response4));
+            });
+        }
+    }
+}

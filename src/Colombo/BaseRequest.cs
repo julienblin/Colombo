@@ -15,7 +15,7 @@ namespace Colombo
         /// <summary>
         /// Context of the request. Garanteed to be non-null.
         /// </summary>
-        public IDictionary<string, string> Context
+        public virtual IDictionary<string, string> Context
         {
             get
             {

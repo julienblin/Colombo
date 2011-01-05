@@ -79,13 +79,19 @@
     </Compile>
     <Compile Include="BaseMessage.cs" />
     <Compile Include="BaseRequest.cs" />
+    <Compile Include="BaseSideEffectFreeRequest.cs" />
     <Compile Include="ColomboException.cs" />
     <Compile Include="Contracts\MessageBusContract.cs" />
+    <Compile Include="ComposedColomboException.cs" />
+    <Compile Include="IColomboSendInvocation.cs" />
     <Compile Include="IMessageBus.cs" />
+    <Compile Include="Impl\BaseSendInvocation.cs" />
     <Compile Include="Impl\MessageBus.cs" />
+    <Compile Include="Impl\RequestProcessorSendInvocation.cs" />
+    <Compile Include="IRequestProcessor.cs" />
     <Compile Include="Request.cs" />
     <Compile Include="Response.cs" />
-    <Compile Include="ResponseGroup.cs" />
+    <Compile Include="ResponsesGroup.cs" />
     <Compile Include="SideEffectFreeRequest.cs" />
   </ItemGroup>
   <ItemGroup />

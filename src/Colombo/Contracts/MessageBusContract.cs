@@ -16,67 +16,11 @@ namespace Colombo.Contracts
             throw new NotImplementedException();
         }
 
-        public ResponseGroup<TFirstResponse, TSecondResponse>
-            Send<TFirstResponse, TSecondResponse>
-            (SideEffectFreeRequest<TFirstResponse> firstRequest, SideEffectFreeRequest<TSecondResponse> secondRequest)
-            where TFirstResponse : Response, new()
-            where TSecondResponse : Response, new()
+        public ResponsesGroup Send(BaseSideEffectFreeRequest request1, BaseSideEffectFreeRequest request2, params BaseSideEffectFreeRequest[] followingRequests)
         {
-            Contract.Requires<ArgumentNullException>(firstRequest != null, "firstRequest");
-            Contract.Requires<ArgumentNullException>(secondRequest != null, "secondRequest");
-            Contract.Ensures(Contract.Result<ResponseGroup<TFirstResponse, TSecondResponse>>() != null);
-            throw new NotImplementedException();
-        }
-
-        public ResponseGroup<TFirstResponse, TSecondResponse, TThirdResponse>
-            Send<TFirstResponse, TSecondResponse, TThirdResponse>
-            (SideEffectFreeRequest<TFirstResponse> firstRequest, SideEffectFreeRequest<TSecondResponse> secondRequest,
-             SideEffectFreeRequest<TThirdResponse> thirdRequest)
-            where TFirstResponse : Response, new()
-            where TSecondResponse : Response, new()
-            where TThirdResponse : Response, new()
-        {
-            Contract.Requires<ArgumentNullException>(firstRequest != null, "firstRequest");
-            Contract.Requires<ArgumentNullException>(secondRequest != null, "secondRequest");
-            Contract.Requires<ArgumentNullException>(thirdRequest != null, "thirdRequest");
-            Contract.Ensures(Contract.Result<ResponseGroup<TFirstResponse, TSecondResponse, TThirdResponse>>() != null);
-            throw new NotImplementedException();
-        }
-
-        public ResponseGroup<TFirstResponse, TSecondResponse, TThirdResponse, TFourthResponse>
-            Send<TFirstResponse, TSecondResponse, TThirdResponse, TFourthResponse>
-            (SideEffectFreeRequest<TFirstResponse> firstRequest, SideEffectFreeRequest<TSecondResponse> secondRequest,
-             SideEffectFreeRequest<TThirdResponse> thirdRequest, SideEffectFreeRequest<TFourthResponse> fourthRequest)
-            where TFirstResponse : Response, new()
-            where TSecondResponse : Response, new()
-            where TThirdResponse : Response, new()
-            where TFourthResponse : Response, new()
-        {
-            Contract.Requires<ArgumentNullException>(firstRequest != null, "firstRequest");
-            Contract.Requires<ArgumentNullException>(secondRequest != null, "secondRequest");
-            Contract.Requires<ArgumentNullException>(thirdRequest != null, "thirdRequest");
-            Contract.Requires<ArgumentNullException>(fourthRequest != null, "fourthRequest");
-            Contract.Ensures(Contract.Result<ResponseGroup<TFirstResponse, TSecondResponse, TThirdResponse, TFourthResponse>>() != null);
-            throw new NotImplementedException();
-        }
-
-        public ResponseGroup<TFirstResponse, TSecondResponse, TThirdResponse, TFourthResponse, TFifthResponse>
-            Send<TFirstResponse, TSecondResponse, TThirdResponse, TFourthResponse, TFifthResponse>
-            (SideEffectFreeRequest<TFirstResponse> firstRequest, SideEffectFreeRequest<TSecondResponse> secondRequest,
-             SideEffectFreeRequest<TThirdResponse> thirdRequest, SideEffectFreeRequest<TFourthResponse> fourthRequest,
-             SideEffectFreeRequest<TFifthResponse> fifthRequest)
-            where TFirstResponse : Response, new()
-            where TSecondResponse : Response, new()
-            where TThirdResponse : Response, new()
-            where TFourthResponse : Response, new()
-            where TFifthResponse : Response, new()
-        {
-            Contract.Requires<ArgumentNullException>(firstRequest != null, "firstRequest");
-            Contract.Requires<ArgumentNullException>(secondRequest != null, "secondRequest");
-            Contract.Requires<ArgumentNullException>(thirdRequest != null, "thirdRequest");
-            Contract.Requires<ArgumentNullException>(fourthRequest != null, "fourthRequest");
-            Contract.Requires<ArgumentNullException>(fifthRequest != null, "fifthRequest");
-            Contract.Ensures(Contract.Result<ResponseGroup<TFirstResponse, TSecondResponse, TThirdResponse, TFourthResponse, TFifthResponse>>() != null);
+            Contract.Requires<ArgumentNullException>(request1 != null, "request1");
+            Contract.Requires<ArgumentNullException>(request2 != null, "request2");
+            Contract.Ensures(Contract.Result<ResponsesGroup>() != null);
             throw new NotImplementedException();
         }
     }
