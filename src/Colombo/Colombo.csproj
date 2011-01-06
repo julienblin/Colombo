@@ -112,6 +112,7 @@
     <Compile Include="Wcf\EmbedTypeInSerializerAttribute.cs" />
     <Compile Include="Wcf\IWcfService.cs" />
     <Compile Include="Wcf\WcfClientBaseService.cs" />
+    <Compile Include="Wcf\WcfClientRequestProcessor.cs" />
     <Compile Include="Wcf\WcfService.cs" />
   </ItemGroup>
   <ItemGroup />

@@ -70,6 +70,7 @@
     <Compile Include="Impl\MessageBusTest.cs" />
     <Compile Include="MessagesTest.cs" />
     <Compile Include="TestResponse.cs" />
+    <Compile Include="Wcf\WcfClientRequestProcessorTest.cs" />
     <Compile Include="Wcf\WcfServiceTest.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -77,6 +78,9 @@
       <Project>{E828FC62-6CE7-4D54-B20B-63F86E12072B}</Project>
       <Name>Colombo</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
