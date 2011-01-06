@@ -22,13 +22,23 @@ namespace Colombo.Wcf
             set { logger = value; }
         }
 
+        private readonly IWcfClientBaseServiceFactory clientBaseServiceFactory;
+
+        public WcfClientRequestProcessor(IWcfClientBaseServiceFactory clientBaseServiceFactory)
+        {
+            this.clientBaseServiceFactory = clientBaseServiceFactory;
+        }
+
         public bool CanProcess(BaseRequest request)
         {
             if (request == null) throw new ArgumentNullException("request");
             Contract.EndContractBlock();
 
-            var channelEndpoint = GetChannelEndpointElement(request.GetGroupName());
-            return channelEndpoint != null;
+            var groupName = request.GetGroupName();
+            if (string.IsNullOrEmpty(groupName))
+                throw new ColomboException(string.Format("Groupname cannot be null or empty for {0}", request));
+
+            return clientBaseServiceFactory.CanCreateClientBaseForRequestGroup(groupName);
         }
 
         public ResponsesGroup Process(IList<BaseRequest> requests)
@@ -39,17 +49,19 @@ namespace Colombo.Wcf
             var requestsGroups = requests.GroupBy(x => x.GetGroupName());
             foreach (var requestsGroup in requestsGroups)
             {
-                if (GetChannelEndpointElement(requestsGroup.Key) == null)
+                Contract.Assume(requestsGroup.Key != null);
+                if (!clientBaseServiceFactory.CanCreateClientBaseForRequestGroup(requestsGroup.Key))
                     throw new ColomboException(string.Format("Internal error: Unable to send to {0}.", requestsGroup.Key));
             }
 
             if (Logger.IsDebugEnabled)
             {
                 Logger.Debug("Mapping for requests/uri is the following:");
-                foreach (var requestGroup in requestsGroups)
+                foreach (var requestsGroup in requestsGroups)
                 {
-                    Logger.DebugFormat("{0} => {{", GetChannelEndpointElement(requestGroup.Key).Address.AbsoluteUri);
-                    foreach (var request in requestGroup)
+                    Contract.Assume(requestsGroup.Key != null);
+                    Logger.DebugFormat("{0} => {{", clientBaseServiceFactory.GetAddressForRequestGroup(requestsGroup.Key));
+                    foreach (var request in requestsGroup)
                     {
                         Logger.DebugFormat("  {0}", request);
                     }
@@ -64,7 +76,7 @@ namespace Colombo.Wcf
                 var task = Task.Factory.StartNew<Response[]>((g) =>
                     {
                         var group = (IGrouping<string, BaseRequest>)g;
-                        var clientBase = CreateClientBase(group.Key);
+                        var clientBase = clientBaseServiceFactory.CreateClientBase(group.Key);
 
                         Logger.DebugFormat("Sending {0} request(s) to {1}...", group.Count(), clientBase.Endpoint.Address.Uri);
                         return clientBase.Process(group.ToArray());
@@ -106,52 +118,6 @@ namespace Colombo.Wcf
             return responses;
 
             throw new NotImplementedException();
-        }
-
-        public WcfClientBaseService CreateClientBase(string groupName)
-        {
-            Contract.Assume(groupName != null);
-            try
-            {
-                return new WcfClientBaseService(groupName);
-            }
-            catch (InvalidOperationException ex)
-            {
-                var errorMessage = string.Format("Unable to create a WCF ClientBase. Did you create a WCF client endPoint with the name {0}?", groupName);
-                Logger.Error(errorMessage, ex);
-                throw new ColomboException(errorMessage, ex);
-            }
-        }
-
-        public ChannelEndpointElement GetChannelEndpointElement(string endPointName)
-        {
-            if (WcfConfigClientSection == null)
-                return null;
-
-            foreach (ChannelEndpointElement endPoint in WcfConfigClientSection.Endpoints)
-            {
-                if (endPoint.Name.Equals(endPointName, StringComparison.InvariantCultureIgnoreCase))
-                    return endPoint;
-            }
-
-            return null;
-        }
-
-        private ClientSection clientSection = null;
-
-        public ClientSection WcfConfigClientSection
-        {
-            get
-            {
-                if (clientSection == null)
-                {
-                    Configuration configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-                    ServiceModelSectionGroup serviceModelGroup = ServiceModelSectionGroup.GetSectionGroup(configuration);
-                    if (serviceModelGroup != null)
-                        clientSection = serviceModelGroup.Client;
-                }
-                return clientSection;
-            }
         }
     }
 }
