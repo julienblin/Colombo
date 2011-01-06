@@ -40,7 +40,8 @@ namespace Colombo.Wcf
                 var responses = new Response[requests.Length];
                 for (int i = 0; i < requests.Length; i++)
                 {
-                    responses[i] = responsesGroup[requests[i]];
+                    var request = requests[i];
+                    responses[i] = responsesGroup[request];
                 }
                 return responses;
             }

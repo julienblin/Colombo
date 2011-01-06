@@ -8,6 +8,7 @@ using System.Reflection;
 using Rhino.Mocks;
 using Castle.MicroKernel;
 using Castle.MicroKernel.Registration;
+using System.ServiceModel;
 
 namespace Colombo.Tests.Wcf
 {
@@ -125,6 +126,61 @@ namespace Colombo.Tests.Wcf
                 Assert.That(() => responses[1],
                     Is.SameAs(response2));
             });
+        }
+
+        [Test]
+        [Category("Slow")]
+        public void It_should_handle_WCF_calls()
+        {
+            const string IPCAddress = @"net.pipe://localhost/ipctest";
+
+            var mocks = new MockRepository();
+            var request1 = new TestRequest();
+            var request2 = new TestRequest();
+            var requests = new BaseRequest[] { request1, request2 };
+
+            var response1 = new TestResponse();
+            var response2 = new TestResponse();
+
+            var processor = mocks.DynamicMock<ILocalRequestProcessor>();
+            var service = new WcfService();
+
+            var kernel = new DefaultKernel();
+            kernel.Register(
+                Component.For<ILocalRequestProcessor>().Instance(processor)
+            );
+            WcfService.RegisterKernel(kernel);
+
+            With.Mocks(mocks).Expecting(() =>
+            {
+                Expect.Call(processor.CanProcess(null)).IgnoreArguments().Return(true);
+                Expect.Call(processor.Process(null)).IgnoreArguments().Do(new ProcessDelegate((delegateRequests) =>
+                {
+                    return new ResponsesGroup
+                    {
+                        { delegateRequests[0], response1 },
+                        { delegateRequests[1], response2 }
+                    };
+                }));
+            }).Verify(() =>
+            {
+                using (ServiceHost serviceHost = new ServiceHost(typeof(WcfService), new Uri(IPCAddress)))
+                {
+                    serviceHost.Open();
+                    var clientBase = new WcfClientBaseService(new NetNamedPipeBinding(), new EndpointAddress(IPCAddress));
+                    var responses = clientBase.Process(requests);
+                    Assert.That(() => responses[0].CorrelationGuid,
+                        Is.EqualTo(response1.CorrelationGuid));
+                    Assert.That(() => responses[1].CorrelationGuid,
+                        Is.EqualTo(response2.CorrelationGuid));
+                }
+            });
+        }
+
+        public delegate ResponsesGroup ProcessDelegate(IList<BaseRequest> requests);
+
+        public class TestRequest : Request<TestResponse>
+        {
         }
     }
 }
