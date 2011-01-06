@@ -6,10 +6,10 @@ using System.Diagnostics.Contracts;
 
 namespace Colombo.Contracts
 {
-    [ContractClassFor(typeof(IRequestHandler<,>))]
-    public abstract class GenericRequestHandlerContract<TRequest, TResponse> : IRequestHandler<TRequest, TResponse>
+    [ContractClassFor(typeof(ISideEffectFreeRequestHandler<,>))]
+    public abstract class GenericSideEffectFreeRequestHandler<TRequest, TResponse> : ISideEffectFreeRequestHandler<TRequest, TResponse>
         where TResponse : Response, new()
-        where TRequest : Request<TResponse>, new()
+        where TRequest : SideEffectFreeRequest<TResponse>, new()
     {
         public TResponse Handle(TRequest request)
         {

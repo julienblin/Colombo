@@ -35,6 +35,7 @@ namespace Colombo.Impl
             if (requestHandler == null)
                 throw new ColomboException(string.Format("Internal error: The request factory return null for {0}", Request));
 
+            Logger.DebugFormat("Handling {0} with {1}...", Request, requestHandler);
             try
             {
                 Contract.Assume(Request != null);

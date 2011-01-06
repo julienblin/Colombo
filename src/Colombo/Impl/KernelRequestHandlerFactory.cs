@@ -35,7 +35,7 @@ namespace Colombo.Impl
             if (request == null) throw new ArgumentNullException("request");
             Contract.EndContractBlock();
 
-            var requestHandlerType = CreateIRequestHandlerTypeFrom(request);
+            var requestHandlerType = CreateRequestHandlerTypeFrom(request);
             return kernel.HasComponent(requestHandlerType);
         }
 
@@ -44,7 +44,7 @@ namespace Colombo.Impl
             if (request == null) throw new ArgumentNullException("request");
             Contract.EndContractBlock();
 
-            var requestHandlerType = CreateIRequestHandlerTypeFrom(request);
+            var requestHandlerType = CreateRequestHandlerTypeFrom(request);
             try
             {
                 return (IRequestHandler)kernel.Resolve(requestHandlerType);
@@ -64,18 +64,31 @@ namespace Colombo.Impl
             kernel.ReleaseComponent(requestHandler);
         }
 
-        private static Type CreateIRequestHandlerTypeFrom(BaseRequest request)
+        private static Type CreateRequestHandlerTypeFrom(BaseRequest request)
         {
             if (request == null) throw new ArgumentNullException("request");
             Contract.EndContractBlock();
-            Contract.Assume(typeof(IRequestHandler<,>).IsGenericTypeDefinition);
-            Contract.Assume(typeof(IRequestHandler<,>).GetGenericArguments().Length == 2);
 
             Type responseType = request.GetResponseType();
             Type requestType = request.GetType();
 
-            var requestHandlerType = typeof(IRequestHandler<,>).MakeGenericType(requestType, responseType);
-            return requestHandlerType;
+            Contract.Assume(typeof(Request<>).IsGenericTypeDefinition);
+            Contract.Assume(typeof(Request<>).GetGenericArguments().Length == 1);
+            Contract.Assume(typeof(IRequestHandler<,>).IsGenericTypeDefinition);
+            Contract.Assume(typeof(IRequestHandler<,>).GetGenericArguments().Length == 2);
+            var stdRequestType = typeof(Request<>).MakeGenericType(request.GetResponseType());
+            if (stdRequestType.IsAssignableFrom(requestType))
+                return typeof(IRequestHandler<,>).MakeGenericType(requestType, responseType);
+
+            Contract.Assume(typeof(SideEffectFreeRequest<>).IsGenericTypeDefinition);
+            Contract.Assume(typeof(SideEffectFreeRequest<>).GetGenericArguments().Length == 1);
+            Contract.Assume(typeof(ISideEffectFreeRequestHandler<,>).IsGenericTypeDefinition);
+            Contract.Assume(typeof(ISideEffectFreeRequestHandler<,>).GetGenericArguments().Length == 2);
+            var sideEffectFreeRequestType = typeof(SideEffectFreeRequest<>).MakeGenericType(request.GetResponseType());
+            if (sideEffectFreeRequestType.IsAssignableFrom(requestType))
+                return typeof(ISideEffectFreeRequestHandler<,>).MakeGenericType(requestType, responseType);
+
+            throw new ColomboException(string.Format("Internal error: unable to create request handler generic type for: {0}", request));
         }
     }
 }

@@ -46,7 +46,6 @@ namespace Colombo.Tests.Wcf
         public delegate string GetGroupNameDelegate();
 
         [Test]
-        [Category("Slow")]
         public void It_should_use_WCF_to_process_requests()
         {
             const string IPCAddress1 = @"net.pipe://localhost/ipctest1";
@@ -100,6 +99,9 @@ namespace Colombo.Tests.Wcf
                     Assert.That(responses.GetFrom(request4).Name,
                         Is.EqualTo(request4.Name));
                 });
+
+                serviceHost1.Abort();
+                serviceHost2.Abort();
             }
         }
 

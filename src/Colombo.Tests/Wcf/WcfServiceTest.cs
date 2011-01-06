@@ -129,7 +129,6 @@ namespace Colombo.Tests.Wcf
         }
 
         [Test]
-        [Category("Slow")]
         public void It_should_handle_WCF_calls()
         {
             const string IPCAddress = @"net.pipe://localhost/ipctest";
@@ -173,6 +172,8 @@ namespace Colombo.Tests.Wcf
                         Is.EqualTo(response1.CorrelationGuid));
                     Assert.That(() => responses[1].CorrelationGuid,
                         Is.EqualTo(response2.CorrelationGuid));
+
+                    serviceHost.Abort();
                 }
             });
         }

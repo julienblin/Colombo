@@ -48,12 +48,16 @@ namespace Colombo.Tests.Impl
         {
         }
 
+        public class SideEffectFreeRequest1 : SideEffectFreeRequest<TestResponse>
+        {
+        }
+
         public class TestResponse2 : Response
         {
         }
 
         [Test]
-        public void It_should_use_the_kernel_to_create_IRequestHandlers()
+        public void It_should_use_the_kernel_to_create_RequestHandlers()
         {
             var mocks = new MockRepository();
             var requestHandler1 = mocks.Stub<IRequestHandler<Request1, TestResponse>>();
@@ -70,7 +74,24 @@ namespace Colombo.Tests.Impl
         }
 
         [Test]
-        public void It_should_return_null_when_no_IRequestHandlers_can_be_created()
+        public void It_should_use_the_kernel_to_create_SideEffectFreeRequestHandlers()
+        {
+            var mocks = new MockRepository();
+            var requestHandler1 = mocks.Stub<ISideEffectFreeRequestHandler<SideEffectFreeRequest1, TestResponse>>();
+
+            var kernel = new DefaultKernel();
+            kernel.Register(
+                Component.For<ISideEffectFreeRequestHandler<SideEffectFreeRequest1, TestResponse>>().Instance(requestHandler1)
+            );
+
+            var factory = new KernelRequestHandlerFactory(kernel);
+            factory.Logger = GetConsoleLogger();
+            Assert.That(() => factory.CreateRequestHandlerFor(new SideEffectFreeRequest1()),
+                Is.SameAs(requestHandler1));
+        }
+
+        [Test]
+        public void It_should_return_null_when_no_RequestHandlers_can_be_created()
         {
             var mocks = new MockRepository();
 
@@ -79,6 +100,19 @@ namespace Colombo.Tests.Impl
             var factory = new KernelRequestHandlerFactory(kernel);
             factory.Logger = GetConsoleLogger();
             Assert.That(() => factory.CreateRequestHandlerFor(new Request1()),
+                Is.Null);
+        }
+
+        [Test]
+        public void It_should_return_null_when_no_SideEffectFreeRequestRequestHandlers_can_be_created()
+        {
+            var mocks = new MockRepository();
+
+            var kernel = new DefaultKernel();
+
+            var factory = new KernelRequestHandlerFactory(kernel);
+            factory.Logger = GetConsoleLogger();
+            Assert.That(() => factory.CreateRequestHandlerFor(new SideEffectFreeRequest1()),
                 Is.Null);
         }
     }
