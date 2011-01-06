@@ -13,6 +13,7 @@ namespace Colombo.Facilities
     public class ColomboFacility : AbstractFacility
     {
         bool registerLocalProcessing = true;
+        bool allowMultipleFutureSendBatches = false;
 
         protected override void Init()
         {
@@ -24,7 +25,11 @@ namespace Colombo.Facilities
                 Component.For<IRequestProcessor>()
                     .ImplementedBy<WcfClientRequestProcessor>(),
                 Component.For<IMessageBus>()
-                    .ImplementedBy<MessageBus>()
+                    .ImplementedBy<MessageBus>(),
+                Component.For<IStatefulMessageBus>()
+                    .LifeStyle.Transient
+                    .ImplementedBy<StatefulMessageBus>()
+                    .OnCreate((kernel, item) => item.AllowMultipleFutureSendBatches = allowMultipleFutureSendBatches)
             );
 
             if (registerLocalProcessing)
@@ -45,6 +50,11 @@ namespace Colombo.Facilities
         public void ClientOnly()
         {
             registerLocalProcessing = false;
+        }
+
+        public void AllowMultipleFutureSendBatches()
+        {
+            allowMultipleFutureSendBatches = true;
         }
     }
 }

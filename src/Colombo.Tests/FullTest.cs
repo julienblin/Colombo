@@ -60,6 +60,49 @@ namespace Colombo.Tests
         }
 
         [Test]
+        public void It_should_work_with_WCF_client_server_ClientOnly_and_IStateFulMessageBus()
+        {
+            // Setup client
+            var clientContainer = new WindsorContainer();
+            clientContainer.AddFacility<LoggingFacility>(f => f.LogUsing(LoggerImplementation.Console));
+            clientContainer.AddFacility<ColomboFacility>(f => f.ClientOnly());
+
+            // Setup server
+            var serverContainer = new WindsorContainer();
+            serverContainer.AddFacility<LoggingFacility>(f => f.LogUsing(LoggerImplementation.Console));
+            serverContainer.AddFacility<ColomboFacility>();
+            serverContainer.Register(
+                Component.For<ISideEffectFreeRequestHandler<TestRequestIPC, TestResponseIpc>>()
+                    .LifeStyle.Transient
+                    .ImplementedBy<TestRequestIPCHandler>()
+            );
+
+            using (ServiceHost serviceHostServer = new ServiceHost(typeof(WcfService), new Uri(@"net.pipe://localhost/ipctest")))
+            {
+                serviceHostServer.Open();
+
+                var request1 = new TestRequestIPC { Name = "Request1" };
+                var request2 = new TestRequestIPC { Name = "Request2" };
+
+                var messageBus = clientContainer.Resolve<IStatefulMessageBus>();
+                var response1 = messageBus.FutureSend(request1);
+                var response2 = messageBus.FutureSend(request2);
+
+                Assert.That(() => response1.Name,
+                    Is.EqualTo(request1.Name));
+                Assert.That(() => response1.CorrelationGuid,
+                    Is.EqualTo(request1.CorrelationGuid));
+
+                Assert.That(() => response2.Name,
+                    Is.EqualTo(request2.Name));
+                Assert.That(() => response2.CorrelationGuid,
+                    Is.EqualTo(request2.CorrelationGuid));
+
+                serviceHostServer.Abort();
+            }
+        }
+
+        [Test]
         public void It_should_work_with_WCF_client_and_server()
         {
             // Setup client
@@ -121,51 +164,51 @@ namespace Colombo.Tests
                 serviceHostServer.Abort();
             }
         }
-    }
 
-    public class TestResponseIpc : Response
-    {
-        public string Name { get; set; }
-    }
-
-    public class TestRequestIPC : SideEffectFreeRequest<TestResponseIpc>
-    {
-        public string Name { get; set; }
-
-        public override string GetGroupName()
+        public class TestResponseIpc : Response
         {
-            return "ipctest";
+            public virtual string Name { get; set; }
         }
-    }
 
-    public class TestRequestIPCHandler : SideEffectFreeRequestHandler<TestRequestIPC, TestResponseIpc>
-    {
-        public override void Handle()
+        public class TestRequestIPC : SideEffectFreeRequest<TestResponseIpc>
         {
-            Response.Name = Request.Name;
+            public string Name { get; set; }
+
+            public override string GetGroupName()
+            {
+                return "ipctest";
+            }
         }
-    }
 
-    public class TestResponseLocal : Response
-    {
-        public string Name { get; set; }
-    }
-
-    public class TestRequestLocal : SideEffectFreeRequest<TestResponseLocal>
-    {
-        public string Name { get; set; }
-
-        public override string GetGroupName()
+        public class TestRequestIPCHandler : SideEffectFreeRequestHandler<TestRequestIPC, TestResponseIpc>
         {
-            return "local";
+            public override void Handle()
+            {
+                Response.Name = Request.Name;
+            }
         }
-    }
 
-    public class TestRequestHandlerLocal : SideEffectFreeRequestHandler<TestRequestLocal, TestResponseLocal>
-    {
-        public override void Handle()
+        public class TestResponseLocal : Response
         {
-            Response.Name = Request.Name;
+            public virtual string Name { get; set; }
+        }
+
+        public class TestRequestLocal : SideEffectFreeRequest<TestResponseLocal>
+        {
+            public string Name { get; set; }
+
+            public override string GetGroupName()
+            {
+                return "local";
+            }
+        }
+
+        public class TestRequestHandlerLocal : SideEffectFreeRequestHandler<TestRequestLocal, TestResponseLocal>
+        {
+            public override void Handle()
+            {
+                Response.Name = Request.Name;
+            }
         }
     }
 }

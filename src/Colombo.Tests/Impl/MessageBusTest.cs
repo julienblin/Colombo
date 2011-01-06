@@ -152,6 +152,35 @@ namespace Colombo.Tests.Impl
         }
 
         [Test]
+        public void It_should_call_selected_IRequestProcessors_Process_method_with_sideeffectfree()
+        {
+            var mocks = new MockRepository();
+            var request = mocks.Stub<SideEffectFreeRequest<TestResponse>>();
+            var requests = new BaseRequest[] { request };
+            var response = new TestResponse();
+            var responses = new ResponsesGroup
+            {
+                { request, response}
+            };
+
+            var requestProcessor1 = mocks.StrictMock<IRequestProcessor>();
+            var requestProcessor2 = mocks.StrictMock<IRequestProcessor>();
+
+            With.Mocks(mocks).Expecting(() =>
+            {
+                Expect.Call(requestProcessor1.CanProcess(request)).Return(false);
+                Expect.Call(requestProcessor2.CanProcess(request)).Return(true);
+                Expect.Call(requestProcessor2.Process(requests)).Return(responses);
+            }).Verify(() =>
+            {
+                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor1, requestProcessor2 });
+                messageBus.Logger = GetConsoleLogger();
+                Assert.That(() => messageBus.Send(request),
+                    Is.SameAs(response));
+            });
+        }
+
+        [Test]
         public void It_should_call_selected_IRequestProcessors_Process_method_multiple_requests()
         {
             var mocks = new MockRepository();

@@ -71,6 +71,7 @@
     <Compile Include="Impl\KernelRequestHandlerFactoryTest.cs" />
     <Compile Include="Impl\LocalRequestProcessorTest.cs" />
     <Compile Include="Impl\MessageBusTest.cs" />
+    <Compile Include="Impl\StatefulMessageBusTest.cs" />
     <Compile Include="MessagesTest.cs" />
     <Compile Include="RequestHandlerTest.cs" />
     <Compile Include="SideEffectFreeRequestHandlerTest.cs" />

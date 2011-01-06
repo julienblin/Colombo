@@ -28,6 +28,11 @@ namespace Colombo.Tests.Facilities
                 Is.Not.Null);
             Assert.That(() => container.Resolve<IRequestHandlerFactory>(),
                 Is.Not.Null);
+
+            Assert.That(() => container.Resolve<IStatefulMessageBus>(),
+                Is.Not.Null);
+            Assert.That(() => container.Resolve<IStatefulMessageBus>(),
+                Is.Not.SameAs(container.Resolve<IStatefulMessageBus>()));
         }
 
         [Test]
@@ -53,6 +58,11 @@ namespace Colombo.Tests.Facilities
             Assert.That(() => container.Resolve<IMessageBus>(),
                 Is.Not.Null);
 
+            Assert.That(() => container.Resolve<IStatefulMessageBus>(),
+                Is.Not.Null);
+            Assert.That(() => container.Resolve<IStatefulMessageBus>(),
+                Is.Not.SameAs(container.Resolve<IStatefulMessageBus>()));
+
             IRequestProcessor[] messageProcessors = container.ResolveAll<IRequestProcessor>();
             Assert.That(() => messageProcessors.Length,
                 Is.AtLeast(1));
@@ -66,6 +76,22 @@ namespace Colombo.Tests.Facilities
                 Throws.Exception.TypeOf<ComponentNotFoundException>());
             Assert.That(() => container.Resolve<IRequestHandlerFactory>(),
                 Throws.Exception.TypeOf<ComponentNotFoundException>());
+        }
+
+        [Test]
+        public void It_should_position_value_for_AllowMultipleFutureSendBatches()
+        {
+            var container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>();
+
+            Assert.That(() => container.Resolve<IStatefulMessageBus>().AllowMultipleFutureSendBatches,
+                Is.False);
+
+            container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>(f => f.AllowMultipleFutureSendBatches());
+
+            Assert.That(() => container.Resolve<IStatefulMessageBus>().AllowMultipleFutureSendBatches,
+                Is.True);
         }
     }
 }

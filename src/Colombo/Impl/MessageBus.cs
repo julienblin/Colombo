@@ -72,13 +72,29 @@ namespace Colombo.Impl
             return typedResponse;
         }
 
-        public ResponsesGroup Send(BaseSideEffectFreeRequest request1, BaseSideEffectFreeRequest request2, params BaseSideEffectFreeRequest[] followingRequests)
+        public TResponse Send<TResponse>(SideEffectFreeRequest<TResponse> request)
+            where TResponse : Response, new()
         {
-            if (request1 == null) throw new ArgumentNullException("request1");
-            if (request2 == null) throw new ArgumentNullException("request2");
+            if (request == null) throw new ArgumentNullException("request");
             Contract.EndContractBlock();
 
-            var listRequests = new List<BaseRequest> { request1, request2 };
+            var responses = InternalSend(new List<BaseRequest> { request });
+            Contract.Assume(responses != null);
+            Contract.Assume(responses.Count == 1);
+
+            var typedResponse = responses[request] as TResponse;
+            if (typedResponse == null)
+                LogAndThrowError("Internal error: InternalSend returned null or incorrect response type: expected {0}, actual {1}.", typeof(TResponse), responses[request].GetType());
+
+            return typedResponse;
+        }
+
+        public ResponsesGroup Send(BaseSideEffectFreeRequest request, params BaseSideEffectFreeRequest[] followingRequests)
+        {
+            if (request == null) throw new ArgumentNullException("request");
+            Contract.EndContractBlock();
+
+            var listRequests = new List<BaseRequest> { request };
             if(followingRequests != null)
                 listRequests.AddRange(followingRequests);
             var responsesGroup = InternalSend(listRequests);

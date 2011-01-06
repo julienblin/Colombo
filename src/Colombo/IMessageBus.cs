@@ -12,12 +12,19 @@ namespace Colombo
         /// <summary>
         /// Send synchronously a request and returns the response.
         /// </summary>
-        TResponse Send<TResponse>(Request<TResponse> request) where TResponse : Response, new();
+        TResponse Send<TResponse>(Request<TResponse> request)
+            where TResponse : Response, new();
 
         /// <summary>
-        /// Send synchronously, but in parallel, several requests and returns all the response at once.
+        /// Send synchronously a request and returns the response.
+        /// </summary>
+        TResponse Send<TResponse>(SideEffectFreeRequest<TResponse> request)
+            where TResponse : Response, new();
+
+        /// <summary>
+        /// Send synchronously, but in parallel, several requests and returns all the responses at once.
         /// Only side effect-free requests can be parallelized.
         /// </summary>
-        ResponsesGroup Send(BaseSideEffectFreeRequest request1, BaseSideEffectFreeRequest request2, params BaseSideEffectFreeRequest[] followingRequests);
+        ResponsesGroup Send(BaseSideEffectFreeRequest request, params BaseSideEffectFreeRequest[] followingRequests);
     }
 }

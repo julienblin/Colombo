@@ -6,6 +6,7 @@ using NUnit.Framework;
 using System.IO;
 using System.Runtime.Serialization;
 using System.ComponentModel.DataAnnotations;
+using Castle.DynamicProxy;
 
 namespace Colombo.Tests
 {
@@ -26,6 +27,14 @@ namespace Colombo.Tests
                 Assert.AreEqual(deserialized.CorrelationGuid, reference.CorrelationGuid);
                 Assert.AreEqual(deserialized.UtcTimestamp, reference.UtcTimestamp);
             }
+        }
+
+        [Test]
+        public void Responses_should_be_usable_with_proxy()
+        {
+            var proxyGen = new ProxyGenerator();
+            Assert.That(() => proxyGen.CreateClassProxy<Response>(),
+                Is.Not.Null);
         }
 
         [Test]

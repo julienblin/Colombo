@@ -6,29 +6,48 @@ using System.Diagnostics.Contracts;
 
 namespace Colombo.Contracts
 {
-    [ContractClassFor(typeof(IMessageBus))]
-    public abstract class MessageBusContract : IMessageBus
+    [ContractClassFor(typeof(IStatefulMessageBus))]
+    public abstract class StatefulMessageBusContract : IStatefulMessageBus
     {
-        public TResponse Send<TResponse>(Request<TResponse> request)
+        public TResponse FutureSend<TResponse>(SideEffectFreeRequest<TResponse> request)
             where TResponse : Response, new()
         {
             Contract.Requires<ArgumentNullException>(request != null, "request");
             Contract.Ensures(Contract.Result<TResponse>() != null);
+            throw new NotImplementedException();
+        }
+
+        public bool HasAlreadySentForFutures
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public bool AllowMultipleFutureSendBatches
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public TResponse Send<TResponse>(Request<TResponse> request)
+            where TResponse : Response, new()
+        {
             throw new NotImplementedException();
         }
 
         public TResponse Send<TResponse>(SideEffectFreeRequest<TResponse> request)
             where TResponse : Response, new()
         {
-            Contract.Requires<ArgumentNullException>(request != null, "request");
-            Contract.Ensures(Contract.Result<TResponse>() != null);
             throw new NotImplementedException();
         }
 
         public ResponsesGroup Send(BaseSideEffectFreeRequest request, params BaseSideEffectFreeRequest[] followingRequests)
         {
-            Contract.Requires<ArgumentNullException>(request != null, "request");
-            Contract.Ensures(Contract.Result<ResponsesGroup>() != null);
             throw new NotImplementedException();
         }
     }
