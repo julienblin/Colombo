@@ -87,6 +87,7 @@
     <Compile Include="Contracts\RequestHandlerFactoryContract.cs" />
     <Compile Include="Contracts\RequestProcessorContract.cs" />
     <Compile Include="Contracts\WcfClientBaseServiceFactoryContract.cs" />
+    <Compile Include="Facilities\ColomboFacility.cs" />
     <Compile Include="IColomboHandleInvocation.cs" />
     <Compile Include="IColomboInterceptor.cs" />
     <Compile Include="IColomboSendInvocation.cs" />
