@@ -86,6 +86,7 @@
     <Compile Include="Contracts\RequestHandlerContract.cs" />
     <Compile Include="Contracts\RequestHandlerFactoryContract.cs" />
     <Compile Include="Contracts\RequestProcessorContract.cs" />
+    <Compile Include="Contracts\WcfClientBaseServiceFactoryContract.cs" />
     <Compile Include="IColomboHandleInvocation.cs" />
     <Compile Include="IColomboInterceptor.cs" />
     <Compile Include="IColomboSendInvocation.cs" />
@@ -110,9 +111,11 @@
     <Compile Include="ResponsesGroup.cs" />
     <Compile Include="SideEffectFreeRequest.cs" />
     <Compile Include="Wcf\EmbedTypeInSerializerAttribute.cs" />
+    <Compile Include="Wcf\IWcfClientBaseServiceFactory.cs" />
     <Compile Include="Wcf\IWcfService.cs" />
     <Compile Include="Wcf\WcfClientBaseService.cs" />
     <Compile Include="Wcf\WcfClientRequestProcessor.cs" />
+    <Compile Include="Wcf\WcfConfigClientBaseServiceFactory.cs" />
     <Compile Include="Wcf\WcfService.cs" />
   </ItemGroup>
   <ItemGroup />

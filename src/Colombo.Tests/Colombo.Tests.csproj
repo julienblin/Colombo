@@ -71,6 +71,7 @@
     <Compile Include="MessagesTest.cs" />
     <Compile Include="TestResponse.cs" />
     <Compile Include="Wcf\WcfClientRequestProcessorTest.cs" />
+    <Compile Include="Wcf\WcfConfigClientBaseServiceFactoryTest.cs" />
     <Compile Include="Wcf\WcfServiceTest.cs" />
   </ItemGroup>
   <ItemGroup>
