@@ -94,6 +94,8 @@ namespace Colombo.Wcf
             {
                 string message = "An exception occured inside one or several WCF endpoint";
                 Logger.Error(message, ex);
+                foreach (var innerEx in ex.InnerExceptions)
+                    Logger.Error(innerEx.ToString());
                 throw new ColomboException(message, ex);
             }
 
