@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Diagnostics.Contracts;
 
 namespace Colombo
 {
     /// <summary>
     /// Interceptor for the <see cref="IMessageBus.Send"/> operation.
     /// </summary>
+    [ContractClass(typeof(Contracts.MessageBusSendInterceptorContract))]
     public interface IMessageBusSendInterceptor : IColomboInterceptor
     {
         /// <summary>

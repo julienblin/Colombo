@@ -84,8 +84,10 @@
     <Compile Include="Contracts\GenericSideEffectFreeRequestHandler.cs" />
     <Compile Include="Contracts\GenericRequestHandlerContract.cs" />
     <Compile Include="Contracts\MessageBusContract.cs" />
+    <Compile Include="Contracts\MessageBusSendInterceptorContract.cs" />
     <Compile Include="Contracts\RequestHandlerContract.cs" />
     <Compile Include="Contracts\RequestHandlerFactoryContract.cs" />
+    <Compile Include="Contracts\RequestHandlerHandleInterceptorContract.cs" />
     <Compile Include="Contracts\RequestProcessorContract.cs" />
     <Compile Include="Contracts\StatefulMessageBusContract.cs" />
     <Compile Include="Contracts\WcfClientBaseServiceFactoryContract.cs" />
