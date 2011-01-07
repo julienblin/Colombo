@@ -84,14 +84,14 @@ namespace Colombo.Tests.Facilities
             var container = new WindsorContainer();
             container.AddFacility<ColomboFacility>();
 
-            Assert.That(() => container.Resolve<IStatefulMessageBus>().AllowMultipleFutureSendBatches,
-                Is.False);
+            Assert.That(() => container.Resolve<IStatefulMessageBus>().MaxAllowedNumberOfSend,
+                Is.EqualTo(ColomboFacility.DefaultMaxAllowedNumberOfSendForStatefulMessageBus));
 
             container = new WindsorContainer();
-            container.AddFacility<ColomboFacility>(f => f.AllowMultipleFutureSendBatches());
+            container.AddFacility<ColomboFacility>(f => f.MaxAllowedNumberOfSendForStatefulMessageBus(50));
 
-            Assert.That(() => container.Resolve<IStatefulMessageBus>().AllowMultipleFutureSendBatches,
-                Is.True);
+            Assert.That(() => container.Resolve<IStatefulMessageBus>().MaxAllowedNumberOfSend,
+                Is.EqualTo(50));
         }
     }
 }

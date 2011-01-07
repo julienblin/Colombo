@@ -12,8 +12,10 @@ namespace Colombo.Facilities
 {
     public class ColomboFacility : AbstractFacility
     {
+        public const int DefaultMaxAllowedNumberOfSendForStatefulMessageBus = 10;
+
         bool registerLocalProcessing = true;
-        bool allowMultipleFutureSendBatches = false;
+        int maxAllowedNumberOfSendForStatefulMessageBus = DefaultMaxAllowedNumberOfSendForStatefulMessageBus;
 
         protected override void Init()
         {
@@ -29,7 +31,7 @@ namespace Colombo.Facilities
                 Component.For<IStatefulMessageBus>()
                     .LifeStyle.Transient
                     .ImplementedBy<StatefulMessageBus>()
-                    .OnCreate((kernel, item) => item.AllowMultipleFutureSendBatches = allowMultipleFutureSendBatches)
+                    .OnCreate((kernel, item) => item.MaxAllowedNumberOfSend = maxAllowedNumberOfSendForStatefulMessageBus)
             );
 
             if (registerLocalProcessing)
@@ -52,9 +54,9 @@ namespace Colombo.Facilities
             registerLocalProcessing = false;
         }
 
-        public void AllowMultipleFutureSendBatches()
+        public void MaxAllowedNumberOfSendForStatefulMessageBus(int max)
         {
-            allowMultipleFutureSendBatches = true;
+            maxAllowedNumberOfSendForStatefulMessageBus = max;
         }
     }
 }

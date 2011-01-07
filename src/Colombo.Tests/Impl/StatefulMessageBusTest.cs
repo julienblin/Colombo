@@ -57,27 +57,22 @@ namespace Colombo.Tests.Impl
         [Test]
         public void It_should_not_send_immediately_and_return_a_proxy()
         {
-            var mocks = new MockRepository();
+            var messageBus = new TestMessageBus();
+            var statefulMB = new StatefulMessageBus(messageBus);
+            var response = statefulMB.FutureSend(new TestSideEffectFreeRequest());
 
-            var messageBus = mocks.StrictMock<IMessageBus>();
+            Assert.That(() => response.GetType(),
+                Is.Not.EqualTo(typeof(TestResponse)));
+            Assert.That(() => response,
+                Is.AssignableTo<TestResponse>());
+            Assert.That(() => response as TestResponse,
+                Is.Not.Null);
 
-            With.Mocks(mocks).Expecting(() =>
-            {
-            }).Verify(() =>
-            {
-                var statefulMB = new StatefulMessageBus(messageBus);
-                var response = statefulMB.FutureSend(new TestSideEffectFreeRequest());
+            Assert.That(() => statefulMB.NumberOfSend,
+                Is.EqualTo(0));
 
-                Assert.That(() => response.GetType(),
-                    Is.Not.EqualTo(typeof(TestResponse)));
-                Assert.That(() => response,
-                    Is.AssignableTo<TestResponse>());
-                Assert.That(() => response as TestResponse,
-                    Is.Not.Null);
-
-                Assert.That(() => statefulMB.HasAlreadySentForFutures,
-                    Is.False);
-            });
+            Assert.That(() => messageBus.NumSendCalled,
+                Is.EqualTo(0));
         }
 
         [Test]
@@ -90,8 +85,8 @@ namespace Colombo.Tests.Impl
             var statefulMB = new StatefulMessageBus(messageBus);
             var responseProxy = statefulMB.FutureSend(request);
 
-            Assert.That(() => statefulMB.HasAlreadySentForFutures,
-                Is.False);
+            Assert.That(() => statefulMB.NumberOfSend,
+                Is.EqualTo(0));
 
             Assert.That(() => responseProxy.CorrelationGuid,
                 Is.EqualTo(request.CorrelationGuid));
@@ -99,8 +94,8 @@ namespace Colombo.Tests.Impl
             Assert.That(() => messageBus.NumSendCalled,
                 Is.EqualTo(1));
 
-            Assert.That(() => statefulMB.HasAlreadySentForFutures,
-                Is.True);
+            Assert.That(() => statefulMB.NumberOfSend,
+                Is.EqualTo(1));
         }
 
         [Test]
@@ -118,8 +113,8 @@ namespace Colombo.Tests.Impl
             var responseProxy1 = statefulMB.FutureSend(request1);
             var responseProxy2 = statefulMB.FutureSend(request2);
 
-            Assert.That(() => statefulMB.HasAlreadySentForFutures,
-                Is.False);
+            Assert.That(() => statefulMB.NumberOfSend,
+                Is.EqualTo(0));
 
             Assert.That(() => responseProxy1.CorrelationGuid,
                 Is.EqualTo(request1.CorrelationGuid));
@@ -130,12 +125,12 @@ namespace Colombo.Tests.Impl
             Assert.That(() => messageBus.NumSendCalled,
                 Is.EqualTo(1));
 
-            Assert.That(() => statefulMB.HasAlreadySentForFutures,
-                Is.True);
+            Assert.That(() => statefulMB.NumberOfSend,
+                Is.EqualTo(1));
         }
 
         [Test]
-        public void It_should_not_allow_multiple_send_when_not_AllowMultipleFutureSendBatches()
+        public void It_should_throw_an_exception_when_send_quota_is_over()
         {
             var request1 = new TestSideEffectFreeRequest();
             var request2 = new TestSideEffectFreeRequest();
@@ -144,6 +139,7 @@ namespace Colombo.Tests.Impl
 
             var messageBus = new TestMessageBus(response1);
             var statefulMB = new StatefulMessageBus(messageBus);
+            statefulMB.MaxAllowedNumberOfSend = 1;
             var responseProxy1 = statefulMB.FutureSend(request1);
 
             Assert.That(() => responseProxy1.CorrelationGuid,
@@ -151,35 +147,47 @@ namespace Colombo.Tests.Impl
 
             Assert.That(() => statefulMB.FutureSend(request2),
                 Throws.Exception.TypeOf<ColomboException>()
-                .With.Message.Contains("AllowMultipleFutureSendBatches"));
+                .With.Message.Contains("MaxAllowedNumberOfSend"));
         }
 
         [Test]
-        public void It_should_allow_multiple_send_when_AllowMultipleFutureSendBatches()
+        public void It_should_not_throw_an_exception_when_send_quota_is_not_over()
         {
             var request1 = new TestSideEffectFreeRequest();
-            var request2 = new TestSideEffectFreeRequest();
-            var response = new TestResponse();
+            var response1 = new TestResponse();
+            response1.CorrelationGuid = request1.CorrelationGuid;
 
-            var messageBus = new TestMessageBus(response);
+            var messageBus = new TestMessageBus(response1);
             var statefulMB = new StatefulMessageBus(messageBus);
-            statefulMB.AllowMultipleFutureSendBatches = true;
+            statefulMB.MaxAllowedNumberOfSend = 1;
             var responseProxy1 = statefulMB.FutureSend(request1);
 
             Assert.That(() => responseProxy1.CorrelationGuid,
-                Is.EqualTo(response.CorrelationGuid));
+                Is.EqualTo(request1.CorrelationGuid));
 
-            var responseProxy2 = statefulMB.FutureSend(request2);
-
-            Assert.That(() => responseProxy2.CorrelationGuid,
-                Is.EqualTo(response.CorrelationGuid));
-
-            Assert.That(() => messageBus.NumSendCalled,
-                Is.EqualTo(2));
+            Assert.That(() => statefulMB.NumberOfSend,
+                Is.EqualTo(1));
         }
 
         [Test]
-        public void It_should_preserve_original_stack_trace_when_instance_throws_Exception()
+        public void It_should_not_throw_an_exception_when_send_quota_is_zero_or_negative()
+        {
+            var request1 = new TestSideEffectFreeRequest();
+            var request2 = new TestSideEffectFreeRequest();
+            var response1 = new TestResponse();
+            response1.CorrelationGuid = request1.CorrelationGuid;
+
+            var messageBus = new TestMessageBus(response1);
+            var statefulMB = new StatefulMessageBus(messageBus);
+            statefulMB.MaxAllowedNumberOfSend = 0;
+            var responseProxy1 = statefulMB.FutureSend(request1);
+
+            Assert.That(() => responseProxy1.CorrelationGuid,
+                Is.EqualTo(request1.CorrelationGuid));
+        }
+
+        [Test]
+        public void It_should_preserve_original_stack_trace_when_response_instance_throws_Exception()
         {
             string[] stackTraceOriginalLines = null;
 

@@ -27,8 +27,7 @@ namespace Colombo.Impl
             if (request == null) throw new ArgumentNullException("request");
             Contract.EndContractBlock();
 
-            if (hasAlreadySentForFutures && !AllowMultipleFutureSendBatches)
-                throw new ColomboException("StatefulMessageBus has already sent a batch of request, you cannot queue more. Change AllowMultipleFutureSendBatches for this instance or in facility configuration to disable this behavior.");
+            CheckNumberOfSend(false);
 
             var options = new ProxyGenerationOptions(new NonVirtualCheckProxyGenerationHook());
             var response = proxyGenerator.CreateClassProxy<TResponse>(options, new StatefulReponseInterceptor(this, request));
@@ -72,8 +71,9 @@ namespace Colombo.Impl
             PendingRequests.Remove(firstPendingRequest);
 
             Contract.Assume(firstPendingRequest != null);
+
+            CheckNumberOfSend();
             var responsesGroups = messageBus.Send(firstPendingRequest, PendingRequests.ToArray());
-            hasAlreadySentForFutures = true;
             PendingRequests.Clear();
 
             ReceivedRequests[firstPendingRequest] = responsesGroups[firstPendingRequest];
@@ -85,20 +85,21 @@ namespace Colombo.Impl
             return ReceivedRequests[request];
         }
 
-        bool hasAlreadySentForFutures = false;
+        int numberOfSend = 0;
 
-        public bool HasAlreadySentForFutures
+        public int NumberOfSend
         {
-            get { return hasAlreadySentForFutures; }
+            get { return numberOfSend; }
         }
 
-        public bool AllowMultipleFutureSendBatches { get; set; }
+        public int MaxAllowedNumberOfSend { get; set; }
 
         public TResponse Send<TResponse>(Request<TResponse> request)
             where TResponse : Response, new()
         {
             if (request == null) throw new ArgumentNullException("request");
             Contract.EndContractBlock();
+            CheckNumberOfSend();
             return messageBus.Send(request);
         }
 
@@ -107,6 +108,7 @@ namespace Colombo.Impl
         {
             if (request == null) throw new ArgumentNullException("request");
             Contract.EndContractBlock();
+            CheckNumberOfSend();
             return messageBus.Send(request);
         }
 
@@ -114,7 +116,17 @@ namespace Colombo.Impl
         {
             if (request == null) throw new ArgumentNullException("request");
             Contract.EndContractBlock();
+            CheckNumberOfSend();
             return messageBus.Send(request, followingRequests);
+        }
+
+        private void CheckNumberOfSend(bool increment = true)
+        {
+            if ((MaxAllowedNumberOfSend > 0) && (NumberOfSend >= MaxAllowedNumberOfSend))
+                throw new ColomboException(string.Format("StatefulMessageBus has already sent {0} batches of request, you cannot send more. Change MaxAllowedNumberOfSend for this instance or MaxAllowedNumberOfSendForStatefulMessageBus in facility configuration to disable this behavior (currently: {1}).", NumberOfSend, MaxAllowedNumberOfSend));
+
+            if (increment)
+                ++numberOfSend;
         }
     }
 }

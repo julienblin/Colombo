@@ -17,12 +17,12 @@ namespace Colombo.Contracts
             throw new NotImplementedException();
         }
 
-        public bool HasAlreadySentForFutures
+        public int NumberOfSend
         {
             get { throw new NotImplementedException(); }
         }
 
-        public bool AllowMultipleFutureSendBatches
+        public int MaxAllowedNumberOfSend
         {
             get
             {

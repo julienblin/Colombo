@@ -12,8 +12,8 @@ namespace Colombo
         TResponse FutureSend<TResponse>(SideEffectFreeRequest<TResponse> request)
             where TResponse : Response, new();
 
-        bool HasAlreadySentForFutures { get; }
+        int NumberOfSend { get; }
 
-        bool AllowMultipleFutureSendBatches { get; set; }
+        int MaxAllowedNumberOfSend { get; set; }
     }
 }
