@@ -7,6 +7,7 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.ComponentModel.DataAnnotations;
 using Castle.DynamicProxy;
+using Colombo.Impl;
 
 namespace Colombo.Tests
 {
@@ -30,10 +31,38 @@ namespace Colombo.Tests
         }
 
         [Test]
+        public void ValidatedResponses_should_be_serializables_using_the_DataContractSerializer()
+        {
+            using (var stream = new MemoryStream())
+            {
+                var serializer = new DataContractSerializer(typeof(TestValidatedResponse));
+                var reference = new TestValidatedResponse();
+                reference.ValidationResults.Add(new ColomboValidationResult("TestErrorMessage"));
+                serializer.WriteObject(stream, reference);
+                stream.Position = 0;
+                var deserialized = (TestValidatedResponse)serializer.ReadObject(stream);
+                Assert.AreNotSame(deserialized, reference);
+                Assert.AreEqual(deserialized.CorrelationGuid, reference.CorrelationGuid);
+                Assert.AreEqual(deserialized.UtcTimestamp, reference.UtcTimestamp);
+                Assert.AreEqual(deserialized.ValidationResults[0].ErrorMessage, "TestErrorMessage");
+            }
+        }
+
+        [Test]
         public void Responses_should_be_usable_with_proxy()
         {
+            var options = new ProxyGenerationOptions(new NonVirtualCheckProxyGenerationHook());
             var proxyGen = new ProxyGenerator();
-            Assert.That(() => proxyGen.CreateClassProxy<Response>(),
+            Assert.That(() => proxyGen.CreateClassProxy<Response>(options),
+                Is.Not.Null);
+        }
+
+        [Test]
+        public void ValidatedResponses_should_be_usable_with_proxy()
+        {
+            var options = new ProxyGenerationOptions(new NonVirtualCheckProxyGenerationHook());
+            var proxyGen = new ProxyGenerator();
+            Assert.That(() => proxyGen.CreateClassProxy<ValidatedResponse>(options),
                 Is.Not.Null);
         }
 
@@ -76,5 +105,7 @@ namespace Colombo.Tests
         public class TestRequest : Request<TestResponse> { }
 
         public class TestSideEffectFreeRequest : SideEffectFreeRequest<TestResponse> { }
+
+        public class TestValidatedResponse : ValidatedResponse { }
     }
 }
