@@ -81,7 +81,6 @@
     <Compile Include="BaseRequest.cs" />
     <Compile Include="BaseSideEffectFreeRequest.cs" />
     <Compile Include="ColomboException.cs" />
-    <Compile Include="ColomboValidationResult.cs" />
     <Compile Include="Contracts\GenericSideEffectFreeRequestHandler.cs" />
     <Compile Include="Contracts\GenericRequestHandlerContract.cs" />
     <Compile Include="Contracts\MessageBusContract.cs" />

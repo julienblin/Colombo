@@ -37,7 +37,7 @@ namespace Colombo.Tests
             {
                 var serializer = new DataContractSerializer(typeof(TestValidatedResponse));
                 var reference = new TestValidatedResponse();
-                reference.ValidationResults.Add(new ColomboValidationResult("TestErrorMessage"));
+                reference.ValidationResults.Add(new ValidationResult("TestErrorMessage"));
                 serializer.WriteObject(stream, reference);
                 stream.Position = 0;
                 var deserialized = (TestValidatedResponse)serializer.ReadObject(stream);

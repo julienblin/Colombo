@@ -2,14 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Runtime.Serialization;
 
 namespace Colombo
 {
+    /// <summary>
+    /// Base class for all the Colombo messages.
+    /// </summary>
+    [DataContract]
     public abstract class BaseMessage
     {
-        /// <summary>
-        /// Base class for all the Colombo messages.
-        /// </summary>
         protected BaseMessage()
         {
         }
@@ -18,6 +20,7 @@ namespace Colombo
         /// <summary>
         /// Represents an identifier that could relate several messages together.
         /// </summary>
+        [DataMember]
         public virtual Guid CorrelationGuid
         {
             get { return correlationGuid; }
@@ -28,6 +31,7 @@ namespace Colombo
         /// <summary>
         /// Timestamp for the creation of the message, expressed as UTC.
         /// </summary>
+        [DataMember]
         public virtual DateTime UtcTimestamp
         {
             get { return utcTimestamp; }
