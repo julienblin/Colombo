@@ -78,6 +78,7 @@
     <Compile Include="Interceptors\DataAnnotationsValidationHandleInterceptorTest.cs" />
     <Compile Include="Interceptors\DataAnnotationsValidationSendInterceptorTest.cs" />
     <Compile Include="Interceptors\RequiredInContextHandleInterceptorTest.cs" />
+    <Compile Include="Interceptors\SLASendInterceptorTest.cs" />
     <Compile Include="Interceptors\TransactionScopeHandleInterceptorTest.cs" />
     <Compile Include="MessagesTest.cs" />
     <Compile Include="RequestHandlerTest.cs" />

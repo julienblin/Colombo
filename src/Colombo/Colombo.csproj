@@ -77,6 +77,7 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Alerts\SLABreachedAlert.cs" />
     <Compile Include="BaseMessage.cs" />
     <Compile Include="BaseRequest.cs" />
     <Compile Include="BaseSideEffectFreeRequest.cs" />
@@ -123,6 +124,7 @@
     <Compile Include="Interceptors\DataAnnotationsValidationSendInterceptor.cs" />
     <Compile Include="Interceptors\RequestExtensions.cs" />
     <Compile Include="Interceptors\RequiredInContextHandleInterceptor.cs" />
+    <Compile Include="Interceptors\SLASendInterceptor.cs" />
     <Compile Include="Interceptors\TransactionScopeHandleInterceptor.cs" />
     <Compile Include="IRequestHandler.cs" />
     <Compile Include="IRequestHandlerFactory.cs" />
@@ -138,6 +140,7 @@
     <Compile Include="ResponsesGroup.cs" />
     <Compile Include="SideEffectFreeRequest.cs" />
     <Compile Include="SideEffectFreeRequestHandler.cs" />
+    <Compile Include="SLAAttribute.cs" />
     <Compile Include="ValidatedResponse.cs" />
     <Compile Include="Wcf\EmbedTypeInSerializerAttribute.cs" />
     <Compile Include="Wcf\IWcfClientBaseServiceFactory.cs" />

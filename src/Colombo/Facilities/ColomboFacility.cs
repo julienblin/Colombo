@@ -21,7 +21,8 @@ namespace Colombo.Facilities
         IList<Type> sendInterceptors = new List<Type>()
         {
             typeof(CurrentCultureSendInterceptor),
-            typeof(DataAnnotationsValidationSendInterceptor)
+            typeof(DataAnnotationsValidationSendInterceptor),
+            typeof(SLASendInterceptor)
         };
 
         IList<Type> handlerInterceptors = new List<Type>()
@@ -131,6 +132,11 @@ namespace Colombo.Facilities
         public void DoNotAlertInApplicationEventLog()
         {
             alerters.Remove(typeof(EventLogColomboAlerter));
+        }
+
+        public void DoNotManageSLA()
+        {
+            sendInterceptors.Remove(typeof(SLASendInterceptor));
         }
     }
 }
