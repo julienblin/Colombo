@@ -9,7 +9,7 @@ using Colombo.Samples.WcfService.L10n;
 
 namespace Colombo.Samples.WcfService.Handlers
 {
-    public class HelloWorldHandler : RequestHandler<HelloWorldRequest, HelloWorldResponse>
+    public class HelloWorldHandler : SideEffectFreeRequestHandler<HelloWorldRequest, HelloWorldResponse>
     {
         public override void Handle()
         {

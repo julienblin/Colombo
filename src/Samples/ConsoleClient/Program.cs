@@ -38,6 +38,25 @@ namespace Colombo.Samples.ConsoleClient
                 Console.WriteLine("What's your name?");
                 name = Console.ReadLine().Trim();
             }
+
+            // Uncomment the following for stress test...
+            //int numRequest = 10000;
+
+            //for (int i = 0; i < numRequest; i++)
+            //{
+            //    messageBus.Send(
+            //        new HelloWorldRequest { Name = "Julien" },
+            //        new HelloWorldRequest { Name = "Julien" },
+            //        new HelloWorldRequest { Name = "Julien" },
+            //        new HelloWorldRequest { Name = "Julien" },
+            //        new HelloWorldRequest { Name = "Julien" },
+            //        new HelloWorldRequest { Name = "Julien" },
+            //        new HelloWorldRequest { Name = "Julien" },
+            //        new HelloWorldRequest { Name = "Julien" },
+            //        new HelloWorldRequest { Name = "Julien" },
+            //        new HelloWorldRequest { Name = "Julien" }
+            //    );
+            //}
         }
     }
 }

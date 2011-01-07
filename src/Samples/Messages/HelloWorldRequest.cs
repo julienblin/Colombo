@@ -9,7 +9,7 @@ namespace Colombo.Samples.Messages
 {
     [SLA(500)]
     [RequiredInContext(CurrentCultureConstant.CultureContextKey)]
-    public class HelloWorldRequest : Request<HelloWorldResponse>
+    public class HelloWorldRequest : SideEffectFreeRequest<HelloWorldResponse>
     {
         [Required]
         [StringLength(10)]
