@@ -7,6 +7,7 @@ using Castle.MicroKernel.Resolvers.SpecializedResolvers;
 using Castle.MicroKernel.Registration;
 using Colombo.Wcf;
 using Colombo.Impl;
+using Colombo.Interceptors;
 
 namespace Colombo.Facilities
 {
@@ -16,6 +17,11 @@ namespace Colombo.Facilities
 
         bool registerLocalProcessing = true;
         int maxAllowedNumberOfSendForStatefulMessageBus = DefaultMaxAllowedNumberOfSendForStatefulMessageBus;
+
+        IList<Type> handlerInterceptors = new List<Type>()
+        {
+            typeof(TransactionScopeHandleInterceptor)
+        };
 
         protected override void Init()
         {
@@ -46,6 +52,15 @@ namespace Colombo.Facilities
                 );
 
                 WcfService.RegisterKernel(Kernel);
+
+                foreach (var handlerType in handlerInterceptors)
+                {
+                    Kernel.Register(
+                        Component.For<IRequestHandlerHandleInterceptor>()
+                            .LifeStyle.Singleton
+                            .ImplementedBy(handlerType)
+                    );
+                }
             }
         }
 
@@ -57,6 +72,11 @@ namespace Colombo.Facilities
         public void MaxAllowedNumberOfSendForStatefulMessageBus(int max)
         {
             maxAllowedNumberOfSendForStatefulMessageBus = max;
+        }
+
+        public void DoNotHandleInsideTransactionScope()
+        {
+            handlerInterceptors.Remove(typeof(TransactionScopeHandleInterceptor));
         }
     }
 }

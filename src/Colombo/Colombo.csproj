@@ -110,6 +110,7 @@
     <Compile Include="Impl\RequestProcessorSendInvocation.cs" />
     <Compile Include="Impl\StatefulMessageBus.cs" />
     <Compile Include="Impl\StatefulReponseInterceptor.cs" />
+    <Compile Include="Interceptors\TransactionScopeHandleInterceptor.cs" />
     <Compile Include="IRequestHandler.cs" />
     <Compile Include="IRequestHandlerFactory.cs" />
     <Compile Include="IRequestHandlerHandleInterceptor.cs" />

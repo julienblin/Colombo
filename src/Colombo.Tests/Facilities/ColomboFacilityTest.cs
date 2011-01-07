@@ -8,6 +8,7 @@ using Colombo.Facilities;
 using Colombo.Wcf;
 using System.Reflection;
 using Castle.MicroKernel;
+using Colombo.Interceptors;
 
 namespace Colombo.Tests.Facilities
 {
@@ -92,6 +93,22 @@ namespace Colombo.Tests.Facilities
 
             Assert.That(() => container.Resolve<IStatefulMessageBus>().MaxAllowedNumberOfSend,
                 Is.EqualTo(50));
+        }
+
+        [Test]
+        public void It_should_register_TransactionScopeHandleInterceptor()
+        {
+            var container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>();
+
+            Assert.That(container.ResolveAll<IRequestHandlerHandleInterceptor>().Any(x => x is TransactionScopeHandleInterceptor));
+
+            container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>(f =>
+            {
+                f.DoNotHandleInsideTransactionScope();
+            });
+            Assert.That(!container.ResolveAll<IRequestHandlerHandleInterceptor>().Any(x => x is TransactionScopeHandleInterceptor));
         }
     }
 }
