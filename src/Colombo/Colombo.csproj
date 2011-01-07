@@ -113,6 +113,8 @@
     <Compile Include="Interceptors\CurrentCultureConstant.cs" />
     <Compile Include="Interceptors\CurrentCultureHandleInterceptor.cs" />
     <Compile Include="Interceptors\CurrentCultureSendInterceptor.cs" />
+    <Compile Include="Interceptors\RequestExtensions.cs" />
+    <Compile Include="Interceptors\RequiredInContextHandleInterceptor.cs" />
     <Compile Include="Interceptors\TransactionScopeHandleInterceptor.cs" />
     <Compile Include="IRequestHandler.cs" />
     <Compile Include="IRequestHandlerFactory.cs" />
@@ -122,6 +124,8 @@
     <Compile Include="IStatefulMessageBus.cs" />
     <Compile Include="Request.cs" />
     <Compile Include="RequestHandler.cs" />
+    <Compile Include="RequiredInContextAttribute.cs" />
+    <Compile Include="RequiredInContextException.cs" />
     <Compile Include="Response.cs" />
     <Compile Include="ResponsesGroup.cs" />
     <Compile Include="SideEffectFreeRequest.cs" />

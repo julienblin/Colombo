@@ -135,5 +135,21 @@ namespace Colombo.Tests.Facilities
             Assert.That(!container.ResolveAll<IMessageBusSendInterceptor>().Any(x => x is CurrentCultureSendInterceptor));
             Assert.That(!container.ResolveAll<IRequestHandlerHandleInterceptor>().Any(x => x is CurrentCultureHandleInterceptor));
         }
+
+        [Test]
+        public void It_should_register_RequiredInContextHandlerInterceptor()
+        {
+            var container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>();
+
+            Assert.That(container.ResolveAll<IRequestHandlerHandleInterceptor>().Any(x => x is RequiredInContextHandleInterceptor));
+
+            container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>(f =>
+            {
+                f.DoNotEnforceRequiredInContext();
+            });
+            Assert.That(!container.ResolveAll<IRequestHandlerHandleInterceptor>().Any(x => x is RequiredInContextHandleInterceptor));
+        }
     }
 }
