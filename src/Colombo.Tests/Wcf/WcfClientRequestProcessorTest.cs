@@ -99,9 +99,6 @@ namespace Colombo.Tests.Wcf
                     Assert.That(responses.GetFrom(request4).Name,
                         Is.EqualTo(request4.Name));
                 });
-
-                serviceHost1.Abort();
-                serviceHost2.Abort();
             }
         }
 

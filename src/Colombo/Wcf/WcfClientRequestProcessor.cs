@@ -76,10 +76,11 @@ namespace Colombo.Wcf
                 var task = Task.Factory.StartNew<Response[]>((g) =>
                     {
                         var group = (IGrouping<string, BaseRequest>)g;
-                        var clientBase = clientBaseServiceFactory.CreateClientBase(group.Key);
-
-                        Logger.DebugFormat("Sending {0} request(s) to {1}...", group.Count(), clientBase.Endpoint.Address.Uri);
-                        return clientBase.Process(group.ToArray());
+                        using (var clientBase = clientBaseServiceFactory.CreateClientBase(group.Key))
+                        {
+                            Logger.DebugFormat("Sending {0} request(s) to {1}...", group.Count(), clientBase.Endpoint.Address.Uri);
+                            return clientBase.Process(group.ToArray());
+                        }
                     },
                     requestGroup
                 );

@@ -54,8 +54,6 @@ namespace Colombo.Tests
                     Is.EqualTo(request2.Name));
                 Assert.That(() => response2.CorrelationGuid,
                     Is.EqualTo(request2.CorrelationGuid));
-
-                serviceHostServer.Abort();
             }
         }
 
@@ -97,8 +95,6 @@ namespace Colombo.Tests
                     Is.EqualTo(request2.Name));
                 Assert.That(() => response2.CorrelationGuid,
                     Is.EqualTo(request2.CorrelationGuid));
-
-                serviceHostServer.Abort();
             }
         }
 
@@ -160,8 +156,6 @@ namespace Colombo.Tests
                     Is.EqualTo(request4.Name));
                 Assert.That(() => response4.CorrelationGuid,
                     Is.EqualTo(request4.CorrelationGuid));
-
-                serviceHostServer.Abort();
             }
         }
 
