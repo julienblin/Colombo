@@ -4,11 +4,15 @@ using System.Linq;
 using System.Text;
 using Castle.DynamicProxy;
 using System.Diagnostics.Contracts;
+using System.Reflection;
 
 namespace Colombo.Impl
 {
     public class StatefulReponseInterceptor : IInterceptor
     {
+        private static readonly MethodInfo Exception_InternalPreserveStackTrace =
+    typeof(Exception).GetMethod("InternalPreserveStackTrace", BindingFlags.Instance | BindingFlags.NonPublic);
+
         private readonly StatefulMessageBus statefulMessageBus;
         private readonly BaseSideEffectFreeRequest request;
 
@@ -33,7 +37,17 @@ namespace Colombo.Impl
 
             if (internalResponse != null)
             {
-                invocation.ReturnValue = invocation.Method.Invoke(internalResponse, invocation.Arguments);
+                try
+                {
+                    invocation.ReturnValue = invocation.Method.Invoke(internalResponse, invocation.Arguments);
+                }
+                catch (TargetInvocationException tie)
+                {
+                    // Propagate the inner exception so that the proxy throws the same exception as
+                    // the real object would 
+                    Exception_InternalPreserveStackTrace.Invoke(tie.InnerException, new Object[] { });
+                    throw tie.InnerException;
+                }
             }
             else
             {

@@ -30,7 +30,8 @@ namespace Colombo.Impl
             if (hasAlreadySentForFutures && !AllowMultipleFutureSendBatches)
                 throw new ColomboException("StatefulMessageBus has already sent a batch of request, you cannot queue more. Change AllowMultipleFutureSendBatches for this instance or in facility configuration to disable this behavior.");
 
-            var response = proxyGenerator.CreateClassProxy<TResponse>(new StatefulReponseInterceptor(this, request));
+            var options = new ProxyGenerationOptions(new NonVirtualCheckProxyGenerationHook());
+            var response = proxyGenerator.CreateClassProxy<TResponse>(options, new StatefulReponseInterceptor(this, request));
             PendingRequests.Add(request);
 
             Contract.Assume(response != null);
@@ -65,10 +66,7 @@ namespace Colombo.Impl
                 return ReceivedRequests[request];
 
             if (!PendingRequests.Contains(request))
-                return null;
-
-            if (PendingRequests.Count == 0)
-                return null;
+                throw new ColomboException(string.Format("Internal error: response proxy request is no registered with this StatefulMessageBus instance: {0}", request));
 
             var firstPendingRequest = PendingRequests[0];
             PendingRequests.Remove(firstPendingRequest);

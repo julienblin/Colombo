@@ -20,6 +20,20 @@ namespace Colombo.Tests.Impl
         }
 
         [Test]
+        public void It_should_throw_an_exception_if_any_response_member_is_not_virtual()
+        {
+            var mocks = new MockRepository();
+            var messageBus = mocks.StrictMock<IMessageBus>();
+
+            var statefulMB = new StatefulMessageBus(messageBus);
+
+            Assert.That(() => statefulMB.FutureSend(new TestRequestNonVirtual()),
+                Throws.Exception.TypeOf<ColomboException>()
+                .With.Message.Contains("virtual")
+                .And.Message.Contains("get_NameIncorrect"));
+        }
+
+        [Test]
         public void It_should_delegate_to_message_bus_for_IMessageBus()
         {
             var mocks = new MockRepository();
@@ -164,11 +178,76 @@ namespace Colombo.Tests.Impl
                 Is.EqualTo(2));
         }
 
+        [Test]
+        public void It_should_preserve_original_stack_trace_when_instance_throws_Exception()
+        {
+            string[] stackTraceOriginalLines = null;
+
+            try
+            {
+                var responseStackTrace = new TestResponseException();
+                var exceptionAccessStackTrace = responseStackTrace.UtcTimestamp;
+            }
+            catch (Exception ex)
+            {
+                stackTraceOriginalLines = ex.StackTrace.Split('\n');
+            }
+
+            var request = new TestRequestException();
+            var response = new TestResponseException();
+            var messageBus = new TestMessageBus(response);
+            var statefulMB = new StatefulMessageBus(messageBus);
+            var responseProxy = statefulMB.FutureSend(request);
+
+            var guidAccess = responseProxy.CorrelationGuid;
+
+            try
+            {
+                var exceptionAccess = responseProxy.UtcTimestamp;
+            }
+            catch (Exception ex)
+            {
+                var proxyStackStraceLines = ex.StackTrace.Split('\n');
+                Assert.That(() => proxyStackStraceLines[0],
+                    Is.EqualTo(stackTraceOriginalLines[0]));
+            }
+        }
+
+        public class TestResponseNonVirtual : Response
+        {
+            public virtual string Name { get; set; }
+
+            public string NameIncorrect { get; set; }
+        }
+
+        public class TestRequestNonVirtual : SideEffectFreeRequest<TestResponseNonVirtual>
+        {
+        }
+
         public class TestRequest : Request<TestResponse>
         {
         }
 
         public class TestSideEffectFreeRequest : SideEffectFreeRequest<TestResponse>
+        {
+        }
+
+        public class TestResponseException : Response
+        {
+            public override DateTime UtcTimestamp
+            {
+                get
+                {
+                    throw new ApplicationException("This is the internal error");
+                }
+                set
+                {
+                    base.UtcTimestamp = value;
+                }
+            }
+        }
+
+        public class TestRequestException : SideEffectFreeRequest<TestResponseException>
         {
         }
 

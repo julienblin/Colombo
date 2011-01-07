@@ -12,19 +12,27 @@ namespace Colombo
         /// </summary>
         protected BaseMessage()
         {
-            CorrelationGuid = Guid.NewGuid();
-            UtcTimestamp = DateTime.UtcNow;
         }
 
+        private Guid correlationGuid = Guid.NewGuid();
         /// <summary>
         /// Represents an identifier that could relate several messages together.
         /// </summary>
-        public virtual Guid CorrelationGuid { get; set; }
+        public virtual Guid CorrelationGuid
+        {
+            get { return correlationGuid; }
+            set { correlationGuid = value; }
+        }
 
+        private DateTime utcTimestamp = DateTime.UtcNow;
         /// <summary>
         /// Timestamp for the creation of the message, expressed as UTC.
         /// </summary>
-        public virtual DateTime UtcTimestamp { get; set; }
+        public virtual DateTime UtcTimestamp
+        {
+            get { return utcTimestamp; }
+            set { utcTimestamp = value; }
+        }
 
         public override string ToString()
         {

@@ -104,6 +104,7 @@
     <Compile Include="Impl\LocalRequestProcessor.cs" />
     <Compile Include="Impl\MessageBus.cs" />
     <Compile Include="Impl\MessageBusSendInterceptorInvocation.cs" />
+    <Compile Include="Impl\NonVirtualCheckProxyGenerationHook.cs" />
     <Compile Include="Impl\RequestHandlerHandleInterceptorInvocation.cs" />
     <Compile Include="Impl\RequestHandlerHandleInvocation.cs" />
     <Compile Include="Impl\RequestProcessorSendInvocation.cs" />
