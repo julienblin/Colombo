@@ -138,5 +138,10 @@ namespace Colombo.Facilities
         {
             sendInterceptors.Remove(typeof(SLASendInterceptor));
         }
+
+        public void MonitorWithPerformanceCounter()
+        {
+            handlerInterceptors.Add(typeof(PerfCounterHandlerInterceptor));
+        }
     }
 }

@@ -122,6 +122,7 @@
     <Compile Include="Interceptors\CurrentCultureSendInterceptor.cs" />
     <Compile Include="Interceptors\DataAnnotationsValidationHandleInterceptor.cs" />
     <Compile Include="Interceptors\DataAnnotationsValidationSendInterceptor.cs" />
+    <Compile Include="Interceptors\PerfCounterHandlerInterceptor.cs" />
     <Compile Include="Interceptors\RequestExtensions.cs" />
     <Compile Include="Interceptors\RequiredInContextHandleInterceptor.cs" />
     <Compile Include="Interceptors\SLASendInterceptor.cs" />
