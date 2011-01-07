@@ -37,7 +37,15 @@ namespace Colombo.Tests
             {
                 var serializer = new DataContractSerializer(typeof(TestValidatedResponse));
                 var reference = new TestValidatedResponse();
-                reference.ValidationResults.Add(new ValidationResult("TestErrorMessage"));
+                reference.ValidationResults.Add(new ValidationResult("TestErrorMessage", new string[] { "Member1", "Member2" }));
+
+                using (var backing = new System.IO.StringWriter())
+                using (var writer = new System.Xml.XmlTextWriter(backing))
+                {
+                    serializer.WriteObject(writer, reference);
+                    Console.WriteLine(backing.ToString());
+                }
+
                 serializer.WriteObject(stream, reference);
                 stream.Position = 0;
                 var deserialized = (TestValidatedResponse)serializer.ReadObject(stream);
@@ -45,6 +53,8 @@ namespace Colombo.Tests
                 Assert.AreEqual(deserialized.CorrelationGuid, reference.CorrelationGuid);
                 Assert.AreEqual(deserialized.UtcTimestamp, reference.UtcTimestamp);
                 Assert.AreEqual(deserialized.ValidationResults[0].ErrorMessage, "TestErrorMessage");
+                Assert.AreEqual(deserialized.ValidationResults[0].MemberNames.ToArray()[0], "Member1");
+                Assert.AreEqual(deserialized.ValidationResults[0].MemberNames.ToArray()[1], "Member2");
             }
         }
 

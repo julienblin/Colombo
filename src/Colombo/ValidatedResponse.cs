@@ -9,36 +9,22 @@ using System.ComponentModel;
 namespace Colombo
 {
     [DataContract]
-    public abstract class ValidatedResponse : Response, IDeserializationCallback
+    public abstract class ValidatedResponse : Response
     {
-        private BindingList<ValidationResult> validationResults;
+        private IList<System.ComponentModel.DataAnnotations.ValidationResult> internalValidationResults;
+        /// <summary>
+        /// List of all the <see cref="System.ComponentModel.DataAnnotations.ValidationResult"/>.
+        /// </summary>
         [IgnoreDataMember]
-        public virtual BindingList<ValidationResult> ValidationResults
+        public virtual IList<System.ComponentModel.DataAnnotations.ValidationResult> ValidationResults
         {
             get
             {
-                if (validationResults == null)
+                if (internalValidationResults == null)
                 {
-                    validationResults = new BindingList<ValidationResult>();
-                    validationResults.ListChanged += new ListChangedEventHandler(validationResults_ListChanged);
+                    internalValidationResults = new List<System.ComponentModel.DataAnnotations.ValidationResult>();
                 }
-                return validationResults;
-            }
-        }
-
-        [DataMember]
-        private List<> validationResultsSerialization;
-        
-        void validationResults_ListChanged(object sender, ListChangedEventArgs e)
-        {
-            if (validationResultsSerialization == null)
-                validationResultsSerialization = new List<string>();
-            else
-                validationResultsSerialization.Clear();
-
-            foreach (var validationResult in ValidationResults)
-            {
-                errorMessages.Add(msg.ErrorMessage);
+                return internalValidationResults;
             }
         }
 
@@ -47,19 +33,54 @@ namespace Colombo
             return (ValidationResults.Count == 0);
         }
 
-        public void OnDeserialization(object sender)
+        #region Serializing ValidationResult
+
+        /// <summary>
+        /// Holds serialization-friendly <see cref="ValidationResult"/>.
+        /// </summary>
+        [DataMember(Name="ValidationResults")]
+        private List<ValidationResult> serializableValidationResults;
+
+        [OnSerializing]
+        private void OnSerializing(StreamingContext context)
         {
-            ValidationResults.RaiseListChangedEvents = false;
-            foreach (var msg in errorMessages)
-            {
-                ValidationResults.Add(new ValidationResult(msg));
-            }
-            ValidationResults.RaiseListChangedEvents = true;
+            serializableValidationResults = new List<ValidationResult>();
+            foreach (var validationResult in ValidationResults)
+                serializableValidationResults.Add(new ValidationResult(validationResult));
         }
 
-        private class SerializableValidationResult
+        [OnDeserialized]
+        private void OnDeserialized(StreamingContext context)
         {
-            public string 
+            foreach (var validationResultSerialization in serializableValidationResults)
+            {
+                ValidationResults.Add(new System.ComponentModel.DataAnnotations.ValidationResult(validationResultSerialization.ErrorMessage, validationResultSerialization.MemberNames));
+            }
         }
+
+        /// <summary>
+        /// Serialization friendly version of <see cref="System.ComponentModel.DataAnnotations.ValidationResult"/>
+        /// </summary>
+        [DataContract(Name="ValidationResult")]
+        private class ValidationResult
+        {
+            public ValidationResult()
+            {
+            }
+
+            public ValidationResult(System.ComponentModel.DataAnnotations.ValidationResult validationResult)
+            {
+                ErrorMessage = validationResult.ErrorMessage;
+                MemberNames = validationResult.MemberNames;
+            }
+
+            [DataMember]
+            public string ErrorMessage {get;set;}
+
+            [DataMember]
+            public IEnumerable<string> MemberNames {get;set;}
+        }
+
+        #endregion
     }
 }
