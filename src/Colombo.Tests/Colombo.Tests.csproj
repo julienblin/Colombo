@@ -67,6 +67,7 @@
     <Compile Include="BaseTest.cs" />
     <Compile Include="ColomboExceptionTest.cs" />
     <Compile Include="Facilities\ColomboFacilityTest.cs" />
+    <Compile Include="Facilities\PerRequestHandlingLifestyleTest.cs" />
     <Compile Include="FullTest.cs" />
     <Compile Include="Impl\KernelRequestHandlerFactoryTest.cs" />
     <Compile Include="Impl\LocalRequestProcessorTest.cs" />

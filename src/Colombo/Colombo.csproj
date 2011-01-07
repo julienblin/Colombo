@@ -90,6 +90,8 @@
     <Compile Include="Contracts\StatefulMessageBusContract.cs" />
     <Compile Include="Contracts\WcfClientBaseServiceFactoryContract.cs" />
     <Compile Include="Facilities\ColomboFacility.cs" />
+    <Compile Include="Facilities\LifestyleRegistrationExtensions.cs" />
+    <Compile Include="Facilities\PerRequestHandlingLifestyleManager.cs" />
     <Compile Include="IColomboHandleInvocation.cs" />
     <Compile Include="IColomboInterceptor.cs" />
     <Compile Include="IColomboSendInvocation.cs" />
