@@ -13,7 +13,7 @@
 
   <property name="msbuild.configuration" value="Release" />
   <property name="version.major" value="0" />
-  <property name="version.minor" value="1" />
+  <property name="version.minor" value="2" />
   <property name="version.patch" value="0" />
 
   <property name="folder.src" value="${folder.base}\src"/>
