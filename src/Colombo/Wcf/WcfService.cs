@@ -29,9 +29,10 @@ namespace Colombo.Wcf
             if (Kernel == null)
                 throw new ColomboException("No Kernel has been registered. You must call WcfService.RegisterKernel before receiving any request.");
 
+            ILocalRequestProcessor localRequestProcessor = null;
             try
             {
-                var localRequestProcessor = Kernel.Resolve<ILocalRequestProcessor>();
+                localRequestProcessor = Kernel.Resolve<ILocalRequestProcessor>();
                 var undispatchableRequests = requests.Where(r => !localRequestProcessor.CanProcess(r));
                 if (undispatchableRequests.Count() > 0)
                     throw new ColomboException(string.Format("Unable to dispatch requests {0} locally.", string.Join(", ", undispatchableRequests.Select(x => x.ToString()))));
@@ -48,6 +49,11 @@ namespace Colombo.Wcf
             catch (ComponentNotFoundException ex)
             {
                 throw new ColomboException("No ILocalMessageProcessor could be resolved. You must register an ILocalMessageProcessor into the container.", ex);
+            }
+            finally
+            {
+                if (localRequestProcessor != null)
+                    Kernel.ReleaseComponent(localRequestProcessor);
             }
         }
     }
