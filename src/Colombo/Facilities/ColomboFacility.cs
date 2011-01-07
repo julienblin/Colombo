@@ -32,6 +32,11 @@ namespace Colombo.Facilities
             typeof(DataAnnotationsValidationHandleInterceptor)
         };
 
+        IList<Type> alerters = new List<Type>()
+        {
+            typeof(EventLogColomboAlerter)
+        };
+
         protected override void Init()
         {
             Kernel.Resolver.AddSubResolver(new ArrayResolver(Kernel, true));
@@ -55,6 +60,15 @@ namespace Colombo.Facilities
                     Component.For<IMessageBusSendInterceptor>()
                         .LifeStyle.Singleton
                         .ImplementedBy(sendType)
+                );
+            }
+
+            foreach (var alerterType in alerters)
+            {
+                Kernel.Register(
+                    Component.For<IColomboAlerter>()
+                        .LifeStyle.Singleton
+                        .ImplementedBy(alerterType)
                 );
             }
 
@@ -112,6 +126,11 @@ namespace Colombo.Facilities
         {
             sendInterceptors.Remove(typeof(DataAnnotationsValidationSendInterceptor));
             handlerInterceptors.Remove(typeof(DataAnnotationsValidationHandleInterceptor));
+        }
+
+        public void DoNotAlertInApplicationEventLog()
+        {
+            alerters.Remove(typeof(EventLogColomboAlerter));
         }
     }
 }

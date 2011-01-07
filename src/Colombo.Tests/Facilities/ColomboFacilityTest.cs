@@ -9,6 +9,7 @@ using Colombo.Wcf;
 using System.Reflection;
 using Castle.MicroKernel;
 using Colombo.Interceptors;
+using Colombo.Impl;
 
 namespace Colombo.Tests.Facilities
 {
@@ -168,6 +169,22 @@ namespace Colombo.Tests.Facilities
             });
             Assert.That(!container.ResolveAll<IMessageBusSendInterceptor>().Any(x => x is DataAnnotationsValidationSendInterceptor));
             Assert.That(!container.ResolveAll<IRequestHandlerHandleInterceptor>().Any(x => x is DataAnnotationsValidationHandleInterceptor));
+        }
+
+        [Test]
+        public void It_should_register_EventLogColomboAlerter()
+        {
+            var container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>();
+
+            Assert.That(container.ResolveAll<IColomboAlerter>().Any(x => x is EventLogColomboAlerter));
+
+            container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>(f =>
+            {
+                f.DoNotAlertInApplicationEventLog();
+            });
+            Assert.That(!container.ResolveAll<IColomboAlerter>().Any(x => x is EventLogColomboAlerter));
         }
     }
 }
