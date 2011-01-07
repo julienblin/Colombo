@@ -58,7 +58,9 @@ namespace Colombo
             if((responseType == null) || (!typeof(Response).IsAssignableFrom(responseType)))
                 throw new ColomboException(string.Format("Unable to create a response from response type {0}: either null or not derived from Response.", responseType));
             
-            return (Response)Activator.CreateInstance(responseType);
+            var response = (Response)Activator.CreateInstance(responseType);
+            response.CorrelationGuid = CorrelationGuid;
+            return response;
         }
 
         public override string ToString()

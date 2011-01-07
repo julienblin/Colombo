@@ -16,7 +16,7 @@ namespace Colombo
         IList<BaseRequest> Requests { get; set; }
 
         /// <summary>
-        /// The response at this moment.
+        /// The responses at this moment.
         /// </summary>
         ResponsesGroup Responses { get; set; }
 

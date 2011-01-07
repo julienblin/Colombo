@@ -113,6 +113,8 @@
     <Compile Include="Interceptors\CurrentCultureConstant.cs" />
     <Compile Include="Interceptors\CurrentCultureHandleInterceptor.cs" />
     <Compile Include="Interceptors\CurrentCultureSendInterceptor.cs" />
+    <Compile Include="Interceptors\DataAnnotationsValidationHandleInterceptor.cs" />
+    <Compile Include="Interceptors\DataAnnotationsValidationSendInterceptor.cs" />
     <Compile Include="Interceptors\RequestExtensions.cs" />
     <Compile Include="Interceptors\RequiredInContextHandleInterceptor.cs" />
     <Compile Include="Interceptors\TransactionScopeHandleInterceptor.cs" />

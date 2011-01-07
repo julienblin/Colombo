@@ -20,14 +20,16 @@ namespace Colombo.Facilities
 
         IList<Type> sendInterceptors = new List<Type>()
         {
-            typeof(CurrentCultureSendInterceptor)
+            typeof(CurrentCultureSendInterceptor),
+            typeof(DataAnnotationsValidationSendInterceptor)
         };
 
         IList<Type> handlerInterceptors = new List<Type>()
         {
             typeof(TransactionScopeHandleInterceptor),
             typeof(CurrentCultureHandleInterceptor),
-            typeof(RequiredInContextHandleInterceptor)
+            typeof(RequiredInContextHandleInterceptor),
+            typeof(DataAnnotationsValidationHandleInterceptor)
         };
 
         protected override void Init()
@@ -104,6 +106,12 @@ namespace Colombo.Facilities
         public void DoNotEnforceRequiredInContext()
         {
             handlerInterceptors.Remove(typeof(RequiredInContextHandleInterceptor));
+        }
+
+        public void DoNotValidateDataAnnotations()
+        {
+            sendInterceptors.Remove(typeof(DataAnnotationsValidationSendInterceptor));
+            handlerInterceptors.Remove(typeof(DataAnnotationsValidationHandleInterceptor));
         }
     }
 }

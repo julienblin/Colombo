@@ -151,5 +151,23 @@ namespace Colombo.Tests.Facilities
             });
             Assert.That(!container.ResolveAll<IRequestHandlerHandleInterceptor>().Any(x => x is RequiredInContextHandleInterceptor));
         }
+
+        [Test]
+        public void It_should_register_DataAnnotationInterceptors()
+        {
+            var container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>();
+
+            Assert.That(container.ResolveAll<IMessageBusSendInterceptor>().Any(x => x is DataAnnotationsValidationSendInterceptor));
+            Assert.That(container.ResolveAll<IRequestHandlerHandleInterceptor>().Any(x => x is DataAnnotationsValidationHandleInterceptor));
+
+            container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>(f =>
+            {
+                f.DoNotValidateDataAnnotations();
+            });
+            Assert.That(!container.ResolveAll<IMessageBusSendInterceptor>().Any(x => x is DataAnnotationsValidationSendInterceptor));
+            Assert.That(!container.ResolveAll<IRequestHandlerHandleInterceptor>().Any(x => x is DataAnnotationsValidationHandleInterceptor));
+        }
     }
 }
