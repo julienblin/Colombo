@@ -18,9 +18,15 @@ namespace Colombo.Facilities
         bool registerLocalProcessing = true;
         int maxAllowedNumberOfSendForStatefulMessageBus = DefaultMaxAllowedNumberOfSendForStatefulMessageBus;
 
+        IList<Type> sendInterceptors = new List<Type>()
+        {
+            typeof(CurrentCultureSendInterceptor)
+        };
+
         IList<Type> handlerInterceptors = new List<Type>()
         {
-            typeof(TransactionScopeHandleInterceptor)
+            typeof(TransactionScopeHandleInterceptor),
+            typeof(CurrentCultureHandleInterceptor)
         };
 
         protected override void Init()
@@ -39,6 +45,15 @@ namespace Colombo.Facilities
                     .ImplementedBy<StatefulMessageBus>()
                     .OnCreate((kernel, item) => item.MaxAllowedNumberOfSend = maxAllowedNumberOfSendForStatefulMessageBus)
             );
+
+            foreach (var sendType in sendInterceptors)
+            {
+                Kernel.Register(
+                    Component.For<IMessageBusSendInterceptor>()
+                        .LifeStyle.Singleton
+                        .ImplementedBy(sendType)
+                );
+            }
 
             if (registerLocalProcessing)
             {
@@ -77,6 +92,12 @@ namespace Colombo.Facilities
         public void DoNotHandleInsideTransactionScope()
         {
             handlerInterceptors.Remove(typeof(TransactionScopeHandleInterceptor));
+        }
+
+        public void DoNotManageCurrentCulture()
+        {
+            sendInterceptors.Remove(typeof(CurrentCultureSendInterceptor));
+            handlerInterceptors.Remove(typeof(CurrentCultureHandleInterceptor));
         }
     }
 }

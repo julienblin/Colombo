@@ -73,6 +73,8 @@
     <Compile Include="Impl\LocalRequestProcessorTest.cs" />
     <Compile Include="Impl\MessageBusTest.cs" />
     <Compile Include="Impl\StatefulMessageBusTest.cs" />
+    <Compile Include="Interceptors\CurrentCultureHandleInterceptorTest.cs" />
+    <Compile Include="Interceptors\CurrentCultureSendInterceptorTest.cs" />
     <Compile Include="Interceptors\TransactionScopeHandleInterceptorTest.cs" />
     <Compile Include="MessagesTest.cs" />
     <Compile Include="RequestHandlerTest.cs" />

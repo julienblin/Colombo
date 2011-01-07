@@ -14,7 +14,7 @@ namespace Colombo.Interceptors
     {
         public void Intercept(IColomboHandleInvocation nextInvocation)
         {
-            if (nextInvocation == null) throw new ArgumentNullException("invocation");
+            if (nextInvocation == null) throw new ArgumentNullException("nextInvocation");
             Contract.EndContractBlock();
 
             using (var tx = new TransactionScope(TransactionScopeOption.RequiresNew))
