@@ -8,7 +8,11 @@ using System.Diagnostics.Contracts;
 
 namespace Colombo.Wcf
 {
-    [ServiceBehavior(IncludeExceptionDetailInFaults = true)]
+    [ServiceBehavior(
+        IncludeExceptionDetailInFaults = true,
+        ConcurrencyMode = ConcurrencyMode.Multiple,
+        InstanceContextMode = InstanceContextMode.PerCall
+    )]
     public class WcfService : IWcfService
     {
         private static IKernel Kernel { get; set; }
