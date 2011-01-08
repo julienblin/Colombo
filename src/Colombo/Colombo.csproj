@@ -116,6 +116,7 @@
     <Compile Include="Impl\MessageBus.cs" />
     <Compile Include="Impl\MessageBusSendInterceptorInvocation.cs" />
     <Compile Include="Impl\NonVirtualCheckProxyGenerationHook.cs" />
+    <Compile Include="Impl\RequestHandlerExtensions.cs" />
     <Compile Include="Impl\RequestHandlerHandleInterceptorInvocation.cs" />
     <Compile Include="Impl\RequestHandlerHandleInvocation.cs" />
     <Compile Include="Impl\RequestProcessorSendInvocation.cs" />
@@ -148,6 +149,7 @@
     <Compile Include="SideEffectFreeRequest.cs" />
     <Compile Include="SideEffectFreeRequestHandler.cs" />
     <Compile Include="SLAAttribute.cs" />
+    <Compile Include="ChooseWhenRequestContextContainsAttribute.cs" />
     <Compile Include="ValidatedResponse.cs" />
     <Compile Include="Wcf\EmbedTypeInSerializerAttribute.cs" />
     <Compile Include="Wcf\IWcfServiceFactory.cs" />

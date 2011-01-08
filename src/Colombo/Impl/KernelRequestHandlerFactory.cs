@@ -5,6 +5,7 @@ using System.Text;
 using Castle.Core.Logging;
 using Castle.MicroKernel;
 using System.Diagnostics.Contracts;
+using System.Reflection;
 
 namespace Colombo.Impl
 {
@@ -45,15 +46,34 @@ namespace Colombo.Impl
             Contract.EndContractBlock();
 
             var requestHandlerType = CreateRequestHandlerTypeFrom(request);
-            try
+            var allRequestHandlers = (IRequestHandler[])kernel.ResolveAll(requestHandlerType);
+
+            var chosenRequestsHandlers = allRequestHandlers
+                .Where(h =>
+                {
+                    var chooseAttr = h.GetCustomAttribute<ChooseWhenRequestContextContainsAttribute>();
+                    return ((chooseAttr == null) || (chooseAttr.IsChoosen(request)));
+                }).ToArray();
+
+
+            if (chosenRequestsHandlers.Length == 1)
+                return chosenRequestsHandlers[0];
+
+            if (chosenRequestsHandlers.Length > 1)
             {
-                return (IRequestHandler)kernel.Resolve(requestHandlerType);
+                var specializedRequestsHandler = chosenRequestsHandlers
+                    .Where(h => h.GetCustomAttribute<ChooseWhenRequestContextContainsAttribute>() != null)
+                    .ToArray();
+
+                if (specializedRequestsHandler.Length == 1)
+                    return specializedRequestsHandler[0];
+                else
+                    throw new ColomboException(string.Format("Too many request handlers to choose from for {0}: {1}",
+                        request,
+                        string.Join(", ", chosenRequestsHandlers.Select(x => x.ToString()))));
             }
-            catch (ComponentNotFoundException ex)
-            {
-                Logger.ErrorFormat(ex, "ComponentNotFoundException raised for {0} - Should not be the case!", requestHandlerType);
-                return null;
-            }
+
+            throw new ColomboException(string.Format("Request Handler {0} not found for {1}.", requestHandlerType, request));
         }
 
         public void DisposeRequestHandler(IRequestHandler requestHandler)

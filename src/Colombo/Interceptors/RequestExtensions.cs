@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Colombo.Interceptors
+namespace Colombo
 {
     public static class RequestExtensions
     {

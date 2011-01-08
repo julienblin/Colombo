@@ -73,6 +73,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Handlers\HelloWorldHandler.cs" />
+    <Compile Include="Handlers\HelloWorldHandlerSpecialized.cs" />
     <Compile Include="L10n\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
