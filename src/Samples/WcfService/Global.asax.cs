@@ -22,7 +22,7 @@ namespace Colombo.Samples.WcfService
             container.AddFacility<LoggingFacility>(f => f.LogUsing(LoggerImplementation.Console));
             container.AddFacility<ColomboFacility>(f =>
             {
-                f.MonitorWithPerformanceCounter();
+                f.MonitorWithPerformanceCounters();
             });
 
             container.Register(

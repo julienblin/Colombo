@@ -209,14 +209,16 @@ namespace Colombo.Tests.Facilities
             var container = new WindsorContainer();
             container.AddFacility<ColomboFacility>();
 
-            Assert.That(!container.ResolveAll<IRequestHandlerHandleInterceptor>().Any(x => x is PerfCounterHandlerInterceptor));
+            Assert.That(!container.ResolveAll<IRequestHandlerHandleInterceptor>().Any(x => x is PerfCounterHandleInterceptor));
+            Assert.That(!container.ResolveAll<IMessageBusSendInterceptor>().Any(x => x is PerfCounterSendInterceptor));
 
             container = new WindsorContainer();
             container.AddFacility<ColomboFacility>(f =>
             {
-                f.MonitorWithPerformanceCounter();
+                f.MonitorWithPerformanceCounters();
             });
-            Assert.That(container.ResolveAll<IRequestHandlerHandleInterceptor>().Any(x => x is PerfCounterHandlerInterceptor));
+            Assert.That(container.ResolveAll<IRequestHandlerHandleInterceptor>().Any(x => x is PerfCounterHandleInterceptor));
+            Assert.That(container.ResolveAll<IMessageBusSendInterceptor>().Any(x => x is PerfCounterSendInterceptor));
         }
     }
 }
