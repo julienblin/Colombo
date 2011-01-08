@@ -31,7 +31,6 @@ namespace Colombo.Samples.ConsoleClient
             while (!string.IsNullOrEmpty(name))
             {
                 var request = new HelloWorldRequest { Name = name };
-                request.Context["Specialized"] = "Something";
                 var response = messageBus.Send(request);
                 if (response.IsValid())
                     Console.WriteLine(response.Message);
