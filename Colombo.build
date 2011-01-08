@@ -115,7 +115,7 @@
 
     <delete dir="${folder.release}" includeemptydirs="true" />
     <copy todir="${folder.release}">
-      <fileset basedir="${folder.bin}\${msbuild.configuration}\Colombo">
+      <fileset basedir="${folder.bin}\${msbuild.configuration}\Colombo.Host">
         <include name="Colombo.*"/>
       </fileset>
     </copy>
