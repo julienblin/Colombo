@@ -18,7 +18,7 @@ namespace Colombo.Tests.Wcf
             var mocks = new MockRepository();
             var requestInThisAssembly = new TestRequest();
             var requestInDynamicAssembly = mocks.Stub<Request<TestResponse>>();
-            var clientBaseFactory = mocks.StrictMock<IWcfClientBaseServiceFactory>();
+            var clientBaseFactory = mocks.StrictMock<IWcfServiceFactory>();
 
             With.Mocks(mocks).Expecting(() =>
             {
@@ -59,13 +59,16 @@ namespace Colombo.Tests.Wcf
 
                 var mocks = new MockRepository();
 
-                var clientBaseFactory = mocks.StrictMock<IWcfClientBaseServiceFactory>();
+                var clientBaseFactory = mocks.StrictMock<IWcfServiceFactory>();
 
                 var request1 = new TestRequestIPC1 { Name = @"Request1" };
                 var request2 = new TestRequestIPC2 { Name = @"Request2" };
                 var request3 = new TestRequestIPC1 { Name = @"Request3" };
                 var request4 = new TestRequestIPC2 { Name = @"Request4" };
                 var requests = new List<BaseRequest> { request1, request2, request3, request4 };
+
+                var channelFactory1 = new ChannelFactory<IWcfService>(new NetNamedPipeBinding(), new EndpointAddress(IPCAddress1));
+                var channelFactory2 = new ChannelFactory<IWcfService>(new NetNamedPipeBinding(), new EndpointAddress(IPCAddress2));
 
                 With.Mocks(mocks).Expecting(() =>
                 {
@@ -77,11 +80,11 @@ namespace Colombo.Tests.Wcf
 
                     Expect.Call(clientBaseFactory.CreateClientBase(request1.GetGroupName())).Do(new CreateClientBaseDelegate((name) =>
                     {
-                        return new WcfClientBaseService(new NetNamedPipeBinding(), new EndpointAddress(IPCAddress1));
+                        return channelFactory1.CreateChannel();
                     }));
                     Expect.Call(clientBaseFactory.CreateClientBase(request2.GetGroupName())).Do(new CreateClientBaseDelegate((name) =>
                     {
-                        return new WcfClientBaseService(new NetNamedPipeBinding(), new EndpointAddress(IPCAddress2));
+                        return channelFactory2.CreateChannel();
                     }));
                 }).Verify(() =>
                 {
@@ -102,7 +105,7 @@ namespace Colombo.Tests.Wcf
             }
         }
 
-        public delegate WcfClientBaseService CreateClientBaseDelegate(string name);
+        public delegate IWcfService CreateClientBaseDelegate(string name);
 
         public class TestRequest : Request<TestResponse>
         {

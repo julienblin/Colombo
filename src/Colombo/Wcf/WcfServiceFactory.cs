@@ -5,14 +5,16 @@ using System.Text;
 using System.ServiceModel.Configuration;
 using System.Diagnostics.Contracts;
 using System.Configuration;
+using System.ServiceModel;
+using System.Collections.Concurrent;
 
 namespace Colombo.Wcf
 {
     /// <summary>
-    /// <see cref="IWcfClientBaseServiceFactory"/> that creates <see cref="WcfClientBaseService"/> based on standard
+    /// <see cref="IWcfServiceFactory"/> that creates <see cref="WcfClientBaseService"/> based on standard
     /// WCF configuration.
     /// </summary>
-    public class WcfConfigClientBaseServiceFactory : IWcfClientBaseServiceFactory
+    public class WcfServiceFactory : IWcfServiceFactory
     {
         public bool CanCreateClientBaseForRequestGroup(string name)
         {
@@ -33,14 +35,26 @@ namespace Colombo.Wcf
             return channelEndpointElement.Address.AbsoluteUri;
         }
 
-        public WcfClientBaseService CreateClientBase(string name)
+        private ConcurrentDictionary<string, ChannelFactory<IWcfService>> channelFactories = new ConcurrentDictionary<string, ChannelFactory<IWcfService>>();
+
+        public IWcfService CreateClientBase(string name)
         {
             if (name == null) throw new ArgumentNullException("name");
             Contract.EndContractBlock();
 
             try
             {
-                return new WcfClientBaseService(name);
+                var channelFactory = channelFactories.GetOrAdd(name, (n) =>
+                {
+                    var channelFact = new ChannelFactory<IWcfService>(n);
+                    channelFact.Faulted += FactoryFaulted;
+                    channelFact.Open();
+                    return channelFact;
+                });
+                
+                var channel = channelFactory.CreateChannel();
+                ((IClientChannel)channel).Faulted += ChannelFaulted;
+                return channel;
             }
             catch (InvalidOperationException ex)
             {
@@ -76,6 +90,35 @@ namespace Colombo.Wcf
                         clientSection = serviceModelGroup.Client;
                 }
                 return clientSection;
+            }
+        }
+
+        private void FactoryFaulted(object sender, EventArgs args)
+        {
+            ChannelFactory<IWcfService> factory = (ChannelFactory<IWcfService>)sender;
+            try
+            {
+                factory.Close();
+            }
+            catch
+            {
+                factory.Abort();
+            }
+
+            ChannelFactory<IWcfService> outFactory;
+            channelFactories.TryRemove(factory.Endpoint.Name, out outFactory);
+        }
+
+        private void ChannelFaulted(object sender, EventArgs e)
+        {
+            IClientChannel channel = (IClientChannel)sender;
+            try
+            {
+                channel.Close();
+            }
+            catch
+            {
+                channel.Abort();
             }
         }
     }

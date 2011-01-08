@@ -10,10 +10,10 @@ namespace Colombo.Wcf
     /// Components that create <see cref="WcfClientBaseService"/> instances.
     /// </summary>
     [ContractClass(typeof(Contracts.WcfClientBaseServiceFactoryContract))]
-    public interface IWcfClientBaseServiceFactory
+    public interface IWcfServiceFactory
     {
         bool CanCreateClientBaseForRequestGroup(string name);
         string GetAddressForRequestGroup(string name);
-        WcfClientBaseService CreateClientBase(string name);
+        IWcfService CreateClientBase(string name);
     }
 }

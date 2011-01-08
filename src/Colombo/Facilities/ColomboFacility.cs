@@ -43,8 +43,8 @@ namespace Colombo.Facilities
             Kernel.Resolver.AddSubResolver(new ArrayResolver(Kernel, true));
 
             Kernel.Register(
-                Component.For<IWcfClientBaseServiceFactory>()
-                    .ImplementedBy<WcfConfigClientBaseServiceFactory>(),
+                Component.For<IWcfServiceFactory>()
+                    .ImplementedBy<WcfServiceFactory>(),
                 Component.For<IRequestProcessor>()
                     .ImplementedBy<WcfClientRequestProcessor>(),
                 Component.For<IMessageBus>()

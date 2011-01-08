@@ -7,6 +7,7 @@ using System.Diagnostics.Contracts;
 using System.ServiceModel.Configuration;
 using System.Configuration;
 using System.Threading.Tasks;
+using System.ServiceModel;
 
 namespace Colombo.Wcf
 {
@@ -22,9 +23,9 @@ namespace Colombo.Wcf
             set { logger = value; }
         }
 
-        private readonly IWcfClientBaseServiceFactory clientBaseServiceFactory;
+        private readonly IWcfServiceFactory clientBaseServiceFactory;
 
-        public WcfClientRequestProcessor(IWcfClientBaseServiceFactory clientBaseServiceFactory)
+        public WcfClientRequestProcessor(IWcfServiceFactory clientBaseServiceFactory)
         {
             this.clientBaseServiceFactory = clientBaseServiceFactory;
         }
@@ -76,10 +77,26 @@ namespace Colombo.Wcf
                 var task = Task.Factory.StartNew<Response[]>((g) =>
                     {
                         var group = (IGrouping<string, BaseRequest>)g;
-                        using (var clientBase = clientBaseServiceFactory.CreateClientBase(group.Key))
+                        IWcfService clientBase = null;
+                        try
                         {
-                            Logger.DebugFormat("Sending {0} request(s) to {1}...", group.Count(), clientBase.Endpoint.Address.Uri);
+                            clientBase = clientBaseServiceFactory.CreateClientBase(group.Key);
+                            Logger.DebugFormat("Sending {0} request(s) to {1}...", group.Count(), ((IClientChannel)clientBase).RemoteAddress.Uri);
                             return clientBase.Process(group.ToArray());
+                        }
+                        finally
+                        {
+                            if (clientBase != null)
+                            {
+                                try
+                                {
+                                    ((IClientChannel)clientBase).Close();
+                                }
+                                catch (Exception)
+                                {
+                                    ((IClientChannel)clientBase).Abort();
+                                }
+                            }
                         }
                     },
                     requestGroup
