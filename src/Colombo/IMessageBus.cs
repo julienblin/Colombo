@@ -15,10 +15,16 @@ namespace Colombo
         TResponse Send<TResponse>(Request<TResponse> request)
             where TResponse : Response, new();
 
+        IAsyncCallback<TResponse> SendAsync<TResponse>(Request<TResponse> request)
+            where TResponse : Response, new();
+
         /// <summary>
         /// Send synchronously a request and returns the response.
         /// </summary>
         TResponse Send<TResponse>(SideEffectFreeRequest<TResponse> request)
+            where TResponse : Response, new();
+
+        IAsyncCallback<TResponse> SendAsync<TResponse>(SideEffectFreeRequest<TResponse> request)
             where TResponse : Response, new();
 
         /// <summary>
@@ -26,5 +32,6 @@ namespace Colombo
         /// Only side effect-free requests can be parallelized.
         /// </summary>
         ResponsesGroup Send(BaseSideEffectFreeRequest request, params BaseSideEffectFreeRequest[] followingRequests);
+
     }
 }

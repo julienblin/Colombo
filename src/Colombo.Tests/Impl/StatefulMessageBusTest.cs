@@ -275,7 +275,17 @@ namespace Colombo.Tests.Impl
                 throw new NotImplementedException();
             }
 
+            public IAsyncCallback<TResponse> SendAsync<TResponse>(Request<TResponse> request) where TResponse : Response, new()
+            {
+                throw new NotImplementedException();
+            }
+
             public TResponse Send<TResponse>(SideEffectFreeRequest<TResponse> request) where TResponse : Response, new()
+            {
+                throw new NotImplementedException();
+            }
+
+            public IAsyncCallback<TResponse> SendAsync<TResponse>(SideEffectFreeRequest<TResponse> request) where TResponse : Response, new()
             {
                 throw new NotImplementedException();
             }

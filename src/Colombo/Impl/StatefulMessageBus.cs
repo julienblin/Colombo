@@ -103,6 +103,15 @@ namespace Colombo.Impl
             return messageBus.Send(request);
         }
 
+        public IAsyncCallback<TResponse> SendAsync<TResponse>(Request<TResponse> request)
+            where TResponse : Response, new()
+        {
+            if (request == null) throw new ArgumentNullException("request");
+            Contract.EndContractBlock();
+            CheckNumberOfSend();
+            return messageBus.SendAsync(request);
+        }
+
         public TResponse Send<TResponse>(SideEffectFreeRequest<TResponse> request)
             where TResponse : Response, new()
         {
@@ -110,6 +119,15 @@ namespace Colombo.Impl
             Contract.EndContractBlock();
             CheckNumberOfSend();
             return messageBus.Send(request);
+        }
+
+        public IAsyncCallback<TResponse> SendAsync<TResponse>(SideEffectFreeRequest<TResponse> request)
+            where TResponse : Response, new()
+        {
+            if (request == null) throw new ArgumentNullException("request");
+            Contract.EndContractBlock();
+            CheckNumberOfSend();
+            return messageBus.SendAsync(request);
         }
 
         public ResponsesGroup Send(BaseSideEffectFreeRequest request, params BaseSideEffectFreeRequest[] followingRequests)

@@ -17,6 +17,23 @@ namespace Colombo.Contracts
             throw new NotImplementedException();
         }
 
+        public IAsyncCallback<TResponse> SendAsync<TResponse>(Request<TResponse> request)
+            where TResponse : Response, new()
+        {
+            Contract.Requires<ArgumentNullException>(request != null, "request");
+            Contract.Ensures(Contract.Result<IAsyncCallback<TResponse>>() != null);
+            throw new NotImplementedException();
+        }
+
+        public IAsyncCallback<TResponse> SendAsync<TResponse>(SideEffectFreeRequest<TResponse> request)
+            where TResponse : Response, new()
+        {
+            Contract.Requires<ArgumentNullException>(request != null, "request");
+            Contract.Ensures(Contract.Result<IAsyncCallback<TResponse>>() != null);
+            throw new NotImplementedException();
+            throw new NotImplementedException();
+        }
+
         public TResponse Send<TResponse>(SideEffectFreeRequest<TResponse> request)
             where TResponse : Response, new()
         {

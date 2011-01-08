@@ -100,6 +100,7 @@
     <Compile Include="Facilities\PerRequestHandlingLifestyleManager.cs" />
     <Compile Include="HealthCheck\HealthCheckRequest.cs" />
     <Compile Include="HealthCheck\HealthCheckRequestHandler.cs" />
+    <Compile Include="IAsyncCallback.cs" />
     <Compile Include="IColomboAlert.cs" />
     <Compile Include="IColomboAlerter.cs" />
     <Compile Include="IColomboHandleInvocation.cs" />

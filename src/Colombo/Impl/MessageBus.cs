@@ -72,6 +72,14 @@ namespace Colombo.Impl
             return typedResponse;
         }
 
+        public IAsyncCallback<TResponse> SendAsync<TResponse>(Request<TResponse> request)
+            where TResponse : Response, new()
+        {
+            if (request == null) throw new ArgumentNullException("request");
+            Contract.EndContractBlock();
+            throw new NotImplementedException();
+        }
+
         public TResponse Send<TResponse>(SideEffectFreeRequest<TResponse> request)
             where TResponse : Response, new()
         {
@@ -87,6 +95,14 @@ namespace Colombo.Impl
                 LogAndThrowError("Internal error: InternalSend returned null or incorrect response type: expected {0}, actual {1}.", typeof(TResponse), responses[request].GetType());
 
             return typedResponse;
+        }
+
+        public IAsyncCallback<TResponse> SendAsync<TResponse>(SideEffectFreeRequest<TResponse> request)
+            where TResponse : Response, new()
+        {
+            if (request == null) throw new ArgumentNullException("request");
+            Contract.EndContractBlock();
+            throw new NotImplementedException();
         }
 
         public ResponsesGroup Send(BaseSideEffectFreeRequest request, params BaseSideEffectFreeRequest[] followingRequests)
