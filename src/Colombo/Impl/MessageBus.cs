@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using Castle.Core.Logging;
 using System.Diagnostics.Contracts;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace Colombo.Impl
 {
@@ -77,7 +79,8 @@ namespace Colombo.Impl
         {
             if (request == null) throw new ArgumentNullException("request");
             Contract.EndContractBlock();
-            throw new NotImplementedException();
+
+            return InternalSendAsync<TResponse>(request);
         }
 
         public TResponse Send<TResponse>(SideEffectFreeRequest<TResponse> request)
@@ -102,7 +105,8 @@ namespace Colombo.Impl
         {
             if (request == null) throw new ArgumentNullException("request");
             Contract.EndContractBlock();
-            throw new NotImplementedException();
+
+            return InternalSendAsync<TResponse>(request);
         }
 
         public ResponsesGroup Send(BaseSideEffectFreeRequest request, params BaseSideEffectFreeRequest[] followingRequests)
@@ -129,6 +133,27 @@ namespace Colombo.Impl
                 throw new ColomboException("Internal error: responses should not be null");
 
             return topInvocation.Responses;
+        }
+
+        protected virtual IAsyncCallback<TResponse> InternalSendAsync<TResponse>(BaseRequest request)
+            where TResponse : Response, new()
+        {
+            var asyncCallback = new AsyncCallback<TResponse>();
+            Task.Factory.StartNew((c) =>
+            {
+                try
+                {
+                    var responsesGroup = InternalSend(new List<BaseRequest> { (BaseRequest)request });
+                    ((AsyncCallback<TResponse>)c).ResponseArrived((TResponse)responsesGroup[request]);
+                }
+                catch (Exception ex)
+                {
+                    ((AsyncCallback<TResponse>)c).ExceptionArrived(ex);
+                }
+            },
+            asyncCallback);
+
+            return asyncCallback;
         }
 
         private IColomboSendInvocation BuildSendInvocationChain()

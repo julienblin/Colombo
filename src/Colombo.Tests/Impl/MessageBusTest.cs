@@ -5,6 +5,7 @@ using System.Text;
 using NUnit.Framework;
 using Colombo.Impl;
 using Rhino.Mocks;
+using System.Threading;
 
 namespace Colombo.Tests.Impl
 {
@@ -368,6 +369,79 @@ namespace Colombo.Tests.Impl
                 messageBus.MessageBusSendInterceptors = new IMessageBusSendInterceptor[] { interceptor1, interceptor2 };
                 Assert.That(() => messageBus.Send(request1, request2),
                     Is.SameAs(responsesFromInterceptor));
+            });
+        }
+
+        [Test]
+        public void It_should_be_able_to_send_asynchronously()
+        {
+            var mocks = new MockRepository();
+            var request = mocks.Stub<Request<TestResponse>>();
+            var requests = new BaseRequest[] { request };
+            var response = new TestResponse();
+            var responses = new ResponsesGroup
+            {
+                { request, response}
+            };
+
+            var requestProcessor = mocks.StrictMock<IRequestProcessor>();
+
+            With.Mocks(mocks).Expecting(() =>
+            {
+                Expect.Call(requestProcessor.CanProcess(request)).Return(true);
+                Expect.Call(requestProcessor.Process(requests)).Return(responses);
+            }).Verify(() =>
+            {
+                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor });
+                messageBus.Logger = GetConsoleLogger();
+                var callbackThreadId = 0;
+                messageBus.SendAsync(request).Register(r =>
+                {
+                    Assert.AreSame(r, response);
+                    callbackThreadId = Thread.CurrentThread.ManagedThreadId;
+                });
+                Thread.Sleep(50);
+                Assert.That(() => callbackThreadId,
+                    Is.Not.EqualTo(Thread.CurrentThread.ManagedThreadId));
+            });
+        }
+
+        [Test]
+        public void It_should_be_able_to_handle_exceptions_asynchronously()
+        {
+            var mocks = new MockRepository();
+            var request = mocks.Stub<Request<TestResponse>>();
+            var requests = new BaseRequest[] { request };
+            var response = new TestResponse();
+            var responses = new ResponsesGroup
+            {
+                { request, response}
+            };
+
+            var requestProcessor = mocks.StrictMock<IRequestProcessor>();
+
+            With.Mocks(mocks).Expecting(() =>
+            {
+                Expect.Call(requestProcessor.CanProcess(request)).Return(true);
+                Expect.Call(requestProcessor.Process(requests)).Throw(new Exception("Test exception"));
+            }).Verify(() =>
+            {
+                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor });
+                messageBus.Logger = GetConsoleLogger();
+                var callbackThreadId = 0;
+                messageBus.SendAsync(request).Register(r =>
+                {
+                    Assert.Fail();
+                },
+                e =>
+                {
+                    Assert.That(() => e.Message,
+                        Is.EqualTo("Test exception"));
+                    callbackThreadId = Thread.CurrentThread.ManagedThreadId;
+                });
+                Thread.Sleep(50);
+                Assert.That(() => callbackThreadId,
+                    Is.Not.EqualTo(Thread.CurrentThread.ManagedThreadId));
             });
         }
 

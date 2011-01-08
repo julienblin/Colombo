@@ -109,6 +109,7 @@
     <Compile Include="ILocalRequestProcessor.cs" />
     <Compile Include="IMessageBus.cs" />
     <Compile Include="IMessageBusSendInterceptor.cs" />
+    <Compile Include="Impl\AsyncCallback.cs" />
     <Compile Include="Impl\BaseHandleInvocation.cs" />
     <Compile Include="Impl\BaseSendInvocation.cs" />
     <Compile Include="Impl\EventLogColomboAlerter.cs" />

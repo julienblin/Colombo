@@ -9,5 +9,7 @@ namespace Colombo
         where TResponse : Response, new()
     {
         void Register(Action<TResponse> callback);
+
+        void Register(Action<TResponse> callback, Action<Exception> errorCallback);
     }
 }
