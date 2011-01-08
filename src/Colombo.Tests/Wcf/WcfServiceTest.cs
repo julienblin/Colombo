@@ -167,13 +167,13 @@ namespace Colombo.Tests.Wcf
                 {
                     serviceHost.Open();
                     var channelFactory = new ChannelFactory<IWcfService>(new NetNamedPipeBinding(), new EndpointAddress(IPCAddress));
-                    var clientBase = channelFactory.CreateChannel();
-                    var responses = clientBase.Process(requests);
+                    var wcfService = channelFactory.CreateChannel();
+                    var responses = wcfService.Process(requests);
                     Assert.That(() => responses[0].CorrelationGuid,
                     Is.EqualTo(response1.CorrelationGuid));
                     Assert.That(() => responses[1].CorrelationGuid,
                         Is.EqualTo(response2.CorrelationGuid));
-                    ((IClientChannel)clientBase).Close();
+                    ((IClientChannel)wcfService).Close();
                 }
             });
         }

@@ -8,9 +8,9 @@ using Colombo.Wcf;
 namespace Colombo.Contracts
 {
     [ContractClassFor(typeof(IWcfServiceFactory))]
-    public abstract class WcfClientBaseServiceFactoryContract : IWcfServiceFactory
+    public abstract class WcfServiceFactoryContract : IWcfServiceFactory
     {
-        public bool CanCreateClientBaseForRequestGroup(string name)
+        public bool CanCreateChannelForRequestGroup(string name)
         {
             Contract.Requires<ArgumentNullException>(name != null, "name");
             throw new NotImplementedException();
@@ -22,9 +22,14 @@ namespace Colombo.Contracts
             throw new NotImplementedException();
         }
 
-        public IWcfService CreateClientBase(string name)
+        public IWcfService CreateChannel(string name)
         {
             Contract.Requires<ArgumentNullException>(name != null, "name");
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<IWcfService> CreateChannelsForAllEndPoints()
+        {
             throw new NotImplementedException();
         }
     }

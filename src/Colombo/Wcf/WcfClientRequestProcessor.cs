@@ -8,6 +8,10 @@ using System.ServiceModel.Configuration;
 using System.Configuration;
 using System.Threading.Tasks;
 using System.ServiceModel;
+using System.Timers;
+using System.Collections.Concurrent;
+using Colombo.HealthCheck;
+using Colombo.Alerts;
 
 namespace Colombo.Wcf
 {
@@ -23,11 +27,32 @@ namespace Colombo.Wcf
             set { logger = value; }
         }
 
-        private readonly IWcfServiceFactory clientBaseServiceFactory;
-
-        public WcfClientRequestProcessor(IWcfServiceFactory clientBaseServiceFactory)
+        private IColomboAlerter[] alerters = new IColomboAlerter[0];
+        public IColomboAlerter[] Alerters
         {
-            this.clientBaseServiceFactory = clientBaseServiceFactory;
+            get { return alerters; }
+            set
+            {
+                if (value == null) throw new ArgumentNullException("Alerters");
+                Contract.EndContractBlock();
+
+                alerters = value;
+
+                if (Logger.IsInfoEnabled)
+                {
+                    if (alerters.Length == 0)
+                        Logger.Info("No alerters has been registered for the WcfClientRequestProcessor.");
+                    else
+                        Logger.InfoFormat("WcfClientRequestProcessor monitoring with the following alerters: {0}", string.Join(", ", alerters.Select(x => x.GetType().Name)));
+                }
+            }
+        }
+
+        private readonly IWcfServiceFactory serviceFactory;
+
+        public WcfClientRequestProcessor(IWcfServiceFactory serviceFactory)
+        {
+            this.serviceFactory = serviceFactory;
         }
 
         public bool CanProcess(BaseRequest request)
@@ -39,7 +64,7 @@ namespace Colombo.Wcf
             if (string.IsNullOrEmpty(groupName))
                 throw new ColomboException(string.Format("Groupname cannot be null or empty for {0}", request));
 
-            return clientBaseServiceFactory.CanCreateClientBaseForRequestGroup(groupName);
+            return serviceFactory.CanCreateChannelForRequestGroup(groupName);
         }
 
         public ResponsesGroup Process(IList<BaseRequest> requests)
@@ -51,7 +76,7 @@ namespace Colombo.Wcf
             foreach (var requestsGroup in requestsGroups)
             {
                 Contract.Assume(requestsGroup.Key != null);
-                if (!clientBaseServiceFactory.CanCreateClientBaseForRequestGroup(requestsGroup.Key))
+                if (!serviceFactory.CanCreateChannelForRequestGroup(requestsGroup.Key))
                     throw new ColomboException(string.Format("Internal error: Unable to send to {0}.", requestsGroup.Key));
             }
 
@@ -61,7 +86,7 @@ namespace Colombo.Wcf
                 foreach (var requestsGroup in requestsGroups)
                 {
                     Contract.Assume(requestsGroup.Key != null);
-                    Logger.DebugFormat("{0} => {{", clientBaseServiceFactory.GetAddressForRequestGroup(requestsGroup.Key));
+                    Logger.DebugFormat("{0} => {{", serviceFactory.GetAddressForRequestGroup(requestsGroup.Key));
                     foreach (var request in requestsGroup)
                     {
                         Logger.DebugFormat("  {0}", request);
@@ -77,24 +102,24 @@ namespace Colombo.Wcf
                 var task = Task.Factory.StartNew<Response[]>((g) =>
                     {
                         var group = (IGrouping<string, BaseRequest>)g;
-                        IWcfService clientBase = null;
+                        IWcfService wcfService = null;
                         try
                         {
-                            clientBase = clientBaseServiceFactory.CreateClientBase(group.Key);
-                            Logger.DebugFormat("Sending {0} request(s) to {1}...", group.Count(), ((IClientChannel)clientBase).RemoteAddress.Uri);
-                            return clientBase.Process(group.ToArray());
+                            wcfService = serviceFactory.CreateChannel(group.Key);
+                            Logger.DebugFormat("Sending {0} request(s) to {1}...", group.Count(), ((IClientChannel)wcfService).RemoteAddress.Uri);
+                            return wcfService.Process(group.ToArray());
                         }
                         finally
                         {
-                            if (clientBase != null)
+                            if (wcfService != null)
                             {
                                 try
                                 {
-                                    ((IClientChannel)clientBase).Close();
+                                    ((IClientChannel)wcfService).Close();
                                 }
                                 catch (Exception)
                                 {
-                                    ((IClientChannel)clientBase).Abort();
+                                    ((IClientChannel)wcfService).Abort();
                                 }
                             }
                         }
@@ -136,8 +161,80 @@ namespace Colombo.Wcf
 
             Contract.Assume(responses.Count == requests.Count);
             return responses;
+        }
 
-            throw new NotImplementedException();
+        private Timer healthCheckTimer;
+
+        private int healthCheckHeartBeatInSeconds = 0;
+
+        public int HealthCheckHeartBeatInSeconds
+        {
+            get { return healthCheckHeartBeatInSeconds; }
+            set
+            {
+                healthCheckHeartBeatInSeconds = value;
+                if (healthCheckTimer != null)
+                {
+                    healthCheckTimer.Stop();
+                    healthCheckTimer = null;
+                }
+
+                if (healthCheckHeartBeatInSeconds > 0)
+                {
+                    healthCheckTimer = new Timer(healthCheckHeartBeatInSeconds * 1000);
+                    healthCheckTimer.AutoReset = true;
+                    healthCheckTimer.Elapsed += HealthCheckTimerElapsed;
+                    healthCheckTimer.Start();
+                }
+            }
+        }
+
+        private void HealthCheckTimerElapsed(object sender, ElapsedEventArgs e)
+        {
+            IWcfService currentWcfService = null;
+
+            try
+            {
+                foreach (var wcfService in serviceFactory.CreateChannelsForAllEndPoints())
+                {
+                    currentWcfService = wcfService;
+                    try
+                    {
+                        var hcRequest = new HealthCheckRequest();
+                        Logger.DebugFormat("Sending healthcheck request to {0}...", ((IClientChannel)currentWcfService).RemoteAddress.Uri);
+                        currentWcfService.Process(new BaseRequest[] { hcRequest });
+                        Logger.DebugFormat("Healthcheck OK for {0}...", ((IClientChannel)currentWcfService).RemoteAddress.Uri);
+                    }
+                    catch (Exception ex)
+                    {
+                        var alert = new HealthCheckFailedAlert(Environment.MachineName, ((IClientChannel)currentWcfService).RemoteAddress.Uri.ToString(), ex);
+                        Logger.Warn(alert.ToString());
+                        foreach (var alerter in Alerters)
+                        {
+                            alerter.Alert(alert);
+                        }
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("An error occured while executing a health check.", ex);
+            }
+            finally
+            {
+                if (currentWcfService != null)
+                {
+                    try
+                    {
+                        ((IClientChannel)currentWcfService).Close();
+                    }
+                    catch (Exception)
+                    {
+                        ((IClientChannel)currentWcfService).Abort();
+                    }
+                }
+            }
         }
     }
 }

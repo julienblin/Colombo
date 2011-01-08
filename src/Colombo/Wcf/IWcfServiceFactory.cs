@@ -7,13 +7,14 @@ using System.Diagnostics.Contracts;
 namespace Colombo.Wcf
 {
     /// <summary>
-    /// Components that create <see cref="WcfClientBaseService"/> instances.
+    /// Components that create <see cref="IWcfService"/> channels.
     /// </summary>
-    [ContractClass(typeof(Contracts.WcfClientBaseServiceFactoryContract))]
+    [ContractClass(typeof(Contracts.WcfServiceFactoryContract))]
     public interface IWcfServiceFactory
     {
-        bool CanCreateClientBaseForRequestGroup(string name);
+        bool CanCreateChannelForRequestGroup(string name);
         string GetAddressForRequestGroup(string name);
-        IWcfService CreateClientBase(string name);
+        IWcfService CreateChannel(string name);
+        IEnumerable<IWcfService> CreateChannelsForAllEndPoints();
     }
 }

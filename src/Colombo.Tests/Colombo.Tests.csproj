@@ -85,7 +85,7 @@
     <Compile Include="SideEffectFreeRequestHandlerTest.cs" />
     <Compile Include="TestResponse.cs" />
     <Compile Include="Wcf\WcfClientRequestProcessorTest.cs" />
-    <Compile Include="Wcf\WcfConfigClientBaseServiceFactoryTest.cs" />
+    <Compile Include="Wcf\WcfServiceFactoryTest.cs" />
     <Compile Include="Wcf\WcfServiceTest.cs" />
   </ItemGroup>
   <ItemGroup>

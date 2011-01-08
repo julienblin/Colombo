@@ -13,12 +13,12 @@ namespace Colombo.Tests.Wcf
     public class WcfClientRequestProcessorTest : BaseTest
     {
         [Test]
-        public void It_should_use_IWcfClientBaseServiceFactory_to_determine_if_it_can_process()
+        public void It_should_use_IWcfServiceFactory_to_determine_if_it_can_process()
         {
             var mocks = new MockRepository();
             var requestInThisAssembly = new TestRequest();
             var requestInDynamicAssembly = mocks.Stub<Request<TestResponse>>();
-            var clientBaseFactory = mocks.StrictMock<IWcfServiceFactory>();
+            var wcfServiceFactory = mocks.StrictMock<IWcfServiceFactory>();
 
             With.Mocks(mocks).Expecting(() =>
             {
@@ -27,13 +27,13 @@ namespace Colombo.Tests.Wcf
                 {
                     return "somethingelse";
                 }));
-                Expect.Call(clientBaseFactory.CanCreateClientBaseForRequestGroup(requestInThisAssembly.GetGroupName()))
+                Expect.Call(wcfServiceFactory.CanCreateChannelForRequestGroup(requestInThisAssembly.GetGroupName()))
                     .Return(true);
-                Expect.Call(clientBaseFactory.CanCreateClientBaseForRequestGroup("somethingelse"))
+                Expect.Call(wcfServiceFactory.CanCreateChannelForRequestGroup("somethingelse"))
                     .Return(false);
             }).Verify(() =>
             {
-                var processor = new WcfClientRequestProcessor(clientBaseFactory);
+                var processor = new WcfClientRequestProcessor(wcfServiceFactory);
                 processor.Logger = GetConsoleLogger();
 
                 Assert.That(() => processor.CanProcess(requestInThisAssembly),
@@ -59,7 +59,7 @@ namespace Colombo.Tests.Wcf
 
                 var mocks = new MockRepository();
 
-                var clientBaseFactory = mocks.StrictMock<IWcfServiceFactory>();
+                var wcfServiceFactory = mocks.StrictMock<IWcfServiceFactory>();
 
                 var request1 = new TestRequestIPC1 { Name = @"Request1" };
                 var request2 = new TestRequestIPC2 { Name = @"Request2" };
@@ -72,23 +72,23 @@ namespace Colombo.Tests.Wcf
 
                 With.Mocks(mocks).Expecting(() =>
                 {
-                    Expect.Call(clientBaseFactory.CanCreateClientBaseForRequestGroup(request1.GetGroupName())).Return(true);
-                    Expect.Call(clientBaseFactory.CanCreateClientBaseForRequestGroup(request2.GetGroupName())).Return(true);
+                    Expect.Call(wcfServiceFactory.CanCreateChannelForRequestGroup(request1.GetGroupName())).Return(true);
+                    Expect.Call(wcfServiceFactory.CanCreateChannelForRequestGroup(request2.GetGroupName())).Return(true);
 
-                    Expect.Call(clientBaseFactory.GetAddressForRequestGroup(request1.GetGroupName())).Return(IPCAddress1);
-                    Expect.Call(clientBaseFactory.GetAddressForRequestGroup(request2.GetGroupName())).Return(IPCAddress2);
+                    Expect.Call(wcfServiceFactory.GetAddressForRequestGroup(request1.GetGroupName())).Return(IPCAddress1);
+                    Expect.Call(wcfServiceFactory.GetAddressForRequestGroup(request2.GetGroupName())).Return(IPCAddress2);
 
-                    Expect.Call(clientBaseFactory.CreateClientBase(request1.GetGroupName())).Do(new CreateClientBaseDelegate((name) =>
+                    Expect.Call(wcfServiceFactory.CreateChannel(request1.GetGroupName())).Do(new CreateChannelDelegate((name) =>
                     {
                         return channelFactory1.CreateChannel();
                     }));
-                    Expect.Call(clientBaseFactory.CreateClientBase(request2.GetGroupName())).Do(new CreateClientBaseDelegate((name) =>
+                    Expect.Call(wcfServiceFactory.CreateChannel(request2.GetGroupName())).Do(new CreateChannelDelegate((name) =>
                     {
                         return channelFactory2.CreateChannel();
                     }));
                 }).Verify(() =>
                 {
-                    var processor = new WcfClientRequestProcessor(clientBaseFactory);
+                    var processor = new WcfClientRequestProcessor(wcfServiceFactory);
                     processor.Logger = GetConsoleLogger();
 
                     var responses = processor.Process(requests);
@@ -105,7 +105,7 @@ namespace Colombo.Tests.Wcf
             }
         }
 
-        public delegate IWcfService CreateClientBaseDelegate(string name);
+        public delegate IWcfService CreateChannelDelegate(string name);
 
         public class TestRequest : Request<TestResponse>
         {

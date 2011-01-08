@@ -77,6 +77,8 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="ACKResponse.cs" />
+    <Compile Include="Alerts\HealthCheckFailedAlert.cs" />
     <Compile Include="Alerts\SLABreachedAlert.cs" />
     <Compile Include="BaseMessage.cs" />
     <Compile Include="BaseRequest.cs" />
@@ -92,10 +94,12 @@
     <Compile Include="Contracts\RequestHandlerHandleInterceptorContract.cs" />
     <Compile Include="Contracts\RequestProcessorContract.cs" />
     <Compile Include="Contracts\StatefulMessageBusContract.cs" />
-    <Compile Include="Contracts\WcfClientBaseServiceFactoryContract.cs" />
+    <Compile Include="Contracts\WcfServiceFactoryContract.cs" />
     <Compile Include="Facilities\ColomboFacility.cs" />
     <Compile Include="Facilities\LifestyleRegistrationExtensions.cs" />
     <Compile Include="Facilities\PerRequestHandlingLifestyleManager.cs" />
+    <Compile Include="HealthCheck\HealthCheckRequest.cs" />
+    <Compile Include="HealthCheck\HealthCheckRequestHandler.cs" />
     <Compile Include="IColomboAlert.cs" />
     <Compile Include="IColomboAlerter.cs" />
     <Compile Include="IColomboHandleInvocation.cs" />

@@ -11,12 +11,12 @@ using System.Collections.Concurrent;
 namespace Colombo.Wcf
 {
     /// <summary>
-    /// <see cref="IWcfServiceFactory"/> that creates <see cref="WcfClientBaseService"/> based on standard
+    /// <see cref="IWcfServiceFactory"/> that creates <see cref="IWcfService"/> channels based on standard
     /// WCF configuration.
     /// </summary>
     public class WcfServiceFactory : IWcfServiceFactory
     {
-        public bool CanCreateClientBaseForRequestGroup(string name)
+        public bool CanCreateChannelForRequestGroup(string name)
         {
             if (name == null) throw new ArgumentNullException("name");
             Contract.EndContractBlock();
@@ -37,7 +37,7 @@ namespace Colombo.Wcf
 
         private ConcurrentDictionary<string, ChannelFactory<IWcfService>> channelFactories = new ConcurrentDictionary<string, ChannelFactory<IWcfService>>();
 
-        public IWcfService CreateClientBase(string name)
+        public IWcfService CreateChannel(string name)
         {
             if (name == null) throw new ArgumentNullException("name");
             Contract.EndContractBlock();
@@ -56,9 +56,17 @@ namespace Colombo.Wcf
                 ((IClientChannel)channel).Faulted += ChannelFaulted;
                 return channel;
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex)
             {
-                throw new ColomboException(string.Format("Unable to create a WCF ClientBase. Did you create a WCF client endPoint with the name {0}?", name), ex);
+                throw new ColomboException(string.Format("Unable to create a WCF Channel. Did you create a WCF client endPoint with the name {0}?", name), ex);
+            }
+        }
+
+        public IEnumerable<IWcfService> CreateChannelsForAllEndPoints()
+        {
+            foreach (ChannelEndpointElement endPoint in WcfConfigClientSection.Endpoints)
+            {
+                yield return CreateChannel(endPoint.Name);
             }
         }
 

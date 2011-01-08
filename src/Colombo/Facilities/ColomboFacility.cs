@@ -8,15 +8,18 @@ using Castle.MicroKernel.Registration;
 using Colombo.Wcf;
 using Colombo.Impl;
 using Colombo.Interceptors;
+using Colombo.HealthCheck;
 
 namespace Colombo.Facilities
 {
     public class ColomboFacility : AbstractFacility
     {
         public const int DefaultMaxAllowedNumberOfSendForStatefulMessageBus = 10;
+        public const int DefaultHealthCheckHeartBeatInSeconds = 30;
 
         bool registerLocalProcessing = true;
         int maxAllowedNumberOfSendForStatefulMessageBus = DefaultMaxAllowedNumberOfSendForStatefulMessageBus;
+        int healthCheckHeartBeatInSeconds = DefaultHealthCheckHeartBeatInSeconds;
 
         IList<Type> sendInterceptors = new List<Type>()
         {
@@ -46,7 +49,8 @@ namespace Colombo.Facilities
                 Component.For<IWcfServiceFactory>()
                     .ImplementedBy<WcfServiceFactory>(),
                 Component.For<IRequestProcessor>()
-                    .ImplementedBy<WcfClientRequestProcessor>(),
+                    .ImplementedBy<WcfClientRequestProcessor>()
+                    .OnCreate((kernel, item) => ((WcfClientRequestProcessor)item).HealthCheckHeartBeatInSeconds = healthCheckHeartBeatInSeconds),
                 Component.For<IMessageBus>()
                     .ImplementedBy<MessageBus>(),
                 Component.For<IStatefulMessageBus>()
@@ -77,11 +81,12 @@ namespace Colombo.Facilities
             {
                 Kernel.Register(
                     Component.For<IRequestHandlerFactory>()
-                        .LifeStyle.Singleton
                         .ImplementedBy<KernelRequestHandlerFactory>(),
                     Component.For<ILocalRequestProcessor, IRequestProcessor>()
-                        .LifeStyle.Singleton
-                        .ImplementedBy<LocalRequestProcessor>()
+                        .ImplementedBy<LocalRequestProcessor>(),
+                    Component.For<ISideEffectFreeRequestHandler<HealthCheckRequest, ACKResponse>>()
+                        .LifeStyle.Transient
+                        .ImplementedBy<HealthCheckRequestHandler>()
                 );
 
                 WcfService.RegisterKernel(Kernel);
@@ -105,6 +110,11 @@ namespace Colombo.Facilities
         public void MaxAllowedNumberOfSendForStatefulMessageBus(int max)
         {
             maxAllowedNumberOfSendForStatefulMessageBus = max;
+        }
+
+        public void HealthCheckHeartBeatInSeconds(int seconds)
+        {
+            healthCheckHeartBeatInSeconds = seconds;
         }
 
         public void DoNotHandleInsideTransactionScope()

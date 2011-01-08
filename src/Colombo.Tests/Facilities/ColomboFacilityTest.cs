@@ -10,6 +10,7 @@ using System.Reflection;
 using Castle.MicroKernel;
 using Colombo.Interceptors;
 using Colombo.Impl;
+using Colombo.HealthCheck;
 
 namespace Colombo.Tests.Facilities
 {
@@ -81,7 +82,7 @@ namespace Colombo.Tests.Facilities
         }
 
         [Test]
-        public void It_should_position_value_for_AllowMultipleFutureSendBatches()
+        public void It_should_position_value_for_MaxAllowedNumberOfSendForStatefulMessageBus()
         {
             var container = new WindsorContainer();
             container.AddFacility<ColomboFacility>();
@@ -94,6 +95,46 @@ namespace Colombo.Tests.Facilities
 
             Assert.That(() => container.Resolve<IStatefulMessageBus>().MaxAllowedNumberOfSend,
                 Is.EqualTo(50));
+        }
+
+        [Test]
+        public void It_should_position_value_for_HealthCheckHeartBeatInSeconds()
+        {
+            var container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>();
+
+            WcfClientRequestProcessor wcfClientMessageProcessor = (WcfClientRequestProcessor)container.ResolveAll<IRequestProcessor>().Where(x => x is WcfClientRequestProcessor).FirstOrDefault();
+            Assert.That(() => wcfClientMessageProcessor,
+                Is.Not.Null);
+
+            Assert.That(() => wcfClientMessageProcessor.HealthCheckHeartBeatInSeconds,
+                Is.EqualTo(ColomboFacility.DefaultHealthCheckHeartBeatInSeconds));
+
+            container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>(f => f.HealthCheckHeartBeatInSeconds(50));
+
+            wcfClientMessageProcessor = (WcfClientRequestProcessor)container.ResolveAll<IRequestProcessor>().Where(x => x is WcfClientRequestProcessor).FirstOrDefault();
+            Assert.That(() => wcfClientMessageProcessor,
+                Is.Not.Null);
+
+            Assert.That(() => wcfClientMessageProcessor.HealthCheckHeartBeatInSeconds,
+                Is.EqualTo(50));
+        }
+
+        [Test]
+        public void It_should_register_HealthCheckRequestHandler()
+        {
+            var container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>();
+
+            Assert.That(() => container.Resolve<ISideEffectFreeRequestHandler<HealthCheckRequest, ACKResponse>>(),
+                Is.TypeOf<HealthCheckRequestHandler>());
+
+            container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>(f => f.ClientOnly());
+
+            Assert.That(() => container.Resolve<ISideEffectFreeRequestHandler<HealthCheckRequest, ACKResponse>>(),
+                Throws.Exception.TypeOf<ComponentNotFoundException>());
         }
 
         [Test]
