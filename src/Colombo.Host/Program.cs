@@ -48,12 +48,12 @@ namespace Colombo.Host
                     if ((parser.Username != null) && (parser.Password != null))
                         x.RunAs(parser.Username, parser.Password);
                     else
-                        x.RunAsLocalSystem();
+                        x.RunAsNetworkService();
 
                     if (parser.StartManually)
                         x.DoNotStartAutomatically();
 
-                    var endpointName = configureThisEndpointType.FullName;
+                    var endpointName = configureThisEndpointType.Assembly.GetName().Name;
                     var endpointId = string.Format("{0}_v{1}", endpointName, configureThisEndpointType.Assembly.GetName().Version);
 
                     x.SetDisplayName(parser.DisplayName ?? endpointId);

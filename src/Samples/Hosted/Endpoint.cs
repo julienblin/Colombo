@@ -6,21 +6,9 @@ using Colombo.Host;
 using Castle.Windsor;
 using Colombo.Facilities;
 
-namespace Hosted
+namespace Colombo.Samples.Hosted
 {
-    public class Endpoint : IAmAnEndpoint, IWantToConfigureLogging, IWantToConfigureColombo
+    public class Endpoint : IAmAnEndpoint
     {
-        public void ConfigureLogging(IWindsorContainer container)
-        {
-            
-        }
-
-        public void ConfigureColombo(IWindsorContainer container)
-        {
-            container.AddFacility<ColomboFacility>(f =>
-            {
-                f.MonitorWithPerformanceCounters();
-            });
-        }
     }
 }

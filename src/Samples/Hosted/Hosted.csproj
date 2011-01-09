@@ -8,8 +8,8 @@
     <ProjectGuid>{69B9F659-82A2-4760-9CF5-6FF748C7070E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Hosted</RootNamespace>
-    <AssemblyName>Hosted</AssemblyName>
+    <RootNamespace>Colombo.Samples.Hosted</RootNamespace>
+    <AssemblyName>Colombo.Samples.Hosted</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

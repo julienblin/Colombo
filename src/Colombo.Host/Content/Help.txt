@@ -1,18 +1,19 @@
 ﻿Colombo Host Service
 
 USAGE:
-    Colombo.Host.exe  [/install   [/serviceName]
-                                  [/displayName]
-                                  [/description]
-                                  [/startManually]
-                                  [/username]
-                                  [/password]
+    Colombo.Host.exe  [install   [/serviceName]
+                                 [/displayName]
+                                 [/description]
+                                 [/startManually]
+                                 [/username]
+                                 [/password]
                       ]
                       
-                      [/uninstall [/serviceName]]
+                      [uninstall [/serviceName]]
 										
 OPTIONS:
-    /install          Install the message endpoint as a Windows service
+    install           Install the message endpoint as a Windows service
+    uninstall         Install the message endpoint as a Windows service
     /serviceName      Specify the service name for the installed service
     /displayName      Friendly name for the installed service
     /description      Description for the service
@@ -21,4 +22,4 @@ OPTIONS:
     /password         Password for the service account
 
 EXAMPLE:
-    Colombo.Host.exe /install
+    Colombo.Host.exe install /serviceName:"MyAwesomeHost"

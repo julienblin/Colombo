@@ -45,6 +45,8 @@ namespace Colombo.Host.Internal
                 serviceHost = iWantToCreateServiceHost.CreateServiceHost(container);
                 serviceHost.Open();
 
+                container.Resolve<IMessageBus>();
+
                 logger.InfoFormat("{0} host is ready to serve incoming requests from {1}...",
                     configureThisEndpoint.GetType().Assembly.GetName().Name,
                     string.Join(", ", serviceHost.Description.Endpoints.Select(x => x.Address.Uri.ToString())));
@@ -89,10 +91,7 @@ namespace Colombo.Host.Internal
 
         public void ConfigureLogging(IWindsorContainer container)
         {
-            if (HostServiceUtil.IsRunningInCommandLineMode())
-                container.AddFacility<LoggingFacility>(f => f.LogUsing(LoggerImplementation.Console));
-            else
-                container.AddFacility<LoggingFacility>(f => f.LogUsing(LoggerImplementation.Log4net));
+            container.AddFacility<LoggingFacility>(f => f.LogUsing(LoggerImplementation.Console));
         }
 
         public void ConfigureColombo(IWindsorContainer container)

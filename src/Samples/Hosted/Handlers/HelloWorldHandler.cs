@@ -5,7 +5,7 @@ using System.Text;
 using Colombo;
 using Colombo.Samples.Messages;
 
-namespace Hosted.Handlers
+namespace Colombo.Samples.Hosted.Handlers
 {
     public class HelloWorldHandler : SideEffectFreeRequestHandler<HelloWorldRequest, HelloWorldResponse>
     {
