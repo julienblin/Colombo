@@ -84,6 +84,7 @@
     <copy todir="${folder.test}\bin">
       <fileset basedir="${folder.bin}\${msbuild.configuration}">
         <include name="Colombo.Tests\**"/>
+        <include name="Colombo.Host.Tests\**"/>
       </fileset>
     </copy>
     <property name="folder.test.results.xml" value="${folder.test}\results\xml"/>
@@ -91,7 +92,7 @@
     <foreach item="Folder" in="${folder.test}\bin" property="folder.test.current">
       <do>
         <property name="test.current" value="${path::get-file-name(folder.test.current)}" />
-        <exec program="${app.nunit.console}" workingdir="${folder.test.current}">
+        <exec program="${app.nunit.console}" workingdir="${folder.test.current}" failonerror="false">
           <arg line="${test.current}.dll /xml=&quot;${folder.test.results.xml}\${test.current}.xml&quot;" />
           <arg line="/nologo" />
         </exec>

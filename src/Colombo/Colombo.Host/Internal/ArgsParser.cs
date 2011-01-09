@@ -12,13 +12,13 @@ namespace Colombo.Host.Internal
         internal void Parse(string[] args)
         {
             var p = new OptionSet() {
-   	            { "h|?|help",     v => Help = v != null },
-                { "serviceName=", v => ServiceName = v  },
-                { "displayName=", v => DisplayName = v  },
-                { "description=", v => Description = v  },
-                { "startManually",     v => StartManually = v != null },
-                { "username=", v => Username = v  },
-                { "password=", v => Password = v  }
+   	            { "h|?|help",      v => Help = v != null },
+                { "serviceName=",  v => ServiceName = v  },
+                { "displayName=",  v => DisplayName = v  },
+                { "description=",  v => Description = v  },
+                { "startManually", v => StartManually = v != null },
+                { "username=",     v => Username = v  },
+                { "password=",     v => Password = v  }
             };
             Extra = p.Parse(args);
         }
