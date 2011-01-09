@@ -20,7 +20,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\bin\Debug\Colombo.Host\</OutputPath>
+    <OutputPath>..\..\..\bin\Debug\Colombo.Host\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -29,32 +29,24 @@
     <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\bin\Release\Colombo.Host\</OutputPath>
+    <OutputPath>..\..\..\bin\Release\Colombo.Host\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\bin\Release\Colombo.Host\Colombo.Host.xml</DocumentationFile>
+    <DocumentationFile>..\..\..\bin\Release\Colombo.Host\Colombo.Host.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core, Version=2.5.1.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\Castle.Windsor\Castle.Core.dll</HintPath>
+    <Reference Include="Castle.Core">
+      <HintPath>..\..\..\lib\Castle.Windsor\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="Castle.Facilities.Logging">
-      <HintPath>..\..\lib\Castle.Windsor\loggingFacility\Castle.Facilities.Logging.dll</HintPath>
+      <HintPath>..\..\..\lib\Castle.Windsor\loggingFacility\Castle.Facilities.Logging.dll</HintPath>
     </Reference>
-    <Reference Include="Castle.Services.Logging.Log4netIntegration">
-      <HintPath>..\..\lib\Castle.Windsor\loggingFacility\Castle.Services.Logging.Log4netIntegration.dll</HintPath>
-    </Reference>
-    <Reference Include="Castle.Windsor, Version=2.5.1.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\Castle.Windsor\Castle.Windsor.dll</HintPath>
-    </Reference>
-    <Reference Include="log4net">
-      <HintPath>..\..\lib\Castle.Windsor\loggingFacility\log4net.dll</HintPath>
+    <Reference Include="Castle.Windsor">
+      <HintPath>..\..\..\lib\Castle.Windsor\Castle.Windsor.dll</HintPath>
     </Reference>
     <Reference Include="NDesk.Options">
-      <HintPath>..\..\lib\NDesk.Options\NDesk.Options.dll</HintPath>
+      <HintPath>..\..\..\lib\NDesk.Options\NDesk.Options.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -66,7 +58,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="Topshelf">
-      <HintPath>..\..\lib\Topshelf\Topshelf.dll</HintPath>
+      <HintPath>..\..\..\lib\Topshelf\Topshelf.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -74,7 +66,6 @@
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="ColomboHostException.cs" />
-    <Compile Include="HostServiceUtil.cs" />
     <Compile Include="Internal\ArgsParser.cs" />
     <Compile Include="IAmAnEndpoint.cs" />
     <Compile Include="Internal\AssemblyScanner.cs" />
@@ -100,6 +91,14 @@
     <EmbeddedResource Include="Content\Help.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(TargetDir)\Colombo.Host.exe" "$(TargetDir)\Colombo.Host-beforemerge.exe"
+$(SolutionDir)..\..\lib\ILMerge\ILMerge.exe /out:"$(TargetDir)\Colombo.Host.exe" /internalize /xmldocs /targetplatform:v4,C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319 "$(TargetDir)\Colombo.Host-beforemerge.exe" "$(TargetDir)\Topshelf.dll" "$(TargetDir)\NDesk.Options.dll" "$(TargetDir)\Castle.Facilities.Logging.dll"
+del "$(TargetDir)\Topshelf.*"
+del "$(TargetDir)\NDesk.Options.*"
+del "$(TargetDir)\Castle.Facilities.Logging.*"
+del "$(TargetDir)\Colombo.Host-beforemerge.exe"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
