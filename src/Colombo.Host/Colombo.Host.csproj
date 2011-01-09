@@ -36,8 +36,30 @@
     <DocumentationFile>..\..\bin\Release\Colombo.Host\Colombo.Host.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.Core, Version=2.5.1.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Castle.Windsor\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Facilities.Logging">
+      <HintPath>..\..\lib\Castle.Windsor\loggingFacility\Castle.Facilities.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Services.Logging.Log4netIntegration">
+      <HintPath>..\..\lib\Castle.Windsor\loggingFacility\Castle.Services.Logging.Log4netIntegration.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Windsor, Version=2.5.1.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Castle.Windsor\Castle.Windsor.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\..\lib\Castle.Windsor\loggingFacility\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="NDesk.Options">
+      <HintPath>..\..\lib\NDesk.Options\NDesk.Options.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -51,6 +73,18 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="ColomboHostException.cs" />
+    <Compile Include="HostServiceUtil.cs" />
+    <Compile Include="Internal\ArgsParser.cs" />
+    <Compile Include="IAmAnEndpoint.cs" />
+    <Compile Include="Internal\AssemblyScanner.cs" />
+    <Compile Include="Internal\HostService.cs" />
+    <Compile Include="IWantToBeNotifiedWhenStartAndStop.cs" />
+    <Compile Include="IWantToConfigureColombo.cs" />
+    <Compile Include="IWantToConfigureLogging.cs" />
+    <Compile Include="IWantToCreateServiceHost.cs" />
+    <Compile Include="IWantToRegisterMessageHandlers.cs" />
+    <Compile Include="IWantToRegisterOtherComponents.cs" />
     <Compile Include="Program.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -61,6 +95,9 @@
       <Project>{E828FC62-6CE7-4D54-B20B-63F86E12072B}</Project>
       <Name>Colombo</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Content\Help.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -15,7 +15,7 @@ namespace Colombo.Samples.ConsoleClient
         {
             var container = new WindsorContainer();
 
-            container.AddFacility<LoggingFacility>(f => f.LogUsing(LoggerImplementation.Console));
+            //container.AddFacility<LoggingFacility>(f => f.LogUsing(LoggerImplementation.Console));
             container.AddFacility<ColomboFacility>(f =>
             {
                 f.ClientOnly();
