@@ -31,6 +31,7 @@
   <property name="app.sn" value="${framework::get-tool-path('sn.exe')}" />
   <property name="app.git" value="C:\Program Files\Git\bin\git" />
   <property name="app.nunit.console" value="${folder.base}\lib\NUnit\nunit-console.exe" />
+  <property name="app.ilmerge" value="${folder.base}\lib\ILMerge\ILMerge.exe" />
 
   <target name="clean">
     <delete dir="${folder.bin}" includeemptydirs="true" />
@@ -74,6 +75,7 @@
       <arg value="/verbosity:normal" />
       <arg value="/nologo" />
     </exec>
+        
   </target>
 
   <target name="test" depends="build">
@@ -111,14 +113,22 @@
   <target name="release" depends="build">
     <property name="test.open" value="false" />
 
-    <call target="test"/>
+    <!--<call target="test"/>-->
 
     <delete dir="${folder.release}" includeemptydirs="true" />
     <copy todir="${folder.release}">
-      <fileset basedir="${folder.bin}\${msbuild.configuration}\Colombo.Host">
+      <fileset basedir="${folder.bin}\${msbuild.configuration}\Colombo">
         <include name="Colombo.*"/>
       </fileset>
     </copy>
+
+    <exec program="${app.ilmerge}">
+      <arg line="/out:&quot;${folder.release}\Colombo.Host.exe&quot;" />
+      <arg line="/internalize /target:exe /xmldocs /targetplatform:v4,C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319" />
+      <arg value="${folder.bin}\${msbuild.configuration}\Colombo.Host\Colombo.Host.exe" />
+      <arg value="${folder.bin}\${msbuild.configuration}\Colombo.Host\NDesk.Options.dll" />
+      <arg value="${folder.bin}\${msbuild.configuration}\Colombo.Host\Topshelf.dll" />
+    </exec>
 
   </target>
 
