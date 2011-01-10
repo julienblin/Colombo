@@ -20,10 +20,16 @@ namespace Colombo.Interceptors
 
             if (nextInvocation.Request.Context.Keys.Contains(CurrentCultureConstant.CultureContextKey))
             {
-                if (!string.IsNullOrWhiteSpace(nextInvocation.Request.Context[CurrentCultureConstant.CultureContextKey]))
+                var contextValue = nextInvocation.Request.Context[CurrentCultureConstant.CultureContextKey];
+                if (!string.IsNullOrWhiteSpace(contextValue))
                 {
-                    Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(nextInvocation.Request.Context[CurrentCultureConstant.CultureContextKey]);
-                    Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(nextInvocation.Request.Context[CurrentCultureConstant.CultureContextKey]);
+                    Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(contextValue);
+                    Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(contextValue);
+                }
+                else
+                {
+                    Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+                    Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
                 }
             }
             else

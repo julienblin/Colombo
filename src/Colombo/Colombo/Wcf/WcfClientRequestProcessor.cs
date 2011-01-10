@@ -52,6 +52,9 @@ namespace Colombo.Wcf
 
         public WcfClientRequestProcessor(IWcfServiceFactory serviceFactory)
         {
+            if (serviceFactory == null) throw new ArgumentNullException("serviceFactory");
+            Contract.EndContractBlock();
+
             this.serviceFactory = serviceFactory;
         }
 
@@ -197,6 +200,8 @@ namespace Colombo.Wcf
             {
                 foreach (var wcfService in serviceFactory.CreateChannelsForAllEndPoints())
                 {
+                    if(wcfService == null) throw new ColomboException("Internal error: channel should not be null.");
+
                     currentWcfService = wcfService;
                     try
                     {

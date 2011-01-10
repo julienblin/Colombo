@@ -18,6 +18,9 @@ namespace Colombo.Impl
 
         public void Register(Action<TResponse> callback)
         {
+            if (callback == null) throw new ArgumentNullException("callback");
+            Contract.EndContractBlock();
+
             Register(callback, null);
         }
 

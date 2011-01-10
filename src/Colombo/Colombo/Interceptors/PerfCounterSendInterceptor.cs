@@ -47,6 +47,7 @@ namespace Colombo.Interceptors
 
             try
             {
+                Contract.Assume(invocation.Requests != null);
                 var instancesGroups = invocation.Requests.GroupBy(x => x.GetGroupName());
 
                 foreach (var instanceGroups in instancesGroups)

@@ -48,7 +48,7 @@ namespace Colombo.Host.Internal
             foreach (var assembly in assemblies)
             {
                 foreach (var type in assembly.GetTypes().Where(t => typeof(IAmAnEndpoint).IsAssignableFrom(t)
-                                                                    && t != typeof(IAmAnEndpoint)
+                                                                    && !t.IsInterface
                                                                     && !t.IsAbstract
                                                               )
                         )

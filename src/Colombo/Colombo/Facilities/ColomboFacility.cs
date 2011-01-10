@@ -9,6 +9,7 @@ using Colombo.Wcf;
 using Colombo.Impl;
 using Colombo.Interceptors;
 using Colombo.HealthCheck;
+using System.Diagnostics.Contracts;
 
 namespace Colombo.Facilities
 {
@@ -43,6 +44,9 @@ namespace Colombo.Facilities
 
         protected override void Init()
         {
+            Contract.Assume(Kernel != null);
+            Contract.Assume(Kernel.Resolver != null);
+
             Kernel.Resolver.AddSubResolver(new ArrayResolver(Kernel, true));
 
             Kernel.Register(

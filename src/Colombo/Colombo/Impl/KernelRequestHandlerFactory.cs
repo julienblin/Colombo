@@ -48,6 +48,7 @@ namespace Colombo.Impl
             var requestHandlerType = CreateRequestHandlerTypeFrom(request);
             var allRequestHandlers = (IRequestHandler[])kernel.ResolveAll(requestHandlerType);
 
+            Contract.Assume(allRequestHandlers != null);
             var chosenRequestsHandlers = allRequestHandlers
                 .Where(h =>
                 {

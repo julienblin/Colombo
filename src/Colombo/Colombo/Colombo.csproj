@@ -30,7 +30,7 @@
     <CodeContractsNonNullObligations>False</CodeContractsNonNullObligations>
     <CodeContractsBoundsObligations>False</CodeContractsBoundsObligations>
     <CodeContractsArithmeticObligations>False</CodeContractsArithmeticObligations>
-    <CodeContractsRedundantAssumptions>False</CodeContractsRedundantAssumptions>
+    <CodeContractsRedundantAssumptions>True</CodeContractsRedundantAssumptions>
     <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
     <CodeContractsShowSquigglies>True</CodeContractsShowSquigglies>
     <CodeContractsUseBaseLine>False</CodeContractsUseBaseLine>
@@ -84,6 +84,7 @@
     <Compile Include="BaseRequest.cs" />
     <Compile Include="BaseSideEffectFreeRequest.cs" />
     <Compile Include="ColomboException.cs" />
+    <Compile Include="Contracts\AsyncCallbackContract.cs" />
     <Compile Include="Contracts\ColomboAlerterContract.cs" />
     <Compile Include="Contracts\GenericSideEffectFreeRequestHandler.cs" />
     <Compile Include="Contracts\GenericRequestHandlerContract.cs" />

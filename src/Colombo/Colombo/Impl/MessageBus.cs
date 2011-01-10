@@ -80,7 +80,12 @@ namespace Colombo.Impl
             if (request == null) throw new ArgumentNullException("request");
             Contract.EndContractBlock();
 
-            return InternalSendAsync<TResponse>(request);
+            var response = InternalSendAsync<TResponse>(request);
+            if (response == null)
+                LogAndThrowError("Internal error: response should not be null.");
+
+            Contract.Assume(response != null);
+            return response;
         }
 
         public TResponse Send<TResponse>(SideEffectFreeRequest<TResponse> request)
@@ -106,7 +111,12 @@ namespace Colombo.Impl
             if (request == null) throw new ArgumentNullException("request");
             Contract.EndContractBlock();
 
-            return InternalSendAsync<TResponse>(request);
+            var response = InternalSendAsync<TResponse>(request);
+            if (response == null)
+                LogAndThrowError("Internal error: response should not be null.");
+
+            Contract.Assume(response != null);
+            return response;
         }
 
         public ResponsesGroup Send(BaseSideEffectFreeRequest request, params BaseSideEffectFreeRequest[] followingRequests)
@@ -153,6 +163,7 @@ namespace Colombo.Impl
             },
             asyncCallback);
 
+            Contract.Assert(asyncCallback != null);
             return asyncCallback;
         }
 
