@@ -65,6 +65,7 @@
     </Compile>
     <Compile Include="BaseTest.cs" />
     <Compile Include="Caching\Impl\InMemoryCacheTest.cs" />
+    <Compile Include="Caching\Impl\KernelCacheFactoryTest.cs" />
     <Compile Include="ColomboExceptionTest.cs" />
     <Compile Include="Facilities\ColomboFacilityTest.cs" />
     <Compile Include="Facilities\PerRequestHandlingLifestyleTest.cs" />
