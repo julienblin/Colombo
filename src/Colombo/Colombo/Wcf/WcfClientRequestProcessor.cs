@@ -98,74 +98,67 @@ namespace Colombo.Wcf
                 }
             }
 
-            var tasks = new List<Task<Response[]>>();
-            var tasksGroupAssociation = new Dictionary<string, Task<Response[]>>();
-            foreach (var requestGroup in requestsGroups)
-            {
-                var task = Task.Factory.StartNew<Response[]>((g) =>
-                    {
-                        var group = (IGrouping<string, BaseRequest>)g;
-                        IWcfService wcfService = null;
-                        try
-                        {
-                            wcfService = serviceFactory.CreateChannel(group.Key);
-                            Logger.DebugFormat("Sending {0} request(s) to {1}...", group.Count(), ((IClientChannel)wcfService).RemoteAddress.Uri);
-                            var asyncResult = wcfService.BeginProcessAsync(group.ToArray(), null, null);
-                            asyncResult.AsyncWaitHandle.WaitOne();
-                            return wcfService.EndProcessAsync(asyncResult);
-                        }
-                        finally
-                        {
-                            if (wcfService != null)
-                            {
-                                try
-                                {
-                                    ((IClientChannel)wcfService).Close();
-                                }
-                                catch (Exception)
-                                {
-                                    ((IClientChannel)wcfService).Abort();
-                                }
-                            }
-                        }
-                    },
-                    requestGroup
-                );
-                tasks.Add(task);
-                tasksGroupAssociation[requestGroup.Key] = task;
-            }
+            var asyncResultGroupAssociations = new Dictionary<string,IAsyncResult>();
+            var wcfServiceGroupAssociations = new Dictionary<string,IWcfService>();
+
             try
             {
-                Task.WaitAll(tasks.ToArray());
-            }
-            catch (AggregateException ex)
-            {
-                string message = "An exception occured inside one or several WCF endpoint";
-                Logger.Error(message, ex);
-                foreach (var innerEx in ex.InnerExceptions)
-                    Logger.Error(innerEx.ToString());
-                throw new ColomboException(message, ex);
-            }
-
-            Logger.Debug("All the WCF clients have executed successfully.");
-
-            Logger.Debug("Reconstituing responses...");
-            var responses = new ResponsesGroup();
-            foreach (var requestsGroup in requestsGroups)
-            {
-                var task = tasksGroupAssociation[requestsGroup.Key];
-                var requestsArray = requestsGroup.ToArray();
-                for (int i = 0; i < requestsArray.Length; i++)
+                foreach (var requestGroup in requestsGroups)
                 {
-                    var request = requestsArray[i];
-                    responses[request] = task.Result[i];
+                    var wcfService = serviceFactory.CreateChannel(requestGroup.Key);
+                    wcfServiceGroupAssociations[requestGroup.Key] = wcfService;
+
+                    Logger.DebugFormat("Sending {0} request(s) to {1}...", requestGroup.Count(), ((IClientChannel)wcfService).RemoteAddress.Uri);
+                    asyncResultGroupAssociations[requestGroup.Key] = wcfService.BeginProcessAsync(requestGroup.ToArray(), null, null);
+                }
+
+                System.Threading.WaitHandle.WaitAll(asyncResultGroupAssociations.Values.Select(ar => ar.AsyncWaitHandle).ToArray());
+
+                try
+                {
+                    var responses = new ResponsesGroup();
+
+                    foreach (var requestsGroup in requestsGroups)
+                    {
+                        var asyncResult = asyncResultGroupAssociations[requestsGroup.Key];
+                        var wcfService = wcfServiceGroupAssociations[requestsGroup.Key];
+                        var requestsArray = requestsGroup.ToArray();
+                        var responsesArray = wcfService.EndProcessAsync(asyncResult);
+                        for (int i = 0; i < requestsArray.Length; i++)
+                        {
+                            responses[requestsArray[i]] = responsesArray[i];
+                        }
+                    }
+
+                     Logger.DebugFormat("{0} responses are returned.", responses.Count);
+
+                    Contract.Assume(responses.Count == requests.Count);
+                    return responses;
+                }
+                catch (Exception ex)
+                {
+                    string message = "An exception occured inside one or several WCF endpoint.";
+                    Logger.Error(message, ex);
+                    throw new ColomboException(message, ex);
                 }
             }
-
-            Logger.DebugFormat("{0} responses are returned.", responses.Count);
-
-            Contract.Assume(responses.Count == requests.Count);
-            return responses;
+            finally
+            {
+                foreach (var wcfService in wcfServiceGroupAssociations.Values)
+                {
+                    if (wcfService != null)
+                    {
+                        try
+                        {
+                            ((IClientChannel)wcfService).Close();
+                        }
+                        catch (Exception)
+                        {
+                            ((IClientChannel)wcfService).Abort();
+                        }
+                    }
+                }
+            }
         }
 
         private Timer healthCheckTimer;
@@ -202,7 +195,7 @@ namespace Colombo.Wcf
             {
                 foreach (var wcfService in serviceFactory.CreateChannelsForAllEndPoints())
                 {
-                    if(wcfService == null) throw new ColomboException("Internal error: channel should not be null.");
+                    if (wcfService == null) throw new ColomboException("Internal error: channel should not be null.");
 
                     currentWcfService = wcfService;
                     try
