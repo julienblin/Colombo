@@ -9,8 +9,14 @@ namespace Colombo.Wcf
     [ServiceContract(Namespace = @"http://Colombo")]
     public interface IWcfService
     {
-        [OperationContract(Name = @"Send")]
+        [OperationContract(Name = @"Process")]
         [EmbedTypeInSerializer]
         Response[] Process(BaseRequest[] requests);
+
+        [OperationContract(Name = @"ProcessAsync", AsyncPattern=true)]
+        [EmbedTypeInSerializer]
+        IAsyncResult BeginProcessAsync(BaseRequest[] requests, AsyncCallback callback, object state);
+
+        Response[] EndProcessAsync(IAsyncResult asyncResult);
     }
 }

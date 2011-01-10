@@ -5,6 +5,7 @@ using System.Text;
 using System.ServiceModel;
 using Castle.MicroKernel;
 using System.Diagnostics.Contracts;
+using System.Threading.Tasks;
 
 namespace Colombo.Wcf
 {
@@ -60,6 +61,34 @@ namespace Colombo.Wcf
             {
                 if (localRequestProcessor != null)
                     Kernel.ReleaseComponent(localRequestProcessor);
+            }
+        }
+
+        public IAsyncResult BeginProcessAsync(BaseRequest[] requests, AsyncCallback callback, object state)
+        {
+            var asyncResult = new ProcessAsyncResult(callback, state);
+            asyncResult.Requests = requests;
+
+            Task.Factory.StartNew(() =>
+            {
+                try
+                {
+                    asyncResult.Responses = Process(asyncResult.Requests);
+                }
+                finally
+                {
+                    asyncResult.OnCompleted();
+                }
+            });
+            return asyncResult;
+        }
+
+        public Response[] EndProcessAsync(IAsyncResult asyncResult)
+        {
+            using (var processResult = asyncResult as ProcessAsyncResult)
+            {
+                processResult.AsyncWaitHandle.WaitOne();
+                return processResult.Responses;
             }
         }
     }

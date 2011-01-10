@@ -157,6 +157,7 @@
     <Compile Include="Wcf\EmbedTypeInSerializerAttribute.cs" />
     <Compile Include="Wcf\IWcfServiceFactory.cs" />
     <Compile Include="Wcf\IWcfService.cs" />
+    <Compile Include="Wcf\ProcessAsyncResult.cs" />
     <Compile Include="Wcf\WcfClientRequestProcessor.cs" />
     <Compile Include="Wcf\WcfServiceFactory.cs" />
     <Compile Include="Wcf\WcfService.cs" />

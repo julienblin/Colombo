@@ -135,6 +135,16 @@ namespace Colombo.Tests.Wcf
                     new TestResponseIpc { Name = ((TestRequestIPC1)requests[1]).Name }
                 };
             }
+
+            public IAsyncResult BeginProcessAsync(BaseRequest[] requests, AsyncCallback callback, object state)
+            {
+                throw new NotImplementedException();
+            }
+
+            public Response[] EndProcessAsync(IAsyncResult asyncResult)
+            {
+                throw new NotImplementedException();
+            }
         }
 
         public class TestRequestIPC2 : SideEffectFreeRequest<TestResponseIpc>
@@ -155,6 +165,16 @@ namespace Colombo.Tests.Wcf
                     new TestResponseIpc { Name = ((TestRequestIPC2)requests[0]).Name },
                     new TestResponseIpc { Name = ((TestRequestIPC2)requests[1]).Name }
                 };
+            }
+
+            public IAsyncResult BeginProcessAsync(BaseRequest[] requests, AsyncCallback callback, object state)
+            {
+                throw new NotImplementedException();
+            }
+
+            public Response[] EndProcessAsync(IAsyncResult asyncResult)
+            {
+                throw new NotImplementedException();
             }
         }
 
