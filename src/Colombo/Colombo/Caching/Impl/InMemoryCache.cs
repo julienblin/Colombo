@@ -23,12 +23,10 @@ namespace Colombo.Caching.Impl
 
         private object syncRoot = new object();
 
-        private readonly string segment;
         private readonly Timer scavengingTimer;
 
-        public InMemoryCache(string segment)
+        public InMemoryCache()
         {
-            this.segment = segment;
             this.scavengingTimer = new Timer(ScavengingTimeInMilliseconds);
             scavengingTimer.AutoReset = true;
             scavengingTimer.Elapsed += ScavengingTimerElapsed;
@@ -86,10 +84,21 @@ namespace Colombo.Caching.Impl
             }
         }
 
-        public string Segment
+        public void InvalidateAllObjects<T>()
         {
-            get { return segment; }
+            InvalidateAllObjects(typeof(T));
         }
+
+        public void InvalidateAllObjects(Type type)
+        {
+            lock (syncRoot)
+            {
+                var allItemsOfType = data.Where(x => x.Value.Object.GetType().Equals(type)).AsParallel().ToArray();
+                Parallel.ForEach(allItemsOfType, (item) => data.Remove(item.Key));
+            }
+        }
+
+        public string Segment { get; set; }
 
         public int Count { get { return data.Count; } }
 

@@ -12,6 +12,9 @@ namespace Colombo.Caching
         void Store(string cacheKey, object @object, TimeSpan duration);
         T Get<T>(string cacheKey) where T : class;
 
-        string Segment { get; }
+        void InvalidateAllObjects<T>();
+        void InvalidateAllObjects(Type t);
+
+        string Segment { get; set; }
     }
 }

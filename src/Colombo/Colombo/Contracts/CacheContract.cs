@@ -24,9 +24,20 @@ namespace Colombo.Contracts
             throw new NotImplementedException();
         }
 
+        public void InvalidateAllObjects<T>()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void InvalidateAllObjects(Type t)
+        {
+            throw new NotImplementedException();
+        }
+
         public string Segment
         {
             get { throw new NotImplementedException(); }
+            set { throw new NotImplementedException(); }
         }
     }
 }
