@@ -83,6 +83,8 @@
     <Compile Include="BaseMessage.cs" />
     <Compile Include="BaseRequest.cs" />
     <Compile Include="BaseSideEffectFreeRequest.cs" />
+    <Compile Include="CacheSegmentAttribute.cs" />
+    <Compile Include="EnableClientCachingAttribute.cs" />
     <Compile Include="ColomboException.cs" />
     <Compile Include="Contracts\AsyncCallbackContract.cs" />
     <Compile Include="Contracts\ColomboAlerterContract.cs" />
@@ -162,7 +164,9 @@
     <Compile Include="Wcf\WcfServiceFactory.cs" />
     <Compile Include="Wcf\WcfService.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Caching\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
