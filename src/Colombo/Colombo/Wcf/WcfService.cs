@@ -27,7 +27,30 @@ namespace Colombo.Wcf
             Kernel = kernel;
         }
 
-        public Response[] Process(BaseRequest[] requests)
+        public IAsyncResult BeginProcessAsync(BaseRequest[] requests, AsyncCallback callback, object state)
+        {
+            var asyncResult = new ProcessAsyncResult(callback, state);
+            asyncResult.Requests = requests;
+
+            Task.Factory.StartNew(() =>
+            {
+                try
+                {
+                    asyncResult.Responses = SyncProcess(asyncResult.Requests);
+                }
+                catch (Exception ex)
+                {
+                    asyncResult.Exception = ex;
+                }
+                finally
+                {
+                    asyncResult.OnCompleted();
+                }
+            });
+            return asyncResult;
+        }
+
+        protected virtual Response[] SyncProcess(BaseRequest[] requests)
         {
             if (requests == null) throw new ArgumentNullException("requests");
             Contract.EndContractBlock();
@@ -63,29 +86,6 @@ namespace Colombo.Wcf
                 if (localRequestProcessor != null)
                     Kernel.ReleaseComponent(localRequestProcessor);
             }
-        }
-
-        public IAsyncResult BeginProcessAsync(BaseRequest[] requests, AsyncCallback callback, object state)
-        {
-            var asyncResult = new ProcessAsyncResult(callback, state);
-            asyncResult.Requests = requests;
-
-            Task.Factory.StartNew(() =>
-            {
-                try
-                {
-                    asyncResult.Responses = Process(asyncResult.Requests);
-                }
-                catch (Exception ex)
-                {
-                    asyncResult.Exception = ex;
-                }
-                finally
-                {
-                    asyncResult.OnCompleted();
-                }
-            });
-            return asyncResult;
         }
 
         public Response[] EndProcessAsync(IAsyncResult asyncResult)

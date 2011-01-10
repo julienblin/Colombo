@@ -110,7 +110,6 @@ namespace Colombo.Wcf
                         {
                             wcfService = serviceFactory.CreateChannel(group.Key);
                             Logger.DebugFormat("Sending {0} request(s) to {1}...", group.Count(), ((IClientChannel)wcfService).RemoteAddress.Uri);
-                            //return wcfService.Process(group.ToArray());
                             var asyncResult = wcfService.BeginProcessAsync(group.ToArray(), null, null);
                             asyncResult.AsyncWaitHandle.WaitOne();
                             return wcfService.EndProcessAsync(asyncResult);
@@ -210,7 +209,9 @@ namespace Colombo.Wcf
                     {
                         var hcRequest = new HealthCheckRequest();
                         Logger.DebugFormat("Sending healthcheck request to {0}...", ((IClientChannel)currentWcfService).RemoteAddress.Uri);
-                        currentWcfService.Process(new BaseRequest[] { hcRequest });
+                        var asyncResult = currentWcfService.BeginProcessAsync(new BaseRequest[] { hcRequest }, null, null);
+                        asyncResult.AsyncWaitHandle.WaitOne();
+                        currentWcfService.EndProcessAsync(asyncResult);
                         Logger.DebugFormat("Healthcheck OK for {0}...", ((IClientChannel)currentWcfService).RemoteAddress.Uri);
                     }
                     catch (Exception ex)

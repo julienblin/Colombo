@@ -6,6 +6,7 @@ using NUnit.Framework;
 using Colombo.Wcf;
 using System.Reflection;
 using Rhino.Mocks;
+using System.Threading;
 using Castle.MicroKernel;
 using Castle.MicroKernel.Registration;
 using System.ServiceModel;
@@ -40,8 +41,18 @@ namespace Colombo.Tests.Wcf
             var requests = new BaseRequest[] { request1, request2 };
             var service = new WcfService();
 
-            Assert.That(() => service.Process(requests),
-                Throws.Exception.TypeOf<ColomboException>()
+            Exception testedException = null;
+
+            var asyncResult = service.BeginProcessAsync(requests, (ar) =>
+            {
+                try { service.EndProcessAsync(ar); }
+                catch (Exception ex) { testedException = ex; }
+            }, null);
+
+            while (testedException == null) ;
+
+            Assert.That(() => testedException,
+                Is.TypeOf<ColomboException>()
                 .With.Message.Contains("Kernel"));
         }
 
@@ -57,8 +68,18 @@ namespace Colombo.Tests.Wcf
 
             WcfService.RegisterKernel(kernel);
 
-            Assert.That(() => service.Process(requests),
-                Throws.Exception.TypeOf<ColomboException>()
+            Exception testedException = null;
+
+            var asyncResult = service.BeginProcessAsync(requests, (ar) =>
+            {
+                try { service.EndProcessAsync(ar); }
+                catch (Exception ex) { testedException = ex; }
+            }, null);
+
+            while (testedException == null) ;
+
+            Assert.That(() => testedException,
+                Is.TypeOf<ColomboException>()
                 .With.Message.Contains("ILocalMessageProcessor"));
         }
 
@@ -82,9 +103,19 @@ namespace Colombo.Tests.Wcf
                 Expect.Call(processor.CanProcess(request)).Return(false).Repeat.Twice();
             }).Verify(() =>
             {
-                Assert.That(() => service.Process(requests),
-                Throws.Exception.TypeOf<ColomboException>()
-                .With.Message.Contains("locally"));
+                Exception testedException = null;
+
+                var asyncResult = service.BeginProcessAsync(requests, (ar) =>
+                {
+                    try { service.EndProcessAsync(ar); }
+                    catch (Exception ex) { testedException = ex; }
+                }, null);
+
+                while (testedException == null) ;
+
+                Assert.That(() => testedException,
+                    Is.TypeOf<ColomboException>()
+                    .With.Message.Contains("locally"));
             });
         }
 
@@ -120,7 +151,15 @@ namespace Colombo.Tests.Wcf
                 Expect.Call(processor.Process(null)).IgnoreArguments().Return(responsesGroup);
             }).Verify(() =>
             {
-                var responses = service.Process(requests);
+                Response[] responses = null;
+
+                var asyncResult = service.BeginProcessAsync(requests, (ar) =>
+                {
+                    responses = service.EndProcessAsync(ar);
+                }, null);
+
+                while (responses == null) ;
+
                 Assert.That(() => responses[0],
                     Is.SameAs(response1));
                 Assert.That(() => responses[1],
@@ -168,7 +207,11 @@ namespace Colombo.Tests.Wcf
                     serviceHost.Open();
                     var channelFactory = new ChannelFactory<IWcfService>(new NetNamedPipeBinding(), new EndpointAddress(IPCAddress));
                     var wcfService = channelFactory.CreateChannel();
-                    var responses = wcfService.Process(requests);
+
+                    var asyncResult = wcfService.BeginProcessAsync(requests, null, null);
+                    asyncResult.AsyncWaitHandle.WaitOne();
+                    var responses = wcfService.EndProcessAsync(asyncResult);
+
                     Assert.That(() => responses[0].CorrelationGuid,
                     Is.EqualTo(response1.CorrelationGuid));
                     Assert.That(() => responses[1].CorrelationGuid,

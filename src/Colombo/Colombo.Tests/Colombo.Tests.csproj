@@ -84,9 +84,8 @@
     <Compile Include="SideEffectFreeRequestHandlerTest.cs" />
     <Compile Include="TestResponse.cs" />
     <Compile Include="Wcf\WcfClientRequestProcessorTest.cs" />
-    <Compile Include="Wcf\WcfServiceAsyncTest.cs" />
-    <Compile Include="Wcf\WcfServiceFactoryTest.cs" />
     <Compile Include="Wcf\WcfServiceTest.cs" />
+    <Compile Include="Wcf\WcfServiceFactoryTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Colombo\Colombo.csproj">
