@@ -6,6 +6,7 @@ using System.ServiceModel;
 using Castle.MicroKernel;
 using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
+using System.Reflection;
 
 namespace Colombo.Wcf
 {
@@ -75,6 +76,10 @@ namespace Colombo.Wcf
                 {
                     asyncResult.Responses = Process(asyncResult.Requests);
                 }
+                catch (Exception ex)
+                {
+                    asyncResult.Exception = ex;
+                }
                 finally
                 {
                     asyncResult.OnCompleted();
@@ -88,7 +93,18 @@ namespace Colombo.Wcf
             using (var processResult = asyncResult as ProcessAsyncResult)
             {
                 processResult.AsyncWaitHandle.WaitOne();
-                return processResult.Responses;
+
+                if (processResult.Exception == null)
+                {
+                    return processResult.Responses;
+                }
+                else
+                {
+                    // Preserve original stack trace.
+                    FieldInfo remoteStackTraceString = typeof(Exception).GetField("_remoteStackTraceString", BindingFlags.Instance | BindingFlags.NonPublic);
+                    remoteStackTraceString.SetValue(processResult.Exception, processResult.Exception.StackTrace);
+                    throw processResult.Exception;
+                }
             }
         }
     }

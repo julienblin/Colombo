@@ -23,6 +23,8 @@ namespace Colombo.Wcf
 
         public Response[] Responses { get; set; }
 
+        public Exception Exception { get; set; }
+
         public virtual void OnCompleted()
         {
             manualResetEvent.Set();
