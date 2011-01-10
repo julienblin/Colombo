@@ -126,6 +126,11 @@ namespace Colombo.Tests.Wcf
             }
         }
 
+        [ServiceBehavior(
+            IncludeExceptionDetailInFaults = true,
+            ConcurrencyMode = ConcurrencyMode.Multiple,
+            InstanceContextMode = InstanceContextMode.PerCall
+        )]
         public class TestWcfService1 : IWcfService
         {
             public Response[] Process(BaseRequest[] requests)
@@ -138,12 +143,22 @@ namespace Colombo.Tests.Wcf
 
             public IAsyncResult BeginProcessAsync(BaseRequest[] requests, AsyncCallback callback, object state)
             {
-                throw new NotImplementedException();
+                var asyncResult = new ProcessAsyncResult(callback, state);
+                asyncResult.Responses = new Response[] { 
+                    new TestResponseIpc { Name = ((TestRequestIPC1)requests[0]).Name },
+                    new TestResponseIpc { Name = ((TestRequestIPC1)requests[1]).Name }
+                };
+                asyncResult.OnCompleted();
+                return asyncResult;
             }
 
             public Response[] EndProcessAsync(IAsyncResult asyncResult)
             {
-                throw new NotImplementedException();
+                using (var processResult = asyncResult as ProcessAsyncResult)
+                {
+                    processResult.AsyncWaitHandle.WaitOne();
+                    return processResult.Responses;
+                }
             }
         }
 
@@ -157,6 +172,11 @@ namespace Colombo.Tests.Wcf
             }
         }
 
+        [ServiceBehavior(
+            IncludeExceptionDetailInFaults = true,
+            ConcurrencyMode = ConcurrencyMode.Multiple,
+            InstanceContextMode = InstanceContextMode.PerCall
+        )]
         public class TestWcfService2 : IWcfService
         {
             public Response[] Process(BaseRequest[] requests)
@@ -169,12 +189,22 @@ namespace Colombo.Tests.Wcf
 
             public IAsyncResult BeginProcessAsync(BaseRequest[] requests, AsyncCallback callback, object state)
             {
-                throw new NotImplementedException();
+                var asyncResult = new ProcessAsyncResult(callback, state);
+                asyncResult.Responses = new Response[] { 
+                    new TestResponseIpc { Name = ((TestRequestIPC2)requests[0]).Name },
+                    new TestResponseIpc { Name = ((TestRequestIPC2)requests[1]).Name }
+                };
+                asyncResult.OnCompleted();
+                return asyncResult;
             }
 
             public Response[] EndProcessAsync(IAsyncResult asyncResult)
             {
-                throw new NotImplementedException();
+                using (var processResult = asyncResult as ProcessAsyncResult)
+                {
+                    processResult.AsyncWaitHandle.WaitOne();
+                    return processResult.Responses;
+                }
             }
         }
 

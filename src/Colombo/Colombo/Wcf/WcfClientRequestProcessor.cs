@@ -110,7 +110,10 @@ namespace Colombo.Wcf
                         {
                             wcfService = serviceFactory.CreateChannel(group.Key);
                             Logger.DebugFormat("Sending {0} request(s) to {1}...", group.Count(), ((IClientChannel)wcfService).RemoteAddress.Uri);
-                            return wcfService.Process(group.ToArray());
+                            //return wcfService.Process(group.ToArray());
+                            var asyncResult = wcfService.BeginProcessAsync(group.ToArray(), null, null);
+                            asyncResult.AsyncWaitHandle.WaitOne();
+                            return wcfService.EndProcessAsync(asyncResult);
                         }
                         finally
                         {
