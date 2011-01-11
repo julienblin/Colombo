@@ -111,7 +111,7 @@ namespace Colombo.Tests.Interceptors
                 Expect.Call(cacheFactory.GetCacheForSegment(null)).Return(cache).Repeat.Twice();
 
                 Expect.Call(cache.Get<Response>(request1.GetCacheKey())).Return(null);
-                cache.Store(request1.GetCacheKey(), response1, new TimeSpan(0, 0, 1));
+                cache.Store(request1.GetCacheKey(), response1, new TimeSpan(0, 0, 30));
             }).Verify(() =>
             {
                 var interceptor = new ClientCacheSendInterceptor(cacheFactory);
@@ -162,17 +162,64 @@ namespace Colombo.Tests.Interceptors
             });
         }
 
+        [Test]
+        public void It_should_invalidate_responses_when_request_comes_in_with_InvalidateCachedInstancesOf()
+        {
+            var mocks = new MockRepository();
+
+            var request1 = new TestRequestInvalidate();
+            var requests = new List<BaseRequest> { request1 };
+
+            var response1 = new TestResponse();
+            var responses = new ResponsesGroup
+            {
+                { request1, response1 }
+            };
+
+            var invocation = mocks.StrictMock<IColomboSendInvocation>();
+
+            var cacheFactory = mocks.StrictMock<ICacheFactory>();
+            var cache = mocks.StrictMock<ICache>();
+
+            With.Mocks(mocks).Expecting(() =>
+            {
+                SetupResult.For(invocation.Requests).Return(requests);
+                SetupResult.For(invocation.Responses).Return(responses);
+                invocation.Proceed();
+
+                Expect.Call(cacheFactory.GetCacheForSegment(null)).Return(cache).Repeat.Times(3);
+
+                Expect.Call(cache.Get<Response>(request1.GetCacheKey())).Return(null);
+                cache.InvalidateAllObjects(typeof(TestResponse));
+                cache.Store(request1.GetCacheKey(), response1, new TimeSpan(0, 0, 30));
+            }).Verify(() =>
+            {
+                var interceptor = new ClientCacheSendInterceptor(cacheFactory);
+                interceptor.Intercept(invocation);
+            });
+        }
+
         public class TestRequestWithoutCache : Request<TestResponse> { }
 
         [EnableClientCaching(Seconds=30)]
         public class TestRequestWithCacheNoCacheKey : Request<TestResponse> { }
 
-        [EnableClientCaching(Seconds=1)]
+        [EnableClientCaching(Seconds=30)]
         public class TestRequestWithCache : SideEffectFreeRequest<TestResponse>
         {
             public override string GetCacheKey()
             {
                 return string.Format("{0}+{1}", GetType().Name, Context["Foo"]);
+            }
+        }
+
+        [EnableClientCaching(Seconds = 30)]
+        [InvalidateCachedInstancesOf(typeof(TestResponse))]
+        public class TestRequestInvalidate : Request<TestResponse>
+        {
+            public override string GetCacheKey()
+            {
+                return GetType().Name;
             }
         }
     }

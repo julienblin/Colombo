@@ -36,11 +36,26 @@ namespace Colombo.Interceptors
             var responsesGroup = new ResponsesGroup();
             foreach (var request in nextInvocation.Requests)
             {
+                var invalidateCachedInstancesOfAttributes = request.GetCustomAttributes<InvalidateCachedInstancesOfAttribute>();
+                foreach (var invalidateCachedInstancesOfAttribute in invalidateCachedInstancesOfAttributes)
+                {
+                    foreach (var responseType in invalidateCachedInstancesOfAttribute.ResponsesTypes)
+                    {
+                        string cacheSegment = null;
+                        var cacheSegmentAttribute = request.GetCustomAttribute<CacheSegmentAttribute>();
+                        if (cacheSegmentAttribute != null)
+                            cacheSegment = cacheSegmentAttribute.GetCacheSegment(request);
+
+                        Logger.DebugFormat("Invalidating all responses of type {0} from cache segment {1}", responseType, cacheSegment);
+                        cacheFactory.GetCacheForSegment(cacheSegment).InvalidateAllObjects(responseType);
+                    }
+                }
+
                 var enableClientCachingAttribute = request.GetCustomAttribute<EnableClientCachingAttribute>();
                 if (enableClientCachingAttribute != null)
                 {
                     var cacheKey = request.GetCacheKey();
-                    
+
                     string cacheSegment = null;
                     var cacheSegmentAttribute = request.GetCustomAttribute<CacheSegmentAttribute>();
                     if (cacheSegmentAttribute != null)
