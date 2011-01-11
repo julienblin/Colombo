@@ -115,7 +115,7 @@ namespace Colombo.Tests.Interceptors
                 SetupResult.For(invocation.Responses).Return(responses);
                 invocation.Proceed();
 
-                Expect.Call(cache.Get<Response>(null, request1.GetCacheKey(), request1)).Return(null);
+                Expect.Call(cache.Get<Response>(null, request1.GetCacheKey(), typeof(TestResponse))).Return(null);
                 cache.Store(null, request1.GetCacheKey(), response1, new TimeSpan(0, 0, 30));
             }).Verify(() =>
             {
@@ -151,7 +151,7 @@ namespace Colombo.Tests.Interceptors
                 SetupResult.For(invocation.Responses).Return(responses).Repeat.Twice();
                 invocation.Proceed();
 
-                Expect.Call(cache.Get<Response>(null, request1.GetCacheKey(), request1)).Return(response1);
+                Expect.Call(cache.Get<Response>(null, request1.GetCacheKey(), typeof(TestResponse))).Return(response1);
             }).Verify(() =>
             {
                 var interceptor = new ClientCacheSendInterceptor(cache);
@@ -190,8 +190,8 @@ namespace Colombo.Tests.Interceptors
                 SetupResult.For(invocation.Responses).Return(responses).Repeat.Twice();
                 invocation.Proceed();
 
-                Expect.Call(cache.Get<Response>("DefaultSegment", request1.GetCacheKey(), request1)).Return(response1);
-                Expect.Call(cache.Get<Response>("CacheSegmentFromContext", request2.GetCacheKey(), request2)).Return(response2);
+                Expect.Call(cache.Get<Response>("DefaultSegment", request1.GetCacheKey(), typeof(TestResponse))).Return(response1);
+                Expect.Call(cache.Get<Response>("CacheSegmentFromContext", request2.GetCacheKey(), typeof(TestResponse))).Return(response2);
             }).Verify(() =>
             {
                 var interceptor = new ClientCacheSendInterceptor(cache);
@@ -228,7 +228,7 @@ namespace Colombo.Tests.Interceptors
                 SetupResult.For(invocation.Responses).Return(responses);
                 invocation.Proceed();
 
-                Expect.Call(cache.Get<Response>(null, request1.GetCacheKey(), request1)).Return(null);
+                Expect.Call(cache.Get<Response>(null, request1.GetCacheKey(), typeof(TestResponse))).Return(null);
                 cache.InvalidateAllObjects(null, typeof(TestResponse));
                 cache.Store(null, request1.GetCacheKey(), response1, new TimeSpan(0, 0, 30));
             }).Verify(() =>

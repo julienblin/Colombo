@@ -10,8 +10,8 @@ namespace Colombo.Caching
     public interface ICache
     {
         void Store(string segment, string cacheKey, object @object, TimeSpan duration);
-        T Get<T>(string segment, string cacheKey, object @object) where T : class;
+        T Get<T>(string segment, string cacheKey, Type cacheType) where T : class;
 
-        void InvalidateAllObjects(string segment, Type t);
+        void InvalidateAllObjects(string segment, Type cacheType);
     }
 }

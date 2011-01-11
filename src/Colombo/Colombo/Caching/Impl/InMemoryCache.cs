@@ -58,7 +58,7 @@ namespace Colombo.Caching.Impl
             }
         }
 
-        public T Get<T>(string segment, string cacheKey, object @object) where T : class
+        public T Get<T>(string segment, string cacheKey, Type cacheType) where T : class
         {
             if (string.IsNullOrEmpty(cacheKey)) throw new ArgumentNullException("cacheKey");
             Contract.EndContractBlock();
@@ -86,12 +86,12 @@ namespace Colombo.Caching.Impl
             }
         }
 
-        public void InvalidateAllObjects(string segment, Type type)
+        public void InvalidateAllObjects(string segment, Type cacheType)
         {
             lock (syncRoot)
             {
                 var data = GetSegmentData(segment);
-                var allItemsOfType = data.Where(x => x.Value.Object.GetType().Equals(type)).AsParallel().ToArray();
+                var allItemsOfType = data.Where(x => x.Value.Object.GetType().Equals(cacheType)).AsParallel().ToArray();
                 Parallel.ForEach(allItemsOfType, (item) => data.Remove(item.Key));
             }
         }

@@ -65,9 +65,9 @@ namespace Colombo.Caching.Impl
             }
         }
 
-        public T Get<T>(string segment, string cacheKey, object @object) where T : class
+        public T Get<T>(string segment, string cacheKey, Type cacheType) where T : class
         {
-            var finalCachekey = GetFinalCacheKey(segment, @object.GetType().FullName, cacheKey);
+            var finalCachekey = GetFinalCacheKey(segment, cacheType.FullName, cacheKey);
             var objectStr = memcachedClient.Get(finalCachekey) as string;
             if (objectStr == null)
                 return null;
@@ -75,14 +75,14 @@ namespace Colombo.Caching.Impl
             using(var backing = new StringReader(objectStr))
             using (var reader = new XmlTextReader(backing))
             {
-                var serializer = new DataContractSerializer(@object.GetType());
+                var serializer = new DataContractSerializer(cacheType);
                 return serializer.ReadObject(reader) as T;
             }
         }
 
-        public void InvalidateAllObjects(string segment, Type t)
+        public void InvalidateAllObjects(string segment, Type cacheType)
         {
-            var keyForCurrentIncrement = GetKeyForCurrentIncrement(segment, t.FullName);
+            var keyForCurrentIncrement = GetKeyForCurrentIncrement(segment, cacheType.FullName);
             memcachedClient.Increment(keyForCurrentIncrement, 1);
         }
     }

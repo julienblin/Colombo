@@ -62,7 +62,7 @@ namespace Colombo.Interceptors
                         cacheSegment = cacheSegmentAttribute.GetCacheSegment(request);
 
                     Logger.DebugFormat("Testing cache for {0}: segment {1} - cacheKey: {2}", request, cacheSegment, cacheKey);
-                    var retrievedFromCache = cache.Get<Response>(cacheSegment, cacheKey, request);
+                    var retrievedFromCache = cache.Get<Response>(cacheSegment, cacheKey, request.GetResponseType());
                     if (retrievedFromCache != null)
                     {
                         Logger.DebugFormat("Cache hit for cacheKey {0}: responding with {1}", cacheKey, retrievedFromCache);
