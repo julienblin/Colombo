@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Diagnostics.Contracts;
+using System.Reflection;
 
 namespace Colombo
 {
     /// <summary>
     /// Base class for requests - non generic version.
     /// </summary>
-    public abstract class BaseRequest : BaseMessage
+    public abstract class BaseRequest : BaseMessage, ICacheable
     {
         private IDictionary<string, string> context;
         /// <summary>
@@ -75,5 +76,12 @@ namespace Colombo
             }
         }
 
+        protected const int SeedPrimeNumber = 691;
+        protected const int MultiplierPrimeNumber = 397;
+
+        public virtual string GetCacheKey()
+        {
+            throw new ColomboException("You must provide an implementation of GetCacheKey() to use the Cache functionnality.");
+        }
     }
 }

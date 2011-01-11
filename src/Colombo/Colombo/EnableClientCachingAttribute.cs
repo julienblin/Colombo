@@ -12,7 +12,7 @@ namespace Colombo
         public int Minutes { get; set; }
         public int Seconds { get; set; }
 
-        public TimeSpan Expiration
+        public TimeSpan Duration
         {
             get
             {

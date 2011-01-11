@@ -109,6 +109,7 @@
     <Compile Include="HealthCheck\HealthCheckRequest.cs" />
     <Compile Include="HealthCheck\HealthCheckRequestHandler.cs" />
     <Compile Include="IAsyncCallback.cs" />
+    <Compile Include="ICacheable.cs" />
     <Compile Include="IColomboAlert.cs" />
     <Compile Include="IColomboAlerter.cs" />
     <Compile Include="IColomboHandleInvocation.cs" />
@@ -132,6 +133,7 @@
     <Compile Include="Impl\RequestProcessorSendInvocation.cs" />
     <Compile Include="Impl\StatefulMessageBus.cs" />
     <Compile Include="Impl\StatefulReponseInterceptor.cs" />
+    <Compile Include="Interceptors\ClientCacheSendInterceptor.cs" />
     <Compile Include="Interceptors\CurrentCultureConstant.cs" />
     <Compile Include="Interceptors\CurrentCultureHandleInterceptor.cs" />
     <Compile Include="Interceptors\CurrentCultureSendInterceptor.cs" />
