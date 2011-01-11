@@ -17,14 +17,14 @@ namespace Colombo.Interceptors
             set { logger = value; }
         }
 
-        private readonly ICacheFactory cacheFactory;
+        private readonly ICache cache;
 
-        public CacheHandleInterceptor(ICacheFactory cacheFactory)
+        public CacheHandleInterceptor(ICache cache)
         {
-            if (cacheFactory == null) throw new ArgumentNullException("cacheFactory");
+            if (cache == null) throw new ArgumentNullException("cache");
             Contract.EndContractBlock();
 
-            this.cacheFactory = cacheFactory;
+            this.cache = cache;
         }
 
         public void Intercept(IColomboHandleInvocation nextInvocation)
@@ -40,7 +40,7 @@ namespace Colombo.Interceptors
                         cacheSegment = cacheSegmentAttribute.GetCacheSegment(nextInvocation.Request);
 
                     Logger.DebugFormat("Invalidating all responses of type {0} from cache segment {1}", responseType, cacheSegment);
-                    cacheFactory.GetCacheForSegment(cacheSegment).InvalidateAllObjects(responseType);
+                    cache.InvalidateAllObjects(cacheSegment, responseType);
                 }
             }
 

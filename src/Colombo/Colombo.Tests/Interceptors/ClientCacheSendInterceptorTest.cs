@@ -18,7 +18,7 @@ namespace Colombo.Tests.Interceptors
         {
             Assert.That(() => new ClientCacheSendInterceptor(null),
                 Throws.Exception.TypeOf<ArgumentNullException>()
-                .With.Message.Contains("cacheFactory"));
+                .With.Message.Contains("cache"));
         }
 
         [Test]
@@ -40,7 +40,7 @@ namespace Colombo.Tests.Interceptors
 
             var invocation = mocks.StrictMock<IColomboSendInvocation>();
 
-            var cacheFactory = mocks.StrictMock<ICacheFactory>();
+            var cache = mocks.StrictMock<ICache>();
 
             With.Mocks(mocks).Expecting(() =>
             {
@@ -49,7 +49,7 @@ namespace Colombo.Tests.Interceptors
                 invocation.Proceed();
             }).Verify(() =>
             {
-                var interceptor = new ClientCacheSendInterceptor(cacheFactory);
+                var interceptor = new ClientCacheSendInterceptor(cache);
                 interceptor.Logger = GetConsoleLogger();
                 interceptor.Intercept(invocation);
             });
@@ -73,15 +73,14 @@ namespace Colombo.Tests.Interceptors
             };
 
             var invocation = mocks.StrictMock<IColomboSendInvocation>();
-
-            var cacheFactory = mocks.StrictMock<ICacheFactory>();
+            var cache = mocks.StrictMock<ICache>();
 
             With.Mocks(mocks).Expecting(() =>
             {
                 SetupResult.For(invocation.Requests).Return(requests);
             }).Verify(() =>
             {
-                var interceptor = new ClientCacheSendInterceptor(cacheFactory);
+                var interceptor = new ClientCacheSendInterceptor(cache);
                 interceptor.Logger = GetConsoleLogger();
                 Assert.That(() => interceptor.Intercept(invocation),
                     Throws.Exception.TypeOf<ColomboException>()
@@ -108,8 +107,6 @@ namespace Colombo.Tests.Interceptors
             };
 
             var invocation = mocks.StrictMock<IColomboSendInvocation>();
-
-            var cacheFactory = mocks.StrictMock<ICacheFactory>();
             var cache = mocks.StrictMock<ICache>();
 
             With.Mocks(mocks).Expecting(() =>
@@ -118,13 +115,11 @@ namespace Colombo.Tests.Interceptors
                 SetupResult.For(invocation.Responses).Return(responses);
                 invocation.Proceed();
 
-                Expect.Call(cacheFactory.GetCacheForSegment(null)).Return(cache).Repeat.Twice();
-
-                Expect.Call(cache.Get<Response>(request1.GetCacheKey())).Return(null);
-                cache.Store(request1.GetCacheKey(), response1, new TimeSpan(0, 0, 30));
+                Expect.Call(cache.Get<Response>(null, request1.GetCacheKey())).Return(null);
+                cache.Store(null, request1.GetCacheKey(), response1, new TimeSpan(0, 0, 30));
             }).Verify(() =>
             {
-                var interceptor = new ClientCacheSendInterceptor(cacheFactory);
+                var interceptor = new ClientCacheSendInterceptor(cache);
                 interceptor.Logger = GetConsoleLogger();
                 interceptor.Intercept(invocation);
             });
@@ -148,8 +143,6 @@ namespace Colombo.Tests.Interceptors
             };
 
             var invocation = mocks.StrictMock<IColomboSendInvocation>();
-
-            var cacheFactory = mocks.StrictMock<ICacheFactory>();
             var cache = mocks.StrictMock<ICache>();
 
             With.Mocks(mocks).Expecting(() =>
@@ -158,12 +151,10 @@ namespace Colombo.Tests.Interceptors
                 SetupResult.For(invocation.Responses).Return(responses).Repeat.Twice();
                 invocation.Proceed();
 
-                Expect.Call(cacheFactory.GetCacheForSegment(null)).Return(cache);
-
-                Expect.Call(cache.Get<Response>(request1.GetCacheKey())).Return(response1);
+                Expect.Call(cache.Get<Response>(null, request1.GetCacheKey())).Return(response1);
             }).Verify(() =>
             {
-                var interceptor = new ClientCacheSendInterceptor(cacheFactory);
+                var interceptor = new ClientCacheSendInterceptor(cache);
                 interceptor.Logger = GetConsoleLogger();
                 interceptor.Intercept(invocation);
                 var responsesVerify = invocation.Responses;
@@ -191,8 +182,6 @@ namespace Colombo.Tests.Interceptors
             var responses = new ResponsesGroup();
 
             var invocation = mocks.StrictMock<IColomboSendInvocation>();
-
-            var cacheFactory = mocks.StrictMock<ICacheFactory>();
             var cache = mocks.StrictMock<ICache>();
 
             With.Mocks(mocks).Expecting(() =>
@@ -201,14 +190,11 @@ namespace Colombo.Tests.Interceptors
                 SetupResult.For(invocation.Responses).Return(responses).Repeat.Twice();
                 invocation.Proceed();
 
-                Expect.Call(cacheFactory.GetCacheForSegment("DefaultSegment")).Return(cache);
-                Expect.Call(cacheFactory.GetCacheForSegment("CacheSegmentFromContext")).Return(cache);
-
-                Expect.Call(cache.Get<Response>(request1.GetCacheKey())).Return(response1);
-                Expect.Call(cache.Get<Response>(request2.GetCacheKey())).Return(response2);
+                Expect.Call(cache.Get<Response>("DefaultSegment", request1.GetCacheKey())).Return(response1);
+                Expect.Call(cache.Get<Response>("CacheSegmentFromContext", request2.GetCacheKey())).Return(response2);
             }).Verify(() =>
             {
-                var interceptor = new ClientCacheSendInterceptor(cacheFactory);
+                var interceptor = new ClientCacheSendInterceptor(cache);
                 interceptor.Logger = GetConsoleLogger();
                 interceptor.Intercept(invocation);
                 var responsesVerify = invocation.Responses;
@@ -234,8 +220,6 @@ namespace Colombo.Tests.Interceptors
             };
 
             var invocation = mocks.StrictMock<IColomboSendInvocation>();
-
-            var cacheFactory = mocks.StrictMock<ICacheFactory>();
             var cache = mocks.StrictMock<ICache>();
 
             With.Mocks(mocks).Expecting(() =>
@@ -244,14 +228,12 @@ namespace Colombo.Tests.Interceptors
                 SetupResult.For(invocation.Responses).Return(responses);
                 invocation.Proceed();
 
-                Expect.Call(cacheFactory.GetCacheForSegment(null)).Return(cache).Repeat.Times(3);
-
-                Expect.Call(cache.Get<Response>(request1.GetCacheKey())).Return(null);
-                cache.InvalidateAllObjects(typeof(TestResponse));
-                cache.Store(request1.GetCacheKey(), response1, new TimeSpan(0, 0, 30));
+                Expect.Call(cache.Get<Response>(null, request1.GetCacheKey())).Return(null);
+                cache.InvalidateAllObjects(null, typeof(TestResponse));
+                cache.Store(null, request1.GetCacheKey(), response1, new TimeSpan(0, 0, 30));
             }).Verify(() =>
             {
-                var interceptor = new ClientCacheSendInterceptor(cacheFactory);
+                var interceptor = new ClientCacheSendInterceptor(cache);
                 interceptor.Logger = GetConsoleLogger();
                 interceptor.Intercept(invocation);
             });

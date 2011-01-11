@@ -9,12 +9,10 @@ namespace Colombo.Caching
     [ContractClass(typeof(Contracts.CacheContract))]
     public interface ICache
     {
-        void Store(string cacheKey, object @object, TimeSpan duration);
-        T Get<T>(string cacheKey) where T : class;
+        void Store(string segment, string cacheKey, object @object, TimeSpan duration);
+        T Get<T>(string segment, string cacheKey) where T : class;
 
-        void InvalidateAllObjects<T>();
-        void InvalidateAllObjects(Type t);
-
-        string Segment { get; set; }
+        void InvalidateAllObjects<T>(string segment);
+        void InvalidateAllObjects(string segment, Type t);
     }
 }

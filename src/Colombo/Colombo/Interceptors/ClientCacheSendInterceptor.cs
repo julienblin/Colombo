@@ -17,14 +17,14 @@ namespace Colombo.Interceptors
             set { logger = value; }
         }
 
-        private readonly ICacheFactory cacheFactory;
+        private readonly ICache cache;
 
-        public ClientCacheSendInterceptor(ICacheFactory cacheFactory)
+        public ClientCacheSendInterceptor(ICache cache)
         {
-            if (cacheFactory == null) throw new ArgumentNullException("cacheFactory");
+            if (cache == null) throw new ArgumentNullException("cache");
             Contract.EndContractBlock();
 
-            this.cacheFactory = cacheFactory;
+            this.cache = cache;
         }
 
         public void Intercept(IColomboSendInvocation nextInvocation)
@@ -47,7 +47,7 @@ namespace Colombo.Interceptors
                             cacheSegment = cacheSegmentAttribute.GetCacheSegment(request);
 
                         Logger.DebugFormat("Invalidating all responses of type {0} from cache segment {1}", responseType, cacheSegment);
-                        cacheFactory.GetCacheForSegment(cacheSegment).InvalidateAllObjects(responseType);
+                        cache.InvalidateAllObjects(cacheSegment, responseType);
                     }
                 }
 
@@ -62,7 +62,7 @@ namespace Colombo.Interceptors
                         cacheSegment = cacheSegmentAttribute.GetCacheSegment(request);
 
                     Logger.DebugFormat("Testing cache for {0}: segment {1} - cacheKey: {2}", request, cacheSegment, cacheKey);
-                    var retrievedFromCache = cacheFactory.GetCacheForSegment(cacheSegment).Get<Response>(cacheKey);
+                    var retrievedFromCache = cache.Get<Response>(cacheSegment, cacheKey);
                     if (retrievedFromCache != null)
                     {
                         Logger.DebugFormat("Cache hit for cacheKey {0}: responding with {1}", cacheKey, retrievedFromCache);
@@ -90,7 +90,7 @@ namespace Colombo.Interceptors
                         cacheSegment = cacheSegmentAttribute.GetCacheSegment(request);
 
                     Logger.DebugFormat("Caching {0} in segment {1} with cacheKey {2} for {3}", request, cacheSegment, cacheKey, enableClientCachingAttribute.Duration);
-                    cacheFactory.GetCacheForSegment(cacheSegment).Store(cacheKey, nextInvocation.Responses[request], enableClientCachingAttribute.Duration);
+                    cache.Store(cacheSegment, cacheKey, nextInvocation.Responses[request], enableClientCachingAttribute.Duration);
                 }
             }
 

@@ -85,9 +85,7 @@
     <Compile Include="BaseSideEffectFreeRequest.cs" />
     <Compile Include="CacheSegmentAttribute.cs" />
     <Compile Include="Caching\ICache.cs" />
-    <Compile Include="Caching\ICacheFactory.cs" />
     <Compile Include="Caching\Impl\InMemoryCache.cs" />
-    <Compile Include="Caching\Impl\KernelCacheFactory.cs" />
     <Compile Include="Contracts\CacheContract.cs" />
     <Compile Include="EnableClientCachingAttribute.cs" />
     <Compile Include="ColomboException.cs" />

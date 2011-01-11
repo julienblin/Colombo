@@ -271,7 +271,6 @@ namespace Colombo.Tests.Facilities
             container.AddFacility<ColomboFacility>();
 
             Assert.That(!container.ResolveAll<ICache>().Any(x => x is InMemoryCache));
-            Assert.That(!container.ResolveAll<ICacheFactory>().Any(x => x is KernelCacheFactory));
             Assert.That(!container.ResolveAll<IMessageBusSendInterceptor>().Any(x => x is ClientCacheSendInterceptor));
             Assert.That(!container.ResolveAll<IRequestHandlerHandleInterceptor>().Any(x => x is CacheHandleInterceptor));
 
@@ -279,7 +278,6 @@ namespace Colombo.Tests.Facilities
             container.AddFacility<ColomboFacility>(f => f.EnableCaching());
 
             Assert.That(container.ResolveAll<ICache>().Any(x => x is InMemoryCache));
-            Assert.That(container.ResolveAll<ICacheFactory>().Any(x => x is KernelCacheFactory));
             Assert.That(container.ResolveAll<IMessageBusSendInterceptor>().Any(x => x is ClientCacheSendInterceptor));
             Assert.That(container.ResolveAll<IRequestHandlerHandleInterceptor>().Any(x => x is CacheHandleInterceptor));
         }

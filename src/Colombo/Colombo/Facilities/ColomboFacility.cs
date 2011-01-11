@@ -113,11 +113,7 @@ namespace Colombo.Facilities
             {
                 if(!Kernel.HasComponent(typeof(ICache)))
                     Kernel.Register(
-                        Component.For<ICache>().ImplementedBy<InMemoryCache>().LifeStyle.Transient
-                    );
-                if (!Kernel.HasComponent(typeof(ICacheFactory)))
-                    Kernel.Register(
-                        Component.For<ICacheFactory>().ImplementedBy<KernelCacheFactory>()
+                        Component.For<ICache>().ImplementedBy<InMemoryCache>()
                     );
             }
         }

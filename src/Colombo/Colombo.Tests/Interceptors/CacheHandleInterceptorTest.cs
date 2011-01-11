@@ -17,7 +17,7 @@ namespace Colombo.Tests.Interceptors
         {
             Assert.That(() => new CacheHandleInterceptor(null),
                 Throws.Exception.TypeOf<ArgumentNullException>()
-                .With.Message.Contains("cacheFactory"));
+                .With.Message.Contains("cache"));
         }
 
         [Test]
@@ -27,7 +27,7 @@ namespace Colombo.Tests.Interceptors
 
             var request = new TestRequest();
             var invocation = mocks.StrictMock<IColomboHandleInvocation>();
-            var cacheFactory = mocks.StrictMock<ICacheFactory>();
+            var cache = mocks.StrictMock<ICache>();
 
             With.Mocks(mocks).Expecting(() =>
             {
@@ -35,7 +35,7 @@ namespace Colombo.Tests.Interceptors
                 invocation.Proceed();
             }).Verify(() =>
             {
-                var interceptor = new CacheHandleInterceptor(cacheFactory);
+                var interceptor = new CacheHandleInterceptor(cache);
                 interceptor.Logger = GetConsoleLogger();
                 interceptor.Intercept(invocation);
             });
@@ -48,7 +48,6 @@ namespace Colombo.Tests.Interceptors
 
             var request = new TestRequestInvalidate();
             var invocation = mocks.StrictMock<IColomboHandleInvocation>();
-            var cacheFactory = mocks.StrictMock<ICacheFactory>();
             var cache = mocks.StrictMock<ICache>();
 
             With.Mocks(mocks).Expecting(() =>
@@ -56,13 +55,11 @@ namespace Colombo.Tests.Interceptors
                 SetupResult.For(invocation.Request).Return(request);
                 invocation.Proceed();
 
-                Expect.Call(cacheFactory.GetCacheForSegment("CacheSegment")).Return(cache);
-                Expect.Call(cacheFactory.GetCacheForSegment("CacheSegment")).Return(cache);
-                cache.InvalidateAllObjects(typeof(TestResponse));
-                cache.InvalidateAllObjects(typeof(TestResponse2));
+                cache.InvalidateAllObjects("CacheSegment", typeof(TestResponse));
+                cache.InvalidateAllObjects("CacheSegment", typeof(TestResponse2));
             }).Verify(() =>
             {
-                var interceptor = new CacheHandleInterceptor(cacheFactory);
+                var interceptor = new CacheHandleInterceptor(cache);
                 interceptor.Logger = GetConsoleLogger();
                 interceptor.Intercept(invocation);
             });

@@ -33,9 +33,9 @@ namespace Colombo.Caching.Impl
             scavengingTimer.Start();
         }
 
-        private Dictionary<string, CacheData> data = new Dictionary<string, CacheData>();
+        private Dictionary<string, Dictionary<string, CacheData>> segments = new Dictionary<string, Dictionary<string, CacheData>>();
 
-        public void Store(string cacheKey, object @object, TimeSpan duration)
+        public void Store(string segment, string cacheKey, object @object, TimeSpan duration)
         {
             if (string.IsNullOrEmpty(cacheKey)) throw new ArgumentNullException("cacheKey");
             if (@object == null) throw new ArgumentNullException("object");
@@ -44,6 +44,7 @@ namespace Colombo.Caching.Impl
 
             lock (syncRoot)
             {
+                var data = GetSegmentData(segment);
                 DateTime expiration = DateTime.UtcNow.Add(duration);
                 if (data.ContainsKey(cacheKey))
                 {
@@ -57,13 +58,14 @@ namespace Colombo.Caching.Impl
             }
         }
 
-        public T Get<T>(string cacheKey) where T : class
+        public T Get<T>(string segment, string cacheKey) where T : class
         {
             if (string.IsNullOrEmpty(cacheKey)) throw new ArgumentNullException("cacheKey");
             Contract.EndContractBlock();
 
             lock (syncRoot)
             {
+                var data = GetSegmentData(segment);
                 if (data.ContainsKey(cacheKey))
                 {
                     var cacheData = data[cacheKey];
@@ -84,35 +86,44 @@ namespace Colombo.Caching.Impl
             }
         }
 
-        public void InvalidateAllObjects<T>()
+        public void InvalidateAllObjects<T>(string segment)
         {
-            InvalidateAllObjects(typeof(T));
+            InvalidateAllObjects(segment, typeof(T));
         }
 
-        public void InvalidateAllObjects(Type type)
+        public void InvalidateAllObjects(string segment, Type type)
         {
             lock (syncRoot)
             {
+                var data = GetSegmentData(segment);
                 var allItemsOfType = data.Where(x => x.Value.Object.GetType().Equals(type)).AsParallel().ToArray();
                 Parallel.ForEach(allItemsOfType, (item) => data.Remove(item.Key));
             }
         }
 
-        public string Segment { get; set; }
-
-        public int Count { get { return data.Count; } }
-
-        public override string ToString()
+        private Dictionary<string, CacheData> GetSegmentData(string segment)
         {
-            return string.Format("{0} for segment '{1}' - {2} objects.", GetType(), Segment, Count);
+            if (segments.ContainsKey(segment ?? string.Empty))
+                return segments[segment ?? string.Empty];
+
+            var segmentData = new Dictionary<string, CacheData>();
+            segments[segment ?? string.Empty] = segmentData;
+            return segmentData;
         }
+
+
+        public int Count { get { return segments.Sum(x => x.Value.Count); } }
 
         public void ScavengingTimerElapsed(object sender, ElapsedEventArgs e)
         {
             lock (syncRoot)
             {
-                var allExpiredItems = data.Where(x => x.Value.Expiration < DateTime.UtcNow).AsParallel().ToArray();
-                Parallel.ForEach(allExpiredItems, (expiredItem) => data.Remove(expiredItem.Key));
+                foreach (var segment in segments.Keys)
+                {
+                    var data = GetSegmentData(segment);
+                    var allExpiredItems = data.Where(x => x.Value.Expiration < DateTime.UtcNow).AsParallel().ToArray();
+                    Parallel.ForEach(allExpiredItems, (expiredItem) => data.Remove(expiredItem.Key));
+                }
             }
         }
 

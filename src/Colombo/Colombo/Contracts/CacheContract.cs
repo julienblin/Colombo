@@ -10,7 +10,7 @@ namespace Colombo.Contracts
     [ContractClassFor(typeof(ICache))]
     public abstract class CacheContract : ICache
     {
-        public void Store(string cacheKey, object @object, TimeSpan duration)
+        public void Store(string segment, string cacheKey, object @object, TimeSpan duration)
         {
             Contract.Requires<ArgumentNullException>(!string.IsNullOrEmpty(cacheKey), "cacheKey");
             Contract.Requires<ArgumentNullException>(@object != null, "object");
@@ -18,26 +18,20 @@ namespace Colombo.Contracts
             throw new NotImplementedException();
         }
 
-        public T Get<T>(string cacheKey) where T : class
+        public T Get<T>(string segment, string cacheKey) where T : class
         {
             Contract.Requires<ArgumentNullException>(!string.IsNullOrEmpty(cacheKey), "cacheKey");
             throw new NotImplementedException();
         }
 
-        public void InvalidateAllObjects<T>()
+        public void InvalidateAllObjects<T>(string segment)
         {
             throw new NotImplementedException();
         }
 
-        public void InvalidateAllObjects(Type t)
+        public void InvalidateAllObjects(string segment, Type t)
         {
             throw new NotImplementedException();
-        }
-
-        public string Segment
-        {
-            get { throw new NotImplementedException(); }
-            set { throw new NotImplementedException(); }
         }
     }
 }
