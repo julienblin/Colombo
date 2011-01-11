@@ -167,6 +167,51 @@ namespace Colombo.Tests.Interceptors
         }
 
         [Test]
+        public void It_should_select_appropriate_cache_segment()
+        {
+            var mocks = new MockRepository();
+
+            var request1 = new TestRequestWithCacheSegment();
+            request1.Context["Foo"] = "Request1";
+            var request2 = new TestRequestWithCacheSegment();
+            request2.Context["Foo"] = "Request2";
+            request2.Context["Bar"] = "CacheSegmentFromContext";
+            var requests = new List<BaseRequest> { request1, request2 };
+
+            var response1 = new TestResponse();
+            var response2 = new TestResponse();
+            var responses = new ResponsesGroup();
+
+            var invocation = mocks.StrictMock<IColomboSendInvocation>();
+
+            var cacheFactory = mocks.StrictMock<ICacheFactory>();
+            var cache = mocks.StrictMock<ICache>();
+
+            With.Mocks(mocks).Expecting(() =>
+            {
+                SetupResult.For(invocation.Requests).Return(requests);
+                SetupResult.For(invocation.Responses).Return(responses).Repeat.Twice();
+                invocation.Proceed();
+
+                Expect.Call(cacheFactory.GetCacheForSegment("DefaultSegment")).Return(cache);
+                Expect.Call(cacheFactory.GetCacheForSegment("CacheSegmentFromContext")).Return(cache);
+
+                Expect.Call(cache.Get<Response>(request1.GetCacheKey())).Return(response1);
+                Expect.Call(cache.Get<Response>(request2.GetCacheKey())).Return(response2);
+            }).Verify(() =>
+            {
+                var interceptor = new ClientCacheSendInterceptor(cacheFactory);
+                interceptor.Logger = GetConsoleLogger();
+                interceptor.Intercept(invocation);
+                var responsesVerify = invocation.Responses;
+                Assert.That(() => responsesVerify[request1],
+                    Is.EqualTo(response1));
+                Assert.That(() => responsesVerify[request2],
+                    Is.EqualTo(response2));
+            });
+        }
+
+        [Test]
         public void It_should_invalidate_responses_when_request_comes_in_with_InvalidateCachedInstancesOf()
         {
             var mocks = new MockRepository();
@@ -211,6 +256,16 @@ namespace Colombo.Tests.Interceptors
 
         [EnableClientCaching(Seconds=30)]
         public class TestRequestWithCache : SideEffectFreeRequest<TestResponse>
+        {
+            public override string GetCacheKey()
+            {
+                return string.Format("{0}+{1}", GetType().Name, Context["Foo"]);
+            }
+        }
+
+        [EnableClientCaching(Seconds = 30)]
+        [CacheSegment(FromContextKey="Bar", Name="DefaultSegment")]
+        public class TestRequestWithCacheSegment : Request<TestResponse>
         {
             public override string GetCacheKey()
             {
