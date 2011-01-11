@@ -42,6 +42,7 @@ namespace Colombo.Tests.Interceptors
             }).Verify(() =>
             {
                 var interceptor = new ClientCacheSendInterceptor(cacheFactory);
+                interceptor.Logger = GetConsoleLogger();
                 interceptor.Intercept(invocation);
             });
         }
@@ -73,6 +74,7 @@ namespace Colombo.Tests.Interceptors
             }).Verify(() =>
             {
                 var interceptor = new ClientCacheSendInterceptor(cacheFactory);
+                interceptor.Logger = GetConsoleLogger();
                 Assert.That(() => interceptor.Intercept(invocation),
                     Throws.Exception.TypeOf<ColomboException>()
                     .With.Message.Contains("GetCacheKey"));
@@ -115,6 +117,7 @@ namespace Colombo.Tests.Interceptors
             }).Verify(() =>
             {
                 var interceptor = new ClientCacheSendInterceptor(cacheFactory);
+                interceptor.Logger = GetConsoleLogger();
                 interceptor.Intercept(invocation);
             });
         }
@@ -153,6 +156,7 @@ namespace Colombo.Tests.Interceptors
             }).Verify(() =>
             {
                 var interceptor = new ClientCacheSendInterceptor(cacheFactory);
+                interceptor.Logger = GetConsoleLogger();
                 interceptor.Intercept(invocation);
                 var responsesVerify = invocation.Responses;
                 Assert.That(() => responsesVerify[request1],
@@ -195,6 +199,7 @@ namespace Colombo.Tests.Interceptors
             }).Verify(() =>
             {
                 var interceptor = new ClientCacheSendInterceptor(cacheFactory);
+                interceptor.Logger = GetConsoleLogger();
                 interceptor.Intercept(invocation);
             });
         }
