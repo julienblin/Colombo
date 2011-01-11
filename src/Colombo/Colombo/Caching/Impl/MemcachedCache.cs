@@ -16,8 +16,13 @@ namespace Colombo.Caching.Impl
         private readonly MemcachedClient memcachedClient;
 
         public MemcachedCache(string serverUri)
+            : this(new string[] {serverUri})
         {
-            memcachedClient = new MemcachedClient(@"Colombo", new string[] { serverUri });
+        }
+
+        public MemcachedCache(string[] servers)
+        {
+            memcachedClient = new MemcachedClient(@"Colombo", servers);
         }
 
         private string GetKeyForCurrentIncrement(string segment, string type)

@@ -24,7 +24,9 @@ namespace Colombo.Facilities
         int maxAllowedNumberOfSendForStatefulMessageBus = DefaultMaxAllowedNumberOfSendForStatefulMessageBus;
         int healthCheckHeartBeatInSeconds = DefaultHealthCheckHeartBeatInSeconds;
 
-        bool enableCaching = false;
+        bool enableInMemoryCaching = false;
+        bool enableMemcachedCaching = false;
+        string[] memCachedServers;
 
         IList<Type> sendInterceptors = new List<Type>()
         {
@@ -109,12 +111,20 @@ namespace Colombo.Facilities
                 }
             }
 
-            if (enableCaching)
+            if (enableInMemoryCaching)
             {
-                if(!Kernel.HasComponent(typeof(ICache)))
-                    Kernel.Register(
-                        Component.For<ICache>().ImplementedBy<InMemoryCache>()
-                    );
+                Kernel.Register(
+                    Component.For<ICache>().ImplementedBy<InMemoryCache>()
+                );
+            }
+
+            if (enableMemcachedCaching)
+            {
+                Kernel.Register(
+                    Component.For<ICache>()
+                    .ImplementedBy<MemcachedCache>()
+                    .UsingFactoryMethod(() => new MemcachedCache(memCachedServers))
+                );
             }
         }
 
@@ -171,9 +181,23 @@ namespace Colombo.Facilities
             handlerInterceptors.Add(typeof(PerfCounterHandleInterceptor));
         }
 
-        public void EnableCaching()
+        public void EnableInMemoryCaching()
         {
-            enableCaching = true;
+            if (enableMemcachedCaching)
+                throw new ColomboException("It seems that caching has been previously enabled with Memcached. Out of the box Colombo doesn't support multiple concurrent caching providers. Try implementing your own ICache.");
+
+            enableInMemoryCaching = true;
+            sendInterceptors.Add(typeof(ClientCacheSendInterceptor));
+            handlerInterceptors.Add(typeof(CacheHandleInterceptor));
+        }
+
+        public void EnableMemcachedCaching(string[] servers)
+        {
+            if (enableInMemoryCaching)
+                throw new ColomboException("It seems that caching has been previously enabled with InMemory. Out of the box Colombo doesn't support multiple concurrent caching providers. Try implementing your own ICache.");
+
+            enableMemcachedCaching = true;
+            memCachedServers = servers;
             sendInterceptors.Add(typeof(ClientCacheSendInterceptor));
             handlerInterceptors.Add(typeof(CacheHandleInterceptor));
         }

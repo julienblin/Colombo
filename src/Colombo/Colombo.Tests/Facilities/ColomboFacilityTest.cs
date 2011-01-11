@@ -265,7 +265,7 @@ namespace Colombo.Tests.Facilities
         }
 
         [Test]
-        public void It_should_register_CachingComponents()
+        public void It_should_register_CachingComponents_InMemory()
         {
             var container = new WindsorContainer();
             container.AddFacility<ColomboFacility>();
@@ -275,11 +275,44 @@ namespace Colombo.Tests.Facilities
             Assert.That(!container.ResolveAll<IRequestHandlerHandleInterceptor>().Any(x => x is CacheHandleInterceptor));
 
             container = new WindsorContainer();
-            container.AddFacility<ColomboFacility>(f => f.EnableCaching());
+            container.AddFacility<ColomboFacility>(f => f.EnableInMemoryCaching());
 
             Assert.That(container.ResolveAll<ICache>().Any(x => x is InMemoryCache));
+            Assert.That(!container.ResolveAll<ICache>().Any(x => x is MemcachedCache));
             Assert.That(container.ResolveAll<IMessageBusSendInterceptor>().Any(x => x is ClientCacheSendInterceptor));
             Assert.That(container.ResolveAll<IRequestHandlerHandleInterceptor>().Any(x => x is CacheHandleInterceptor));
+        }
+
+        [Test]
+        public void It_should_register_CachingComponents_MemCached()
+        {
+            var container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>();
+
+            Assert.That(!container.ResolveAll<ICache>().Any(x => x is MemcachedCache));
+            Assert.That(!container.ResolveAll<IMessageBusSendInterceptor>().Any(x => x is ClientCacheSendInterceptor));
+            Assert.That(!container.ResolveAll<IRequestHandlerHandleInterceptor>().Any(x => x is CacheHandleInterceptor));
+
+            container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>(f => f.EnableMemcachedCaching(new string[] { "localhost" }));
+
+            Assert.That(container.ResolveAll<ICache>().Any(x => x is MemcachedCache));
+            Assert.That(!container.ResolveAll<ICache>().Any(x => x is InMemoryCache));
+            Assert.That(container.ResolveAll<IMessageBusSendInterceptor>().Any(x => x is ClientCacheSendInterceptor));
+            Assert.That(container.ResolveAll<IRequestHandlerHandleInterceptor>().Any(x => x is CacheHandleInterceptor));
+        }
+
+        [Test]
+        public void It_should_not_allow_multiple_ICache()
+        {
+            var container = new WindsorContainer();
+            Assert.That(() => container.AddFacility<ColomboFacility>(f =>
+                {
+                    f.EnableInMemoryCaching();
+                    f.EnableMemcachedCaching(new string[] { "localhost" });
+                }),
+                Throws.Exception.TypeOf<ColomboException>()
+                .With.Message.Contains("ICache"));
         }
     }
 }
