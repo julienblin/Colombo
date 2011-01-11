@@ -95,12 +95,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetDir)\Colombo.Host.exe" "$(TargetDir)\Colombo.Host-beforemerge.exe"
-$(SolutionDir)..\..\lib\ILMerge\ILMerge.exe /out:"$(TargetDir)\Colombo.Host.exe" /internalize /xmldocs /targetplatform:v4,C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319 "$(TargetDir)\Colombo.Host-beforemerge.exe" "$(TargetDir)\Topshelf.dll" "$(TargetDir)\NDesk.Options.dll" "$(TargetDir)\Castle.Facilities.Logging.dll"
-del "$(TargetDir)\Topshelf.*"
-del "$(TargetDir)\NDesk.Options.*"
-del "$(TargetDir)\Castle.Facilities.Logging.*"
-del "$(TargetDir)\Colombo.Host-beforemerge.exe"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
