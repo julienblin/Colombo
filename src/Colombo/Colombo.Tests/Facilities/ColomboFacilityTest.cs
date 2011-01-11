@@ -11,6 +11,8 @@ using Castle.MicroKernel;
 using Colombo.Interceptors;
 using Colombo.Impl;
 using Colombo.HealthCheck;
+using Colombo.Caching;
+using Colombo.Caching.Impl;
 
 namespace Colombo.Tests.Facilities
 {
@@ -260,6 +262,26 @@ namespace Colombo.Tests.Facilities
             });
             Assert.That(container.ResolveAll<IRequestHandlerHandleInterceptor>().Any(x => x is PerfCounterHandleInterceptor));
             Assert.That(container.ResolveAll<IMessageBusSendInterceptor>().Any(x => x is PerfCounterSendInterceptor));
+        }
+
+        [Test]
+        public void It_should_register_CachingComponents()
+        {
+            var container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>();
+
+            Assert.That(!container.ResolveAll<ICache>().Any(x => x is InMemoryCache));
+            Assert.That(!container.ResolveAll<ICacheFactory>().Any(x => x is KernelCacheFactory));
+            Assert.That(!container.ResolveAll<IMessageBusSendInterceptor>().Any(x => x is ClientCacheSendInterceptor));
+            Assert.That(!container.ResolveAll<IRequestHandlerHandleInterceptor>().Any(x => x is CacheHandleInterceptor));
+
+            container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>(f => f.EnableCaching());
+
+            Assert.That(container.ResolveAll<ICache>().Any(x => x is InMemoryCache));
+            Assert.That(container.ResolveAll<ICacheFactory>().Any(x => x is KernelCacheFactory));
+            Assert.That(container.ResolveAll<IMessageBusSendInterceptor>().Any(x => x is ClientCacheSendInterceptor));
+            Assert.That(container.ResolveAll<IRequestHandlerHandleInterceptor>().Any(x => x is CacheHandleInterceptor));
         }
     }
 }

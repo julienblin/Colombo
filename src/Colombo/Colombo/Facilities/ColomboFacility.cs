@@ -10,6 +10,8 @@ using Colombo.Impl;
 using Colombo.Interceptors;
 using Colombo.HealthCheck;
 using System.Diagnostics.Contracts;
+using Colombo.Caching;
+using Colombo.Caching.Impl;
 
 namespace Colombo.Facilities
 {
@@ -21,6 +23,8 @@ namespace Colombo.Facilities
         bool registerLocalProcessing = true;
         int maxAllowedNumberOfSendForStatefulMessageBus = DefaultMaxAllowedNumberOfSendForStatefulMessageBus;
         int healthCheckHeartBeatInSeconds = DefaultHealthCheckHeartBeatInSeconds;
+
+        bool enableCaching = false;
 
         IList<Type> sendInterceptors = new List<Type>()
         {
@@ -104,6 +108,18 @@ namespace Colombo.Facilities
                     );
                 }
             }
+
+            if (enableCaching)
+            {
+                if(!Kernel.HasComponent(typeof(ICache)))
+                    Kernel.Register(
+                        Component.For<ICache>().ImplementedBy<InMemoryCache>().LifeStyle.Transient
+                    );
+                if (!Kernel.HasComponent(typeof(ICacheFactory)))
+                    Kernel.Register(
+                        Component.For<ICacheFactory>().ImplementedBy<KernelCacheFactory>()
+                    );
+            }
         }
 
         public void ClientOnly()
@@ -157,6 +173,13 @@ namespace Colombo.Facilities
         {
             sendInterceptors.Add(typeof(PerfCounterSendInterceptor));
             handlerInterceptors.Add(typeof(PerfCounterHandleInterceptor));
+        }
+
+        public void EnableCaching()
+        {
+            enableCaching = true;
+            sendInterceptors.Add(typeof(ClientCacheSendInterceptor));
+            handlerInterceptors.Add(typeof(CacheHandleInterceptor));
         }
     }
 }
