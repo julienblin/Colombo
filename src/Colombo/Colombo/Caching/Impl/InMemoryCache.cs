@@ -58,7 +58,7 @@ namespace Colombo.Caching.Impl
             }
         }
 
-        public T Get<T>(string segment, string cacheKey) where T : class
+        public T Get<T>(string segment, string cacheKey, object @object) where T : class
         {
             if (string.IsNullOrEmpty(cacheKey)) throw new ArgumentNullException("cacheKey");
             Contract.EndContractBlock();
@@ -84,11 +84,6 @@ namespace Colombo.Caching.Impl
                     return null;
                 }
             }
-        }
-
-        public void InvalidateAllObjects<T>(string segment)
-        {
-            InvalidateAllObjects(segment, typeof(T));
         }
 
         public void InvalidateAllObjects(string segment, Type type)

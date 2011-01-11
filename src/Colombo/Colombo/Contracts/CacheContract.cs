@@ -18,14 +18,9 @@ namespace Colombo.Contracts
             throw new NotImplementedException();
         }
 
-        public T Get<T>(string segment, string cacheKey) where T : class
+        public T Get<T>(string segment, string cacheKey, object @object) where T : class
         {
             Contract.Requires<ArgumentNullException>(!string.IsNullOrEmpty(cacheKey), "cacheKey");
-            throw new NotImplementedException();
-        }
-
-        public void InvalidateAllObjects<T>(string segment)
-        {
             throw new NotImplementedException();
         }
 

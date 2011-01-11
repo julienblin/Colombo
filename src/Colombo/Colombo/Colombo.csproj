@@ -55,6 +55,10 @@
     <DocumentationFile>..\..\..\bin\Release\Colombo\Colombo.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BeITMemcached, Version=1.0.4028.24773, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\lib\BeITMemcached\BeITMemcached.dll</HintPath>
+    </Reference>
     <Reference Include="Castle.Core">
       <HintPath>..\..\..\lib\Castle.Windsor\Castle.Core.dll</HintPath>
     </Reference>
@@ -86,6 +90,7 @@
     <Compile Include="CacheSegmentAttribute.cs" />
     <Compile Include="Caching\ICache.cs" />
     <Compile Include="Caching\Impl\InMemoryCache.cs" />
+    <Compile Include="Caching\Impl\MemcachedCache.cs" />
     <Compile Include="Contracts\CacheContract.cs" />
     <Compile Include="EnableClientCachingAttribute.cs" />
     <Compile Include="ColomboException.cs" />

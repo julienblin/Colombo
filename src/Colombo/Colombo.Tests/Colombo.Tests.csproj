@@ -65,6 +65,7 @@
     </Compile>
     <Compile Include="BaseTest.cs" />
     <Compile Include="Caching\Impl\InMemoryCacheTest.cs" />
+    <Compile Include="Caching\Impl\MemcachedCacheTest.cs" />
     <Compile Include="ColomboExceptionTest.cs" />
     <Compile Include="Facilities\ColomboFacilityTest.cs" />
     <Compile Include="Facilities\PerRequestHandlingLifestyleTest.cs" />
@@ -98,6 +99,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\..\lib\Memcached\memcached.exe">
+      <Link>memcached.exe</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
