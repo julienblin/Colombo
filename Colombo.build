@@ -116,9 +116,18 @@
     <delete dir="${folder.release}" includeemptydirs="true" />
     <copy todir="${folder.release}">
       <fileset basedir="${folder.bin}\${msbuild.configuration}\Colombo">
-        <include name="*"/>
+        <include name="*" />
+		<exclude name="BeITMemcached.*" />
+		<exclude name="Colombo.*" />
       </fileset>
     </copy>
+	<exec program="${app.ilmerge}">
+      <arg line="/out:&quot;${folder.release}\Colombo.dll&quot;" />
+      <arg line="/internalize /xmldocs /targetplatform:v4,C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319" />
+      <arg value="${folder.bin}\${msbuild.configuration}\Colombo\Colombo.dll" />
+      <arg value="${folder.bin}\${msbuild.configuration}\Colombo\BeITMemcached.dll" />
+    </exec>
+	
     <exec program="${app.ilmerge}">
       <arg line="/out:&quot;${folder.release}\Colombo.Host.exe&quot;" />
       <arg line="/internalize /xmldocs /targetplatform:v4,C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319" />
