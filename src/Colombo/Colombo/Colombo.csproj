@@ -133,6 +133,7 @@
     <Compile Include="Impl\RequestProcessorSendInvocation.cs" />
     <Compile Include="Impl\StatefulMessageBus.cs" />
     <Compile Include="Impl\StatefulReponseInterceptor.cs" />
+    <Compile Include="Interceptors\CacheHandleInterceptor.cs" />
     <Compile Include="Interceptors\ClientCacheSendInterceptor.cs" />
     <Compile Include="Interceptors\CurrentCultureConstant.cs" />
     <Compile Include="Interceptors\CurrentCultureHandleInterceptor.cs" />

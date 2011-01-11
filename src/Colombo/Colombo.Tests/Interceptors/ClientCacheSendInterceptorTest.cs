@@ -14,6 +14,14 @@ namespace Colombo.Tests.Interceptors
     public class ClientCacheSendInterceptorTest : BaseTest
     {
         [Test]
+        public void It_should_ensure_that_it_has_an_ICacheFactory()
+        {
+            Assert.That(() => new ClientCacheSendInterceptor(null),
+                Throws.Exception.TypeOf<ArgumentNullException>()
+                .With.Message.Contains("cacheFactory"));
+        }
+
+        [Test]
         public void It_should_ignore_requests_not_marked_with_cache()
         {
             var mocks = new MockRepository();
