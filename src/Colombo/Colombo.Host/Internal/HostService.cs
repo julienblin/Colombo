@@ -105,6 +105,10 @@ namespace Colombo.Host.Internal
                 AllTypes.FromAssemblyInDirectory(new AssemblyFilter(baseDirectory.FullName))
                     .BasedOn<IRequestHandler>()
                     .WithService.AllInterfaces()
+                    .Configure(c => c.LifeStyle.Transient),
+                AllTypes.FromAssemblyInDirectory(new AssemblyFilter(baseDirectory.FullName))
+                    .BasedOn<INotificationHandler>()
+                    .WithService.AllInterfaces()
                     .Configure(c => c.LifeStyle.Transient)
             );
         }

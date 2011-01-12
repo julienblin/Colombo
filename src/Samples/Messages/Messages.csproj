@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HelloWorldNotification.cs" />
     <Compile Include="HelloWorldRequest.cs" />
     <Compile Include="HelloWorldResponse.cs" />
   </ItemGroup>

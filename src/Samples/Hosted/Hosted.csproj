@@ -59,6 +59,7 @@
   <ItemGroup>
     <Compile Include="Endpoint.cs" />
     <Compile Include="Handlers\HelloWorldHandler.cs" />
+    <Compile Include="Handlers\HelloWorldNotificationHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Colombo.Host.exe.config">
