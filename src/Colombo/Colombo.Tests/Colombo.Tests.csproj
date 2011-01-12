@@ -86,7 +86,7 @@
     <Compile Include="Interceptors\SLASendInterceptorTest.cs" />
     <Compile Include="Interceptors\TransactionScopeHandleInterceptorTest.cs" />
     <Compile Include="MessagesTest.cs" />
-    <Compile Include="RequestHandlerTest.cs" />
+    <Compile Include="MessageHandlersTest.cs" />
     <Compile Include="SideEffectFreeRequestHandlerTest.cs" />
     <Compile Include="TestResponse.cs" />
     <Compile Include="Wcf\WcfClientRequestProcessorTest.cs" />

@@ -15,7 +15,8 @@ namespace Colombo.Samples.Hosted.Handlers
         {
             Response.Message = string.Format("Hello {0} from hosted service!", Request.Name);
 
-            var notification = new HelloWorldNotification { Name = Request.Name };
+            var notification = CreateNotification<HelloWorldNotification>();
+            notification.Name = Request.Name;
             MessageBus.Notify(notification);
         }
     }

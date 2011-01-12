@@ -39,5 +39,23 @@ namespace Colombo
         }
 
         public abstract void Handle();
+
+        protected TNewRequest CreateRequest<TNewRequest>()
+            where TNewRequest : BaseRequest, new()
+        {
+            var result = new TNewRequest();
+            result.CorrelationGuid = Request.CorrelationGuid;
+            result.Context = Request.Context;
+            return result;
+        }
+
+        protected TNotification CreateNotification<TNotification>()
+            where TNotification : Notification, new()
+        {
+            var result = new TNotification();
+            result.CorrelationGuid = Request.CorrelationGuid;
+            result.Context = Request.Context;
+            return result;
+        }
     }
 }
