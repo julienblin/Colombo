@@ -114,14 +114,14 @@ namespace Colombo.Facilities
             if (enableInMemoryCaching)
             {
                 Kernel.Register(
-                    Component.For<ICache>().ImplementedBy<InMemoryCache>()
+                    Component.For<IColomboCache>().ImplementedBy<InMemoryCache>()
                 );
             }
 
             if (enableMemcachedCaching)
             {
                 Kernel.Register(
-                    Component.For<ICache>()
+                    Component.For<IColomboCache>()
                     .ImplementedBy<MemcachedCache>()
                     .UsingFactoryMethod(() => new MemcachedCache(memCachedServers))
                 );

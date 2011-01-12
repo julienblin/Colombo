@@ -17,9 +17,9 @@ namespace Colombo.Interceptors
             set { logger = value; }
         }
 
-        private readonly ICache cache;
+        private readonly IColomboCache cache;
 
-        public ClientCacheSendInterceptor(ICache cache)
+        public ClientCacheSendInterceptor(IColomboCache cache)
         {
             if (cache == null) throw new ArgumentNullException("cache");
             Contract.EndContractBlock();
@@ -62,7 +62,7 @@ namespace Colombo.Interceptors
                         cacheSegment = cacheSegmentAttribute.GetCacheSegment(request);
 
                     Logger.DebugFormat("Testing cache for {0}: segment {1} - cacheKey: {2}", request, cacheSegment, cacheKey);
-                    var retrievedFromCache = cache.Get<Response>(cacheSegment, cacheKey, request.GetResponseType());
+                    var retrievedFromCache = (Response)cache.Get(cacheSegment, request.GetResponseType(), cacheKey);
                     if (retrievedFromCache != null)
                     {
                         Logger.DebugFormat("Cache hit for cacheKey {0}: responding with {1}", cacheKey, retrievedFromCache);

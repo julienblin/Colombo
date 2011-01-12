@@ -41,18 +41,18 @@ namespace Colombo.Tests.Caching.Impl
 
             cache.Store(null, "foo", @object1, new TimeSpan(1, 0, 0));
 
-            Assert.That(() => cache.Get<object>(null, "foo", null),
+            Assert.That(() => cache.Get(null, typeof(object), "foo"),
                 Is.SameAs(@object1));
 
-            Assert.That(() => cache.Get<object>(null, "foo", null),
+            Assert.That(() => cache.Get(null, typeof(object), "foo"),
                 Is.SameAs(@object1));
 
-            Assert.That(() => cache.Get<object>(null, "bar", null),
+            Assert.That(() => cache.Get(null, typeof(object), "bar"),
                 Is.Null);
 
             var @object2 = new object();
             cache.Store("another", "foo", @object2, new TimeSpan(1, 0, 0));
-            Assert.That(() => cache.Get<object>("another", "foo", null),
+            Assert.That(() => cache.Get("another", typeof(object), "foo"),
                 Is.Not.SameAs(@object1));
         }
 
@@ -65,12 +65,12 @@ namespace Colombo.Tests.Caching.Impl
 
             cache.Store(null, "foo", @object, new TimeSpan(0, 0, 0, 0, 500));
 
-            Assert.That(() => cache.Get<object>(null, "foo", null),
+            Assert.That(() => cache.Get(null, typeof(object), "foo"),
                 Is.SameAs(@object));
 
             Thread.Sleep(1000);
 
-            Assert.That(() => cache.Get<object>(null, "foo", null),
+            Assert.That(() => cache.Get(null, typeof(object), "foo"),
                 Is.Null);
         }
 
@@ -88,7 +88,7 @@ namespace Colombo.Tests.Caching.Impl
             cache.ScavengingTimerElapsed(null, null);
 
             Assert.AreEqual(1, cache.Count);
-            Assert.That(() => cache.Get<object>("asegment", "bar", null),
+            Assert.That(() => cache.Get("asegment", typeof(object), "bar"),
                 Is.Not.Null);
         }
 
@@ -105,13 +105,13 @@ namespace Colombo.Tests.Caching.Impl
             cache.Store(null, "3", testObject3, new TimeSpan(1, 0, 0));
 
             cache.InvalidateAllObjects(null, typeof(TestObject1));
-            Assert.IsNull(cache.Get<TestObject1>(null, "1", null));
-            Assert.IsNotNull(cache.Get<TestObject2>(null, "2", null));
-            Assert.IsNotNull(cache.Get<TestObject3>(null, "3", null));
+            Assert.IsNull(cache.Get(null, typeof(TestObject1), "1"));
+            Assert.IsNotNull(cache.Get(null, typeof(TestObject2), "2"));
+            Assert.IsNotNull(cache.Get(null, typeof(TestObject3), "3"));
 
             cache.InvalidateAllObjects(null, typeof(TestObject2));
-            Assert.IsNull(cache.Get<TestObject2>(null, "2", null));
-            Assert.IsNotNull(cache.Get<TestObject3>(null, "3", null));
+            Assert.IsNull(cache.Get(null, typeof(TestObject2), "2"));
+            Assert.IsNotNull(cache.Get(null, typeof(TestObject3), "3"));
         }
 
         public class TestObject1 { }

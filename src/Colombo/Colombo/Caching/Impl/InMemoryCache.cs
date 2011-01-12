@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Colombo.Caching.Impl
 {
-    public class InMemoryCache : ICache
+    public class InMemoryCache : IColomboCache
     {
         public const double ScavengingTimeInMilliseconds = 10 * 60 * 1000;
 
@@ -46,37 +46,40 @@ namespace Colombo.Caching.Impl
             {
                 var data = GetSegmentData(segment);
                 DateTime expiration = DateTime.UtcNow.Add(duration);
-                if (data.ContainsKey(cacheKey))
+                var finalCacheKey = string.Concat(@object.GetType().FullName, cacheKey);
+                if (data.ContainsKey(finalCacheKey))
                 {
-                    data[cacheKey].Object = @object;
-                    data[cacheKey].Expiration = expiration;
+                    data[finalCacheKey].Object = @object;
+                    data[finalCacheKey].Expiration = expiration;
                 }
                 else
                 {
-                    data[cacheKey] = new CacheData { Object = @object, Expiration = expiration };
+                    data[finalCacheKey] = new CacheData { Object = @object, Expiration = expiration };
                 }
             }
         }
 
-        public T Get<T>(string segment, string cacheKey, Type cacheType) where T : class
+        public object Get(string segment, Type objectType, string cacheKey)
         {
+            if (objectType == null) throw new ArgumentNullException("objectType");
             if (string.IsNullOrEmpty(cacheKey)) throw new ArgumentNullException("cacheKey");
             Contract.EndContractBlock();
 
             lock (syncRoot)
             {
                 var data = GetSegmentData(segment);
-                if (data.ContainsKey(cacheKey))
+                var finalCacheKey = string.Concat(objectType.FullName, cacheKey);
+                if (data.ContainsKey(finalCacheKey))
                 {
-                    var cacheData = data[cacheKey];
+                    var cacheData = data[finalCacheKey];
                     if (cacheData.Expiration < DateTime.UtcNow)
                     {
-                        data.Remove(cacheKey);
+                        data.Remove(finalCacheKey);
                         return null;
                     }
                     else
                     {
-                        return (T)cacheData.Object;
+                        return cacheData.Object;
                     }
                 }
                 else
@@ -86,12 +89,12 @@ namespace Colombo.Caching.Impl
             }
         }
 
-        public void InvalidateAllObjects(string segment, Type cacheType)
+        public void InvalidateAllObjects(string segment, Type objectType)
         {
             lock (syncRoot)
             {
                 var data = GetSegmentData(segment);
-                var allItemsOfType = data.Where(x => x.Value.Object.GetType().Equals(cacheType)).AsParallel().ToArray();
+                var allItemsOfType = data.Where(x => x.Value.Object.GetType().Equals(objectType)).AsParallel().ToArray();
                 Parallel.ForEach(allItemsOfType, (item) => data.Remove(item.Key));
             }
         }

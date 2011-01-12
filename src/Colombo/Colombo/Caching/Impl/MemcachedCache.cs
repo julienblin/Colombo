@@ -11,7 +11,7 @@ using System.Diagnostics.Contracts;
 
 namespace Colombo.Caching.Impl
 {
-    public class MemcachedCache : ICache
+    public class MemcachedCache : IColomboCache
     {
         private readonly MemcachedClient memcachedClient;
 
@@ -65,9 +65,9 @@ namespace Colombo.Caching.Impl
             }
         }
 
-        public T Get<T>(string segment, string cacheKey, Type cacheType) where T : class
+        public object Get(string segment, Type objectType, string cacheKey)
         {
-            var finalCachekey = GetFinalCacheKey(segment, cacheType.FullName, cacheKey);
+            var finalCachekey = GetFinalCacheKey(segment, objectType.FullName, cacheKey);
             var objectStr = memcachedClient.Get(finalCachekey) as string;
             if (objectStr == null)
                 return null;
@@ -75,8 +75,8 @@ namespace Colombo.Caching.Impl
             using(var backing = new StringReader(objectStr))
             using (var reader = new XmlTextReader(backing))
             {
-                var serializer = new DataContractSerializer(cacheType);
-                return serializer.ReadObject(reader) as T;
+                var serializer = new DataContractSerializer(objectType);
+                return serializer.ReadObject(reader);
             }
         }
 

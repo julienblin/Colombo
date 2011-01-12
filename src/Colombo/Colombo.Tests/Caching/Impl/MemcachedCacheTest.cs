@@ -55,11 +55,11 @@ namespace Colombo.Tests.Caching.Impl
             request2.Name = "Bar";
             cache.Store(null, request2.GetCacheKey(), request2, new TimeSpan(0, 0, 30));
 
-            var retrieved = cache.Get<TestRequest>("mysegment", request1.GetCacheKey(), typeof(TestRequest));
+            var retrieved = (TestRequest)cache.Get("mysegment", typeof(TestRequest), request1.GetCacheKey());
             Assert.That(() => retrieved.Name,
                 Is.EqualTo(request1.Name));
 
-            retrieved = cache.Get<TestRequest>(null, request2.GetCacheKey(), typeof(TestRequest));
+            retrieved = (TestRequest)cache.Get(null, typeof(TestRequest), request2.GetCacheKey());
             Assert.That(() => retrieved.Name,
                 Is.EqualTo(request2.Name));
         }
@@ -72,12 +72,12 @@ namespace Colombo.Tests.Caching.Impl
             request.Name = "Foo";
             cache.Store(null, request.GetCacheKey(), request, new TimeSpan(0, 0, 0, 1));
 
-            Assert.That(() => cache.Get<TestRequest>(null, request.GetCacheKey(), typeof(TestRequest)),
+            Assert.That(() => (TestRequest)cache.Get(null, typeof(TestRequest), request.GetCacheKey()),
                 Has.Property("Name").EqualTo("Foo"));
 
             Thread.Sleep(1500);
 
-            Assert.That(() => cache.Get<TestRequest>(null, request.GetCacheKey(), typeof(TestRequest)),
+            Assert.That(() => (TestRequest)cache.Get(null, typeof(TestRequest), request.GetCacheKey()),
                 Is.Null);
 
         }
@@ -94,18 +94,18 @@ namespace Colombo.Tests.Caching.Impl
             request2.Name = "Bar";
             cache.Store(null, request2.GetCacheKey(), request2, new TimeSpan(1, 0, 0));
 
-            Assert.That(() => cache.Get<TestRequest>(null, request1.GetCacheKey(), typeof(TestRequest)),
+            Assert.That(() => (TestRequest)cache.Get(null, typeof(TestRequest), request1.GetCacheKey()),
                 Has.Property("Name").EqualTo("Foo"));
 
-            Assert.That(() => cache.Get<TestRequest2>(null, request2.GetCacheKey(), typeof(TestRequest2)),
+            Assert.That(() => (TestRequest2)cache.Get(null, typeof(TestRequest2), request2.GetCacheKey()),
                 Has.Property("Name").EqualTo("Bar"));
 
             cache.InvalidateAllObjects(null, typeof(TestRequest2));
 
-            Assert.That(() => cache.Get<TestRequest>(null, request1.GetCacheKey(), typeof(TestRequest)),
+            Assert.That(() => (TestRequest)cache.Get(null, typeof(TestRequest), request1.GetCacheKey()),
                 Is.Not.Null);
 
-            Assert.That(() => cache.Get<TestRequest2>(null, request2.GetCacheKey(), typeof(TestRequest2)),
+            Assert.That(() => (TestRequest2)cache.Get(null, typeof(TestRequest2), request2.GetCacheKey()),
                 Is.Null);
         }
 

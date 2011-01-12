@@ -7,8 +7,8 @@ using System.Diagnostics.Contracts;
 
 namespace Colombo.Contracts
 {
-    [ContractClassFor(typeof(ICache))]
-    public abstract class CacheContract : ICache
+    [ContractClassFor(typeof(IColomboCache))]
+    public abstract class ColomboCacheContract : IColomboCache
     {
         public void Store(string segment, string cacheKey, object @object, TimeSpan duration)
         {
@@ -18,14 +18,14 @@ namespace Colombo.Contracts
             throw new NotImplementedException();
         }
 
-        public T Get<T>(string segment, string cacheKey, Type cacheType) where T : class
+        public object Get(string segment, Type objectType, string cacheKey)
         {
+            Contract.Requires<ArgumentNullException>(objectType != null);
             Contract.Requires<ArgumentNullException>(!string.IsNullOrEmpty(cacheKey), "cacheKey");
-            Contract.Requires<ArgumentNullException>(cacheType != null);
             throw new NotImplementedException();
         }
 
-        public void InvalidateAllObjects(string segment, Type cacheType)
+        public void InvalidateAllObjects(string segment, Type objectType)
         {
             throw new NotImplementedException();
         }

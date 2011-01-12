@@ -40,7 +40,7 @@ namespace Colombo.Tests.Interceptors
 
             var invocation = mocks.StrictMock<IColomboSendInvocation>();
 
-            var cache = mocks.StrictMock<ICache>();
+            var cache = mocks.StrictMock<IColomboCache>();
 
             With.Mocks(mocks).Expecting(() =>
             {
@@ -73,7 +73,7 @@ namespace Colombo.Tests.Interceptors
             };
 
             var invocation = mocks.StrictMock<IColomboSendInvocation>();
-            var cache = mocks.StrictMock<ICache>();
+            var cache = mocks.StrictMock<IColomboCache>();
 
             With.Mocks(mocks).Expecting(() =>
             {
@@ -107,7 +107,7 @@ namespace Colombo.Tests.Interceptors
             };
 
             var invocation = mocks.StrictMock<IColomboSendInvocation>();
-            var cache = mocks.StrictMock<ICache>();
+            var cache = mocks.StrictMock<IColomboCache>();
 
             With.Mocks(mocks).Expecting(() =>
             {
@@ -115,7 +115,7 @@ namespace Colombo.Tests.Interceptors
                 SetupResult.For(invocation.Responses).Return(responses);
                 invocation.Proceed();
 
-                Expect.Call(cache.Get<Response>(null, request1.GetCacheKey(), typeof(TestResponse))).Return(null);
+                Expect.Call(cache.Get(null, typeof(TestResponse), request1.GetCacheKey())).Return(null);
                 cache.Store(null, request1.GetCacheKey(), response1, new TimeSpan(0, 0, 30));
             }).Verify(() =>
             {
@@ -143,7 +143,7 @@ namespace Colombo.Tests.Interceptors
             };
 
             var invocation = mocks.StrictMock<IColomboSendInvocation>();
-            var cache = mocks.StrictMock<ICache>();
+            var cache = mocks.StrictMock<IColomboCache>();
 
             With.Mocks(mocks).Expecting(() =>
             {
@@ -151,7 +151,7 @@ namespace Colombo.Tests.Interceptors
                 SetupResult.For(invocation.Responses).Return(responses).Repeat.Twice();
                 invocation.Proceed();
 
-                Expect.Call(cache.Get<Response>(null, request1.GetCacheKey(), typeof(TestResponse))).Return(response1);
+                Expect.Call(cache.Get(null, typeof(TestResponse), request1.GetCacheKey())).Return(response1);
             }).Verify(() =>
             {
                 var interceptor = new ClientCacheSendInterceptor(cache);
@@ -182,7 +182,7 @@ namespace Colombo.Tests.Interceptors
             var responses = new ResponsesGroup();
 
             var invocation = mocks.StrictMock<IColomboSendInvocation>();
-            var cache = mocks.StrictMock<ICache>();
+            var cache = mocks.StrictMock<IColomboCache>();
 
             With.Mocks(mocks).Expecting(() =>
             {
@@ -190,8 +190,8 @@ namespace Colombo.Tests.Interceptors
                 SetupResult.For(invocation.Responses).Return(responses).Repeat.Twice();
                 invocation.Proceed();
 
-                Expect.Call(cache.Get<Response>("DefaultSegment", request1.GetCacheKey(), typeof(TestResponse))).Return(response1);
-                Expect.Call(cache.Get<Response>("CacheSegmentFromContext", request2.GetCacheKey(), typeof(TestResponse))).Return(response2);
+                Expect.Call(cache.Get("DefaultSegment", typeof(TestResponse), request1.GetCacheKey())).Return(response1);
+                Expect.Call(cache.Get("CacheSegmentFromContext", typeof(TestResponse), request2.GetCacheKey())).Return(response2);
             }).Verify(() =>
             {
                 var interceptor = new ClientCacheSendInterceptor(cache);
@@ -220,7 +220,7 @@ namespace Colombo.Tests.Interceptors
             };
 
             var invocation = mocks.StrictMock<IColomboSendInvocation>();
-            var cache = mocks.StrictMock<ICache>();
+            var cache = mocks.StrictMock<IColomboCache>();
 
             With.Mocks(mocks).Expecting(() =>
             {
@@ -228,7 +228,7 @@ namespace Colombo.Tests.Interceptors
                 SetupResult.For(invocation.Responses).Return(responses);
                 invocation.Proceed();
 
-                Expect.Call(cache.Get<Response>(null, request1.GetCacheKey(), typeof(TestResponse))).Return(null);
+                Expect.Call(cache.Get(null, typeof(TestResponse), request1.GetCacheKey())).Return(null);
                 cache.InvalidateAllObjects(null, typeof(TestResponse));
                 cache.Store(null, request1.GetCacheKey(), response1, new TimeSpan(0, 0, 30));
             }).Verify(() =>

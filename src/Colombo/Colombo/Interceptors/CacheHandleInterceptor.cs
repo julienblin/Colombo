@@ -17,9 +17,9 @@ namespace Colombo.Interceptors
             set { logger = value; }
         }
 
-        private readonly ICache cache;
+        private readonly IColomboCache cache;
 
-        public CacheHandleInterceptor(ICache cache)
+        public CacheHandleInterceptor(IColomboCache cache)
         {
             if (cache == null) throw new ArgumentNullException("cache");
             Contract.EndContractBlock();

@@ -6,12 +6,12 @@ using System.Diagnostics.Contracts;
 
 namespace Colombo.Caching
 {
-    [ContractClass(typeof(Contracts.CacheContract))]
-    public interface ICache
+    [ContractClass(typeof(Contracts.ColomboCacheContract))]
+    public interface IColomboCache
     {
         void Store(string segment, string cacheKey, object @object, TimeSpan duration);
-        T Get<T>(string segment, string cacheKey, Type cacheType) where T : class;
+        object Get(string segment, Type objectType, string cacheKey);
 
-        void InvalidateAllObjects(string segment, Type cacheType);
+        void InvalidateAllObjects(string segment, Type objectType);
     }
 }
