@@ -33,5 +33,9 @@ namespace Colombo
         /// </summary>
         ResponsesGroup Send(BaseSideEffectFreeRequest request, params BaseSideEffectFreeRequest[] followingRequests);
 
+        /// <summary>
+        /// Dispatch notifications
+        /// </summary>
+        void Notify(Notification notification, params Notification[] notifications);
     }
 }

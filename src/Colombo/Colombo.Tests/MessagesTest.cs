@@ -104,10 +104,30 @@ namespace Colombo.Tests
             }
         }
 
+        [Test]
+        public void Notifications_should_be_serializables_using_the_DataContractSerializer()
+        {
+            using (var stream = new MemoryStream())
+            {
+                var serializer = new DataContractSerializer(typeof(TestNotification));
+                var reference = new TestNotification();
+                reference.Context[@"SomeKey"] = "SomeValue";
+                serializer.WriteObject(stream, reference);
+                stream.Position = 0;
+                var deserialized = (TestNotification)serializer.ReadObject(stream);
+                Assert.AreNotSame(deserialized, reference);
+                Assert.AreEqual(deserialized.CorrelationGuid, reference.CorrelationGuid);
+                Assert.AreEqual(deserialized.UtcTimestamp, reference.UtcTimestamp);
+                Assert.AreEqual(deserialized.Context[@"SomeKey"], reference.Context[@"SomeKey"]);
+            }
+        }
+
         public class TestRequest : Request<TestResponse> { }
 
         public class TestSideEffectFreeRequest : SideEffectFreeRequest<TestResponse> { }
 
         public class TestValidatedResponse : ValidatedResponse { }
+
+        public class TestNotification : Notification { }
     }
 }

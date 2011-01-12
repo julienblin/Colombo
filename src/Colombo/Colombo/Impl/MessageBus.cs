@@ -133,6 +133,14 @@ namespace Colombo.Impl
             return responsesGroup;
         }
 
+        public void Notify(Notification notification, params Notification[] notifications)
+        {
+            if (notification == null) throw new ArgumentNullException("notification");
+            Contract.EndContractBlock();
+
+            throw new NotImplementedException();
+        }
+
         protected virtual ResponsesGroup InternalSend(IList<BaseRequest> requests)
         {
             var topInvocation = BuildSendInvocationChain();

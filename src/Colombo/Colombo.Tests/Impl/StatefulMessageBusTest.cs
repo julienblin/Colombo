@@ -304,6 +304,11 @@ namespace Colombo.Tests.Impl
                 }
                 return responsesGroup;
             }
+
+            public void Notify(Notification notification, params Notification[] notifications)
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

@@ -158,6 +158,7 @@
     <Compile Include="IRequestProcessor.cs" />
     <Compile Include="ISideEffectFreeRequestHandler.cs" />
     <Compile Include="IStatefulMessageBus.cs" />
+    <Compile Include="Notification.cs" />
     <Compile Include="Request.cs" />
     <Compile Include="RequestHandler.cs" />
     <Compile Include="RequiredInContextAttribute.cs" />
