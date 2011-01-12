@@ -229,7 +229,7 @@ namespace Colombo.Tests.Interceptors
                 invocation.Proceed();
 
                 Expect.Call(cache.Get(null, typeof(TestResponse), request1.GetCacheKey())).Return(null);
-                cache.InvalidateAllObjects(null, typeof(TestResponse));
+                cache.Flush(null, typeof(TestResponse));
                 cache.Store(null, request1.GetCacheKey(), response1, new TimeSpan(0, 0, 30));
             }).Verify(() =>
             {

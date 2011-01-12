@@ -83,7 +83,7 @@ namespace Colombo.Tests.Caching.Impl
         }
 
         [Test]
-        public void It_should_invalidate_all_object_of_type()
+        public void It_should_flush_all_object_of_type()
         {
             var cache = new MemcachedCache(serverUri);
             var request1 = new TestRequest();
@@ -100,10 +100,31 @@ namespace Colombo.Tests.Caching.Impl
             Assert.That(() => (TestRequest2)cache.Get(null, typeof(TestRequest2), request2.GetCacheKey()),
                 Has.Property("Name").EqualTo("Bar"));
 
-            cache.InvalidateAllObjects(null, typeof(TestRequest2));
+            cache.Flush(null, typeof(TestRequest2));
 
             Assert.That(() => (TestRequest)cache.Get(null, typeof(TestRequest), request1.GetCacheKey()),
                 Is.Not.Null);
+
+            Assert.That(() => (TestRequest2)cache.Get(null, typeof(TestRequest2), request2.GetCacheKey()),
+                Is.Null);
+        }
+
+        [Test]
+        public void It_should_flush_all()
+        {
+            var cache = new MemcachedCache(serverUri);
+            var request1 = new TestRequest();
+            request1.Name = "Foo";
+            cache.Store(null, request1.GetCacheKey(), request1, new TimeSpan(1, 0, 0));
+
+            var request2 = new TestRequest2();
+            request2.Name = "Bar";
+            cache.Store(null, request2.GetCacheKey(), request2, new TimeSpan(1, 0, 0));
+
+            cache.FlushAll();
+
+            Assert.That(() => (TestRequest2)cache.Get(null, typeof(TestRequest), request1.GetCacheKey()),
+                Is.Null);
 
             Assert.That(() => (TestRequest2)cache.Get(null, typeof(TestRequest2), request2.GetCacheKey()),
                 Is.Null);

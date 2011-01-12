@@ -93,7 +93,7 @@ namespace Colombo.Tests.Caching.Impl
         }
 
         [Test]
-        public void It_should_invalidate_all_object_of_type()
+        public void It_should_flush_all_object_of_type()
         {
             var cache = new InMemoryCache();
             var testObject1 = new TestObject1();
@@ -104,14 +104,32 @@ namespace Colombo.Tests.Caching.Impl
             cache.Store(null, "2", testObject2, new TimeSpan(1, 0, 0));
             cache.Store(null, "3", testObject3, new TimeSpan(1, 0, 0));
 
-            cache.InvalidateAllObjects(null, typeof(TestObject1));
+            cache.Flush(null, typeof(TestObject1));
             Assert.IsNull(cache.Get(null, typeof(TestObject1), "1"));
             Assert.IsNotNull(cache.Get(null, typeof(TestObject2), "2"));
             Assert.IsNotNull(cache.Get(null, typeof(TestObject3), "3"));
 
-            cache.InvalidateAllObjects(null, typeof(TestObject2));
+            cache.Flush(null, typeof(TestObject2));
             Assert.IsNull(cache.Get(null, typeof(TestObject2), "2"));
             Assert.IsNotNull(cache.Get(null, typeof(TestObject3), "3"));
+        }
+
+        [Test]
+        public void It_should_flush_all()
+        {
+            var cache = new InMemoryCache();
+            var testObject1 = new TestObject1();
+            var testObject2 = new TestObject2();
+            var testObject3 = new TestObject3();
+
+            cache.Store(null, "1", testObject1, new TimeSpan(1, 0, 0));
+            cache.Store(null, "2", testObject2, new TimeSpan(1, 0, 0));
+            cache.Store(null, "3", testObject3, new TimeSpan(1, 0, 0));
+
+            cache.FlushAll();
+            Assert.IsNull(cache.Get(null, typeof(TestObject1), "1"));
+            Assert.IsNull(cache.Get(null, typeof(TestObject2), "2"));
+            Assert.IsNull(cache.Get(null, typeof(TestObject3), "3"));
         }
 
         public class TestObject1 { }

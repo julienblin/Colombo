@@ -80,10 +80,18 @@ namespace Colombo.Caching.Impl
             }
         }
 
-        public void InvalidateAllObjects(string segment, Type cacheType)
+        public void Flush(string segment, Type objectType)
         {
-            var keyForCurrentIncrement = GetKeyForCurrentIncrement(segment, cacheType.FullName);
+            if (objectType == null) throw new ArgumentNullException("objectType");
+            Contract.EndContractBlock();
+
+            var keyForCurrentIncrement = GetKeyForCurrentIncrement(segment, objectType.FullName);
             memcachedClient.Increment(keyForCurrentIncrement, 1);
+        }
+
+        public void FlushAll()
+        {
+            memcachedClient.FlushAll();
         }
     }
 }

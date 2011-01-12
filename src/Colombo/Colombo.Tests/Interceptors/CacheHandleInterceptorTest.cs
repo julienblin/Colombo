@@ -55,8 +55,8 @@ namespace Colombo.Tests.Interceptors
                 SetupResult.For(invocation.Request).Return(request);
                 invocation.Proceed();
 
-                cache.InvalidateAllObjects("CacheSegment", typeof(TestResponse));
-                cache.InvalidateAllObjects("CacheSegment", typeof(TestResponse2));
+                cache.Flush("CacheSegment", typeof(TestResponse));
+                cache.Flush("CacheSegment", typeof(TestResponse2));
             }).Verify(() =>
             {
                 var interceptor = new CacheHandleInterceptor(cache);

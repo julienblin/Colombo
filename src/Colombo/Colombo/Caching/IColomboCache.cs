@@ -12,6 +12,7 @@ namespace Colombo.Caching
         void Store(string segment, string cacheKey, object @object, TimeSpan duration);
         object Get(string segment, Type objectType, string cacheKey);
 
-        void InvalidateAllObjects(string segment, Type objectType);
+        void Flush(string segment, Type objectType);
+        void FlushAll();
     }
 }

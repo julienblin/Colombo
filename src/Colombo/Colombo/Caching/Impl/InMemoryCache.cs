@@ -89,13 +89,24 @@ namespace Colombo.Caching.Impl
             }
         }
 
-        public void InvalidateAllObjects(string segment, Type objectType)
+        public void Flush(string segment, Type objectType)
         {
+            if (objectType == null) throw new ArgumentNullException("objectType");
+            Contract.EndContractBlock();
+
             lock (syncRoot)
             {
                 var data = GetSegmentData(segment);
                 var allItemsOfType = data.Where(x => x.Value.Object.GetType().Equals(objectType)).AsParallel().ToArray();
                 Parallel.ForEach(allItemsOfType, (item) => data.Remove(item.Key));
+            }
+        }
+
+        public void FlushAll()
+        {
+            lock (syncRoot)
+            {
+                segments = new Dictionary<string, Dictionary<string, CacheData>>();
             }
         }
 

@@ -40,7 +40,7 @@ namespace Colombo.Interceptors
                         cacheSegment = cacheSegmentAttribute.GetCacheSegment(nextInvocation.Request);
 
                     Logger.DebugFormat("Invalidating all responses of type {0} from cache segment {1}", responseType, cacheSegment);
-                    cache.InvalidateAllObjects(cacheSegment, responseType);
+                    cache.Flush(cacheSegment, responseType);
                 }
             }
 

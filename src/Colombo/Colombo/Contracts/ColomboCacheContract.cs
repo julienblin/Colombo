@@ -25,7 +25,13 @@ namespace Colombo.Contracts
             throw new NotImplementedException();
         }
 
-        public void InvalidateAllObjects(string segment, Type objectType)
+        public void Flush(string segment, Type objectType)
+        {
+            Contract.Requires<ArgumentNullException>(objectType != null);
+            throw new NotImplementedException();
+        }
+
+        public void FlushAll()
         {
             throw new NotImplementedException();
         }
