@@ -34,6 +34,11 @@ namespace Colombo.Tests.Facilities
             Assert.That(() => container.Resolve<IRequestHandlerFactory>(),
                 Is.Not.Null);
 
+            Assert.That(() => container.Resolve<INotificationHandlerFactory>(),
+                Is.Not.Null);
+            Assert.That(() => container.Resolve<INotificationProcessor>(),
+                Is.Not.Null);
+
             Assert.That(() => container.Resolve<IStatefulMessageBus>(),
                 Is.Not.Null);
             Assert.That(() => container.Resolve<IStatefulMessageBus>(),

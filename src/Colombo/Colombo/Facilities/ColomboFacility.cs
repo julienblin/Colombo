@@ -61,6 +61,12 @@ namespace Colombo.Facilities
                 Component.For<IRequestProcessor>()
                     .ImplementedBy<WcfClientRequestProcessor>()
                     .OnCreate((kernel, item) => ((WcfClientRequestProcessor)item).HealthCheckHeartBeatInSeconds = healthCheckHeartBeatInSeconds),
+
+                Component.For<INotificationHandlerFactory>()
+                    .ImplementedBy<KernelNotificationHandlerFactory>(),
+                Component.For<INotificationProcessor>()
+                    .ImplementedBy<LocalNotificationProcessor>(),
+
                 Component.For<IMessageBus>()
                     .ImplementedBy<MessageBus>(),
                 Component.For<IStatefulMessageBus>()
