@@ -93,6 +93,9 @@
     <Compile Include="Caching\Impl\InMemoryCache.cs" />
     <Compile Include="Caching\Impl\MemcachedCache.cs" />
     <Compile Include="Contracts\ColomboCacheContract.cs" />
+    <Compile Include="Contracts\GenericNotificationHandler.cs" />
+    <Compile Include="Contracts\NotificationHandlerContract.cs" />
+    <Compile Include="Contracts\NotificationHandlerFactoryContract.cs" />
     <Compile Include="Contracts\NotificationProcessorContract.cs" />
     <Compile Include="EnableClientCachingAttribute.cs" />
     <Compile Include="ColomboException.cs" />
@@ -128,6 +131,7 @@
     <Compile Include="Impl\BaseSendInvocation.cs" />
     <Compile Include="Impl\EventLogColomboAlerter.cs" />
     <Compile Include="Impl\KernelRequestHandlerFactory.cs" />
+    <Compile Include="Impl\LocalNotificationProcessor.cs" />
     <Compile Include="Impl\LocalRequestProcessor.cs" />
     <Compile Include="Impl\MessageBus.cs" />
     <Compile Include="Impl\MessageBusSendInterceptorInvocation.cs" />
@@ -138,6 +142,8 @@
     <Compile Include="Impl\RequestProcessorSendInvocation.cs" />
     <Compile Include="Impl\StatefulMessageBus.cs" />
     <Compile Include="Impl\StatefulReponseInterceptor.cs" />
+    <Compile Include="INotificationHandler.cs" />
+    <Compile Include="INotificationHandlerFactory.cs" />
     <Compile Include="INotificationProcessor.cs" />
     <Compile Include="Interceptors\CacheHandleInterceptor.cs" />
     <Compile Include="Interceptors\ClientCacheSendInterceptor.cs" />
@@ -161,6 +167,7 @@
     <Compile Include="ISideEffectFreeRequestHandler.cs" />
     <Compile Include="IStatefulMessageBus.cs" />
     <Compile Include="Notification.cs" />
+    <Compile Include="NotificationHandler.cs" />
     <Compile Include="Request.cs" />
     <Compile Include="RequestHandler.cs" />
     <Compile Include="RequiredInContextAttribute.cs" />

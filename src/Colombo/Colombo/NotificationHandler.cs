@@ -1,0 +1,34 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Diagnostics.Contracts;
+
+namespace Colombo
+{
+    /// <summary>
+    /// Use this base class to create notification handlers.
+    /// </summary>
+    public abstract class NotificationHandler<TNotification> : INotificationHandler<TNotification>
+        where TNotification : Notification
+    {
+        private TNotification notification;
+        protected TNotification Notification { get { return notification; } }
+
+        public void Handle(Notification notification)
+        {
+            if (notification == null) throw new ArgumentNullException("notification");
+            Contract.EndContractBlock();
+
+            Handle((TNotification)notification);
+        }
+
+        public void Handle(TNotification notification)
+        {
+            this.notification = notification;
+            Handle();
+        }
+
+        public abstract void Handle();
+    }
+}
