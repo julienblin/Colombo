@@ -15,7 +15,7 @@ namespace Colombo.Contracts
             throw new NotImplementedException();
         }
 
-        public INotificationHandler CreateNotificationHandlerFor(Notification notification)
+        public INotificationHandler[] CreateNotificationHandlersFor(Notification notification)
         {
             Contract.Requires<ArgumentNullException>(notification != null, "notification");
             throw new NotImplementedException();

@@ -11,7 +11,7 @@ namespace Colombo
     {
         bool CanCreateNotificationHandlerFor(Notification notification);
 
-        INotificationHandler CreateNotificationHandlerFor(Notification notification);
+        INotificationHandler[] CreateNotificationHandlersFor(Notification notification);
 
         void DisposeNotificationHandler(INotificationHandler notificationHandler);
     }

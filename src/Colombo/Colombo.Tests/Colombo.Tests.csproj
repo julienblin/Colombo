@@ -71,6 +71,7 @@
     <Compile Include="Facilities\PerRequestHandlingLifestyleTest.cs" />
     <Compile Include="FullTest.cs" />
     <Compile Include="Impl\KernelRequestHandlerFactoryTest.cs" />
+    <Compile Include="Impl\LocalNotificationProcessorTest.cs" />
     <Compile Include="Impl\LocalRequestProcessorTest.cs" />
     <Compile Include="Impl\MessageBusTest.cs" />
     <Compile Include="Impl\StatefulMessageBusTest.cs" />
