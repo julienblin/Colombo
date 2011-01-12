@@ -67,7 +67,6 @@ namespace Colombo.Tests.Impl
 
                 processor.Process(new Notification[] { notification1 });
                 processor.Process(new Notification[] { notification1, notification2, notification3 });
-
                 Thread.Sleep(500);
             });
         }

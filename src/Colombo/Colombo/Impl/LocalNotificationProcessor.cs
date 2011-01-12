@@ -17,6 +17,8 @@ namespace Colombo.Impl
             set { logger = value; }
         }
 
+        public bool ProcessSynchronously { get; set; }
+
         private readonly INotificationHandlerFactory notificationHandlerFactory;
 
         /// <summary>
@@ -37,29 +39,39 @@ namespace Colombo.Impl
             Contract.EndContractBlock();
 
             Logger.Debug("Parallel processing of {0} notifications with local handlers...", notifications.Length);
+
+            foreach (var invoc in BuildHandleInvocationChains(notifications))
+                Task.Factory.StartNew((i) => ((IColomboNotificationHandleInvocation)i).Proceed(), invoc);
+        }
+
+        private IEnumerable<IColomboNotificationHandleInvocation> BuildHandleInvocationChains(Notification[] notifications)
+        {
             foreach (var notification in notifications)
             {
                 if (notificationHandlerFactory.CanCreateNotificationHandlerFor(notification))
                 {
                     foreach (var notifHandler in notificationHandlerFactory.CreateNotificationHandlersFor(notification))
                     {
-                        try
-                        {
-                            Logger.DebugFormat("Handling {0} with {1}...", notification, notifHandler);
-                            notifHandler.Handle(notification);
-                        }
-                        catch (Exception ex)
-                        {
-                            Logger.ErrorFormat(ex, "Error while handling {0} with {1}.", notification, notifHandler);
-                            throw;
-                        }
-                        finally
-                        {
-                            notificationHandlerFactory.DisposeNotificationHandler(notifHandler);
-                        }
+                        var notificationHandlerInvocation = new NotificationHandlerHandleInvocation(notificationHandlerFactory, notifHandler);
+                        notificationHandlerInvocation.Logger = Logger;
+                        IColomboNotificationHandleInvocation currentInvocation = notificationHandlerInvocation;
+                        currentInvocation.Notification = notification;
+                        yield return currentInvocation;
                     }
                 }
             }
+
+            //var requestProcessorInvocation = new RequestProcessorSendInvocation(requestProcessors);
+            //requestProcessorInvocation.Logger = Logger;
+            //IColomboSendInvocation currentInvocation = requestProcessorInvocation;
+
+            //foreach (var interceptor in MessageBusSendInterceptors.Reverse())
+            //{
+            //    if (interceptor != null)
+            //        currentInvocation = new MessageBusSendInterceptorInvocation(interceptor, currentInvocation);
+            //}
+
+            //return currentInvocation;
         }
     }
 }
