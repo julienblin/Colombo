@@ -130,6 +130,7 @@
     <Compile Include="Impl\BaseHandleInvocation.cs" />
     <Compile Include="Impl\BaseSendInvocation.cs" />
     <Compile Include="Impl\EventLogColomboAlerter.cs" />
+    <Compile Include="Impl\KernelNotificationHandlerFactory.cs" />
     <Compile Include="Impl\KernelRequestHandlerFactory.cs" />
     <Compile Include="Impl\LocalNotificationProcessor.cs" />
     <Compile Include="Impl\LocalRequestProcessor.cs" />
