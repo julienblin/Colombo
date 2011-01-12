@@ -8,12 +8,14 @@ using System.IO;
 using System.Xml;
 using System.Runtime.Serialization;
 using System.Diagnostics.Contracts;
+using System.Security.Cryptography;
 
 namespace Colombo.Caching.Impl
 {
     public class MemcachedCache : IColomboCache
     {
         private readonly MemcachedClient memcachedClient;
+        private readonly SHA1 sha1 = new SHA1CryptoServiceProvider();
 
         public MemcachedCache(string serverUri)
             : this(new string[] {serverUri})
@@ -25,9 +27,14 @@ namespace Colombo.Caching.Impl
             memcachedClient = new MemcachedClient(@"Colombo", servers);
         }
 
+        private string GetEncodedKey(string key)
+        {
+            return Convert.ToBase64String(sha1.ComputeHash(Encoding.UTF8.GetBytes(key)));
+        }
+
         private string GetKeyForCurrentIncrement(string segment, string type)
         {
-            return string.Format("{0}.{1}.current", segment, type);
+            return GetEncodedKey(string.Format("{0}.{1}.current", segment, type));
         }
 
         private string GetFinalCacheKey(string segment, string type, string cacheKey)
@@ -44,7 +51,7 @@ namespace Colombo.Caching.Impl
             {
                 memcachedClient.Add(keyForCurrentIncrement, (ulong)0);
             }
-            return string.Format("{0}.{1}.{2}.{3}", segment, type, currentIncrementValue, cacheKey);
+            return GetEncodedKey(string.Format("{0}.{1}.{2}.{3}", segment, type, currentIncrementValue, cacheKey));
         }
 
         public void Store(string segment, string cacheKey, object @object, TimeSpan duration)
