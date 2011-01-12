@@ -6,12 +6,12 @@ using System.Diagnostics.Contracts;
 
 namespace Colombo.Impl
 {
-    public class RequestHandlerHandleInterceptorInvocation : BaseHandleInvocation
+    public class RequestHandlerHandleInterceptorInvocation : BaseRequestHandleInvocation
     {
         private readonly IRequestHandlerHandleInterceptor interceptor;
-        private readonly IColomboHandleInvocation nextInvocation;
+        private readonly IColomboRequestHandleInvocation nextInvocation;
 
-        public RequestHandlerHandleInterceptorInvocation(IRequestHandlerHandleInterceptor interceptor, IColomboHandleInvocation nextInvocation)
+        public RequestHandlerHandleInterceptorInvocation(IRequestHandlerHandleInterceptor interceptor, IColomboRequestHandleInvocation nextInvocation)
         {
             if (interceptor == null) throw new ArgumentNullException("interceptor");
             if (nextInvocation == null) throw new ArgumentNullException("nextInvocation");

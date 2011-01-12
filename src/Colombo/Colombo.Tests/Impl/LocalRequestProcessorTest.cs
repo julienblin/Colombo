@@ -144,6 +144,6 @@ namespace Colombo.Tests.Impl
             });
         }
 
-        public delegate void InterceptDelegate(IColomboHandleInvocation invocation);
+        public delegate void InterceptDelegate(IColomboRequestHandleInvocation invocation);
     }
 }

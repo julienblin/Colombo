@@ -8,7 +8,7 @@ namespace Colombo
     /// <summary>
     /// Represents an invocation for the Handle operation.
     /// </summary>
-    public interface IColomboHandleInvocation
+    public interface IColomboRequestHandleInvocation
     {
         /// <summary>
         /// The request to handle.

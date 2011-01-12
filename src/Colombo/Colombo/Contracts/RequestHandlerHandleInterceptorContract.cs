@@ -9,7 +9,7 @@ namespace Colombo.Contracts
     [ContractClassFor(typeof(IRequestHandlerHandleInterceptor))]
     public abstract class RequestHandlerHandleInterceptorContract : IRequestHandlerHandleInterceptor
     {
-        public void Intercept(IColomboHandleInvocation nextInvocation)
+        public void Intercept(IColomboRequestHandleInvocation nextInvocation)
         {
             Contract.Requires<ArgumentNullException>(nextInvocation != null, "nextInvocation");
             throw new NotImplementedException();

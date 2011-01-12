@@ -8,9 +8,9 @@ using System.Diagnostics.Contracts;
 namespace Colombo.Impl
 {
     /// <summary>
-    /// An <see cref="IColomboHandleInvocation"/> that can invoke <see cref="IRequestHandler"/>.
+    /// An <see cref="IColomboRequestHandleInvocation"/> that can invoke <see cref="IRequestHandler"/>.
     /// </summary>
-    public class RequestHandlerHandleInvocation : BaseHandleInvocation
+    public class RequestHandlerHandleInvocation : BaseRequestHandleInvocation
     {
         private ILogger logger = NullLogger.Instance;
         public ILogger Logger

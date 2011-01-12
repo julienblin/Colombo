@@ -27,7 +27,7 @@ namespace Colombo.Interceptors
             this.cache = cache;
         }
 
-        public void Intercept(IColomboHandleInvocation nextInvocation)
+        public void Intercept(IColomboRequestHandleInvocation nextInvocation)
         {
             var invalidateCachedInstancesOfAttributes = nextInvocation.Request.GetCustomAttributes<InvalidateCachedInstancesOfAttribute>();
             foreach (var invalidateCachedInstancesOfAttribute in invalidateCachedInstancesOfAttributes)

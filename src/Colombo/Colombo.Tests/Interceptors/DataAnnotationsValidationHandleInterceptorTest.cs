@@ -19,8 +19,8 @@ namespace Colombo.Tests.Interceptors
             var mocks = new MockRepository();
 
             var interceptor = new DataAnnotationsValidationHandleInterceptor();
-            var invocation1 = mocks.StrictMock<IColomboHandleInvocation>();
-            var invocation2 = mocks.StrictMock<IColomboHandleInvocation>();
+            var invocation1 = mocks.StrictMock<IColomboRequestHandleInvocation>();
+            var invocation2 = mocks.StrictMock<IColomboRequestHandleInvocation>();
             var request1 = new TestRequest();
             request1.FirstName = "FirstName";
             request1.LastName = "LastName";
@@ -49,7 +49,7 @@ namespace Colombo.Tests.Interceptors
             var mocks = new MockRepository();
 
             var interceptor = new DataAnnotationsValidationHandleInterceptor();
-            var invocation = mocks.StrictMock<IColomboHandleInvocation>();
+            var invocation = mocks.StrictMock<IColomboRequestHandleInvocation>();
             var request = new TestRequest();
 
             With.Mocks(mocks).Expecting(() =>
@@ -84,7 +84,7 @@ namespace Colombo.Tests.Interceptors
                 Is.EqualTo("LastName"));
         }
 
-        public class TestHandleInvocation : BaseHandleInvocation
+        public class TestHandleInvocation : BaseRequestHandleInvocation
         {
             public override void Proceed()
             {

@@ -9,7 +9,7 @@ namespace Colombo.Interceptors
 {
     public class DataAnnotationsValidationHandleInterceptor : IRequestHandlerHandleInterceptor
     {
-        public void Intercept(IColomboHandleInvocation nextInvocation)
+        public void Intercept(IColomboRequestHandleInvocation nextInvocation)
         {
             if (nextInvocation == null) throw new ArgumentNullException("nextInvocation");
             Contract.EndContractBlock();

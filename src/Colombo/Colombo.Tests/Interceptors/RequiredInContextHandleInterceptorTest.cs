@@ -17,7 +17,7 @@ namespace Colombo.Tests.Interceptors
             var mocks = new MockRepository();
 
             var interceptor = new RequiredInContextHandleInterceptor();
-            var invocation = mocks.StrictMock<IColomboHandleInvocation>();
+            var invocation = mocks.StrictMock<IColomboRequestHandleInvocation>();
             var request = new TestRequest();
 
             With.Mocks(mocks).Expecting(() =>
@@ -36,7 +36,7 @@ namespace Colombo.Tests.Interceptors
             var mocks = new MockRepository();
 
             var interceptor = new RequiredInContextHandleInterceptor();
-            var invocation = mocks.StrictMock<IColomboHandleInvocation>();
+            var invocation = mocks.StrictMock<IColomboRequestHandleInvocation>();
             var request = new TestRequestKeys();
             request.Context["Culture"] = "Culture";
             request.Context["TenandId"] = "TenandId";
@@ -58,7 +58,7 @@ namespace Colombo.Tests.Interceptors
             var mocks = new MockRepository();
 
             var interceptor = new RequiredInContextHandleInterceptor();
-            var invocation = mocks.StrictMock<IColomboHandleInvocation>();
+            var invocation = mocks.StrictMock<IColomboRequestHandleInvocation>();
             var request = new TestRequestKeys();
             request.Context["Culture"] = "Culture";
 
@@ -81,7 +81,7 @@ namespace Colombo.Tests.Interceptors
             var mocks = new MockRepository();
 
             var interceptor = new RequiredInContextHandleInterceptor();
-            var invocation = mocks.StrictMock<IColomboHandleInvocation>();
+            var invocation = mocks.StrictMock<IColomboRequestHandleInvocation>();
             var request = new TestRequestKeys();
             request.Context["Culture"] = "Culture";
             request.Context["TenandId"] = "TenandId";

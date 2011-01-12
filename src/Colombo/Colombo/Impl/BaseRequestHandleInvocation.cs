@@ -6,9 +6,9 @@ using System.Text;
 namespace Colombo.Impl
 {
     /// <summary>
-    /// Base class for <see cref="IColomboHandleInvocation"></see>.
+    /// Base class for <see cref="IColomboRequestHandleInvocation"></see>.
     /// </summary>
-    public abstract class BaseHandleInvocation : IColomboHandleInvocation
+    public abstract class BaseRequestHandleInvocation : IColomboRequestHandleInvocation
     {
         public BaseRequest Request { get; set; }
 

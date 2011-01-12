@@ -14,9 +14,9 @@ namespace Colombo
     {
         /// <summary>
         /// Called when the interceptor is asked to intercept.
-        /// Must call <see cref="IColomboHandleInvocation.Proceed()"/> to allow the invocation chain to continue.
+        /// Must call <see cref="IColomboRequestHandleInvocation.Proceed()"/> to allow the invocation chain to continue.
         /// </summary>
         /// <param name="nextInvocation">The next invocation to proceed.</param>
-        void Intercept(IColomboHandleInvocation nextInvocation);
+        void Intercept(IColomboRequestHandleInvocation nextInvocation);
     }
 }

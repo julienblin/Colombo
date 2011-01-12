@@ -108,13 +108,13 @@ namespace Colombo.Impl
             return responses;
         }
 
-        private IColomboHandleInvocation BuildHandleInvocationChain()
+        private IColomboRequestHandleInvocation BuildHandleInvocationChain()
         {
             Contract.Assume(RequestHandlerInterceptors != null);
 
             var requestHandlerInvocation = new RequestHandlerHandleInvocation(requestHandlerFactory);
             requestHandlerInvocation.Logger = Logger;
-            IColomboHandleInvocation currentInvocation = requestHandlerInvocation;
+            IColomboRequestHandleInvocation currentInvocation = requestHandlerInvocation;
             foreach (var interceptor in RequestHandlerInterceptors.Reverse())
             {
                 if (interceptor != null)

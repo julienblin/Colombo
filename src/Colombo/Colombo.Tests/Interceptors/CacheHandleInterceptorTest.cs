@@ -26,7 +26,7 @@ namespace Colombo.Tests.Interceptors
             var mocks = new MockRepository();
 
             var request = new TestRequest();
-            var invocation = mocks.StrictMock<IColomboHandleInvocation>();
+            var invocation = mocks.StrictMock<IColomboRequestHandleInvocation>();
             var cache = mocks.StrictMock<IColomboCache>();
 
             With.Mocks(mocks).Expecting(() =>
@@ -47,7 +47,7 @@ namespace Colombo.Tests.Interceptors
             var mocks = new MockRepository();
 
             var request = new TestRequestInvalidate();
-            var invocation = mocks.StrictMock<IColomboHandleInvocation>();
+            var invocation = mocks.StrictMock<IColomboRequestHandleInvocation>();
             var cache = mocks.StrictMock<IColomboCache>();
 
             With.Mocks(mocks).Expecting(() =>
