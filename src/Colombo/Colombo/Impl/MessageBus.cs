@@ -45,17 +45,21 @@ namespace Colombo.Impl
         }
 
         private readonly IRequestProcessor[] requestProcessors;
+        private readonly INotificationProcessor[] notificationProcessors;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="requestProcessors">List of <see cref="IRequestProcessor"/> that could process the request.</param>
-        public MessageBus(IRequestProcessor[] requestProcessors)
+        /// <param name="requestProcessors">List of <see cref="IRequestProcessor"/> that could process requests.</param>
+        /// <param name="notificationProcessors">List of <see cref="INotificationProcessor"/> that could process notifications.</param>
+        public MessageBus(IRequestProcessor[] requestProcessors, INotificationProcessor[] notificationProcessors)
         {
             if ((requestProcessors == null) || (requestProcessors.Length == 0)) throw new ArgumentException("requestProcessors should have at least one IRequestProcessor.");
+            if ((notificationProcessors == null) || (notificationProcessors.Length == 0)) throw new ArgumentException("notificationProcessors should have at least one INotificationProcessor.");
             Contract.EndContractBlock();
 
             this.requestProcessors = requestProcessors;
+            this.notificationProcessors = notificationProcessors;
         }
 
         public TResponse Send<TResponse>(Request<TResponse> request) where TResponse : Response, new()
@@ -138,7 +142,22 @@ namespace Colombo.Impl
             if (notification == null) throw new ArgumentNullException("notification");
             Contract.EndContractBlock();
 
-            throw new NotImplementedException();
+            var finalNotifications = new List<Notification>();
+            finalNotifications.Add(notification);
+            if(notifications != null)
+                finalNotifications.AddRange(notifications);
+
+            Logger.DebugFormat("Sending notifications {0}...", string.Join(", ", finalNotifications.Select(x => x.ToString())));
+
+            var finalNotificationsArray = finalNotifications.ToArray();
+            foreach (var processor in notificationProcessors)
+            {
+                Task.Factory.StartNew((proc) =>
+                {
+                    ((INotificationProcessor)proc).Process(finalNotificationsArray);
+                },
+                processor);
+            }
         }
 
         protected virtual ResponsesGroup InternalSend(IList<BaseRequest> requests)

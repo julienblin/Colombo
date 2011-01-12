@@ -93,6 +93,7 @@
     <Compile Include="Caching\Impl\InMemoryCache.cs" />
     <Compile Include="Caching\Impl\MemcachedCache.cs" />
     <Compile Include="Contracts\ColomboCacheContract.cs" />
+    <Compile Include="Contracts\NotificationProcessorContract.cs" />
     <Compile Include="EnableClientCachingAttribute.cs" />
     <Compile Include="ColomboException.cs" />
     <Compile Include="Contracts\AsyncCallbackContract.cs" />
@@ -137,6 +138,7 @@
     <Compile Include="Impl\RequestProcessorSendInvocation.cs" />
     <Compile Include="Impl\StatefulMessageBus.cs" />
     <Compile Include="Impl\StatefulReponseInterceptor.cs" />
+    <Compile Include="INotificationProcessor.cs" />
     <Compile Include="Interceptors\CacheHandleInterceptor.cs" />
     <Compile Include="Interceptors\ClientCacheSendInterceptor.cs" />
     <Compile Include="Interceptors\CurrentCultureConstant.cs" />
