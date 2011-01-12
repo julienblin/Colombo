@@ -7,6 +7,8 @@ using System.IO;
 using System.Diagnostics;
 using Colombo.Caching.Impl;
 using System.Threading;
+using Rhino.Mocks;
+using Colombo.Alerts;
 
 namespace Colombo.Tests.Caching.Impl
 {
@@ -46,22 +48,33 @@ namespace Colombo.Tests.Caching.Impl
         [Test]
         public void It_should_store_and_retrieve_objects()
         {
-            var cache = new MemcachedCache(serverUri);
-            var request1 = new TestRequest();
-            request1.Name = "Foo";
-            cache.Store("mysegment", request1.GetCacheKey(), request1, new TimeSpan(0, 0, 30));
+            var mocks = new MockRepository();
 
-            var request2 = new TestRequest();
-            request2.Name = "Bar";
-            cache.Store(null, request2.GetCacheKey(), request2, new TimeSpan(0, 0, 30));
+            var alerter = mocks.StrictMock<IColomboAlerter>();
 
-            var retrieved = (TestRequest)cache.Get("mysegment", typeof(TestRequest), request1.GetCacheKey());
-            Assert.That(() => retrieved.Name,
-                Is.EqualTo(request1.Name));
+            With.Mocks(mocks).Expecting(() =>
+            {
 
-            retrieved = (TestRequest)cache.Get(null, typeof(TestRequest), request2.GetCacheKey());
-            Assert.That(() => retrieved.Name,
-                Is.EqualTo(request2.Name));
+            }).Verify(() =>
+            {
+                var cache = new MemcachedCache(serverUri);
+                cache.Alerters = new IColomboAlerter[] { alerter };
+                var request1 = new TestRequest();
+                request1.Name = "Foo";
+                cache.Store("mysegment", request1.GetCacheKey(), request1, new TimeSpan(0, 0, 30));
+
+                var request2 = new TestRequest();
+                request2.Name = "Bar";
+                cache.Store(null, request2.GetCacheKey(), request2, new TimeSpan(0, 0, 30));
+
+                var retrieved = (TestRequest)cache.Get("mysegment", typeof(TestRequest), request1.GetCacheKey());
+                Assert.That(() => retrieved.Name,
+                    Is.EqualTo(request1.Name));
+
+                retrieved = (TestRequest)cache.Get(null, typeof(TestRequest), request2.GetCacheKey());
+                Assert.That(() => retrieved.Name,
+                    Is.EqualTo(request2.Name));
+            });
         }
 
         [Test]
@@ -128,6 +141,33 @@ namespace Colombo.Tests.Caching.Impl
 
             Assert.That(() => (TestRequest2)cache.Get(null, typeof(TestRequest2), request2.GetCacheKey()),
                 Is.Null);
+        }
+
+        [Test]
+        public void It_should_not_throw_exceptions_when_server_is_offline_and_issue_alert()
+        {
+            var mocks = new MockRepository();
+
+            var alerter = mocks.StrictMock<IColomboAlerter>();
+
+            With.Mocks(mocks).Expecting(() =>
+            {
+                alerter.Alert(null);
+                LastCall.IgnoreArguments();
+                LastCall.Constraints(
+                    Rhino.Mocks.Constraints.Is.TypeOf<MemcachedUnreachableAlert>()
+                );
+            }).Verify(() =>
+            {
+                var cache = new MemcachedCache(serverUri);
+                cache.Alerters = new IColomboAlerter[] { alerter };
+
+                memcachedServerProcess.Kill();
+                memcachedServerProcess = null;
+
+                var @object = new object();
+                cache.Store(null, "0", @object, new TimeSpan(1, 0, 0));
+            });
         }
 
         [TearDown]

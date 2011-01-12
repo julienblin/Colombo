@@ -9,21 +9,53 @@ using System.Xml;
 using System.Runtime.Serialization;
 using System.Diagnostics.Contracts;
 using System.Security.Cryptography;
+using Castle.Core.Logging;
+using Colombo.Alerts;
 
 namespace Colombo.Caching.Impl
 {
     public class MemcachedCache : IColomboCache
     {
+        private ILogger logger = NullLogger.Instance;
+        public ILogger Logger
+        {
+            get { return logger; }
+            set { logger = value; }
+        }
+
+        private IColomboAlerter[] alerters = new IColomboAlerter[0];
+        public IColomboAlerter[] Alerters
+        {
+            get { return alerters; }
+            set
+            {
+                if (value == null) throw new ArgumentNullException("Alerters");
+                Contract.EndContractBlock();
+
+                alerters = value;
+
+                if (Logger.IsInfoEnabled)
+                {
+                    if (alerters.Length == 0)
+                        Logger.Info("No alerters has been registered for the MemcachedCache.");
+                    else
+                        Logger.InfoFormat("MemcachedCache monitoring with the following alerters: {0}", string.Join(", ", alerters.Select(x => x.GetType().Name)));
+                }
+            }
+        }
+
+        private readonly string[] servers;
         private readonly MemcachedClient memcachedClient;
         private readonly SHA1 sha1 = new SHA1CryptoServiceProvider();
 
         public MemcachedCache(string serverUri)
-            : this(new string[] {serverUri})
+            : this(new string[] { serverUri })
         {
         }
 
         public MemcachedCache(string[] servers)
         {
+            this.servers = servers;
             memcachedClient = new MemcachedClient(@"Colombo", servers);
         }
 
@@ -63,12 +95,20 @@ namespace Colombo.Caching.Impl
 
             var finalCachekey = GetFinalCacheKey(segment, @object.GetType().FullName, cacheKey);
 
-            using(var backing = new StringWriter())
+            using (var backing = new StringWriter())
             using (var writer = new XmlTextWriter(backing))
             {
                 var serializer = new DataContractSerializer(@object.GetType());
                 serializer.WriteObject(writer, @object);
-                memcachedClient.Set(finalCachekey, backing.ToString(), duration);
+                if (!memcachedClient.Set(finalCachekey, backing.ToString(), duration))
+                {
+                    var alert = new MemcachedUnreachableAlert(Environment.MachineName, servers);
+                    Logger.Warn(alert.ToString());
+                    foreach (var alerter in Alerters)
+                    {
+                        alerter.Alert(alert);
+                    }
+                }
             }
         }
 
@@ -79,7 +119,7 @@ namespace Colombo.Caching.Impl
             if (objectStr == null)
                 return null;
 
-            using(var backing = new StringReader(objectStr))
+            using (var backing = new StringReader(objectStr))
             using (var reader = new XmlTextReader(backing))
             {
                 var serializer = new DataContractSerializer(objectType);

@@ -83,6 +83,7 @@
     </Compile>
     <Compile Include="ACKResponse.cs" />
     <Compile Include="Alerts\HealthCheckFailedAlert.cs" />
+    <Compile Include="Alerts\MemcachedUnreachableAlert.cs" />
     <Compile Include="Alerts\SLABreachedAlert.cs" />
     <Compile Include="BaseMessage.cs" />
     <Compile Include="BaseRequest.cs" />
