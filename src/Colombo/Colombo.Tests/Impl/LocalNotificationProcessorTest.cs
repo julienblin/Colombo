@@ -71,10 +71,62 @@ namespace Colombo.Tests.Impl
             });
         }
 
+        [Test]
+        public void It_should_run_all_the_INotificationHandleInterceptors_registered()
+        {
+            var mocks = new MockRepository();
+
+            var notificationHandlerFactory = mocks.StrictMock<INotificationHandlerFactory>();
+            var notification = new TestNotification1();
+            var notificationHandler1 = mocks.StrictMock<INotificationHandler<TestNotification1>>();
+            var notificationHandler2 = mocks.StrictMock<INotificationHandler<TestNotification1>>();
+            var interceptor1 = mocks.StrictMock<INotificationHandleInterceptor>();
+            var interceptor2 = mocks.StrictMock<INotificationHandleInterceptor>();
+
+
+            With.Mocks(mocks).Expecting(() =>
+            {
+                Expect.Call(interceptor1.InterceptionPriority).Return(InterceptorPrority.High);
+                Expect.Call(interceptor2.InterceptionPriority).Return(InterceptorPrority.Medium);
+
+                interceptor1.Intercept(null);
+                LastCall.IgnoreArguments().Repeat.Twice().Do(new InterceptDelegate((invocation) =>
+                {
+                    invocation.Proceed();
+                }));
+
+                interceptor2.Intercept(null);
+                LastCall.IgnoreArguments().Repeat.Twice().Do(new InterceptDelegate((invocation) =>
+                {
+                    invocation.Proceed();
+                }));
+
+                Expect.Call(notificationHandlerFactory.CanCreateNotificationHandlerFor(notification)).Return(true);
+                Expect.Call(notificationHandlerFactory.CreateNotificationHandlersFor(notification))
+                    .Return(new INotificationHandler[] { notificationHandler1, notificationHandler2 });
+
+                notificationHandler1.Handle((Notification)notification);
+                notificationHandler2.Handle((Notification)notification);
+
+                notificationHandlerFactory.DisposeNotificationHandler(notificationHandler1);
+                notificationHandlerFactory.DisposeNotificationHandler(notificationHandler2);
+            }).Verify(() =>
+            {
+                var processor = new LocalNotificationProcessor(notificationHandlerFactory);
+                processor.Logger = GetConsoleLogger();
+                processor.NotificationHandleInterceptors = new INotificationHandleInterceptor[] { interceptor1, interceptor2 };
+
+                processor.Process(new Notification[] { notification });
+                Thread.Sleep(500);
+            });
+        }
+
         public class TestNotification1 : Notification { }
 
         public class TestNotification2 : Notification { }
 
         public class TestNotification3 : Notification { }
+
+        public delegate void InterceptDelegate(IColomboNotificationHandleInvocation invocation);
     }
 }

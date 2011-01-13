@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Colombo
 {
-    public interface INotificationHandleInterceptor
+    public interface INotificationHandleInterceptor : IColomboInterceptor
     {
         void Intercept(IColomboNotificationHandleInvocation invocation);
     }

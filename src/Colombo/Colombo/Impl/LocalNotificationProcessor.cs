@@ -17,6 +17,29 @@ namespace Colombo.Impl
             set { logger = value; }
         }
 
+        private INotificationHandleInterceptor[] notificationHandleInterceptors = new INotificationHandleInterceptor[0];
+        /// <summary>
+        /// The list of <see cref="INotificationHandleInterceptor"/> to use.
+        /// </summary>
+        public INotificationHandleInterceptor[] NotificationHandleInterceptors
+        {
+            get { return notificationHandleInterceptors; }
+            set
+            {
+                if (value == null) throw new ArgumentNullException("NotificationHandleInterceptors");
+                Contract.EndContractBlock();
+
+                notificationHandleInterceptors = value.OrderBy(x => x.InterceptionPriority).ToArray();
+                if (Logger.IsInfoEnabled)
+                {
+                    if (notificationHandleInterceptors.Length == 0)
+                        Logger.Info("No interceptor has been registered for handling notifications.");
+                    else
+                        Logger.InfoFormat("Handling notifications with the following interceptors: {0}", string.Join(", ", notificationHandleInterceptors.Select(x => x.GetType().Name)));
+                }
+            }
+        }
+
         public bool ProcessSynchronously { get; set; }
 
         private readonly INotificationHandlerFactory notificationHandlerFactory;
@@ -55,23 +78,17 @@ namespace Colombo.Impl
                         var notificationHandlerInvocation = new NotificationHandlerHandleInvocation(notificationHandlerFactory, notifHandler);
                         notificationHandlerInvocation.Logger = Logger;
                         IColomboNotificationHandleInvocation currentInvocation = notificationHandlerInvocation;
+
+                        foreach (var interceptor in NotificationHandleInterceptors.Reverse())
+                        {
+                            if (interceptor != null)
+                                currentInvocation = new NotificationHandleInterceptorInvocation(interceptor, currentInvocation);
+                        }
                         currentInvocation.Notification = notification;
                         yield return currentInvocation;
                     }
                 }
             }
-
-            //var requestProcessorInvocation = new RequestProcessorSendInvocation(requestProcessors);
-            //requestProcessorInvocation.Logger = Logger;
-            //IColomboSendInvocation currentInvocation = requestProcessorInvocation;
-
-            //foreach (var interceptor in MessageBusSendInterceptors.Reverse())
-            //{
-            //    if (interceptor != null)
-            //        currentInvocation = new MessageBusSendInterceptorInvocation(interceptor, currentInvocation);
-            //}
-
-            //return currentInvocation;
         }
     }
 }
