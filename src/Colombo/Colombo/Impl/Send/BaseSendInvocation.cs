@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Colombo.Impl
+namespace Colombo.Impl.Send
 {
     /// <summary>
     /// Base class for <see cref="IColomboSendInvocation"></see>.

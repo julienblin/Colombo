@@ -6,7 +6,7 @@ using Castle.Core.Logging;
 using Castle.MicroKernel;
 using System.Diagnostics.Contracts;
 
-namespace Colombo.Impl
+namespace Colombo.Impl.NotificationHandle
 {
     /// <summary>
     /// Implementation of <see cref="INotificationHandlerFactory"/> that uses <see cref="Castle.MicroKernel.IKernel"/>.

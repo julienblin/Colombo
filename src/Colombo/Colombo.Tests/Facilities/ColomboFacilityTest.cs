@@ -13,6 +13,7 @@ using Colombo.Impl;
 using Colombo.HealthCheck;
 using Colombo.Caching;
 using Colombo.Caching.Impl;
+using Colombo.Impl.Alerters;
 
 namespace Colombo.Tests.Facilities
 {

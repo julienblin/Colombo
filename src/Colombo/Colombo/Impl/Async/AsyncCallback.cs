@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Diagnostics.Contracts;
 
-namespace Colombo.Impl
+namespace Colombo.Impl.Async
 {
     public class AsyncCallback<TResponse> : IAsyncCallback<TResponse>
         where TResponse : Response, new()

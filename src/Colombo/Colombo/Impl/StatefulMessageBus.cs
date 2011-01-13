@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Diagnostics.Contracts;
 using Castle.DynamicProxy;
+using Colombo.Impl.Async;
 
 namespace Colombo.Impl
 {

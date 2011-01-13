@@ -5,7 +5,7 @@ using System.Text;
 using Castle.DynamicProxy;
 using System.Reflection;
 
-namespace Colombo.Impl
+namespace Colombo.Impl.Async
 {
     public class NonVirtualCheckProxyGenerationHook : IProxyGenerationHook
     {

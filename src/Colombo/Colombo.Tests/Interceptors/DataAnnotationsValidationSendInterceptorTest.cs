@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using Colombo.Impl;
 using Rhino.Mocks;
 using Colombo.Interceptors;
+using Colombo.Impl.Send;
 
 namespace Colombo.Tests.Interceptors
 {

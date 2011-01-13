@@ -12,6 +12,9 @@ using Colombo.HealthCheck;
 using System.Diagnostics.Contracts;
 using Colombo.Caching;
 using Colombo.Caching.Impl;
+using Colombo.Impl.Alerters;
+using Colombo.Impl.RequestHandle;
+using Colombo.Impl.NotificationHandle;
 
 namespace Colombo.Facilities
 {

@@ -7,7 +7,7 @@ using Castle.MicroKernel;
 using System.Diagnostics.Contracts;
 using System.Reflection;
 
-namespace Colombo.Impl
+namespace Colombo.Impl.RequestHandle
 {
     /// <summary>
     /// Implementation of <see cref="IRequestHandlerFactory"/> that uses <see cref="Castle.MicroKernel.IKernel"/>.

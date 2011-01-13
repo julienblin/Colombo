@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Diagnostics.Contracts;
 
-namespace Colombo.Impl
+namespace Colombo.Impl.Send
 {
-    public class RequestHandlerHandleInterceptorInvocation : BaseRequestHandleInvocation
+    public class MessageBusSendInterceptorInvocation : BaseSendInvocation
     {
-        private readonly IRequestHandlerHandleInterceptor interceptor;
-        private readonly IColomboRequestHandleInvocation nextInvocation;
+        private readonly IMessageBusSendInterceptor interceptor;
+        private readonly IColomboSendInvocation nextInvocation;
 
-        public RequestHandlerHandleInterceptorInvocation(IRequestHandlerHandleInterceptor interceptor, IColomboRequestHandleInvocation nextInvocation)
+        public MessageBusSendInterceptorInvocation(IMessageBusSendInterceptor interceptor, IColomboSendInvocation nextInvocation)
         {
             if (interceptor == null) throw new ArgumentNullException("interceptor");
             if (nextInvocation == null) throw new ArgumentNullException("nextInvocation");
@@ -23,9 +23,9 @@ namespace Colombo.Impl
 
         public override void Proceed()
         {
-            nextInvocation.Request = Request;
+            nextInvocation.Requests = Requests;
             interceptor.Intercept(nextInvocation);
-            Response = nextInvocation.Response;
+            Responses = nextInvocation.Responses;
         }
     }
 }

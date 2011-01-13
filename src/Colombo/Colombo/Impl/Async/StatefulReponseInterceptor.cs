@@ -6,7 +6,7 @@ using Castle.DynamicProxy;
 using System.Diagnostics.Contracts;
 using System.Reflection;
 
-namespace Colombo.Impl
+namespace Colombo.Impl.Async
 {
     public class StatefulReponseInterceptor : IInterceptor
     {

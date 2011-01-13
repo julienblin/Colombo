@@ -6,7 +6,7 @@ using System.Diagnostics.Contracts;
 using Castle.Core.Logging;
 using System.Threading.Tasks;
 
-namespace Colombo.Impl
+namespace Colombo.Impl.Send
 {
     /// <summary>
     /// A <see cref="IColomboSendInvocation"/> that can invoke <see cref="IRequestProcessor"/>.

@@ -7,6 +7,7 @@ using Rhino.Mocks;
 using Colombo.Impl;
 using Castle.MicroKernel;
 using Castle.MicroKernel.Registration;
+using Colombo.Impl.RequestHandle;
 
 namespace Colombo.Tests.Impl
 {

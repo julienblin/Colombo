@@ -6,6 +6,8 @@ using Castle.Core.Logging;
 using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
 using System.Threading;
+using Colombo.Impl.Async;
+using Colombo.Impl.Send;
 
 namespace Colombo.Impl
 {

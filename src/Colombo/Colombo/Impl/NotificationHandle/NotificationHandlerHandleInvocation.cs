@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Castle.Core.Logging;
 
-namespace Colombo.Impl
+namespace Colombo.Impl.NotificationHandle
 {
     public class NotificationHandlerHandleInvocation : BaseNotificationHandleInvocation
     {

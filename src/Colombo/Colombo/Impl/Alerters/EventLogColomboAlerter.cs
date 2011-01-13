@@ -6,7 +6,7 @@ using Castle.Core.Logging;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 
-namespace Colombo.Impl
+namespace Colombo.Impl.Alerters
 {
     public class EventLogColomboAlerter : IColomboAlerter
     {

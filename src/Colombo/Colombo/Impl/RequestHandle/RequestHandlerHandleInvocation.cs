@@ -5,7 +5,7 @@ using System.Text;
 using Castle.Core.Logging;
 using System.Diagnostics.Contracts;
 
-namespace Colombo.Impl
+namespace Colombo.Impl.RequestHandle
 {
     /// <summary>
     /// An <see cref="IColomboRequestHandleInvocation"/> that can invoke <see cref="IRequestHandler"/>.

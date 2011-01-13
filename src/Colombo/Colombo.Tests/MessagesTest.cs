@@ -8,6 +8,7 @@ using System.Runtime.Serialization;
 using System.ComponentModel.DataAnnotations;
 using Castle.DynamicProxy;
 using Colombo.Impl;
+using Colombo.Impl.Async;
 
 namespace Colombo.Tests
 {
