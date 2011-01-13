@@ -47,6 +47,11 @@ namespace Colombo.Impl
         private readonly IRequestProcessor[] requestProcessors;
         private readonly INotificationProcessor[] notificationProcessors;
 
+        public MessageBus(IRequestProcessor[] requestProcessors)
+            : this(requestProcessors, null)
+        {
+        }
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -55,7 +60,6 @@ namespace Colombo.Impl
         public MessageBus(IRequestProcessor[] requestProcessors, INotificationProcessor[] notificationProcessors)
         {
             if ((requestProcessors == null) || (requestProcessors.Length == 0)) throw new ArgumentException("requestProcessors should have at least one IRequestProcessor.");
-            if ((notificationProcessors == null) || (notificationProcessors.Length == 0)) throw new ArgumentException("notificationProcessors should have at least one INotificationProcessor.");
             Contract.EndContractBlock();
 
             this.requestProcessors = requestProcessors;
@@ -139,6 +143,9 @@ namespace Colombo.Impl
 
         public void Notify(Notification notification, params Notification[] notifications)
         {
+            if ((notificationProcessors == null) || (notificationProcessors.Length == 0))
+                throw new ColomboException("Unable to Notify: no INotificationProcessor has been registered.");
+
             if (notification == null) throw new ArgumentNullException("notification");
             Contract.EndContractBlock();
 

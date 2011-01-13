@@ -13,13 +13,13 @@ namespace Colombo.Tests.Impl
     public class MessageBusTest : BaseTest
     {
         [Test]
-        public void It_should_ensure_that_at_least_one_IRequestProcessor_and_one_INotificationProcessor_is_provided()
+        public void It_should_ensure_that_at_least_one_IRequestProcessor_is_provided()
         {
             var mocks = new MockRepository();
             var requestProcessor = mocks.Stub<IRequestProcessor>();
             var notificationProcessor = mocks.Stub<INotificationProcessor>();
 
-            Assert.That(() => new MessageBus(null, null),
+            Assert.That(() => new MessageBus(null),
                 Throws.Exception.TypeOf<ArgumentException>()
                 .With.Message.Contains("requestProcessors"));
 
@@ -27,15 +27,7 @@ namespace Colombo.Tests.Impl
                 Throws.Exception.TypeOf<ArgumentException>()
                 .With.Message.Contains("requestProcessors"));
 
-            Assert.That(() => new MessageBus(new IRequestProcessor[] { requestProcessor }, null),
-                Throws.Exception.TypeOf<ArgumentException>()
-                .With.Message.Contains("notificationProcessors"));
-
-            Assert.That(() => new MessageBus(new IRequestProcessor[] { requestProcessor }, new INotificationProcessor[] { }),
-                Throws.Exception.TypeOf<ArgumentException>()
-                .With.Message.Contains("notificationProcessors"));
-
-            var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor }, new INotificationProcessor[] { notificationProcessor });
+            var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor }, null);
         }
 
         [Test]
@@ -468,6 +460,28 @@ namespace Colombo.Tests.Impl
                 Thread.Sleep(50);
                 Assert.That(() => callbackThreadId,
                     Is.Not.EqualTo(Thread.CurrentThread.ManagedThreadId));
+            });
+        }
+
+        [Test]
+        public void It_should_throw_an_exception_when_notifying_without_INotificationProcessor()
+        {
+            var mocks = new MockRepository();
+            var requestProcessor = mocks.StrictMock<IRequestProcessor>();
+            var notification = mocks.Stub<Notification>();
+            With.Mocks(mocks).Expecting(() =>
+            {
+            }).Verify(() =>
+            {
+                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor }, null);
+                Assert.That(() => messageBus.Notify(notification),
+                    Throws.Exception.TypeOf<ColomboException>()
+                    .With.Message.Contains("INotificationProcessor"));
+
+                messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor }, new INotificationProcessor[] { });
+                Assert.That(() => messageBus.Notify(notification),
+                    Throws.Exception.TypeOf<ColomboException>()
+                    .With.Message.Contains("INotificationProcessor"));
             });
         }
 
