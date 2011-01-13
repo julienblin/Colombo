@@ -28,32 +28,29 @@ namespace Colombo.Wcf
                 var requestType = requestHandler.GetRequestType();
                 var responseType = requestHandler.GetResponseType();
 
-                var baseOperationName = requestHandler.GetType().Name.Replace("RequestHandler", "").Replace("Request", "");
+                var baseOperationName = requestType.Name.Replace("Request", "");
                 operationTypesByName[baseOperationName] = new Pair<Type, Type>(requestType, responseType);
 
                 var operationDescription = new OperationDescription(baseOperationName, contractDescription);
 
-                MessageDescription inputMessage = new MessageDescription("http://Colombo/WcfSoapService/" + baseOperationName, MessageDirection.Input);
+                var messageDescriptionBase = WcfServices.Namespace + "/WcfSoapService/";
+                var inputMessage = new MessageDescription(messageDescriptionBase + baseOperationName, MessageDirection.Input);
                 inputMessage.Body.WrapperName = baseOperationName;
-                inputMessage.Body.WrapperNamespace = "http://Colombo";
-                MessagePartDescription messagePartDescription = new MessagePartDescription(requestType.Name, "http://Colombo");
+                inputMessage.Body.WrapperNamespace = WcfServices.Namespace;
+                var messagePartDescription = new MessagePartDescription(requestType.Name, WcfServices.Namespace);
                 messagePartDescription.Type = requestType;
                 inputMessage.Body.Parts.Add(messagePartDescription);
                 operationDescription.Messages.Add(inputMessage);
 
-                MessageDescription outputMessage = new MessageDescription("http://Colombo/WcfSoapService/" + baseOperationName + "Response", MessageDirection.Output);
-                outputMessage.Body.ReturnValue = new MessagePartDescription(baseOperationName + "Result", "http://Colombo");
+                var outputMessage = new MessageDescription(messageDescriptionBase + baseOperationName + "Response", MessageDirection.Output);
+                outputMessage.Body.ReturnValue = new MessagePartDescription(baseOperationName + "Result", WcfServices.Namespace);
                 outputMessage.Body.ReturnValue.Type = responseType;
                 outputMessage.Body.WrapperName = baseOperationName + "Response";
-                outputMessage.Body.WrapperNamespace = "http://Colombo";
+                outputMessage.Body.WrapperNamespace = WcfServices.Namespace;
                 operationDescription.Messages.Add(outputMessage);
 
-                OperationBehaviorAttribute operationBehaviourAttribute = new OperationBehaviorAttribute();
-                operationDescription.Behaviors.Add(operationBehaviourAttribute);
-
-                DataContractSerializerOperationBehavior d =
-                    new DataContractSerializerOperationBehavior(operationDescription);
-                operationDescription.Behaviors.Add(d);
+                operationDescription.Behaviors.Add(new OperationBehaviorAttribute());
+                operationDescription.Behaviors.Add(new DataContractSerializerOperationBehavior(operationDescription));
 
                 contractDescription.Operations.Add(operationDescription);
             }
@@ -68,12 +65,8 @@ namespace Colombo.Wcf
         {
             foreach (var operation in dispatchRuntime.Operations)
             {
-                if (!operation.Name.Equals("Ping", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    var operationTypes = operationTypesByName[operation.Name];
-                    operation.Invoker = new RequestProcessorOperationInvoker(operationTypes.First, operationTypes.Second);
-                }
-
+                var operationTypes = operationTypesByName[operation.Name];
+                operation.Invoker = new RequestProcessorOperationInvoker(operationTypes.First, operationTypes.Second);
             }
         }
 

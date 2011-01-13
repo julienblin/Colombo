@@ -6,7 +6,6 @@ using System.ServiceModel;
 
 namespace Colombo.Wcf
 {
-    [ServiceBehavior(IncludeExceptionDetailInFaults = true)]
     public class WcfSoapService : IWcfSoapService
     {
         public void DummyOperationForWCF()

@@ -6,7 +6,7 @@ using System.ServiceModel;
 
 namespace Colombo.Wcf
 {
-    [ServiceContract(Namespace = @"http://Colombo")]
+    [ServiceContract(Namespace = WcfServices.Namespace)]
     [AddOperationsForRequestHandlers]
     public interface IWcfSoapService
     {
