@@ -64,8 +64,8 @@ namespace Colombo.Facilities
             Kernel.Resolver.AddSubResolver(new ArrayResolver(Kernel, true));
 
             Kernel.Register(
-                Component.For<IWcfServiceFactory>()
-                    .ImplementedBy<WcfServiceFactory>(),
+                Component.For<IWcfColomboServiceFactory>()
+                    .ImplementedBy<WcfColomboServiceFactory>(),
                 Component.For<IRequestProcessor>()
                     .ImplementedBy<WcfClientRequestProcessor>()
                     .OnCreate((kernel, item) => ((WcfClientRequestProcessor)item).HealthCheckHeartBeatInSeconds = healthCheckHeartBeatInSeconds),
@@ -113,7 +113,7 @@ namespace Colombo.Facilities
                         .ImplementedBy<HealthCheckRequestHandler>()
                 );
 
-                WcfService.RegisterKernel(Kernel);
+                WcfServices.Kernel = Kernel;
 
                 foreach (var handlerType in requestHandlerInterceptors)
                 {

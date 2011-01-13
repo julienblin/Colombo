@@ -24,13 +24,10 @@ namespace Colombo.Wcf
 
         public object Invoke(object instance, object[] inputs, out object[] outputs)
         {
-            var localRequestProcessor = WcfService.Kernel.Resolve<ILocalRequestProcessor>();
             var request = (BaseRequest)inputs[0];
-            var listRequests = new List<BaseRequest>();
-            listRequests.Add(request);
+            var responses = WcfServices.SyncProcess(new BaseRequest[] { request });
             outputs = new object[0];
-            var responsesGroup = localRequestProcessor.Process(listRequests);
-            return responsesGroup[request];
+            return responses[0];
         }
 
         public IAsyncResult InvokeBegin(object instance, object[] inputs, AsyncCallback callback, object state)

@@ -7,7 +7,7 @@ using System.ServiceModel;
 namespace Colombo.Wcf
 {
     [ServiceContract(Namespace = @"http://Colombo")]
-    public interface IWcfService
+    public interface IWcfColomboService
     {
         [OperationContract(Name = @"Process", AsyncPattern=true)]
         [EmbedTypeInSerializer]

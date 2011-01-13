@@ -21,7 +21,7 @@ namespace Colombo.Wcf
             // Removing the dummy operation. At this point, WCF has loaded everything it needs and doesn't need the dummy operation anymore.
             contractDescription.Operations.Remove(contractDescription.Operations.Where(x => x.Name.Equals("DummyOperationForWCF")).First());
 
-            var allHandlers = WcfService.Kernel.ResolveAll<IRequestHandler>();
+            var allHandlers = WcfServices.Kernel.ResolveAll<IRequestHandler>();
 
             foreach (var requestHandler in allHandlers)
             {

@@ -18,7 +18,7 @@ namespace Colombo.Tests.Wcf
             var mocks = new MockRepository();
             var requestInThisAssembly = new TestRequest();
             var requestInDynamicAssembly = mocks.Stub<Request<TestResponse>>();
-            var wcfServiceFactory = mocks.StrictMock<IWcfServiceFactory>();
+            var wcfServiceFactory = mocks.StrictMock<IWcfColomboServiceFactory>();
 
             With.Mocks(mocks).Expecting(() =>
             {
@@ -59,7 +59,7 @@ namespace Colombo.Tests.Wcf
 
                 var mocks = new MockRepository();
 
-                var wcfServiceFactory = mocks.StrictMock<IWcfServiceFactory>();
+                var wcfServiceFactory = mocks.StrictMock<IWcfColomboServiceFactory>();
 
                 var request1 = new TestRequestIPC1 { Name = @"Request1" };
                 var request2 = new TestRequestIPC2 { Name = @"Request2" };
@@ -67,8 +67,8 @@ namespace Colombo.Tests.Wcf
                 var request4 = new TestRequestIPC2 { Name = @"Request4" };
                 var requests = new List<BaseRequest> { request1, request2, request3, request4 };
 
-                var channelFactory1 = new ChannelFactory<IWcfService>(new NetNamedPipeBinding(), new EndpointAddress(IPCAddress1));
-                var channelFactory2 = new ChannelFactory<IWcfService>(new NetNamedPipeBinding(), new EndpointAddress(IPCAddress2));
+                var channelFactory1 = new ChannelFactory<IWcfColomboService>(new NetNamedPipeBinding(), new EndpointAddress(IPCAddress1));
+                var channelFactory2 = new ChannelFactory<IWcfColomboService>(new NetNamedPipeBinding(), new EndpointAddress(IPCAddress2));
 
                 With.Mocks(mocks).Expecting(() =>
                 {
@@ -105,7 +105,7 @@ namespace Colombo.Tests.Wcf
             }
         }
 
-        public delegate IWcfService CreateChannelDelegate(string name);
+        public delegate IWcfColomboService CreateChannelDelegate(string name);
 
         public class TestRequest : Request<TestResponse>
         {
@@ -131,7 +131,7 @@ namespace Colombo.Tests.Wcf
             ConcurrencyMode = ConcurrencyMode.Multiple,
             InstanceContextMode = InstanceContextMode.PerCall
         )]
-        public class TestWcfService1 : IWcfService
+        public class TestWcfService1 : IWcfColomboService
         {
             public Response[] Process(BaseRequest[] requests)
             {
@@ -177,7 +177,7 @@ namespace Colombo.Tests.Wcf
             ConcurrencyMode = ConcurrencyMode.Multiple,
             InstanceContextMode = InstanceContextMode.PerCall
         )]
-        public class TestWcfService2 : IWcfService
+        public class TestWcfService2 : IWcfColomboService
         {
             public Response[] Process(BaseRequest[] requests)
             {

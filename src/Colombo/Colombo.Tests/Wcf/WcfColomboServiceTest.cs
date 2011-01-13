@@ -14,22 +14,12 @@ using System.ServiceModel;
 namespace Colombo.Tests.Wcf
 {
     [TestFixture]
-    public class WcfServiceTest : BaseTest
+    public class WcfColomboServiceTest : BaseTest
     {
         [SetUp]
         public void SetUp()
         {
-            // Hack to reset static property value...
-            var kernelStaticProperty = typeof(WcfService).GetProperty("Kernel", BindingFlags.Static | BindingFlags.NonPublic);
-            kernelStaticProperty.SetValue(null, null, null);
-        }
-
-        [Test]
-        public void It_should_raise_an_exception_when_registering_a_null_kernel()
-        {
-            Assert.That(() => WcfService.RegisterKernel(null),
-                Throws.Exception.TypeOf<ArgumentNullException>()
-                .With.Message.Contains("kernel"));
+            WcfServices.Kernel = null;
         }
 
         [Test]
@@ -39,7 +29,7 @@ namespace Colombo.Tests.Wcf
             var request1 = mocks.Stub<Request<TestResponse>>();
             var request2 = mocks.Stub<Request<TestResponse>>();
             var requests = new BaseRequest[] { request1, request2 };
-            var service = new WcfService();
+            var service = new WcfColomboService();
 
             Exception testedException = null;
 
@@ -62,11 +52,11 @@ namespace Colombo.Tests.Wcf
             var mocks = new MockRepository();
             var request = mocks.Stub<Request<TestResponse>>();
             var requests = new BaseRequest[] { request };
-            var service = new WcfService();
+            var service = new WcfColomboService();
 
             var kernel = new DefaultKernel();
 
-            WcfService.RegisterKernel(kernel);
+            WcfServices.Kernel = kernel;
 
             Exception testedException = null;
 
@@ -90,13 +80,13 @@ namespace Colombo.Tests.Wcf
             var request = mocks.Stub<Request<TestResponse>>();
             var requests = new BaseRequest[] { request };
             var processor = mocks.StrictMock<ILocalRequestProcessor>();
-            var service = new WcfService();
+            var service = new WcfColomboService();
 
             var kernel = new DefaultKernel();
             kernel.Register(
                 Component.For<ILocalRequestProcessor>().Instance(processor)
             );
-            WcfService.RegisterKernel(kernel);
+            WcfServices.Kernel = kernel;
 
             With.Mocks(mocks).Expecting(() =>
             {
@@ -136,13 +126,13 @@ namespace Colombo.Tests.Wcf
             };
 
             var processor = mocks.StrictMock<ILocalRequestProcessor>();
-            var service = new WcfService();
+            var service = new WcfColomboService();
 
             var kernel = new DefaultKernel();
             kernel.Register(
                 Component.For<ILocalRequestProcessor>().Instance(processor)
             );
-            WcfService.RegisterKernel(kernel);
+            WcfServices.Kernel = kernel;
 
             With.Mocks(mocks).Expecting(() =>
             {
@@ -181,13 +171,13 @@ namespace Colombo.Tests.Wcf
             var response2 = new TestResponse();
 
             var processor = mocks.DynamicMock<ILocalRequestProcessor>();
-            var service = new WcfService();
+            var service = new WcfColomboService();
 
             var kernel = new DefaultKernel();
             kernel.Register(
                 Component.For<ILocalRequestProcessor>().Instance(processor)
             );
-            WcfService.RegisterKernel(kernel);
+            WcfServices.Kernel = kernel;
 
             With.Mocks(mocks).Expecting(() =>
             {
@@ -202,10 +192,10 @@ namespace Colombo.Tests.Wcf
                 }));
             }).Verify(() =>
             {
-                using (ServiceHost serviceHost = new ServiceHost(typeof(WcfService), new Uri(IPCAddress)))
+                using (ServiceHost serviceHost = new ServiceHost(typeof(WcfColomboService), new Uri(IPCAddress)))
                 {
                     serviceHost.Open();
-                    var channelFactory = new ChannelFactory<IWcfService>(new NetNamedPipeBinding(), new EndpointAddress(IPCAddress));
+                    var channelFactory = new ChannelFactory<IWcfColomboService>(new NetNamedPipeBinding(), new EndpointAddress(IPCAddress));
                     var wcfService = channelFactory.CreateChannel();
 
                     var asyncResult = wcfService.BeginProcessAsync(requests, null, null);

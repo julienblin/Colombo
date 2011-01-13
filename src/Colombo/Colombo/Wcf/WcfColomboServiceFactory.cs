@@ -11,10 +11,10 @@ using System.Collections.Concurrent;
 namespace Colombo.Wcf
 {
     /// <summary>
-    /// <see cref="IWcfServiceFactory"/> that creates <see cref="IWcfService"/> channels based on standard
+    /// <see cref="IWcfColomboServiceFactory"/> that creates <see cref="IWcfColomboService"/> channels based on standard
     /// WCF configuration.
     /// </summary>
-    public class WcfServiceFactory : IWcfServiceFactory
+    public class WcfColomboServiceFactory : IWcfColomboServiceFactory
     {
         public bool CanCreateChannelForRequestGroup(string name)
         {
@@ -35,9 +35,9 @@ namespace Colombo.Wcf
             return channelEndpointElement.Address.AbsoluteUri;
         }
 
-        private ConcurrentDictionary<string, ChannelFactory<IWcfService>> channelFactories = new ConcurrentDictionary<string, ChannelFactory<IWcfService>>();
+        private ConcurrentDictionary<string, ChannelFactory<IWcfColomboService>> channelFactories = new ConcurrentDictionary<string, ChannelFactory<IWcfColomboService>>();
 
-        public IWcfService CreateChannel(string name)
+        public IWcfColomboService CreateChannel(string name)
         {
             if (name == null) throw new ArgumentNullException("name");
             Contract.EndContractBlock();
@@ -46,7 +46,7 @@ namespace Colombo.Wcf
             {
                 var channelFactory = channelFactories.GetOrAdd(name, (n) =>
                 {
-                    var channelFact = new ChannelFactory<IWcfService>(n);
+                    var channelFact = new ChannelFactory<IWcfColomboService>(n);
                     channelFact.Faulted += FactoryFaulted;
                     channelFact.Open();
                     return channelFact;
@@ -62,7 +62,7 @@ namespace Colombo.Wcf
             }
         }
 
-        public IEnumerable<IWcfService> CreateChannelsForAllEndPoints()
+        public IEnumerable<IWcfColomboService> CreateChannelsForAllEndPoints()
         {
             foreach (ChannelEndpointElement endPoint in WcfConfigClientSection.Endpoints)
             {
@@ -103,7 +103,7 @@ namespace Colombo.Wcf
 
         private void FactoryFaulted(object sender, EventArgs args)
         {
-            ChannelFactory<IWcfService> factory = (ChannelFactory<IWcfService>)sender;
+            ChannelFactory<IWcfColomboService> factory = (ChannelFactory<IWcfColomboService>)sender;
             try
             {
                 factory.Close();
@@ -113,7 +113,7 @@ namespace Colombo.Wcf
                 factory.Abort();
             }
 
-            ChannelFactory<IWcfService> outFactory;
+            ChannelFactory<IWcfColomboService> outFactory;
             channelFactories.TryRemove(factory.Endpoint.Name, out outFactory);
         }
 

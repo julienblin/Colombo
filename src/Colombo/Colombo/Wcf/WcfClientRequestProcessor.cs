@@ -16,7 +16,7 @@ using Colombo.Alerts;
 namespace Colombo.Wcf
 {
     /// <summary>
-    /// <see cref="IRequestProcessor"/> implementation that uses WCF to transfer requests. See <see cref="IWcfService"/>.
+    /// <see cref="IRequestProcessor"/> implementation that uses WCF to transfer requests. See <see cref="IWcfColomboService"/>.
     /// </summary>
     public class WcfClientRequestProcessor : IRequestProcessor
     {
@@ -48,9 +48,9 @@ namespace Colombo.Wcf
             }
         }
 
-        private readonly IWcfServiceFactory serviceFactory;
+        private readonly IWcfColomboServiceFactory serviceFactory;
 
-        public WcfClientRequestProcessor(IWcfServiceFactory serviceFactory)
+        public WcfClientRequestProcessor(IWcfColomboServiceFactory serviceFactory)
         {
             if (serviceFactory == null) throw new ArgumentNullException("serviceFactory");
             Contract.EndContractBlock();
@@ -105,7 +105,7 @@ namespace Colombo.Wcf
                 var task = Task.Factory.StartNew<Response[]>((g) =>
                     {
                         var group = (IGrouping<string, BaseRequest>)g;
-                        IWcfService wcfService = null;
+                        IWcfColomboService wcfService = null;
                         try
                         {
                             wcfService = serviceFactory.CreateChannel(group.Key);
@@ -196,7 +196,7 @@ namespace Colombo.Wcf
 
         private void HealthCheckTimerElapsed(object sender, ElapsedEventArgs e)
         {
-            IWcfService currentWcfService = null;
+            IWcfColomboService currentWcfService = null;
 
             try
             {
