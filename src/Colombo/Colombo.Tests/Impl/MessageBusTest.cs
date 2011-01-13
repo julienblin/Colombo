@@ -288,7 +288,7 @@ namespace Colombo.Tests.Impl
                 Expect.Call(interceptor2.InterceptionPriority).Return(InterceptorPrority.Medium);
 
                 interceptor1.Intercept(null);
-                LastCall.IgnoreArguments().Do(new InterceptDelegate((invocation) =>
+                LastCall.IgnoreArguments().Do(new InterceptSendDelegate((invocation) =>
                 {
                     Assert.That(() => invocation.Requests[0].CorrelationGuid,
                         Is.EqualTo(request.CorrelationGuid));
@@ -297,7 +297,7 @@ namespace Colombo.Tests.Impl
                 }));
 
                 interceptor2.Intercept(null);
-                LastCall.IgnoreArguments().Do(new InterceptDelegate((invocation) =>
+                LastCall.IgnoreArguments().Do(new InterceptSendDelegate((invocation) =>
                 {
                     Assert.That(() => invocation.Requests[0].CorrelationGuid,
                         Is.EqualTo(newCorrelationGuid));
@@ -354,7 +354,7 @@ namespace Colombo.Tests.Impl
                 Expect.Call(interceptor2.InterceptionPriority).Return(InterceptorPrority.High);
 
                 interceptor2.Intercept(null);
-                LastCall.IgnoreArguments().Do(new InterceptDelegate((invocation) =>
+                LastCall.IgnoreArguments().Do(new InterceptSendDelegate((invocation) =>
                 {
                     Assert.That(() => invocation.Requests[0].CorrelationGuid,
                         Is.EqualTo(request1.CorrelationGuid));
@@ -365,7 +365,7 @@ namespace Colombo.Tests.Impl
                 }));
 
                 interceptor1.Intercept(null);
-                LastCall.IgnoreArguments().Do(new InterceptDelegate((invocation) =>
+                LastCall.IgnoreArguments().Do(new InterceptSendDelegate((invocation) =>
                 {
                     Assert.That(() => invocation.Requests[0].CorrelationGuid,
                         Is.EqualTo(request1.CorrelationGuid));
@@ -513,6 +513,50 @@ namespace Colombo.Tests.Impl
             });
         }
 
-        public delegate void InterceptDelegate(IColomboSendInvocation invocation);
+        [Test]
+        public void It_should_run_all_the_IMessageBusNotifyInterceptors()
+        {
+            var mocks = new MockRepository();
+            var requestProcessor = mocks.StrictMock<IRequestProcessor>();
+
+            var notificationProcessor = mocks.Stub<INotificationProcessor>();
+
+            var notification1 = mocks.Stub<Notification>();
+            var notification2 = mocks.Stub<Notification>();
+
+            var interceptor1 = mocks.StrictMock<IMessageBusNotifyInterceptor>();
+            var interceptor2 = mocks.StrictMock<IMessageBusNotifyInterceptor>();
+
+            With.Mocks(mocks).Expecting(() =>
+            {
+                Expect.Call(interceptor1.InterceptionPriority).Return(InterceptorPrority.Low);
+                Expect.Call(interceptor2.InterceptionPriority).Return(InterceptorPrority.High);
+
+                interceptor1.Intercept(null);
+                LastCall.IgnoreArguments().Do(new InterceptNotifyDelegate((invocation) =>
+                {
+                    invocation.Proceed();
+                }));
+
+                interceptor2.Intercept(null);
+                LastCall.IgnoreArguments().Do(new InterceptNotifyDelegate((invocation) =>
+                {
+                    invocation.Notifications.Remove(notification2);
+                    invocation.Proceed();
+                }));
+
+                notificationProcessor.Process(new Notification[] { notification1 });
+            }).Verify(() =>
+            {
+                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor }, new INotificationProcessor[] { notificationProcessor });
+                messageBus.Logger = GetConsoleLogger();
+                messageBus.MessageBusNotifyInterceptors = new IMessageBusNotifyInterceptor[] { interceptor1, interceptor2 };
+
+                messageBus.Notify(notification1, notification2);
+            });
+        }
+
+        public delegate void InterceptSendDelegate(IColomboSendInvocation invocation);
+        public delegate void InterceptNotifyDelegate(IColomboNotifyInvocation invocation);
     }
 }

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using Colombo.Impl.Async;
 using Colombo.Impl.Send;
+using Colombo.Impl.Notify;
 
 namespace Colombo.Impl
 {
@@ -42,6 +43,29 @@ namespace Colombo.Impl
                         Logger.Info("No interceptor has been registered for sending.");
                     else
                         Logger.InfoFormat("Sending with the following interceptors: {0}", string.Join(", ", messageBusSendInterceptors.Select(x => x.GetType().Name)));
+                }
+            }
+        }
+
+        private IMessageBusNotifyInterceptor[] messageBusNotifyInterceptors = new IMessageBusNotifyInterceptor[0];
+        /// <summary>
+        /// The list of <see cref="IMessageBusSendInterceptor"/> to use.
+        /// </summary>
+        public IMessageBusNotifyInterceptor[] MessageBusNotifyInterceptors
+        {
+            get { return messageBusNotifyInterceptors; }
+            set
+            {
+                if (value == null) throw new ArgumentNullException("MessageBusNotifyInterceptors");
+                Contract.EndContractBlock();
+
+                messageBusNotifyInterceptors = value.OrderBy(x => x.InterceptionPriority).ToArray();
+                if (Logger.IsInfoEnabled)
+                {
+                    if (messageBusNotifyInterceptors.Length == 0)
+                        Logger.Info("No interceptor has been registered for sending.");
+                    else
+                        Logger.InfoFormat("Sending with the following interceptors: {0}", string.Join(", ", messageBusNotifyInterceptors.Select(x => x.GetType().Name)));
                 }
             }
         }
@@ -158,15 +182,9 @@ namespace Colombo.Impl
 
             Logger.DebugFormat("Sending notifications {0}...", string.Join(", ", finalNotifications.Select(x => x.ToString())));
 
-            var finalNotificationsArray = finalNotifications.ToArray();
-            foreach (var processor in notificationProcessors)
-            {
-                Task.Factory.StartNew((proc) =>
-                {
-                    ((INotificationProcessor)proc).Process(finalNotificationsArray);
-                },
-                processor);
-            }
+            var topInvocation = BuildNotifyInvocationChain();
+            topInvocation.Notifications = finalNotifications;
+            topInvocation.Proceed();
         }
 
         protected virtual ResponsesGroup InternalSend(IList<BaseRequest> requests)
@@ -217,6 +235,21 @@ namespace Colombo.Impl
             {
                 if (interceptor != null)
                     currentInvocation = new MessageBusSendInterceptorInvocation(interceptor, currentInvocation);
+            }
+
+            return currentInvocation;
+        }
+
+        private IColomboNotifyInvocation BuildNotifyInvocationChain()
+        {
+            var notificationProcessorsInvocation = new NotificationProcessorNotifyInvocation(notificationProcessors);
+            notificationProcessorsInvocation.Logger = Logger;
+            IColomboNotifyInvocation currentInvocation = notificationProcessorsInvocation;
+
+            foreach (var interceptor in MessageBusNotifyInterceptors.Reverse())
+            {
+                if (interceptor != null)
+                    currentInvocation = new MessageBusNotifyInterceptorInvocation(interceptor, currentInvocation);
             }
 
             return currentInvocation;

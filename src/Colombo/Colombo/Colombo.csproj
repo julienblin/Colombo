@@ -94,6 +94,7 @@
     <Compile Include="Caching\Impl\MemcachedCache.cs" />
     <Compile Include="Contracts\ColomboCacheContract.cs" />
     <Compile Include="Contracts\GenericNotificationHandler.cs" />
+    <Compile Include="Contracts\MessageBusNotifyInterceptorContract.cs" />
     <Compile Include="Contracts\NotificationHandlerContract.cs" />
     <Compile Include="Contracts\NotificationHandlerFactoryContract.cs" />
     <Compile Include="Contracts\NotificationProcessorContract.cs" />
@@ -121,14 +122,19 @@
     <Compile Include="IColomboAlert.cs" />
     <Compile Include="IColomboAlerter.cs" />
     <Compile Include="IColomboNotificationHandleInvocation.cs" />
+    <Compile Include="IColomboNotifyInvocation.cs" />
     <Compile Include="IColomboRequestHandleInvocation.cs" />
     <Compile Include="IColomboInterceptor.cs" />
     <Compile Include="IColomboSendInvocation.cs" />
     <Compile Include="ILocalRequestProcessor.cs" />
     <Compile Include="IMessageBus.cs" />
+    <Compile Include="IMessageBusNotifyInterceptor.cs" />
     <Compile Include="IMessageBusSendInterceptor.cs" />
     <Compile Include="Impl\Async\AsyncCallback.cs" />
     <Compile Include="Impl\NotificationHandle\BaseNotificationHandleInvocation.cs" />
+    <Compile Include="Impl\Notify\BaseNotifyInvocation.cs" />
+    <Compile Include="Impl\Notify\MessageBusNotifyInterceptorInvocation.cs" />
+    <Compile Include="Impl\Notify\NotificationProcessorNotifyInvocation.cs" />
     <Compile Include="Impl\RequestHandle\BaseRequestHandleInvocation.cs" />
     <Compile Include="Impl\Send\BaseSendInvocation.cs" />
     <Compile Include="Impl\Alerters\EventLogColomboAlerter.cs" />
