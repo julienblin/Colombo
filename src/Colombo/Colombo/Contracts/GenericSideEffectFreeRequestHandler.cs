@@ -22,5 +22,15 @@ namespace Colombo.Contracts
         {
             throw new NotImplementedException();
         }
+
+        public Type GetRequestType()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Type GetResponseType()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

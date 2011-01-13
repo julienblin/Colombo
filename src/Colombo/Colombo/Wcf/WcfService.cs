@@ -17,7 +17,7 @@ namespace Colombo.Wcf
     )]
     public class WcfService : IWcfService
     {
-        private static IKernel Kernel { get; set; }
+        public static IKernel Kernel { get; private set; }
 
         public static void RegisterKernel(IKernel kernel)
         {

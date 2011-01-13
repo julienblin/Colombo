@@ -192,13 +192,17 @@
     <Compile Include="SLAAttribute.cs" />
     <Compile Include="ChooseWhenRequestContextContainsAttribute.cs" />
     <Compile Include="ValidatedResponse.cs" />
+    <Compile Include="Wcf\AddOperationsForRequestHandlersAttribute.cs" />
     <Compile Include="Wcf\EmbedTypeInSerializerAttribute.cs" />
     <Compile Include="Wcf\IWcfServiceFactory.cs" />
     <Compile Include="Wcf\IWcfService.cs" />
+    <Compile Include="Wcf\IWcfSoapService.cs" />
     <Compile Include="Wcf\ProcessAsyncResult.cs" />
+    <Compile Include="Wcf\RequestProcessorOperationInvoker.cs" />
     <Compile Include="Wcf\WcfClientRequestProcessor.cs" />
     <Compile Include="Wcf\WcfServiceFactory.cs" />
     <Compile Include="Wcf\WcfService.cs" />
+    <Compile Include="Wcf\WcfSoapService.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

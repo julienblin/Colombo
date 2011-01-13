@@ -57,5 +57,15 @@ namespace Colombo
             result.Context = Request.Context;
             return result;
         }
+
+        public Type GetRequestType()
+        {
+            return typeof(TRequest);
+        }
+
+        public Type GetResponseType()
+        {
+            return typeof(TResponse);
+        }
     }
 }

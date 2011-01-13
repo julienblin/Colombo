@@ -15,5 +15,17 @@ namespace Colombo.Contracts
             Contract.Ensures(Contract.Result<Response>() != null);
             throw new NotImplementedException();
         }
+
+        public Type GetRequestType()
+        {
+            Contract.Ensures(Contract.Result<Type>() != null);
+            throw new NotImplementedException();
+        }
+
+        public Type GetResponseType()
+        {
+            Contract.Ensures(Contract.Result<Type>() != null);
+            throw new NotImplementedException();
+        }
     }
 }

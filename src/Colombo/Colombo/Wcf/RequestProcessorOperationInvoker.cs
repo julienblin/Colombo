@@ -1,0 +1,51 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.ServiceModel.Dispatcher;
+
+namespace Colombo.Wcf
+{
+    public class RequestProcessorOperationInvoker : IOperationInvoker
+    {
+        private readonly Type requestType;
+        private readonly Type responseType;
+
+        public RequestProcessorOperationInvoker(Type requestType, Type responseType)
+        {
+            this.requestType = requestType;
+            this.responseType = responseType;
+        }
+
+        public object[] AllocateInputs()
+        {
+            return new object[] { Activator.CreateInstance(requestType) };
+        }
+
+        public object Invoke(object instance, object[] inputs, out object[] outputs)
+        {
+            var localRequestProcessor = WcfService.Kernel.Resolve<ILocalRequestProcessor>();
+            var request = (BaseRequest)inputs[0];
+            var listRequests = new List<BaseRequest>();
+            listRequests.Add(request);
+            outputs = new object[0];
+            var responsesGroup = localRequestProcessor.Process(listRequests);
+            return responsesGroup[request];
+        }
+
+        public IAsyncResult InvokeBegin(object instance, object[] inputs, AsyncCallback callback, object state)
+        {
+            throw new NotImplementedException();
+        }
+
+        public object InvokeEnd(object instance, out object[] outputs, IAsyncResult result)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsSynchronous
+        {
+            get { return true; }
+        }
+    }
+}

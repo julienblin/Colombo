@@ -13,6 +13,9 @@ namespace Colombo
     public interface IRequestHandler
     {
         Response Handle(BaseRequest request);
+
+        Type GetRequestType();
+        Type GetResponseType();
     }
 
     [ContractClass(typeof(Contracts.GenericRequestHandlerContract<,>))]
