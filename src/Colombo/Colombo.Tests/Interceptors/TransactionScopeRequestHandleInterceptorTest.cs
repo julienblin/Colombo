@@ -10,7 +10,7 @@ using Colombo.Interceptors;
 namespace Colombo.Tests.Interceptors
 {
     [TestFixture]
-    public class TransactionScopeHandleInterceptorTest
+    public class TransactionScopeRequestHandleInterceptorTest
     {
         [Test]
         public void It_should_create_a_transaction_scope_for_handling()
@@ -33,7 +33,7 @@ namespace Colombo.Tests.Interceptors
             {
                 Assert.That(() => Transaction.Current,
                         Is.Null);
-                var interceptor = new TransactionScopeHandleInterceptor();
+                var interceptor = new TransactionScopeRequestHandleInterceptor();
                 interceptor.Intercept(invocation);
                 Assert.That(() => Transaction.Current,
                         Is.Null);

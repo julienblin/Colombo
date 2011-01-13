@@ -146,19 +146,21 @@ namespace Colombo.Tests.Facilities
         }
 
         [Test]
-        public void It_should_register_TransactionScopeHandleInterceptor()
+        public void It_should_register_TransactionScopeHandleInterceptors()
         {
             var container = new WindsorContainer();
             container.AddFacility<ColomboFacility>();
 
-            Assert.That(container.ResolveAll<IRequestHandlerHandleInterceptor>().Any(x => x is TransactionScopeHandleInterceptor));
+            Assert.That(container.ResolveAll<IRequestHandlerHandleInterceptor>().Any(x => x is TransactionScopeRequestHandleInterceptor));
+            Assert.That(container.ResolveAll<INotificationHandleInterceptor>().Any(x => x is TransactionScopeNotificationHandleInterceptor));
 
             container = new WindsorContainer();
             container.AddFacility<ColomboFacility>(f =>
             {
                 f.DoNotHandleInsideTransactionScope();
             });
-            Assert.That(!container.ResolveAll<IRequestHandlerHandleInterceptor>().Any(x => x is TransactionScopeHandleInterceptor));
+            Assert.That(!container.ResolveAll<IRequestHandlerHandleInterceptor>().Any(x => x is TransactionScopeRequestHandleInterceptor));
+            Assert.That(!container.ResolveAll<INotificationHandleInterceptor>().Any(x => x is TransactionScopeNotificationHandleInterceptor));
         }
 
         [Test]

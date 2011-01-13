@@ -38,12 +38,17 @@ namespace Colombo.Facilities
             typeof(SLASendInterceptor)
         };
 
-        IList<Type> handlerInterceptors = new List<Type>()
+        IList<Type> requestHandlerInterceptors = new List<Type>()
         {
-            typeof(TransactionScopeHandleInterceptor),
+            typeof(TransactionScopeRequestHandleInterceptor),
             typeof(CurrentCultureHandleInterceptor),
             typeof(RequiredInContextHandleInterceptor),
             typeof(DataAnnotationsValidationHandleInterceptor)
+        };
+
+        IList<Type> notificationHandlerInterceptors = new List<Type>()
+        {
+            typeof(TransactionScopeNotificationHandleInterceptor)
         };
 
         IList<Type> alerters = new List<Type>()
@@ -110,10 +115,19 @@ namespace Colombo.Facilities
 
                 WcfService.RegisterKernel(Kernel);
 
-                foreach (var handlerType in handlerInterceptors)
+                foreach (var handlerType in requestHandlerInterceptors)
                 {
                     Kernel.Register(
                         Component.For<IRequestHandlerHandleInterceptor>()
+                            .LifeStyle.Singleton
+                            .ImplementedBy(handlerType)
+                    );
+                }
+
+                foreach (var handlerType in notificationHandlerInterceptors)
+                {
+                    Kernel.Register(
+                        Component.For<INotificationHandleInterceptor>()
                             .LifeStyle.Singleton
                             .ImplementedBy(handlerType)
                     );
@@ -154,24 +168,25 @@ namespace Colombo.Facilities
 
         public void DoNotHandleInsideTransactionScope()
         {
-            handlerInterceptors.Remove(typeof(TransactionScopeHandleInterceptor));
+            requestHandlerInterceptors.Remove(typeof(TransactionScopeRequestHandleInterceptor));
+            notificationHandlerInterceptors.Remove(typeof(TransactionScopeNotificationHandleInterceptor));
         }
 
         public void DoNotManageCurrentCulture()
         {
             sendInterceptors.Remove(typeof(CurrentCultureSendInterceptor));
-            handlerInterceptors.Remove(typeof(CurrentCultureHandleInterceptor));
+            requestHandlerInterceptors.Remove(typeof(CurrentCultureHandleInterceptor));
         }
 
         public void DoNotEnforceRequiredInContext()
         {
-            handlerInterceptors.Remove(typeof(RequiredInContextHandleInterceptor));
+            requestHandlerInterceptors.Remove(typeof(RequiredInContextHandleInterceptor));
         }
 
         public void DoNotValidateDataAnnotations()
         {
             sendInterceptors.Remove(typeof(DataAnnotationsValidationSendInterceptor));
-            handlerInterceptors.Remove(typeof(DataAnnotationsValidationHandleInterceptor));
+            requestHandlerInterceptors.Remove(typeof(DataAnnotationsValidationHandleInterceptor));
         }
 
         public void DoNotAlertInApplicationEventLog()
@@ -187,7 +202,7 @@ namespace Colombo.Facilities
         public void MonitorWithPerformanceCounters()
         {
             sendInterceptors.Add(typeof(PerfCounterSendInterceptor));
-            handlerInterceptors.Add(typeof(PerfCounterHandleInterceptor));
+            requestHandlerInterceptors.Add(typeof(PerfCounterHandleInterceptor));
         }
 
         public void EnableInMemoryCaching()
@@ -197,7 +212,7 @@ namespace Colombo.Facilities
 
             enableInMemoryCaching = true;
             sendInterceptors.Add(typeof(ClientCacheSendInterceptor));
-            handlerInterceptors.Add(typeof(CacheHandleInterceptor));
+            requestHandlerInterceptors.Add(typeof(CacheHandleInterceptor));
         }
 
         public void EnableMemcachedCaching(string[] servers)
@@ -208,7 +223,7 @@ namespace Colombo.Facilities
             enableMemcachedCaching = true;
             memCachedServers = servers;
             sendInterceptors.Add(typeof(ClientCacheSendInterceptor));
-            handlerInterceptors.Add(typeof(CacheHandleInterceptor));
+            requestHandlerInterceptors.Add(typeof(CacheHandleInterceptor));
         }
     }
 }

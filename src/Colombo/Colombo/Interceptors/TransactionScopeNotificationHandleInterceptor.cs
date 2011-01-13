@@ -7,19 +7,16 @@ using System.Transactions;
 
 namespace Colombo.Interceptors
 {
-    /// <summary>
-    /// <see cref="IRequestHandlerHandleInterceptor"/> that surrounds Handle operation with a <see cref="TransactionScope"/>.
-    /// </summary>
-    public class TransactionScopeHandleInterceptor : IRequestHandlerHandleInterceptor
+    public class TransactionScopeNotificationHandleInterceptor : INotificationHandleInterceptor
     {
-        public void Intercept(IColomboRequestHandleInvocation nextInvocation)
+        public void Intercept(IColomboNotificationHandleInvocation invocation)
         {
-            if (nextInvocation == null) throw new ArgumentNullException("nextInvocation");
+            if (invocation == null) throw new ArgumentNullException("invocation");
             Contract.EndContractBlock();
 
             using (var tx = new TransactionScope(TransactionScopeOption.RequiresNew))
             {
-                nextInvocation.Proceed();
+                invocation.Proceed();
                 tx.Complete();
             }
         }

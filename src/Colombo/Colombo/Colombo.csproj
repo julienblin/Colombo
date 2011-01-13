@@ -170,7 +170,8 @@
     <Compile Include="Interceptors\RequestExtensions.cs" />
     <Compile Include="Interceptors\RequiredInContextHandleInterceptor.cs" />
     <Compile Include="Interceptors\SLASendInterceptor.cs" />
-    <Compile Include="Interceptors\TransactionScopeHandleInterceptor.cs" />
+    <Compile Include="Interceptors\TransactionScopeNotificationHandleInterceptor.cs" />
+    <Compile Include="Interceptors\TransactionScopeRequestHandleInterceptor.cs" />
     <Compile Include="InvalidateCachedInstancesOfAttribute.cs" />
     <Compile Include="IRequestHandler.cs" />
     <Compile Include="IRequestHandlerFactory.cs" />
