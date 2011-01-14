@@ -14,28 +14,29 @@ using System.Configuration;
 
 namespace Colombo.Host.Internal
 {
-    internal class HostService : IWantToConfigureLogging, IWantToConfigureColombo, IWantToRegisterMessageHandlers,
-                                 IWantToRegisterOtherComponents, IWantToCreateServiceHosts
+    internal class HostService : MarshalByRefObject,
+                                 IWantToCreateTheContainer, IWantToConfigureLogging, IWantToConfigureColombo,
+                                 IWantToRegisterMessageHandlers, IWantToRegisterOtherComponents, IWantToCreateServiceHosts
     {
-        private readonly DirectoryInfo baseDirectory;
-        private readonly IAmAnEndpoint configureThisEndpoint;
-        private readonly IWindsorContainer container;
+        private IAmAnEndpoint configureThisEndpoint;
+        private IWindsorContainer container;
 
         private List<System.ServiceModel.ServiceHost> serviceHosts = new List<System.ServiceModel.ServiceHost>();
 
         private ILogger logger = NullLogger.Instance;
 
-        internal HostService(DirectoryInfo baseDirectory, IAmAnEndpoint configureThisEndpoint)
+        public HostService()
         {
-            this.baseDirectory = baseDirectory;
-            this.configureThisEndpoint = configureThisEndpoint;
-            container = new WindsorContainer();
         }
+
+        public DirectoryInfo BaseDirectory { get; set; }
+        public Type ConfigureThisEndpointType { get; set; }
 
         internal void Start()
         {
             try
             {
+                configureThisEndpoint = (IAmAnEndpoint)Activator.CreateInstance(ConfigureThisEndpointType);
                 ConfigureContainer();
 
                 var iWantToBeNotifiedWhenStartAndStop = configureThisEndpoint as IWantToBeNotifiedWhenStartAndStop;
@@ -92,6 +93,9 @@ namespace Colombo.Host.Internal
 
         private void ConfigureContainer()
         {
+            var iWantToCreateTheContainer = configureThisEndpoint as IWantToCreateTheContainer ?? this;
+            container = iWantToCreateTheContainer.CreateContainer();
+
             var iWantToConfigureLogging = configureThisEndpoint as IWantToConfigureLogging ?? this;
             iWantToConfigureLogging.ConfigureLogging(container);
 
@@ -108,6 +112,11 @@ namespace Colombo.Host.Internal
             iWantToRegisterOtherComponents.RegisterOtherComponents(container);
         }
 
+        public IWindsorContainer CreateContainer()
+        {
+            return new WindsorContainer();
+        }
+
         public void ConfigureLogging(IWindsorContainer container)
         {
             container.AddFacility<LoggingFacility>(f => f.LogUsing(LoggerImplementation.Console));
@@ -121,11 +130,11 @@ namespace Colombo.Host.Internal
         public void RegisterMessageHandlers(IWindsorContainer container)
         {
             container.Register(
-                AllTypes.FromAssemblyInDirectory(new AssemblyFilter(baseDirectory.FullName))
+                AllTypes.FromAssemblyInDirectory(new AssemblyFilter(BaseDirectory.FullName))
                     .BasedOn<IRequestHandler>()
                     .WithService.AllInterfaces()
                     .Configure(c => c.LifeStyle.Transient),
-                AllTypes.FromAssemblyInDirectory(new AssemblyFilter(baseDirectory.FullName))
+                AllTypes.FromAssemblyInDirectory(new AssemblyFilter(BaseDirectory.FullName))
                     .BasedOn<INotificationHandler>()
                     .WithService.AllInterfaces()
                     .Configure(c => c.LifeStyle.Transient)

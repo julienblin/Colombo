@@ -34,13 +34,11 @@ namespace Colombo.Host
                 var assemblyScanner = new AssemblyScanner(baseDirectory);
                 var configureThisEndpointType = assemblyScanner.FindUniqueConfigureThisEndPoint();
 
-                var configureThisEndpoint = (IAmAnEndpoint)Activator.CreateInstance(configureThisEndpointType);
-
                 var cfg = RunnerConfigurator.New(x =>
                 {
-                    x.ConfigureService<HostService>(s =>
+                    x.ConfigureService<AppDomainBridge>(s =>
                     {
-                        s.HowToBuildService(name => new HostService(baseDirectory, configureThisEndpoint));
+                        s.HowToBuildService(name => new AppDomainBridge(baseDirectory, configureThisEndpointType));
                         s.WhenStarted(h => h.Start());
                         s.WhenStopped(h => h.Stop());
                     });

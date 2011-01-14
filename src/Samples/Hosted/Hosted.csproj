@@ -62,10 +62,7 @@
     <Compile Include="Handlers\HelloWorldNotificationHandler.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Colombo.Host.exe.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
