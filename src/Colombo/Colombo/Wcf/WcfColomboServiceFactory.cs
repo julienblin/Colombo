@@ -84,20 +84,20 @@ namespace Colombo.Wcf
             return null;
         }
 
-        private ClientSection clientSection = null;
+        private ClientSection wcfConfigClientSection = null;
 
         public ClientSection WcfConfigClientSection
         {
             get
             {
-                if (clientSection == null)
+                if (wcfConfigClientSection == null)
                 {
-                    Configuration configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-                    ServiceModelSectionGroup serviceModelGroup = ServiceModelSectionGroup.GetSectionGroup(configuration);
+                    var configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                    var serviceModelGroup = ServiceModelSectionGroup.GetSectionGroup(configuration);
                     if (serviceModelGroup != null)
-                        clientSection = serviceModelGroup.Client;
+                        wcfConfigClientSection = serviceModelGroup.Client;
                 }
-                return clientSection;
+                return wcfConfigClientSection;
             }
         }
 

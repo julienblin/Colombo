@@ -64,6 +64,7 @@
   <ItemGroup>
     <None Include="Colombo.Host.exe.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>

@@ -1,1 +1,1 @@
-﻿<%@ ServiceHost Language="C#" Debug="true" Service="Colombo.Wcf.WcfService" %>
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="Colombo.Wcf.WcfColomboService" %>

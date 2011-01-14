@@ -76,7 +76,7 @@
     <Compile Include="IWantToBeNotifiedWhenStartAndStop.cs" />
     <Compile Include="IWantToConfigureColombo.cs" />
     <Compile Include="IWantToConfigureLogging.cs" />
-    <Compile Include="IWantToCreateServiceHost.cs" />
+    <Compile Include="IWantToCreateServiceHosts.cs" />
     <Compile Include="IWantToRegisterMessageHandlers.cs" />
     <Compile Include="IWantToRegisterOtherComponents.cs" />
     <Compile Include="Program.cs" />

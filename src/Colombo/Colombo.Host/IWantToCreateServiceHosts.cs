@@ -6,8 +6,8 @@ using Castle.Windsor;
 
 namespace Colombo.Host
 {
-    public interface IWantToCreateServiceHost
+    public interface IWantToCreateServiceHosts
     {
-        System.ServiceModel.ServiceHost CreateServiceHost(IWindsorContainer container);
+        IEnumerable<System.ServiceModel.ServiceHost> CreateServiceHosts(IWindsorContainer container);
     }
 }

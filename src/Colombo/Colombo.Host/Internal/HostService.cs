@@ -10,17 +10,18 @@ using Castle.MicroKernel.Registration;
 using System.IO;
 using Castle.Core.Logging;
 using Colombo.Wcf;
+using System.Configuration;
 
 namespace Colombo.Host.Internal
 {
     internal class HostService : IWantToConfigureLogging, IWantToConfigureColombo, IWantToRegisterMessageHandlers,
-                                 IWantToRegisterOtherComponents, IWantToCreateServiceHost
+                                 IWantToRegisterOtherComponents, IWantToCreateServiceHosts
     {
         private readonly DirectoryInfo baseDirectory;
         private readonly IAmAnEndpoint configureThisEndpoint;
         private readonly IWindsorContainer container;
 
-        private System.ServiceModel.ServiceHost serviceHost;
+        private List<System.ServiceModel.ServiceHost> serviceHosts = new List<System.ServiceModel.ServiceHost>();
 
         private ILogger logger = NullLogger.Instance;
 
@@ -41,15 +42,20 @@ namespace Colombo.Host.Internal
                 if (iWantToBeNotifiedWhenStartAndStop != null)
                     iWantToBeNotifiedWhenStartAndStop.Start(container);
 
-                var iWantToCreateServiceHost = configureThisEndpoint as IWantToCreateServiceHost ?? this;
-                serviceHost = iWantToCreateServiceHost.CreateServiceHost(container);
-                serviceHost.Open();
+                var iWantToCreateServiceHosts = configureThisEndpoint as IWantToCreateServiceHosts ?? this;
+                serviceHosts.AddRange(iWantToCreateServiceHosts.CreateServiceHosts(container));
 
-                container.Resolve<IMessageBus>();
+                foreach (var serviceHost in serviceHosts)
+                    serviceHost.Open();
+
+                container.Resolve<IMessageBus>(); // Forces container resolution. Some exception from configuration mistakes can be thrown at this point.
 
                 logger.InfoFormat("{0} host is ready to serve incoming requests from {1}...",
                     configureThisEndpoint.GetType().Assembly.GetName().Name,
-                    string.Join(", ", serviceHost.Description.Endpoints.Select(x => x.Address.Uri.ToString())));
+                    string.Join(", ", serviceHosts.Select(h => 
+                            string.Join(", ", h.Description.Endpoints.Select(x => x.Address.Uri.ToString()))
+                        )
+                    ));
             }
             catch (Exception ex)
             {
@@ -62,7 +68,20 @@ namespace Colombo.Host.Internal
         {
             logger.InfoFormat("{0} host is stopping...", configureThisEndpoint.GetType().Assembly.GetName().Name);
 
-            serviceHost.Close();
+            foreach (var serviceHost in serviceHosts)
+            {
+                if (serviceHost != null)
+                {
+                    try
+                    {
+                        serviceHost.Close();
+                    }
+                    catch
+                    {
+                        serviceHost.Abort();
+                    }
+                }
+            }
 
             var iWantToBeNotifiedWhenStartAndStop = configureThisEndpoint as IWantToBeNotifiedWhenStartAndStop;
             if (iWantToBeNotifiedWhenStartAndStop != null)
@@ -117,9 +136,43 @@ namespace Colombo.Host.Internal
         {
         }
 
-        public System.ServiceModel.ServiceHost CreateServiceHost(IWindsorContainer container)
+        public IEnumerable<System.ServiceModel.ServiceHost> CreateServiceHosts(IWindsorContainer container)
         {
-            return new System.ServiceModel.ServiceHost(typeof(WcfService));
+            foreach (System.ServiceModel.Configuration.ServiceElement serviceElement in WcfConfigServicesSection.Services)
+            {
+                if (serviceElement.Endpoints.Count > 0)
+                {
+                    var contract = serviceElement.Endpoints[0].Contract;
+                    switch (contract)
+                    {
+                        case "Colombo.Wcf.IWcfColomboService":
+                            yield return new System.ServiceModel.ServiceHost(typeof(WcfColomboService));
+                            break;
+                        case "Colombo.Wcf.IWcfSoapService":
+                            yield return new System.ServiceModel.ServiceHost(typeof(WcfSoapService));
+                            break;
+                        default:
+                            throw new ColomboException(string.Format("Unrecognized contract {0}. You should try implementing IWantToCreateServiceHosts in your IAmAnEndpoint component to create ServiceHosts yourself.", contract));
+                    }
+                }
+            }
+        }
+
+        private System.ServiceModel.Configuration.ServicesSection wcfConfigServicesSection = null;
+
+        public System.ServiceModel.Configuration.ServicesSection WcfConfigServicesSection
+        {
+            get
+            {
+                if (wcfConfigServicesSection == null)
+                {
+                    var configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                    var serviceModelGroup = System.ServiceModel.Configuration.ServiceModelSectionGroup.GetSectionGroup(configuration);
+                    if (serviceModelGroup != null)
+                        wcfConfigServicesSection = serviceModelGroup.Services;
+                }
+                return wcfConfigServicesSection;
+            }
         }
     }
 }
