@@ -52,6 +52,13 @@ namespace Colombo.Contracts
             throw new NotImplementedException();
         }
 
+        public TResponse Send<TRequest, TResponse>(Action<TRequest> action)
+            where TRequest : SideEffectFreeRequest<TResponse>, new()
+            where TResponse : Response, new()
+        {
+            throw new NotImplementedException();
+        }
+
         public IAsyncCallback<TResponse> SendAsync<TResponse>(SideEffectFreeRequest<TResponse> request)
             where TResponse : Response, new()
         {

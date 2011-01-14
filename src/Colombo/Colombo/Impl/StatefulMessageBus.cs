@@ -122,6 +122,16 @@ namespace Colombo.Impl
             return messageBus.Send(request);
         }
 
+        public TResponse Send<TRequest, TResponse>(Action<TRequest> action)
+            where TRequest : SideEffectFreeRequest<TResponse>, new()
+            where TResponse : Response, new()
+        {
+            if (action == null) throw new ArgumentNullException("action");
+            Contract.EndContractBlock();
+            CheckNumberOfSend();
+            return messageBus.Send<TRequest, TResponse>(action);
+        }
+
         public IAsyncCallback<TResponse> SendAsync<TResponse>(SideEffectFreeRequest<TResponse> request)
             where TResponse : Response, new()
         {

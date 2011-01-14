@@ -40,9 +40,9 @@ namespace Colombo.Impl
                 if (Logger.IsInfoEnabled)
                 {
                     if (messageBusSendInterceptors.Length == 0)
-                        Logger.Info("No interceptor has been registered for sending.");
+                        Logger.Info("No interceptor has been registered for sending requests.");
                     else
-                        Logger.InfoFormat("Sending with the following interceptors: {0}", string.Join(", ", messageBusSendInterceptors.Select(x => x.GetType().Name)));
+                        Logger.InfoFormat("Sending requests with the following interceptors: {0}", string.Join(", ", messageBusSendInterceptors.Select(x => x.GetType().Name)));
                 }
             }
         }
@@ -63,9 +63,9 @@ namespace Colombo.Impl
                 if (Logger.IsInfoEnabled)
                 {
                     if (messageBusNotifyInterceptors.Length == 0)
-                        Logger.Info("No interceptor has been registered for sending.");
+                        Logger.Info("No interceptor has been registered for sending notifications.");
                     else
-                        Logger.InfoFormat("Sending with the following interceptors: {0}", string.Join(", ", messageBusNotifyInterceptors.Select(x => x.GetType().Name)));
+                        Logger.InfoFormat("Sending notifications with the following interceptors: {0}", string.Join(", ", messageBusNotifyInterceptors.Select(x => x.GetType().Name)));
                 }
             }
         }
@@ -137,6 +137,18 @@ namespace Colombo.Impl
                 LogAndThrowError("Internal error: InternalSend returned null or incorrect response type: expected {0}, actual {1}.", typeof(TResponse), responses[request].GetType());
 
             return typedResponse;
+        }
+
+        public TResponse Send<TRequest, TResponse>(Action<TRequest> action)
+            where TRequest : SideEffectFreeRequest<TResponse>, new()
+            where TResponse : Response, new()
+        {
+            if (action == null) throw new ArgumentNullException("action");
+            Contract.EndContractBlock();
+
+            var request = new TRequest();
+            action(request);
+            return Send(request);
         }
 
         public IAsyncCallback<TResponse> SendAsync<TResponse>(SideEffectFreeRequest<TResponse> request)

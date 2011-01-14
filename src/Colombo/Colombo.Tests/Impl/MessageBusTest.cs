@@ -138,7 +138,6 @@ namespace Colombo.Tests.Impl
         public void It_should_call_selected_IRequestProcessors_Process_method()
         {
             var mocks = new MockRepository();
-            var notificationProcessor = mocks.Stub<INotificationProcessor>();
             var request = mocks.Stub<Request<TestResponse>>();
             var requests = new BaseRequest[] { request };
             var response = new TestResponse();
@@ -157,9 +156,40 @@ namespace Colombo.Tests.Impl
                 Expect.Call(requestProcessor2.Process(requests)).Return(responses);
             }).Verify(() =>
             {
-                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor1, requestProcessor2 }, new INotificationProcessor[] { notificationProcessor });
+                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor1, requestProcessor2 }, null);
                 messageBus.Logger = GetConsoleLogger();
                 Assert.That(() => messageBus.Send(request),
+                    Is.SameAs(response));
+            });
+        }
+
+        [Test]
+        public void It_should_create_a_request_when_using_action_send()
+        {
+            var mocks = new MockRepository();
+            var response = new TestResponse();
+
+            var requestProcessor = mocks.StrictMock<IRequestProcessor>();
+
+            With.Mocks(mocks).Expecting(() =>
+            {
+                Expect.Call(requestProcessor.CanProcess(null)).IgnoreArguments().Return(true);
+                Expect.Call(requestProcessor.Process(null)).IgnoreArguments().Do(new ProcessDelegate((rs) =>
+                {
+                    return new ResponsesGroup
+                    {
+                        { rs[0], response}
+                    };
+                }));
+            }).Verify(() =>
+            {
+                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor }, null);
+                messageBus.Logger = GetConsoleLogger();
+                var responseTest = messageBus.Send<TestRequestForSendAction, TestResponse>(r =>
+                {
+                    Assert.That(() => r, Is.Not.Null);
+                });
+                Assert.That(() => responseTest,
                     Is.SameAs(response));
             });
         }
@@ -558,5 +588,11 @@ namespace Colombo.Tests.Impl
 
         public delegate void InterceptSendDelegate(IColomboSendInvocation invocation);
         public delegate void InterceptNotifyDelegate(IColomboNotifyInvocation invocation);
+        public delegate ResponsesGroup ProcessDelegate(IList<BaseRequest> requests);
+
+        public class TestRequestForSendAction : SideEffectFreeRequest<TestResponse>
+        {
+            public string Name { get; set; }
+        }
     }
 }

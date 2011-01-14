@@ -270,22 +270,33 @@ namespace Colombo.Tests.Impl
                 NumSendCalled = 0;
             }
 
-            public TResponse Send<TResponse>(Request<TResponse> request) where TResponse : Response, new()
+            public TResponse Send<TResponse>(Request<TResponse> request)
+                where TResponse : Response, new()
             {
                 throw new NotImplementedException();
             }
 
-            public IAsyncCallback<TResponse> SendAsync<TResponse>(Request<TResponse> request) where TResponse : Response, new()
+            public IAsyncCallback<TResponse> SendAsync<TResponse>(Request<TResponse> request)
+                where TResponse : Response, new()
             {
                 throw new NotImplementedException();
             }
 
-            public TResponse Send<TResponse>(SideEffectFreeRequest<TResponse> request) where TResponse : Response, new()
+            public TResponse Send<TResponse>(SideEffectFreeRequest<TResponse> request)
+                where TResponse : Response, new()
             {
                 throw new NotImplementedException();
             }
 
-            public IAsyncCallback<TResponse> SendAsync<TResponse>(SideEffectFreeRequest<TResponse> request) where TResponse : Response, new()
+            public TResponse Send<TRequest, TResponse>(Action<TRequest> action)
+                where TRequest : SideEffectFreeRequest<TResponse>, new()
+                where TResponse : Response, new()
+            {
+                throw new NotImplementedException();
+            }
+
+            public IAsyncCallback<TResponse> SendAsync<TResponse>(SideEffectFreeRequest<TResponse> request)
+                where TResponse : Response, new()
             {
                 throw new NotImplementedException();
             }

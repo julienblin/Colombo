@@ -24,6 +24,10 @@ namespace Colombo
         TResponse Send<TResponse>(SideEffectFreeRequest<TResponse> request)
             where TResponse : Response, new();
 
+        TResponse Send<TRequest, TResponse>(Action<TRequest> action)
+            where TRequest : SideEffectFreeRequest<TResponse>, new()
+            where TResponse : Response, new();
+
         IAsyncCallback<TResponse> SendAsync<TResponse>(SideEffectFreeRequest<TResponse> request)
             where TResponse : Response, new();
 
