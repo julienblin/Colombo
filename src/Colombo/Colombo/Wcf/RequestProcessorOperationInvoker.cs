@@ -9,12 +9,10 @@ namespace Colombo.Wcf
     public class RequestProcessorOperationInvoker : IOperationInvoker
     {
         private readonly Type requestType;
-        private readonly Type responseType;
 
-        public RequestProcessorOperationInvoker(Type requestType, Type responseType)
+        public RequestProcessorOperationInvoker(Type requestType)
         {
             this.requestType = requestType;
-            this.responseType = responseType;
         }
 
         public object[] AllocateInputs()
@@ -25,7 +23,7 @@ namespace Colombo.Wcf
         public object Invoke(object instance, object[] inputs, out object[] outputs)
         {
             var request = (BaseRequest)inputs[0];
-            var responses = WcfServices.SyncProcess(new BaseRequest[] { request });
+            var responses = WcfServices.ProcessLocally(new BaseRequest[] { request });
             outputs = new object[0];
             return responses[0];
         }

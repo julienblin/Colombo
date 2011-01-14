@@ -13,13 +13,13 @@ namespace Colombo.Wcf
 
         public static IKernel Kernel { get; set; }
 
-        public static Response[] SyncProcess(BaseRequest[] requests)
+        public static Response[] ProcessLocally(BaseRequest[] requests)
         {
             if (requests == null) throw new ArgumentNullException("requests");
             Contract.EndContractBlock();
 
             if (WcfServices.Kernel == null)
-                throw new ColomboException("No Kernel has been registered. You must call WcfService.RegisterKernel before receiving any request.");
+                throw new ColomboException("No Kernel has been registered. You must asign a Castle.IKernel to WcfServices.Kernel before receiving any request.");
 
             ILocalRequestProcessor localRequestProcessor = null;
             try

@@ -14,7 +14,7 @@ namespace Colombo.Wcf
     [AttributeUsage(AttributeTargets.Interface)]
     public class AddOperationsForRequestHandlersAttribute : Attribute, IContractBehavior
     {
-        private Dictionary<string, Pair<Type, Type>> operationTypesByName = new Dictionary<string, Pair<Type, Type>>();
+        private Dictionary<string, Type> operationRequestTypeByName = new Dictionary<string, Type>();
 
         public void AddBindingParameters(ContractDescription contractDescription, ServiceEndpoint endpoint, BindingParameterCollection bindingParameters)
         {
@@ -29,7 +29,7 @@ namespace Colombo.Wcf
                 var responseType = requestHandler.GetResponseType();
 
                 var baseOperationName = requestType.Name.Replace("Request", "");
-                operationTypesByName[baseOperationName] = new Pair<Type, Type>(requestType, responseType);
+                operationRequestTypeByName[baseOperationName] = requestType;
 
                 var operationDescription = new OperationDescription(baseOperationName, contractDescription);
 
@@ -65,8 +65,8 @@ namespace Colombo.Wcf
         {
             foreach (var operation in dispatchRuntime.Operations)
             {
-                var operationTypes = operationTypesByName[operation.Name];
-                operation.Invoker = new RequestProcessorOperationInvoker(operationTypes.First, operationTypes.Second);
+                var requestType = operationRequestTypeByName[operation.Name];
+                operation.Invoker = new RequestProcessorOperationInvoker(requestType);
             }
         }
 

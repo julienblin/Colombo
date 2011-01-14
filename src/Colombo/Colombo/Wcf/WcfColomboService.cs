@@ -26,7 +26,7 @@ namespace Colombo.Wcf
             {
                 try
                 {
-                    asyncResult.Responses = WcfServices.SyncProcess(asyncResult.Requests);
+                    asyncResult.Responses = WcfServices.ProcessLocally(asyncResult.Requests);
                 }
                 catch (Exception ex)
                 {
