@@ -20,6 +20,7 @@
   <property name="folder.bin" value="${folder.base}\bin"/>
   <property name="folder.test" value="${folder.base}\test"/>
   <property name="folder.release" value="${folder.base}\release"/>
+  <property name="folder.package" value="${folder.base}\package"/>
   <property name="project.solution" value="${folder.src}\${project.name}\${project.name}.sln" />
   <property name="samples.solution" value="${folder.src}\Samples\${project.name}.Samples.sln" />
 
@@ -33,6 +34,7 @@
   <property name="app.git" value="C:\Program Files\Git\bin\git" />
   <property name="app.nunit.console" value="${folder.base}\lib\NUnit\nunit-console.exe" />
   <property name="app.ilmerge" value="${folder.base}\lib\ILMerge\ILMerge.exe" />
+  <property name="app.nuget" value="${folder.base}\lib\NuGet\NuGet.exe" />
 
   <target name="clean">
     <delete dir="${folder.bin}" includeemptydirs="true" />
@@ -141,6 +143,27 @@
         <include name="Colombo.Host.exe.config"/>
       </fileset>
     </copy>
+  </target>
+
+  <target name="package">
+    <delete dir="${folder.package}" includeemptydirs="true" />
+    <mkdir dir="${folder.package}" />
+    <copy todir="${folder.package}" file="${folder.base}\Colombo.nuspec" />
+    <xmlpoke file="${folder.package}\Colombo.nuspec" xpath="//version" value="${version.major}.${version.minor}.${version.patch}" />
+    
+    <mkdir dir="${folder.package}\lib\.Net 4"/>
+    <copy todir="${folder.package}\lib\.Net 4">
+      <fileset basedir="${folder.release}">
+        <include name="Colombo.dll" />
+        <include name="Colombo.xml" />
+      </fileset>
+    </copy>
+
+    <exec program="${app.nuget}" basedir="${folder.package}">
+      <arg value="pack" />
+      <arg value="${folder.package}\Colombo.nuspec" />
+      <arg line="-o &quot;${folder.base}&quot;" />
+    </exec>
   </target>
 
   <target name="build-samples" depends="release">

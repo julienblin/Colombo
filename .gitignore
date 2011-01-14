@@ -5,6 +5,7 @@ obj
 _ReSharper*
 /test
 /release
+/package
 
 *.suo
 *.user 
@@ -20,6 +21,8 @@ _ReSharper*
 *.log
 *.pidb
 *userprefs
+
+/*.nupkg
 
 _git-log.output
 GlobalAssemblyInfo.cs
