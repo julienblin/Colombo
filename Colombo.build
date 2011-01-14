@@ -145,24 +145,43 @@
     </copy>
   </target>
 
-  <target name="package" depends="release">
+  <target name="package">
     <delete dir="${folder.package}" includeemptydirs="true" />
     <mkdir dir="${folder.package}" />
-    <copy todir="${folder.package}" file="${folder.base}\Colombo.nuspec" />
-    <xmlpoke file="${folder.package}\Colombo.nuspec" xpath="//version" value="${version.major}.${version.minor}.${version.patch}" />
     
-    <mkdir dir="${folder.package}\lib\.Net 4"/>
-    <copy todir="${folder.package}\lib\.Net 4">
+    <copy todir="${folder.package}\Colombo" file="${folder.base}\Colombo.nuspec" />
+    <xmlpoke file="${folder.package}\Colombo\Colombo.nuspec" xpath="//version" value="${version.major}.${version.minor}.${version.patch}" />
+
+    <copy todir="${folder.package}\Colombo.Host" file="${folder.base}\Colombo.Host.nuspec" />
+    <xmlpoke file="${folder.package}\Colombo.Host\Colombo.Host.nuspec" xpath="//version" value="${version.major}.${version.minor}.${version.patch}" />
+    <xmlpoke file="${folder.package}\Colombo.Host\Colombo.Host.nuspec" xpath="//dependencies/dependency[@id='Colombo']/@version" value="${version.major}.${version.minor}.${version.patch}" />
+    
+    <mkdir dir="${folder.package}\Colombo\lib\.Net 4"/>
+    <copy todir="${folder.package}\Colombo\lib\.Net 4">
       <fileset basedir="${folder.release}">
         <include name="Colombo.dll" />
         <include name="Colombo.xml" />
       </fileset>
     </copy>
 
-    <exec program="${app.nuget}" basedir="${folder.package}">
+    <mkdir dir="${folder.package}\Colombo.Host\lib\.Net 4"/>
+    <copy todir="${folder.package}\Colombo.Host\lib\.Net 4">
+      <fileset basedir="${folder.release}">
+        <include name="Colombo.Host.exe" />
+        <include name="Colombo.Host.xml" />
+      </fileset>
+    </copy>
+
+    <exec program="${app.nuget}" basedir="${folder.package}\Colombo">
       <arg value="pack" />
-      <arg value="${folder.package}\Colombo.nuspec" />
-      <arg line="-o &quot;${folder.base}&quot;" />
+      <arg value="${folder.package}\Colombo\Colombo.nuspec" />
+      <arg line="-o &quot;${folder.package}&quot;" />
+    </exec>
+
+    <exec program="${app.nuget}" basedir="${folder.package}\Colombo.Host">
+      <arg value="pack" />
+      <arg value="${folder.package}\Colombo.Host\Colombo.Host.nuspec" />
+      <arg line="-o &quot;${folder.package}&quot;" />
     </exec>
   </target>
 

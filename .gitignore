@@ -22,7 +22,5 @@ _ReSharper*
 *.pidb
 *userprefs
 
-/*.nupkg
-
 _git-log.output
 GlobalAssemblyInfo.cs

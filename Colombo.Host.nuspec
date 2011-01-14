@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?> 
 <package> 
   <metadata> 
-    <id>Colombo</id> 
+    <id>Colombo.Host</id> 
     <version></version> 
     <authors>Julien Blin</authors>
-    <description>Colombo is a request/response framework for .Net 4 based on WCF.</description> 
+    <description>Colombo.Host is a Host for Colombo, a request/response framework for .Net 4 based on WCF.</description> 
     <language>en-US</language>
     <licenseUrl>https://github.com/julienblin/Colombo/blob/master/LICENCE</licenseUrl>
     <projectUrl>https://github.com/julienblin/Colombo/wiki</projectUrl>
     <dependencies>
       <dependency id="Castle.Core" version="[2.5.2, 3.0)" />
       <dependency id="Castle.Windsor" version="[2.5.2, 3.0)" />
+      <dependency id="Colombo" version="" />
     </dependencies>
   </metadata> 
 </package>
