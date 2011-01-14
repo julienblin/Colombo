@@ -8,5 +8,9 @@
     <language>en-US</language>
     <licenseUrl>https://github.com/julienblin/Colombo/blob/master/LICENCE</licenseUrl>
     <projectUrl>https://github.com/julienblin/Colombo</projectUrl>
+    <dependencies>
+      <dependency id="Castle.Core" version="[2.5.2, 3.0)" />
+      <dependency id="Castle.Windsor" version="[2.5.2, 3.0)" />
+    </dependencies>
   </metadata> 
 </package>

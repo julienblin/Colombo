@@ -145,7 +145,7 @@
     </copy>
   </target>
 
-  <target name="package">
+  <target name="package" depends="release">
     <delete dir="${folder.package}" includeemptydirs="true" />
     <mkdir dir="${folder.package}" />
     <copy todir="${folder.package}" file="${folder.base}\Colombo.nuspec" />
