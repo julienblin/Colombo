@@ -11,7 +11,7 @@ namespace Colombo.Samples.WcfService.Handlers
 {
     public class HelloWorldHandler : SideEffectFreeRequestHandler<HelloWorldRequest, HelloWorldResponse>
     {
-        public override void Handle()
+        protected override void Handle()
         {
             Response.Message = string.Format(Resources.Hello, Request.Name);
         }

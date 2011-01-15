@@ -11,7 +11,7 @@ namespace Colombo.Samples.Hosted.Handlers
     {
         public IMessageBus MessageBus { get; set; }
 
-        public override void Handle()
+        protected override void Handle()
         {
             Response.Message = string.Format("Hello {0} from hosted service!", Request.Name);
 

@@ -16,7 +16,7 @@ namespace Colombo.Samples.Hosted.Handlers
             set { logger = value; }
         }
 
-        public override void Handle()
+        protected override void Handle()
         {
             Logger.InfoFormat("Received Hello world for {0}", Notification.Name);
         }
