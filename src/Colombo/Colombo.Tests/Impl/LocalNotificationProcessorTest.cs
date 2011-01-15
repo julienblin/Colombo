@@ -31,9 +31,9 @@ namespace Colombo.Tests.Impl
             var notification2 = new TestNotification2();
             var notification3 = new TestNotification3();
 
-            var notificationHandler1 = mocks.StrictMock<INotificationHandler<TestNotification1>>();
-            var notificationHandler2 = mocks.StrictMock<INotificationHandler<TestNotification2>>();
-            var notificationHandler22 = mocks.StrictMock<INotificationHandler<TestNotification2>>();
+            var notificationHandler1 = new TestNotificationHandler1();
+            var notificationHandler2 = new TestNotificationHandler2();
+            var notificationHandler22 = new TestNotificationHandler2();
 
             With.Mocks(mocks).Expecting(() =>
             {
@@ -44,18 +44,12 @@ namespace Colombo.Tests.Impl
                 Expect.Call(notificationHandlerFactory.CreateNotificationHandlersFor(notification1))
                     .Return(new INotificationHandler[] { notificationHandler1 })
                     .Repeat.Twice();
-                
-                notificationHandler1.Handle((Notification)notification1);
-                LastCall.Repeat.Twice();
 
                 notificationHandlerFactory.DisposeNotificationHandler(notificationHandler1);
                 LastCall.Repeat.Twice();
 
                 Expect.Call(notificationHandlerFactory.CreateNotificationHandlersFor(notification2))
                     .Return(new INotificationHandler[] { notificationHandler2, notificationHandler22 });
-
-                notificationHandler2.Handle((Notification)notification2);
-                notificationHandler22.Handle((Notification)notification2);
 
                 notificationHandlerFactory.DisposeNotificationHandler(notificationHandler2);
                 notificationHandlerFactory.DisposeNotificationHandler(notificationHandler22);
@@ -68,7 +62,36 @@ namespace Colombo.Tests.Impl
                 processor.Process(new Notification[] { notification1 });
                 processor.Process(new Notification[] { notification1, notification2, notification3 });
                 Thread.Sleep(500);
+
+                Assert.That(() => notificationHandler1.NumHandleCalled,
+                    Is.EqualTo(2));
+                Assert.That(() => notificationHandler2.NumHandleCalled,
+                    Is.EqualTo(1));
+                Assert.That(() => notificationHandler22.NumHandleCalled,
+                    Is.EqualTo(1));
             });
+        }
+
+        public class TestNotificationHandler1 : NotificationHandler<TestNotification1>
+        {
+            public int NumHandleCalled { get; private set; }
+
+            protected override void Handle()
+            {
+                lock(this)
+                    ++NumHandleCalled;
+            }
+        }
+
+        public class TestNotificationHandler2 : NotificationHandler<TestNotification2>
+        {
+            public int NumHandleCalled { get; private set; }
+
+            protected override void Handle()
+            {
+                lock (this)
+                    ++NumHandleCalled;
+            }
         }
 
         [Test]

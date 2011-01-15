@@ -224,7 +224,7 @@ namespace Colombo.Tests.Impl
             });
         }
 
-        //[Test]
+        [Test]
         public void It_should_call_selected_IRequestProcessors_Process_method_multiple_requests()
         {
             var mocks = new MockRepository();
@@ -254,38 +254,42 @@ namespace Colombo.Tests.Impl
                 { request4, response4 },
             };
 
-            var requestProcessor1 = mocks.StrictMock<IRequestProcessor>();
-            var requestProcessor2 = mocks.StrictMock<IRequestProcessor>();
-
-            With.Mocks(mocks).Expecting(() =>
-            {
-                Expect.Call(requestProcessor1.CanProcess(request1)).Return(true);
-                Expect.Call(requestProcessor1.CanProcess(request2)).Return(false);
-                Expect.Call(requestProcessor1.CanProcess(request3)).Return(true);
-                Expect.Call(requestProcessor1.CanProcess(request4)).Return(false);
-
-                Expect.Call(requestProcessor2.CanProcess(request1)).Return(false);
-                Expect.Call(requestProcessor2.CanProcess(request2)).Return(true);
-                Expect.Call(requestProcessor2.CanProcess(request3)).Return(false);
-                Expect.Call(requestProcessor2.CanProcess(request4)).Return(true);
-
-                Expect.Call(requestProcessor1.Process(requestsForProcessor1)).Return(responsesForProcessor1);
-                Expect.Call(requestProcessor2.Process(requestsForProcessor2)).Return(responsesForProcessor2);
-            }).Verify(() =>
-            {
-                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor1, requestProcessor2 }, new INotificationProcessor[] { notificationProcessor });
-                messageBus.Logger = GetConsoleLogger();
-                var responses = messageBus.Send(request1, request2, request3, request4);
-                Assert.That(() => responses[request1],
-                    Is.SameAs(response1));
-                Assert.That(() => responses[request2],
-                    Is.SameAs(response2));
-                Assert.That(() => responses[request3],
-                    Is.SameAs(response3));
-                Assert.That(() => responses[request4],
-                    Is.SameAs(response4));
-            });
+            var requestProcessor1 = new TestRequestProcessor(responsesForProcessor1);
+            var requestProcessor2 = new TestRequestProcessor(responsesForProcessor2);
+            
+            var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor1, requestProcessor2 }, new INotificationProcessor[] { notificationProcessor });
+            messageBus.Logger = GetConsoleLogger();
+            var responses = messageBus.Send(request1, request2, request3, request4);
+            Assert.That(() => responses[request1],
+                Is.SameAs(response1));
+            Assert.That(() => responses[request2],
+                Is.SameAs(response2));
+            Assert.That(() => responses[request3],
+                Is.SameAs(response3));
+            Assert.That(() => responses[request4],
+                Is.SameAs(response4));
         }
+
+        public class TestRequestProcessor : ILocalRequestProcessor
+        {
+            private readonly ResponsesGroup responsesGroup;
+
+            public TestRequestProcessor(ResponsesGroup responsesGroup)
+            {
+                this.responsesGroup = responsesGroup;
+            }
+
+            public bool CanProcess(BaseRequest request)
+            {
+                return responsesGroup.ContainsKey(request);
+            }
+
+            public ResponsesGroup Process(IList<BaseRequest> requests)
+            {
+                return responsesGroup;
+            }
+        }
+
 
         [Test]
         public void It_should_run_all_the_IMessageBusSendInterceptors()
@@ -447,7 +451,7 @@ namespace Colombo.Tests.Impl
                     Assert.AreSame(r, response);
                     callbackThreadId = Thread.CurrentThread.ManagedThreadId;
                 });
-                Thread.Sleep(50);
+                Thread.Sleep(200);
                 Assert.That(() => callbackThreadId,
                     Is.Not.EqualTo(Thread.CurrentThread.ManagedThreadId));
             });
@@ -482,7 +486,7 @@ namespace Colombo.Tests.Impl
                         Contains.Substring("Test exception"));
                     callbackThreadId = Thread.CurrentThread.ManagedThreadId;
                 });
-                Thread.Sleep(50);
+                Thread.Sleep(200);
                 Assert.That(() => callbackThreadId,
                     Is.Not.EqualTo(Thread.CurrentThread.ManagedThreadId));
             });
@@ -510,34 +514,51 @@ namespace Colombo.Tests.Impl
             });
         }
 
-        //[Test]
+        [Test]
         public void It_should_use_all_the_INotificationProcessor_to_process_notifications()
         {
             var mocks = new MockRepository();
             var requestProcessor = mocks.StrictMock<IRequestProcessor>();
-            
-            var notificationProcessor1 = mocks.Stub<INotificationProcessor>();
-            var notificationProcessor2 = mocks.Stub<INotificationProcessor>();
+
+            var notificationProcessor1 = new TestNotificationProcessor();
+            var notificationProcessor2 = new TestNotificationProcessor();
 
             var notification1 = mocks.Stub<Notification>();
             var notification2 = mocks.Stub<Notification>();
 
             With.Mocks(mocks).Expecting(() =>
             {
-                notificationProcessor1.Process(new Notification[] { notification1 });
-                notificationProcessor2.Process(new Notification[] { notification1 });
-
-                notificationProcessor1.Process(new Notification[] { notification1, notification2 });
-                notificationProcessor2.Process(new Notification[] { notification1, notification2 });
             }).Verify(() =>
             {
                 var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor }, new INotificationProcessor[] { notificationProcessor1, notificationProcessor2 });
                 messageBus.Logger = GetConsoleLogger();
 
                 messageBus.Notify(notification1);
+                Thread.Sleep(200);
+                Assert.That(() => notificationProcessor1.Notifications,
+                    Is.EquivalentTo(new[] { notification1 }));
+                Assert.That(() => notificationProcessor2.Notifications,
+                    Is.EquivalentTo(new[] { notification1 }));
+
                 messageBus.Notify(notification1, notification2);
+                Thread.Sleep(200);
+                Assert.That(() => notificationProcessor1.Notifications,
+                    Is.EquivalentTo(new[] { notification1, notification2 }));
+                Assert.That(() => notificationProcessor2.Notifications,
+                    Is.EquivalentTo(new[] { notification1, notification2 }));
             });
         }
+
+        public class TestNotificationProcessor : INotificationProcessor
+        {
+            public Notification[] Notifications { get; private set; }
+
+            public void Process(Notification[] notifications)
+            {
+                Notifications = notifications;
+            }
+        }
+
 
         [Test]
         public void It_should_run_all_the_IMessageBusNotifyInterceptors()
