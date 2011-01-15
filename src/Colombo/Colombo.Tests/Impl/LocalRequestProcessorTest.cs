@@ -62,21 +62,19 @@ namespace Colombo.Tests.Impl
         public void It_should_use_the_RequestHandlers_that_IRequestHandlerFactory_returns()
         {
             var mocks = new MockRepository();
-            var request1 = mocks.Stub<Request<TestResponse>>();
-            var request2 = mocks.Stub<Request<TestResponse>>();
+            var request1 = new TestRequest();
+            var request2 = new TestRequest();
             var requests = new List<BaseRequest> { request1, request2 };
             var response1 = new TestResponse();
             var response2 = new TestResponse();
             var requestHandlerFactory = mocks.StrictMock<IRequestHandlerFactory>();
-            var requestHandler1 = mocks.StrictMock<IRequestHandler>();
-            var requestHandler2 = mocks.StrictMock<IRequestHandler>();
+            var requestHandler1 = new TestRequestHandler(response1);
+            var requestHandler2 = new TestRequestHandler(response2);
 
             With.Mocks(mocks).Expecting(() =>
             {
                 Expect.Call(requestHandlerFactory.CreateRequestHandlerFor(request1)).Return(requestHandler1);
                 Expect.Call(requestHandlerFactory.CreateRequestHandlerFor(request2)).Return(requestHandler2);
-                Expect.Call(requestHandler1.Handle(request1)).Return(response1);
-                Expect.Call(requestHandler2.Handle(request2)).Return(response2);
                 requestHandlerFactory.DisposeRequestHandler(requestHandler1);
                 requestHandlerFactory.DisposeRequestHandler(requestHandler2);
             }).Verify(() =>
@@ -89,6 +87,24 @@ namespace Colombo.Tests.Impl
                 Assert.That(() => responses[request2],
                     Is.SameAs(response2));
             });
+        }
+
+        public class TestRequest : Request<TestResponse>
+        {}
+
+        public class TestRequestHandler : RequestHandler<TestRequest, TestResponse>
+        {
+            private TestResponse response;
+
+            public TestRequestHandler(TestResponse response)
+            {
+                this.response = response;
+            }
+
+            protected override void Handle()
+            {
+                Response = response;
+            }
         }
 
         [Test]

@@ -12,7 +12,7 @@ namespace Colombo
     {
         protected TRequest Request { get; private set; }
 
-        protected TResponse Response { get; private set; }
+        protected TResponse Response { get; set; }
 
         public virtual Response Handle(BaseRequest request)
         {

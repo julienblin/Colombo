@@ -54,7 +54,7 @@ namespace Colombo.Tests.Interceptors
                 invocation.Proceed();
                 LastCall.Do(new ProceedDelegate(() =>
                 {
-                    Thread.Sleep(15);
+                    Thread.Sleep(200);
                 }));
                 logger.Warn(null);
                 LastCall.IgnoreArguments();
@@ -86,7 +86,7 @@ namespace Colombo.Tests.Interceptors
                 invocation.Proceed();
                 LastCall.Do(new ProceedDelegate(() =>
                 {
-                    Thread.Sleep(15);
+                    Thread.Sleep(200);
                 }));
 
                 alerter1.Alert(null);

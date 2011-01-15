@@ -94,7 +94,7 @@
     <foreach item="Folder" in="${folder.test}\bin" property="folder.test.current">
       <do>
         <property name="test.current" value="${path::get-file-name(folder.test.current)}" />
-        <exec program="${app.nunit.console}" workingdir="${folder.test.current}" failonerror="false">
+        <exec program="${app.nunit.console}" workingdir="${folder.test.current}" failonerror="false" output="${folder.test.results.xml}\${test.current}.txt">
           <arg line="${test.current}.dll /xml=&quot;${folder.test.results.xml}\${test.current}.xml&quot;" />
           <arg line="/nologo" />
         </exec>
