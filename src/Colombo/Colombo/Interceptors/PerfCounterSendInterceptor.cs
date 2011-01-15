@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Castle.Core.Logging;
-using System.Diagnostics.Contracts;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
+using System.Linq;
+using Castle.Core.Logging;
 
 namespace Colombo.Interceptors
 {

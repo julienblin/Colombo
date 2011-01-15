@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Castle.Core.Logging;
 using System.Diagnostics.Contracts;
+using System.Linq;
 using System.Threading.Tasks;
+using Castle.Core.Logging;
 using Colombo.Impl.RequestHandle;
 
 namespace Colombo.Impl
@@ -88,7 +87,7 @@ namespace Colombo.Impl
             }
             catch (AggregateException ex)
             {
-                string message = "An exception occured inside one or several request handlers";
+                var message = "An exception occured inside one or several request handlers";
                 Logger.Error(message, ex);
                 foreach (var innerEx in ex.InnerExceptions)
                     Logger.Error(innerEx.ToString());

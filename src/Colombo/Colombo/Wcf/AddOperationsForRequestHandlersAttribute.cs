@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.ServiceModel.Description;
-using System.ServiceModel.Channels;
-using System.ServiceModel.Dispatcher;
-using System.Reflection;
 using System.ServiceModel;
-using Castle.Core;
+using System.ServiceModel.Channels;
+using System.ServiceModel.Description;
+using System.ServiceModel.Dispatcher;
 
 namespace Colombo.Wcf
 {

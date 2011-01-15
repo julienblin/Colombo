@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Castle.Core.Logging;
-using System.Collections.Concurrent;
-using System.Timers;
 using System.Diagnostics.Contracts;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Timers;
+using Castle.Core.Logging;
 
 namespace Colombo.Caching.Impl
 {
@@ -45,7 +43,7 @@ namespace Colombo.Caching.Impl
             lock (syncRoot)
             {
                 var data = GetSegmentData(segment);
-                DateTime expiration = DateTime.UtcNow.Add(duration);
+                var expiration = DateTime.UtcNow.Add(duration);
                 var finalCacheKey = string.Concat(@object.GetType().FullName, cacheKey);
                 if (data.ContainsKey(finalCacheKey))
                 {

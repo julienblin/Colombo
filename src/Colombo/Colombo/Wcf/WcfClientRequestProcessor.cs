@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Castle.Core.Logging;
 using System.Diagnostics.Contracts;
-using System.ServiceModel.Configuration;
-using System.Configuration;
-using System.Threading.Tasks;
+using System.Linq;
 using System.ServiceModel;
+using System.Threading.Tasks;
 using System.Timers;
-using System.Collections.Concurrent;
-using Colombo.HealthCheck;
+using Castle.Core.Logging;
 using Colombo.Alerts;
+using Colombo.HealthCheck;
 
 namespace Colombo.Wcf
 {
@@ -140,7 +136,7 @@ namespace Colombo.Wcf
             }
             catch (AggregateException ex)
             {
-                string message = "An exception occured inside one or several WCF endpoint";
+                var message = "An exception occured inside one or several WCF endpoint";
                 Logger.Error(message, ex);
                 foreach (var innerEx in ex.InnerExceptions)
                     Logger.Error(innerEx.ToString());
@@ -155,7 +151,7 @@ namespace Colombo.Wcf
             {
                 var task = tasksGroupAssociation[requestsGroup.Key];
                 var requestsArray = requestsGroup.ToArray();
-                for (int i = 0; i < requestsArray.Length; i++)
+                for (var i = 0; i < requestsArray.Length; i++)
                 {
                     var request = requestsArray[i];
                     responses[request] = task.Result[i];

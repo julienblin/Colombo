@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Castle.Core.Logging;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using Castle.Core.Logging;
 
 namespace Colombo.Impl.Alerters
 {

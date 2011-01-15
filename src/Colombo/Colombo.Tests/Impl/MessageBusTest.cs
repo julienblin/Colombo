@@ -537,6 +537,7 @@ namespace Colombo.Tests.Impl
             }).Verify(() =>
             {
                 var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor }, new INotificationProcessor[] { notificationProcessor1, notificationProcessor2 });
+                messageBus.Logger = GetConsoleLogger();
 
                 messageBus.Notify(notification1);
                 messageBus.Notify(notification1, notification2);

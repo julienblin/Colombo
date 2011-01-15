@@ -52,8 +52,7 @@ namespace Colombo.Tests.Facilities
             var container = new WindsorContainer();
             container.AddFacility<ColomboFacility>();
 
-            var kernelStaticProperty = typeof(WcfColomboService).GetProperty("Kernel", BindingFlags.Static | BindingFlags.NonPublic);
-            Assert.That(() => kernelStaticProperty.GetValue(null, null),
+            Assert.That(() => WcfServices.Kernel,
                 Is.SameAs(container.Kernel));
         }
 

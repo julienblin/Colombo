@@ -1,20 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Castle.MicroKernel.Facilities;
-using Castle.MicroKernel.Resolvers.SpecializedResolvers;
-using Castle.MicroKernel.Registration;
-using Colombo.Wcf;
-using Colombo.Impl;
-using Colombo.Interceptors;
-using Colombo.HealthCheck;
 using System.Diagnostics.Contracts;
+using Castle.MicroKernel.Facilities;
+using Castle.MicroKernel.Registration;
+using Castle.MicroKernel.Resolvers.SpecializedResolvers;
 using Colombo.Caching;
 using Colombo.Caching.Impl;
+using Colombo.HealthCheck;
+using Colombo.Impl;
 using Colombo.Impl.Alerters;
-using Colombo.Impl.RequestHandle;
 using Colombo.Impl.NotificationHandle;
+using Colombo.Impl.RequestHandle;
+using Colombo.Interceptors;
+using Colombo.Wcf;
 
 namespace Colombo.Facilities
 {

@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Castle.Core.Logging;
 using System.Diagnostics.Contracts;
+using System.Linq;
+using Castle.Core.Logging;
 
 namespace Colombo.Interceptors
 {
@@ -21,7 +20,7 @@ namespace Colombo.Interceptors
             if (nextInvocation == null) throw new ArgumentNullException("nextInvocation");
             Contract.EndContractBlock();
 
-            RequiredInContextAttribute[] reqAttributes = nextInvocation.Request.GetCustomAttributes<RequiredInContextAttribute>(true);
+            var reqAttributes = nextInvocation.Request.GetCustomAttributes<RequiredInContextAttribute>(true);
             if (reqAttributes.Length > 0)
             {
                 var keys = reqAttributes.SelectMany(x => x.GetKeys()).Distinct();

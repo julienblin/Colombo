@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Castle.Core.Logging;
 using System.Diagnostics.Contracts;
+using System.Linq;
 using System.Threading.Tasks;
+using Castle.Core.Logging;
 using Colombo.Impl.NotificationHandle;
 
 namespace Colombo.Impl

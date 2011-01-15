@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Castle.MicroKernel;
 using System.Diagnostics.Contracts;
+using System.Linq;
+using Castle.MicroKernel;
 
 namespace Colombo.Wcf
 {
@@ -33,7 +32,7 @@ namespace Colombo.Wcf
 
                 var responsesGroup = localRequestProcessor.Process(new List<BaseRequest>(requests));
                 var responses = new Response[requests.Length];
-                for (int i = 0; i < requests.Length; i++)
+                for (var i = 0; i < requests.Length; i++)
                 {
                     var request = requests[i];
                     responses[i] = responsesGroup[request];

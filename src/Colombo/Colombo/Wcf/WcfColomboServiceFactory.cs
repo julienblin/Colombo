@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.ServiceModel.Configuration;
-using System.Diagnostics.Contracts;
-using System.Configuration;
-using System.ServiceModel;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Diagnostics.Contracts;
+using System.ServiceModel;
+using System.ServiceModel.Configuration;
 
 namespace Colombo.Wcf
 {
@@ -103,7 +101,7 @@ namespace Colombo.Wcf
 
         private void FactoryFaulted(object sender, EventArgs args)
         {
-            ChannelFactory<IWcfColomboService> factory = (ChannelFactory<IWcfColomboService>)sender;
+            var factory = (ChannelFactory<IWcfColomboService>)sender;
             try
             {
                 factory.Close();
@@ -119,7 +117,7 @@ namespace Colombo.Wcf
 
         private void ChannelFaulted(object sender, EventArgs e)
         {
-            IClientChannel channel = (IClientChannel)sender;
+            var channel = (IClientChannel)sender;
             try
             {
                 channel.Close();

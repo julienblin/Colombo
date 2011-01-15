@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Diagnostics.Contracts;
 using Castle.Core.Logging;
 using Castle.MicroKernel;
-using System.Diagnostics.Contracts;
 
 namespace Colombo.Impl.NotificationHandle
 {
@@ -61,7 +58,7 @@ namespace Colombo.Impl.NotificationHandle
             if (notification == null) throw new ArgumentNullException("notification");
             Contract.EndContractBlock();
 
-            Type notificationType = notification.GetType();
+            var notificationType = notification.GetType();
 
             Contract.Assume(typeof(INotificationHandler<>).IsGenericTypeDefinition);
             Contract.Assume(typeof(INotificationHandler<>).GetGenericArguments().Length == 1);

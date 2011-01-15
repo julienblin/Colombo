@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Text;
 using Castle.Core.Logging;
 using Castle.MicroKernel;
-using System.Diagnostics.Contracts;
-using System.Reflection;
 
 namespace Colombo.Impl.RequestHandle
 {
@@ -90,8 +87,8 @@ namespace Colombo.Impl.RequestHandle
             if (request == null) throw new ArgumentNullException("request");
             Contract.EndContractBlock();
 
-            Type responseType = request.GetResponseType();
-            Type requestType = request.GetType();
+            var responseType = request.GetResponseType();
+            var requestType = request.GetType();
 
             Contract.Assume(typeof(Request<>).IsGenericTypeDefinition);
             Contract.Assume(typeof(Request<>).GetGenericArguments().Length == 1);

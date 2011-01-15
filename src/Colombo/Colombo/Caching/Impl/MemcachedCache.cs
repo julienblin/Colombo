@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.ServiceModel;
-using BeIT.MemCached;
-using System.IO;
-using System.Xml;
-using System.Runtime.Serialization;
 using System.Diagnostics.Contracts;
+using System.IO;
+using System.Linq;
+using System.Runtime.Serialization;
 using System.Security.Cryptography;
+using System.Text;
+using System.Xml;
+using BeIT.MemCached;
 using Castle.Core.Logging;
 using Colombo.Alerts;
 

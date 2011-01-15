@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Castle.DynamicProxy;
 using System.Diagnostics.Contracts;
 using System.Reflection;
+using Castle.DynamicProxy;
 
 namespace Colombo.Impl.Async
 {

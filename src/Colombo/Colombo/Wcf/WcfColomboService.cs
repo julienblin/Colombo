@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.ServiceModel;
-using System.Diagnostics.Contracts;
-using System.Threading.Tasks;
 using System.Reflection;
-using Castle.MicroKernel;
+using System.ServiceModel;
+using System.Threading.Tasks;
 
 namespace Colombo.Wcf
 {
@@ -53,7 +48,7 @@ namespace Colombo.Wcf
                 else
                 {
                     // Preserve original stack trace.
-                    FieldInfo remoteStackTraceString = typeof(Exception).GetField("_remoteStackTraceString", BindingFlags.Instance | BindingFlags.NonPublic);
+                    var remoteStackTraceString = typeof(Exception).GetField("_remoteStackTraceString", BindingFlags.Instance | BindingFlags.NonPublic);
                     remoteStackTraceString.SetValue(processResult.Exception, processResult.Exception.StackTrace);
                     throw processResult.Exception;
                 }

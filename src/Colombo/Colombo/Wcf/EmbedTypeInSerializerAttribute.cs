@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.ServiceModel.Description;
-using System.ServiceModel.Channels;
-using System.ServiceModel.Dispatcher;
 using System.Runtime.Serialization;
+using System.ServiceModel.Channels;
+using System.ServiceModel.Description;
+using System.ServiceModel.Dispatcher;
 using System.Xml;
 
 namespace Colombo.Wcf
@@ -35,7 +33,7 @@ namespace Colombo.Wcf
 
         private static void ForceNetDataContractSerializerOperationBehavior(OperationDescription operationDescription)
         {
-            DataContractSerializerOperationBehavior dcsOperationBehavior = operationDescription.Behaviors.Find<DataContractSerializerOperationBehavior>();
+            var dcsOperationBehavior = operationDescription.Behaviors.Find<DataContractSerializerOperationBehavior>();
             if (dcsOperationBehavior != null)
             {
                 operationDescription.Behaviors.Remove(dcsOperationBehavior);

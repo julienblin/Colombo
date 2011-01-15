@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Colombo
+﻿namespace Colombo
 {
     /// <summary>
     /// Common interface for all the interceptors.

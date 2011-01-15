@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Castle.Core.Logging;
-using System.Diagnostics.Contracts;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
+using System.Linq;
+using Castle.Core.Logging;
 using Colombo.Alerts;
 
 namespace Colombo.Interceptors
@@ -50,7 +48,7 @@ namespace Colombo.Interceptors
             watch.Stop();
             Logger.DebugFormat("{0} requests took {1} ms.", invocation.Requests.Count, watch.ElapsedMilliseconds);
 
-            TimeSpan maxSla = TimeSpan.MinValue;
+            var maxSla = TimeSpan.MinValue;
 
             foreach (var request in invocation.Requests)
             {

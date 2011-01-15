@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Diagnostics.Contracts;
-using Castle.Core.Logging;
+using System.Linq;
 using System.Threading.Tasks;
+using Castle.Core.Logging;
 
 namespace Colombo.Impl.Send
 {
@@ -81,7 +80,7 @@ namespace Colombo.Impl.Send
             }
             catch (AggregateException ex)
             {
-                string message = "An exception occured inside one or several processors";
+                var message = "An exception occured inside one or several processors";
                 Logger.Error(message, ex);
                 throw new ColomboException(message, ex);
             }
