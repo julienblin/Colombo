@@ -16,6 +16,9 @@ namespace Colombo.Impl
     public class MessageBus : IMessageBus
     {
         private ILogger logger = NullLogger.Instance;
+        /// <summary>
+        /// Logger.
+        /// </summary>
         public ILogger Logger
         {
             get { return logger; }
@@ -69,6 +72,10 @@ namespace Colombo.Impl
         private readonly IRequestProcessor[] requestProcessors;
         private readonly INotificationProcessor[] notificationProcessors;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="requestProcessors">List of <see cref="IRequestProcessor"/> that could process requests.</param>
         public MessageBus(IRequestProcessor[] requestProcessors)
             : this(requestProcessors, null)
         {
@@ -88,6 +95,9 @@ namespace Colombo.Impl
             this.notificationProcessors = notificationProcessors;
         }
 
+        /// <summary>
+        /// Send synchronously a request and returns the response.
+        /// </summary>
         public TResponse Send<TResponse>(Request<TResponse> request) where TResponse : Response, new()
         {
             if (request == null) throw new ArgumentNullException("request");
@@ -104,6 +114,9 @@ namespace Colombo.Impl
             return typedResponse;
         }
 
+        /// <summary>
+        /// Send a request asynchronously. You must register a callback with the result to get the response or the error.
+        /// </summary>
         public IAsyncCallback<TResponse> SendAsync<TResponse>(Request<TResponse> request)
             where TResponse : Response, new()
         {
@@ -118,6 +131,9 @@ namespace Colombo.Impl
             return response;
         }
 
+        /// <summary>
+        /// Send synchronously a request and returns the response.
+        /// </summary>
         public TResponse Send<TResponse>(SideEffectFreeRequest<TResponse> request)
             where TResponse : Response, new()
         {
@@ -135,6 +151,9 @@ namespace Colombo.Impl
             return typedResponse;
         }
 
+        /// <summary>
+        /// Send synchronously a request and returns the response.
+        /// </summary>
         public TResponse Send<TRequest, TResponse>(Action<TRequest> action)
             where TRequest : SideEffectFreeRequest<TResponse>, new()
             where TResponse : Response, new()
@@ -147,6 +166,9 @@ namespace Colombo.Impl
             return Send(request);
         }
 
+        /// <summary>
+        /// Send a request asynchronously. You must register a callback with the result to get the response or the error.
+        /// </summary>
         public IAsyncCallback<TResponse> SendAsync<TResponse>(SideEffectFreeRequest<TResponse> request)
             where TResponse : Response, new()
         {
@@ -161,6 +183,10 @@ namespace Colombo.Impl
             return response;
         }
 
+        /// <summary>
+        /// Send synchronously, but in parallel, several requests and returns all the responses at once.
+        /// Only side effect-free requests can be parallelized.
+        /// </summary>
         public ResponsesGroup Send(BaseSideEffectFreeRequest request, params BaseSideEffectFreeRequest[] followingRequests)
         {
             if (request == null) throw new ArgumentNullException("request");
@@ -175,6 +201,9 @@ namespace Colombo.Impl
             return responsesGroup;
         }
 
+        /// <summary>
+        /// Dispatch notifications
+        /// </summary>
         public void Notify(Notification notification, params Notification[] notifications)
         {
             if ((notificationProcessors == null) || (notificationProcessors.Length == 0))
@@ -194,6 +223,9 @@ namespace Colombo.Impl
             topInvocation.Proceed();
         }
 
+        /// <summary>
+        /// Real sending of the requests. All the other send methods delegates to this one.
+        /// </summary>
         protected virtual ResponsesGroup InternalSend(IList<BaseRequest> requests)
         {
             var topInvocation = BuildSendInvocationChain();
@@ -206,6 +238,9 @@ namespace Colombo.Impl
             return topInvocation.Responses;
         }
 
+        /// <summary>
+        /// Real asynchronous sending of a request.
+        /// </summary>
         protected virtual IAsyncCallback<TResponse> InternalSendAsync<TResponse>(BaseRequest request)
             where TResponse : Response, new()
         {
@@ -259,6 +294,9 @@ namespace Colombo.Impl
             return currentInvocation;
         }
 
+        /// <summary>
+        /// Log an error using the <see cref="Logger"/> and throw a <see cref="ColomboException"/>.
+        /// </summary>
         protected virtual void LogAndThrowError(string format, params object[] args)
         {
             if (format == null) throw new ArgumentNullException("format");

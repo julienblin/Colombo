@@ -3,6 +3,9 @@ using System.Diagnostics.Contracts;
 
 namespace Colombo
 {
+    /// <summary>
+    /// Allow the sending of messages through Colombo (requests and notifications).
+    /// </summary>
     [ContractClass(typeof(Contracts.MessageBusContract))]
     public interface IMessageBus
     {
@@ -12,6 +15,9 @@ namespace Colombo
         TResponse Send<TResponse>(Request<TResponse> request)
             where TResponse : Response, new();
 
+        /// <summary>
+        /// Send a request asynchronously. You must register a callback with the result to get the response or the error.
+        /// </summary>
         IAsyncCallback<TResponse> SendAsync<TResponse>(Request<TResponse> request)
             where TResponse : Response, new();
 
@@ -21,10 +27,16 @@ namespace Colombo
         TResponse Send<TResponse>(SideEffectFreeRequest<TResponse> request)
             where TResponse : Response, new();
 
+        /// <summary>
+        /// Send synchronously a request and returns the response.
+        /// </summary>
         TResponse Send<TRequest, TResponse>(Action<TRequest> action)
             where TRequest : SideEffectFreeRequest<TResponse>, new()
             where TResponse : Response, new();
 
+        /// <summary>
+        /// Send a request asynchronously. You must register a callback with the result to get the response or the error.
+        /// </summary>
         IAsyncCallback<TResponse> SendAsync<TResponse>(SideEffectFreeRequest<TResponse> request)
             where TResponse : Response, new();
 

@@ -5,11 +5,20 @@ using Castle.Core.Logging;
 
 namespace Colombo.Impl.Alerters
 {
+    /// <summary>
+    /// <see cref="IColomboAlerter"/> that writes <see cref="IColomboAlert"/> to the Application event log as Warnings.
+    /// </summary>
     public class EventLogColomboAlerter : IColomboAlerter
     {
+        /// <summary>
+        /// Name of the source in the event log.
+        /// </summary>
         public const string SourceName = @"Colombo";
 
         private ILogger logger = NullLogger.Instance;
+        /// <summary>
+        /// Logger.
+        /// </summary>
         public ILogger Logger
         {
             get { return logger; }
@@ -33,6 +42,9 @@ namespace Colombo.Impl.Alerters
             }
         }
 
+        /// <summary>
+        /// Called when an alert has been raised.
+        /// </summary>
         public void Alert(IColomboAlert alert)
         {
             if (alert == null) throw new ArgumentNullException("alert");

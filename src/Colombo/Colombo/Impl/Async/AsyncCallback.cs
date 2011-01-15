@@ -3,6 +3,9 @@ using System.Diagnostics.Contracts;
 
 namespace Colombo.Impl.Async
 {
+    /// <summary>
+    /// IAsyncCallback implementation.
+    /// </summary>
     public class AsyncCallback<TResponse> : IAsyncCallback<TResponse>
         where TResponse : Response, new()
     {
@@ -13,6 +16,11 @@ namespace Colombo.Impl.Async
         private TResponse arrivedResponse;
         private Exception arrivedException;
 
+        /// <summary>
+        /// Register a callback function that will be called when the response arrived.
+        /// Be careful because you will NOT be notified of a failure (Exception).
+        /// </summary>
+        /// <param name="theCallback">The function to call when a response arrives.</param>
         public void Register(Action<TResponse> callback)
         {
             if (callback == null) throw new ArgumentNullException("callback");
@@ -21,6 +29,13 @@ namespace Colombo.Impl.Async
             Register(callback, null);
         }
 
+        /// <summary>
+        /// Register a callback function that will be called when the response arrived,
+        /// and an error callback that will be called if a failure happens.
+        /// Either one of these callbacks will be called, but not both.
+        /// </summary>
+        /// <param name="theCallback">The function to call when a response arrives.</param>
+        /// <param name="theErrorCallback">The function to call when an exception happens.</param>
         public void Register(Action<TResponse> callback, Action<Exception> errorCallback)
         {
             if (callback == null) throw new ArgumentNullException("callback");

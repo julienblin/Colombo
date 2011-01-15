@@ -1,7 +1,7 @@
 ﻿namespace Colombo
 {
     /// <summary>
-    /// Represents an invocation for the Handle operation.
+    /// Invocation used in the interception process for handling requests.
     /// </summary>
     public interface IColomboRequestHandleInvocation
     {
@@ -15,6 +15,9 @@
         /// </summary>
         Response Response { get; set; }
 
+        /// <summary>
+        /// Proceed with the invocation.
+        /// </summary>
         void Proceed();
     }
 }

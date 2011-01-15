@@ -8,9 +8,15 @@ using Colombo.Impl.NotificationHandle;
 
 namespace Colombo.Impl
 {
+    /// <summary>
+    /// <see cref="INotificationProcessor"/> that processes notifications locally.
+    /// </summary>
     public class LocalNotificationProcessor : INotificationProcessor
     {
         private ILogger logger = NullLogger.Instance;
+        /// <summary>
+        /// Logger.
+        /// </summary>
         public ILogger Logger
         {
             get { return logger; }
@@ -53,6 +59,9 @@ namespace Colombo.Impl
             this.notificationHandlerFactory = notificationHandlerFactory;
         }
 
+        /// <summary>
+        /// Process the notifications.
+        /// </summary>
         public void Process(Notification[] notifications)
         {
             if (notifications == null) throw new ArgumentNullException("notifications");

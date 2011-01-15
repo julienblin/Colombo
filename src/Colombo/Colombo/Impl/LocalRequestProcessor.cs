@@ -14,6 +14,9 @@ namespace Colombo.Impl
     public class LocalRequestProcessor : ILocalRequestProcessor
     {
         private ILogger logger = NullLogger.Instance;
+        /// <summary>
+        /// Logger.
+        /// </summary>
         public ILogger Logger
         {
             get { return logger; }
@@ -51,6 +54,9 @@ namespace Colombo.Impl
             this.requestHandlerFactory = requestHandlerFactory;
         }
 
+        /// <summary>
+        /// <c>true</c> if the processor can process the request, <c>false</c> otherwise.
+        /// </summary>
         public bool CanProcess(BaseRequest request)
         {
             if (request == null) throw new ArgumentNullException("request");
@@ -59,6 +65,9 @@ namespace Colombo.Impl
             return requestHandlerFactory.CanCreateRequestHandlerFor(request);
         }
 
+        /// <summary>
+        /// Process the requests.
+        /// </summary>
         public ResponsesGroup Process(IList<BaseRequest> requests)
         {
             if (requests == null) throw new ArgumentNullException("requests");
