@@ -57,7 +57,7 @@ namespace Colombo.Tests
         {
             public bool HandleWasCalled { get; set; }
 
-            public override void Handle()
+            protected override void Handle()
             {
                 HandleWasCalled = true;
                 Assert.That(() => Response.CorrelationGuid,
@@ -83,7 +83,7 @@ namespace Colombo.Tests
         {
             public bool HandleWasCalled { get; set; }
 
-            public override void Handle()
+            protected override void Handle()
             {
                 HandleWasCalled = true;
                 Assert.That(() => Response.CorrelationGuid,

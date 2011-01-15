@@ -16,15 +16,10 @@ namespace Colombo
         /// </summary>
         public virtual IDictionary<string, string> Context
         {
-            get
-            {
-                if(context == null)
-                    context = new Dictionary<string, string>();
-                return context;
-            }
+            get { return context ?? (context = new Dictionary<string, string>()); }
             set
             {
-                if(value == null) throw new ArgumentNullException("Context");
+                if (value == null) throw new ArgumentNullException("Context");
                 Contract.EndContractBlock();
                 context = value;
             }
@@ -65,13 +60,9 @@ namespace Colombo
         public override string ToString()
         {
             if ((Context != null) && (Context.Count > 0))
-            {
                 return string.Format("{0} | {1}", base.ToString(), string.Join(", ", Context.Select(x => string.Format("{0}={1}", x.Key, x.Value))));
-            }
-            else
-            {
-                return base.ToString();
-            }
+            
+            return base.ToString();
         }
 
         protected const int SeedPrimeNumber = 691;

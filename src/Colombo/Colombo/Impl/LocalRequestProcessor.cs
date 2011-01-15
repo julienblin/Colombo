@@ -69,7 +69,7 @@ namespace Colombo.Impl
             var tasksRequestAssociation = new Dictionary<BaseRequest, Task<Response>>();
             foreach (var request in requests)
             {
-                var task = Task.Factory.StartNew<Response>((req) =>
+                var task = Task.Factory.StartNew(req =>
                     {
                         var topInvocation = BuildHandleInvocationChain();
                         topInvocation.Request = (BaseRequest)req;
@@ -112,8 +112,7 @@ namespace Colombo.Impl
         {
             Contract.Assume(RequestHandlerInterceptors != null);
 
-            var requestHandlerInvocation = new RequestHandlerHandleInvocation(requestHandlerFactory);
-            requestHandlerInvocation.Logger = Logger;
+            var requestHandlerInvocation = new RequestHandlerHandleInvocation(requestHandlerFactory) {Logger = Logger};
             IColomboRequestHandleInvocation currentInvocation = requestHandlerInvocation;
             foreach (var interceptor in RequestHandlerInterceptors.Reverse())
             {

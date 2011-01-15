@@ -13,7 +13,7 @@ namespace Colombo.Wcf
         {
             this.callback = callback;
             this.state = state;
-            this.manualResetEvent = new ManualResetEvent(false);
+            manualResetEvent = new ManualResetEvent(false);
         }
 
         public BaseRequest[] Requests { get; set; }
@@ -49,15 +49,14 @@ namespace Colombo.Wcf
             get { return manualResetEvent.WaitOne(0, false); }
         }
 
-        private bool disposed = false;
+        private bool disposed;
 
         public void Dispose()
         {
-            if (!disposed)
-            {
-                Dispose(true);
-                GC.SuppressFinalize(this);
-            }
+            if (disposed) return;
+
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         protected virtual void Dispose(bool disposing)

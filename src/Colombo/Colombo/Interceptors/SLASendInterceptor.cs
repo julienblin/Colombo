@@ -27,13 +27,12 @@ namespace Colombo.Interceptors
 
                 alerters = value;
 
-                if (Logger.IsInfoEnabled)
-                {
-                    if (alerters.Length == 0)
-                        Logger.Info("No alerters has been registered for SLA monitoring.");
-                    else
-                        Logger.InfoFormat("SLA monitoring with the following alerters: {0}", string.Join(", ", alerters.Select(x => x.GetType().Name)));
-                }
+                if (!Logger.IsInfoEnabled) return;
+
+                if (alerters.Length == 0)
+                    Logger.Info("No alerters has been registered for SLA monitoring.");
+                else
+                    Logger.InfoFormat("SLA monitoring with the following alerters: {0}", string.Join(", ", alerters.Select(x => x.GetType().Name)));
             }
         }
 
@@ -53,23 +52,21 @@ namespace Colombo.Interceptors
             foreach (var request in invocation.Requests)
             {
                 var slaAttribute = request.GetCustomAttribute<SLAAttribute>();
-                if (slaAttribute != null)
-                {
-                    if (maxSla < slaAttribute.Allowed)
-                        maxSla = slaAttribute.Allowed;
-                }
+                if (slaAttribute == null) continue;
+
+                if (maxSla < slaAttribute.Allowed)
+                    maxSla = slaAttribute.Allowed;
             }
 
             if (maxSla != TimeSpan.MinValue)
             {
-                if (watch.Elapsed > maxSla)
+                if (watch.Elapsed <= maxSla) return;
+
+                var alert = new SLABreachedAlert(invocation.Requests.ToArray(), maxSla, watch.Elapsed);
+                Logger.Warn(alert.ToString());
+                foreach (var alerter in Alerters)
                 {
-                    var alert = new SLABreachedAlert(invocation.Requests.ToArray(), maxSla, watch.Elapsed);
-                    Logger.Warn(alert.ToString());
-                    foreach (var alerter in Alerters)
-                    {
-                        alerter.Alert(alert);
-                    }
+                    alerter.Alert(alert);
                 }
             }
         }

@@ -40,15 +40,14 @@ namespace Colombo.Interceptors
 
             nextInvocation.Proceed();
 
-            if (responsesGroup.Count > 0)
-            {
-                if (nextInvocation.Responses == null)
-                    nextInvocation.Responses = new ResponsesGroup();
+            if (responsesGroup.Count <= 0) return;
 
-                foreach (var item in responsesGroup)
-                {
-                    nextInvocation.Responses.Add(item.Key, item.Value);
-                }
+            if (nextInvocation.Responses == null)
+                nextInvocation.Responses = new ResponsesGroup();
+
+            foreach (var item in responsesGroup)
+            {
+                nextInvocation.Responses.Add(item.Key, item.Value);
             }
         }
 

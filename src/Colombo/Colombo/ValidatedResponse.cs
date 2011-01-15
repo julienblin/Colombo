@@ -13,13 +13,9 @@ namespace Colombo
         [IgnoreDataMember]
         public virtual IList<System.ComponentModel.DataAnnotations.ValidationResult> ValidationResults
         {
-            get
-            {
-                if (internalValidationResults == null)
-                {
-                    internalValidationResults = new List<System.ComponentModel.DataAnnotations.ValidationResult>();
-                }
-                return internalValidationResults;
+            get {
+                return internalValidationResults ??
+                       (internalValidationResults = new List<System.ComponentModel.DataAnnotations.ValidationResult>());
             }
         }
 

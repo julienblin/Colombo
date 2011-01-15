@@ -35,13 +35,12 @@ namespace Colombo.Impl
                 Contract.EndContractBlock();
 
                 messageBusSendInterceptors = value.OrderBy(x => x.InterceptionPriority).ToArray();
-                if (Logger.IsInfoEnabled)
-                {
-                    if (messageBusSendInterceptors.Length == 0)
-                        Logger.Info("No interceptor has been registered for sending requests.");
-                    else
-                        Logger.InfoFormat("Sending requests with the following interceptors: {0}", string.Join(", ", messageBusSendInterceptors.Select(x => x.GetType().Name)));
-                }
+                if (!Logger.IsInfoEnabled) return;
+
+                if (messageBusSendInterceptors.Length == 0)
+                    Logger.Info("No interceptor has been registered for sending requests.");
+                else
+                    Logger.InfoFormat("Sending requests with the following interceptors: {0}", string.Join(", ", messageBusSendInterceptors.Select(x => x.GetType().Name)));
             }
         }
 
@@ -58,13 +57,12 @@ namespace Colombo.Impl
                 Contract.EndContractBlock();
 
                 messageBusNotifyInterceptors = value.OrderBy(x => x.InterceptionPriority).ToArray();
-                if (Logger.IsInfoEnabled)
-                {
-                    if (messageBusNotifyInterceptors.Length == 0)
-                        Logger.Info("No interceptor has been registered for sending notifications.");
-                    else
-                        Logger.InfoFormat("Sending notifications with the following interceptors: {0}", string.Join(", ", messageBusNotifyInterceptors.Select(x => x.GetType().Name)));
-                }
+                if (!Logger.IsInfoEnabled) return;
+
+                if (messageBusNotifyInterceptors.Length == 0)
+                    Logger.Info("No interceptor has been registered for sending notifications.");
+                else
+                    Logger.InfoFormat("Sending notifications with the following interceptors: {0}", string.Join(", ", messageBusNotifyInterceptors.Select(x => x.GetType().Name)));
             }
         }
 
@@ -100,7 +98,7 @@ namespace Colombo.Impl
             Contract.Assume(responses.Count == 1);
 
             var typedResponse = responses[request] as TResponse;
-            if(typedResponse == null)
+            if (typedResponse == null)
                 LogAndThrowError("Internal error: InternalSend returned null or incorrect response type: expected {0}, actual {1}.", typeof(TResponse), responses[request].GetType());
 
             return typedResponse;
@@ -169,10 +167,10 @@ namespace Colombo.Impl
             Contract.EndContractBlock();
 
             var listRequests = new List<BaseRequest> { request };
-            if(followingRequests != null)
+            if (followingRequests != null)
                 listRequests.AddRange(followingRequests);
             var responsesGroup = InternalSend(listRequests);
-            
+
             Contract.Assume(responsesGroup != null);
             return responsesGroup;
         }
@@ -185,9 +183,8 @@ namespace Colombo.Impl
             if (notification == null) throw new ArgumentNullException("notification");
             Contract.EndContractBlock();
 
-            var finalNotifications = new List<Notification>();
-            finalNotifications.Add(notification);
-            if(notifications != null)
+            var finalNotifications = new List<Notification> { notification };
+            if (notifications != null)
                 finalNotifications.AddRange(notifications);
 
             Logger.DebugFormat("Sending notifications {0}...", string.Join(", ", finalNotifications.Select(x => x.ToString())));
@@ -213,11 +210,11 @@ namespace Colombo.Impl
             where TResponse : Response, new()
         {
             var asyncCallback = new AsyncCallback<TResponse>();
-            Task.Factory.StartNew((c) =>
+            Task.Factory.StartNew(c =>
             {
                 try
                 {
-                    var responsesGroup = InternalSend(new List<BaseRequest> { (BaseRequest)request });
+                    var responsesGroup = InternalSend(new List<BaseRequest> { request });
                     ((AsyncCallback<TResponse>)c).ResponseArrived((TResponse)responsesGroup[request]);
                 }
                 catch (Exception ex)
@@ -253,7 +250,6 @@ namespace Colombo.Impl
         private IColomboNotifyInvocation BuildNotifyInvocationChain()
         {
             var notificationProcessorsInvocation = new NotificationProcessorNotifyInvocation(notificationProcessors);
-            notificationProcessorsInvocation.Logger = Logger;
             IColomboNotifyInvocation currentInvocation = notificationProcessorsInvocation;
 
             foreach (var interceptor in MessageBusNotifyInterceptors.Reverse())

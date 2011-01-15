@@ -24,14 +24,7 @@ namespace Colombo.Interceptors
             if (reqAttributes.Length > 0)
             {
                 var keys = reqAttributes.SelectMany(x => x.GetKeys()).Distinct();
-                var missingKeys = new List<string>();
-                foreach (var key in keys)
-                {
-                    if (!nextInvocation.Request.Context.Keys.Contains(key)
-                        || string.IsNullOrEmpty(nextInvocation.Request.Context[key])
-                       )
-                        missingKeys.Add(key);
-                }
+                var missingKeys = keys.Where(key => !nextInvocation.Request.Context.Keys.Contains(key) || string.IsNullOrEmpty(nextInvocation.Request.Context[key])).ToList();
 
                 if (missingKeys.Count > 0)
                     LogAndThrowError("Missing keys in Context: {0}", string.Join(", ", missingKeys));

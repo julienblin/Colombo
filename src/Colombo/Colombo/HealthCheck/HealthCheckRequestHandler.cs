@@ -2,7 +2,7 @@
 {
     public class HealthCheckRequestHandler : SideEffectFreeRequestHandler<HealthCheckRequest, ACKResponse>
     {
-        public override void Handle()
+        protected override void Handle()
         {
             
         }

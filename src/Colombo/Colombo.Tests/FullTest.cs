@@ -176,7 +176,7 @@ namespace Colombo.Tests
 
         public class TestRequestIPCHandler : SideEffectFreeRequestHandler<TestRequestIPC, TestResponseIpc>
         {
-            public override void Handle()
+            protected override void Handle()
             {
                 Response.Name = Request.Name;
             }
@@ -199,7 +199,7 @@ namespace Colombo.Tests
 
         public class TestRequestHandlerLocal : SideEffectFreeRequestHandler<TestRequestLocal, TestResponseLocal>
         {
-            public override void Handle()
+            protected override void Handle()
             {
                 Response.Name = Request.Name;
             }

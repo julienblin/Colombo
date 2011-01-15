@@ -17,13 +17,13 @@ namespace Colombo.Wcf
             if (requests == null) throw new ArgumentNullException("requests");
             Contract.EndContractBlock();
 
-            if (WcfServices.Kernel == null)
+            if (Kernel == null)
                 throw new ColomboException("No Kernel has been registered. You must asign a Castle.IKernel to WcfServices.Kernel before receiving any request.");
 
             ILocalRequestProcessor localRequestProcessor = null;
             try
             {
-                localRequestProcessor = WcfServices.Kernel.Resolve<ILocalRequestProcessor>();
+                localRequestProcessor = Kernel.Resolve<ILocalRequestProcessor>();
                 Contract.Assume(localRequestProcessor != null);
 
                 var undispatchableRequests = requests.Where(r => !localRequestProcessor.CanProcess(r));
@@ -46,7 +46,7 @@ namespace Colombo.Wcf
             finally
             {
                 if (localRequestProcessor != null)
-                    WcfServices.Kernel.ReleaseComponent(localRequestProcessor);
+                    Kernel.ReleaseComponent(localRequestProcessor);
             }
         }
     }

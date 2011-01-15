@@ -16,16 +16,9 @@ namespace Colombo.Facilities
         [ThreadStatic]
         private static Dictionary<IComponentActivator, IDictionary<int?, object>> map;
 
-        public static Dictionary<IComponentActivator, IDictionary<int?, object>> Map
+        private static Dictionary<IComponentActivator, IDictionary<int?, object>> Map
         {
-            get
-            {
-                if (map == null)
-                {
-                    map = new Dictionary<IComponentActivator, IDictionary<int?, object>>();
-                }
-                return map;
-            }
+            get { return map ?? (map = new Dictionary<IComponentActivator, IDictionary<int?, object>>()); }
         }
 
         public override void Dispose()

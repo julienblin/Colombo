@@ -142,7 +142,7 @@ namespace Colombo.Tests.Facilities
                 this.subDependency = subDependency;
             }
 
-            public override void Handle()
+            protected override void Handle()
             {
                 dependency.Verify();
                 tracker.ItShouldExists(subDependency);

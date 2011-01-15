@@ -34,7 +34,6 @@ namespace Colombo.Tests.Impl
             );
 
             var factory = new KernelNotificationHandlerFactory(kernel);
-            factory.Logger = GetConsoleLogger();
             Assert.That(() => factory.CanCreateNotificationHandlerFor(new TestNotification()),
                 Is.True);
             Assert.That(() => factory.CanCreateNotificationHandlerFor(new TestNotification2()),
@@ -55,7 +54,6 @@ namespace Colombo.Tests.Impl
             );
 
             var factory = new KernelNotificationHandlerFactory(kernel);
-            factory.Logger = GetConsoleLogger();
             var notificationhandlers = factory.CreateNotificationHandlersFor(new TestNotification());
             Assert.That(() => notificationhandlers.Length,
                 Is.EqualTo(2));

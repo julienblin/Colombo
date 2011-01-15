@@ -8,13 +8,6 @@ namespace Colombo.Impl.Notify
 {
     public class NotificationProcessorNotifyInvocation : BaseNotifyInvocation
     {
-        private ILogger logger = NullLogger.Instance;
-        public ILogger Logger
-        {
-            get { return logger; }
-            set { logger = value; }
-        }
-
         private readonly INotificationProcessor[] notificationProcessors;
 
         public NotificationProcessorNotifyInvocation(INotificationProcessor[] notificationProcessors)
@@ -28,13 +21,9 @@ namespace Colombo.Impl.Notify
         public override void Proceed()
         {
             var finalNotificationsArray = Notifications.ToArray();
-            foreach (var processor in notificationProcessors)
+            foreach (var processor in notificationProcessors.Where(processor => processor != null))
             {
-                Task.Factory.StartNew((proc) =>
-                {
-                    ((INotificationProcessor)proc).Process(finalNotificationsArray);
-                },
-                processor);
+                Task.Factory.StartNew(proc => ((INotificationProcessor)proc).Process(finalNotificationsArray), processor);
             }
         }
     }

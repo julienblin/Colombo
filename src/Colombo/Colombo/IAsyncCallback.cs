@@ -7,8 +7,8 @@ namespace Colombo
     public interface IAsyncCallback<TResponse>
         where TResponse : Response, new()
     {
-        void Register(Action<TResponse> callback);
+        void Register(Action<TResponse> theCallback);
 
-        void Register(Action<TResponse> callback, Action<Exception> errorCallback);
+        void Register(Action<TResponse> theCallback, Action<Exception> theErrorCallback);
     }
 }

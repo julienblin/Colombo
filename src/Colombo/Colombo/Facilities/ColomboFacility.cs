@@ -25,32 +25,32 @@ namespace Colombo.Facilities
         int maxAllowedNumberOfSendForStatefulMessageBus = DefaultMaxAllowedNumberOfSendForStatefulMessageBus;
         int healthCheckHeartBeatInSeconds = DefaultHealthCheckHeartBeatInSeconds;
 
-        bool enableInMemoryCaching = false;
-        bool enableMemcachedCaching = false;
+        bool enableInMemoryCaching;
+        bool enableMemcachedCaching;
         string[] memCachedServers;
 
-        IList<Type> sendInterceptors = new List<Type>()
-        {
+        readonly IList<Type> sendInterceptors = new List<Type>
+                                                    {
             typeof(CurrentCultureSendInterceptor),
             typeof(DataAnnotationsValidationSendInterceptor),
             typeof(SLASendInterceptor)
         };
 
-        IList<Type> requestHandlerInterceptors = new List<Type>()
-        {
+        readonly IList<Type> requestHandlerInterceptors = new List<Type>
+                                                              {
             typeof(TransactionScopeRequestHandleInterceptor),
             typeof(CurrentCultureHandleInterceptor),
             typeof(RequiredInContextHandleInterceptor),
             typeof(DataAnnotationsValidationHandleInterceptor)
         };
 
-        IList<Type> notificationHandlerInterceptors = new List<Type>()
-        {
+        readonly IList<Type> notificationHandlerInterceptors = new List<Type>
+                                                                   {
             typeof(TransactionScopeNotificationHandleInterceptor)
         };
 
-        IList<Type> alerters = new List<Type>()
-        {
+        readonly IList<Type> alerters = new List<Type>
+                                            {
             typeof(EventLogColomboAlerter)
         };
 

@@ -15,12 +15,11 @@ namespace Colombo
         {
             if (responseType == null) throw new ArgumentNullException("responseType");
 
-            var responsesTypes = new List<Type>();
-            responsesTypes.Add(responseType);
-            
-            if(responsesType != null)
+            var responsesTypes = new List<Type> { responseType };
+
+            if (responsesType != null)
                 responsesTypes.AddRange(responsesType);
-            
+
             foreach (var t in responsesTypes)
             {
                 if (!typeof(Response).IsAssignableFrom(t))

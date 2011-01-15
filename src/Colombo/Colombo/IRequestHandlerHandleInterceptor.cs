@@ -3,7 +3,7 @@
 namespace Colombo
 {
     /// <summary>
-    /// Interceptor for the <see cref="IRequestHandler.Handle.Send"/> operation.
+    /// Interceptor for the <see cref="IRequestHandler.Handle"/> operation.
     /// </summary>
     [ContractClass(typeof(Contracts.RequestHandlerHandleInterceptorContract))]
     public interface IRequestHandlerHandleInterceptor : IColomboInterceptor

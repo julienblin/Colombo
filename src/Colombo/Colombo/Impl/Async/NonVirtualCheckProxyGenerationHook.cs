@@ -29,7 +29,7 @@ namespace Colombo.Impl.Async
             }
         }
 
-        public bool ShouldInterceptMethod(Type type, System.Reflection.MethodInfo methodInfo)
+        public bool ShouldInterceptMethod(Type type, MethodInfo methodInfo)
         {
             return true;
         }

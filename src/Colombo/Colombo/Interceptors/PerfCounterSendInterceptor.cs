@@ -17,25 +17,14 @@ namespace Colombo.Interceptors
 
         private PerfCounterFactory perfCounterFactory;
 
-        protected PerfCounterFactory PerfCounterFactory
+        private PerfCounterFactory PerfCounterFactory
         {
-            get
-            {
-                if (perfCounterFactory == null)
-                {
-                    perfCounterFactory = new PerfCounterFactory();
-                    perfCounterFactory.Logger = Logger;
-                }
-                return perfCounterFactory;
-            }
+            get { return perfCounterFactory ?? (perfCounterFactory = new PerfCounterFactory {Logger = Logger}); }
         }
-
-        [System.Runtime.InteropServices.DllImport("Kernel32.dll")]
-        private static extern void QueryPerformanceCounter(ref long ticks);
 
         public void Intercept(IColomboSendInvocation invocation)
         {
-            if (invocation == null) throw new ArgumentNullException("nextInvocation");
+            if (invocation == null) throw new ArgumentNullException("invocation");
             Contract.EndContractBlock();
 
             var watch = new Stopwatch();

@@ -10,11 +10,9 @@ namespace Colombo
         where TResponse : Response, new()
         where TRequest : SideEffectFreeRequest<TResponse>, new()
     {
-        private TRequest request;
-        protected TRequest Request { get { return request; } }
+        protected TRequest Request { get; private set; }
 
-        private TResponse response;
-        protected TResponse Response { get { return response; } }
+        protected TResponse Response { get; private set; }
 
         public Response Handle(BaseRequest request)
         {
@@ -26,32 +24,27 @@ namespace Colombo
 
         public TResponse Handle(TRequest request)
         {
-            this.request = request;
-            this.response = new TResponse();
-            response.CorrelationGuid = request.CorrelationGuid;
+            Request = request;
+            Response = new TResponse { CorrelationGuid = request.CorrelationGuid };
             Handle();
 
-            Contract.Assume(response != null);
-            return response;
+            Contract.Assume(Response != null);
+            return Response;
         }
 
-        public abstract void Handle();
+        protected abstract void Handle();
 
         protected TNewRequest CreateRequest<TNewRequest>()
             where TNewRequest : BaseRequest, new()
         {
-            var result = new TNewRequest();
-            result.CorrelationGuid = Request.CorrelationGuid;
-            result.Context = Request.Context;
+            var result = new TNewRequest { CorrelationGuid = Request.CorrelationGuid, Context = Request.Context };
             return result;
         }
 
         protected TNotification CreateNotification<TNotification>()
             where TNotification : Notification, new()
         {
-            var result = new TNotification();
-            result.CorrelationGuid = Request.CorrelationGuid;
-            result.Context = Request.Context;
+            var result = new TNotification { CorrelationGuid = Request.CorrelationGuid, Context = Request.Context };
             return result;
         }
 

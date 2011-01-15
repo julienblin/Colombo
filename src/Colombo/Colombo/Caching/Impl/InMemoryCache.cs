@@ -12,21 +12,13 @@ namespace Colombo.Caching.Impl
     {
         public const double ScavengingTimeInMilliseconds = 10 * 60 * 1000;
 
-        private ILogger logger = NullLogger.Instance;
-        public ILogger Logger
-        {
-            get { return logger; }
-            set { logger = value; }
-        }
-
-        private object syncRoot = new object();
+        private readonly object syncRoot = new object();
 
         private readonly Timer scavengingTimer;
 
         public InMemoryCache()
         {
-            this.scavengingTimer = new Timer(ScavengingTimeInMilliseconds);
-            scavengingTimer.AutoReset = true;
+            scavengingTimer = new Timer(ScavengingTimeInMilliseconds) {AutoReset = true};
             scavengingTimer.Elapsed += ScavengingTimerElapsed;
             scavengingTimer.Start();
         }
@@ -75,15 +67,11 @@ namespace Colombo.Caching.Impl
                         data.Remove(finalCacheKey);
                         return null;
                     }
-                    else
-                    {
-                        return cacheData.Object;
-                    }
+
+                    return cacheData.Object;
                 }
-                else
-                {
-                    return null;
-                }
+
+                return null;
             }
         }
 

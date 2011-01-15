@@ -34,7 +34,6 @@ namespace Colombo.Tests.Impl
             );
 
             var factory = new KernelRequestHandlerFactory(kernel);
-            factory.Logger = GetConsoleLogger();
             Assert.That(() => factory.CanCreateRequestHandlerFor(new Request1()),
                 Is.True);
             Assert.That(() => factory.CanCreateRequestHandlerFor(new Request2()),
@@ -69,7 +68,6 @@ namespace Colombo.Tests.Impl
             );
 
             var factory = new KernelRequestHandlerFactory(kernel);
-            factory.Logger = GetConsoleLogger();
             Assert.That(() => factory.CreateRequestHandlerFor(new Request1()),
                 Is.SameAs(requestHandler1));
         }
@@ -86,7 +84,6 @@ namespace Colombo.Tests.Impl
             );
 
             var factory = new KernelRequestHandlerFactory(kernel);
-            factory.Logger = GetConsoleLogger();
             Assert.That(() => factory.CreateRequestHandlerFor(new SideEffectFreeRequest1()),
                 Is.SameAs(requestHandler1));
         }
@@ -100,7 +97,6 @@ namespace Colombo.Tests.Impl
             var request1 = new Request1();
 
             var factory = new KernelRequestHandlerFactory(kernel);
-            factory.Logger = GetConsoleLogger();
             Assert.That(() => factory.CreateRequestHandlerFor(request1),
                 Throws.Exception.TypeOf<ColomboException>()
                 .With.Message.Contains(request1.ToString()));
@@ -115,7 +111,6 @@ namespace Colombo.Tests.Impl
             var request1 = new SideEffectFreeRequest1();
 
             var factory = new KernelRequestHandlerFactory(kernel);
-            factory.Logger = GetConsoleLogger();
             Assert.That(() => factory.CreateRequestHandlerFor(request1),
                 Throws.Exception.TypeOf<ColomboException>()
                 .With.Message.Contains(request1.ToString()));
@@ -131,7 +126,6 @@ namespace Colombo.Tests.Impl
             );
 
             var factory = new KernelRequestHandlerFactory(kernel);
-            factory.Logger = GetConsoleLogger();
 
             var requestWithoutTenantId = new TestRequest();
             Assert.That(() => factory.CreateRequestHandlerFor(requestWithoutTenantId),
@@ -153,7 +147,6 @@ namespace Colombo.Tests.Impl
             );
 
             var factory = new KernelRequestHandlerFactory(kernel);
-            factory.Logger = GetConsoleLogger();
 
             var requestWithoutTenantId = new TestRequest();
             Assert.That(() => factory.CreateRequestHandlerFor(requestWithoutTenantId),
@@ -200,14 +193,14 @@ namespace Colombo.Tests.Impl
 
         public class GeneralTestRequestHandler : RequestHandler<TestRequest, TestResponse>
         {
-            public override void Handle()
+            protected override void Handle()
             {
             }
         }
 
         public class GeneralTestRequestHandler2 : RequestHandler<TestRequest, TestResponse>
         {
-            public override void Handle()
+            protected override void Handle()
             {
             }
         }
@@ -215,7 +208,7 @@ namespace Colombo.Tests.Impl
         [ChooseWhenRequestContextContains("TenantId")]
         public class SpecificTestRequestHandler1 : RequestHandler<TestRequest, TestResponse>
         {
-            public override void Handle()
+            protected override void Handle()
             {
                 
             }
@@ -224,7 +217,7 @@ namespace Colombo.Tests.Impl
         [ChooseWhenRequestContextContains("TenantId", "123")]
         public class SpecificTestRequestHandler2 : RequestHandler<TestRequest, TestResponse>
         {
-            public override void Handle()
+            protected override void Handle()
             {
 
             }

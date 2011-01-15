@@ -27,16 +27,10 @@ namespace Colombo.Impl.Alerters
                     {
                         EventLog.CreateEventSource(SourceName, "Application");
                     }
-                    applicationEventLog = new EventLog();
-                    applicationEventLog.Source = SourceName;
+                    applicationEventLog = new EventLog {Source = SourceName};
                 }
                 return applicationEventLog;
             }
-        }
-
-        public EventLogColomboAlerter()
-        {
-
         }
 
         public void Alert(IColomboAlert alert)

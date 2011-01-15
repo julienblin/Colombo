@@ -11,13 +11,6 @@ namespace Colombo.Impl.RequestHandle
     /// </summary>
     public class KernelRequestHandlerFactory : IRequestHandlerFactory
     {
-        private ILogger logger = NullLogger.Instance;
-        public ILogger Logger
-        {
-            get { return logger; }
-            set { logger = value; }
-        }
-
         private readonly IKernel kernel;
 
         public KernelRequestHandlerFactory(IKernel kernel)
@@ -65,10 +58,10 @@ namespace Colombo.Impl.RequestHandle
 
                 if (specializedRequestsHandler.Length == 1)
                     return specializedRequestsHandler[0];
-                else
-                    throw new ColomboException(string.Format("Too many request handlers to choose from for {0}: {1}",
-                        request,
-                        string.Join(", ", chosenRequestsHandlers.Select(x => x.ToString()))));
+                
+                throw new ColomboException(string.Format("Too many request handlers to choose from for {0}: {1}",
+                    request,
+                    string.Join(", ", chosenRequestsHandlers.Select(x => x.ToString()))));
             }
 
             throw new ColomboException(string.Format("Request Handler {0} not found for {1}.", requestHandlerType, request));

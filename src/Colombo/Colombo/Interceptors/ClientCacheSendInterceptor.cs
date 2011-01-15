@@ -39,35 +39,33 @@ namespace Colombo.Interceptors
                 {
                     foreach (var responseType in invalidateCachedInstancesOfAttribute.ResponsesTypes)
                     {
-                        string cacheSegment = null;
-                        var cacheSegmentAttribute = request.GetCustomAttribute<CacheSegmentAttribute>();
-                        if (cacheSegmentAttribute != null)
-                            cacheSegment = cacheSegmentAttribute.GetCacheSegment(request);
+                        string cacheSegmentForCache = null;
+                        var cacheSegmentAttributeForCache = request.GetCustomAttribute<CacheSegmentAttribute>();
+                        if (cacheSegmentAttributeForCache != null)
+                            cacheSegmentForCache = cacheSegmentAttributeForCache.GetCacheSegment(request);
 
-                        Logger.DebugFormat("Invalidating all responses of type {0} from cache segment {1}", responseType, cacheSegment);
-                        cache.Flush(cacheSegment, responseType);
+                        Logger.DebugFormat("Invalidating all responses of type {0} from cache segment {1}", responseType, cacheSegmentForCache);
+                        cache.Flush(cacheSegmentForCache, responseType);
                     }
                 }
 
                 var enableClientCachingAttribute = request.GetCustomAttribute<EnableClientCachingAttribute>();
-                if (enableClientCachingAttribute != null)
-                {
-                    var cacheKey = request.GetCacheKey();
+                if (enableClientCachingAttribute == null) continue;
 
-                    string cacheSegment = null;
-                    var cacheSegmentAttribute = request.GetCustomAttribute<CacheSegmentAttribute>();
-                    if (cacheSegmentAttribute != null)
-                        cacheSegment = cacheSegmentAttribute.GetCacheSegment(request);
+                var cacheKey = request.GetCacheKey();
 
-                    Logger.DebugFormat("Testing cache for {0}: segment {1} - cacheKey: {2}", request, cacheSegment, cacheKey);
-                    var retrievedFromCache = (Response)cache.Get(cacheSegment, request.GetResponseType(), cacheKey);
-                    if (retrievedFromCache != null)
-                    {
-                        Logger.DebugFormat("Cache hit for cacheKey {0}: responding with {1}", cacheKey, retrievedFromCache);
-                        responsesGroup[request] = retrievedFromCache;
-                        requestsToDelete.Add(request);
-                    }
-                }
+                string cacheSegment = null;
+                var cacheSegmentAttribute = request.GetCustomAttribute<CacheSegmentAttribute>();
+                if (cacheSegmentAttribute != null)
+                    cacheSegment = cacheSegmentAttribute.GetCacheSegment(request);
+
+                Logger.DebugFormat("Testing cache for {0}: segment {1} - cacheKey: {2}", request, cacheSegment, cacheKey);
+                var retrievedFromCache = (Response)cache.Get(cacheSegment, request.GetResponseType(), cacheKey);
+                if (retrievedFromCache == null) continue;
+
+                Logger.DebugFormat("Cache hit for cacheKey {0}: responding with {1}", cacheKey, retrievedFromCache);
+                responsesGroup[request] = retrievedFromCache;
+                requestsToDelete.Add(request);
             }
 
             foreach (var request in requestsToDelete)
@@ -78,18 +76,17 @@ namespace Colombo.Interceptors
             foreach (var request in nextInvocation.Requests)
             {
                 var enableClientCachingAttribute = request.GetCustomAttribute<EnableClientCachingAttribute>();
-                if (enableClientCachingAttribute != null)
-                {
-                    var cacheKey = request.GetCacheKey();
+                if (enableClientCachingAttribute == null) continue;
 
-                    string cacheSegment = null;
-                    var cacheSegmentAttribute = request.GetCustomAttribute<CacheSegmentAttribute>();
-                    if (cacheSegmentAttribute != null)
-                        cacheSegment = cacheSegmentAttribute.GetCacheSegment(request);
+                var cacheKey = request.GetCacheKey();
 
-                    Logger.DebugFormat("Caching {0} in segment {1} with cacheKey {2} for {3}", request, cacheSegment, cacheKey, enableClientCachingAttribute.Duration);
-                    cache.Store(cacheSegment, cacheKey, nextInvocation.Responses[request], enableClientCachingAttribute.Duration);
-                }
+                string cacheSegment = null;
+                var cacheSegmentAttribute = request.GetCustomAttribute<CacheSegmentAttribute>();
+                if (cacheSegmentAttribute != null)
+                    cacheSegment = cacheSegmentAttribute.GetCacheSegment(request);
+
+                Logger.DebugFormat("Caching {0} in segment {1} with cacheKey {2} for {3}", request, cacheSegment, cacheKey, enableClientCachingAttribute.Duration);
+                cache.Store(cacheSegment, cacheKey, nextInvocation.Responses[request], enableClientCachingAttribute.Duration);
             }
 
             if (responsesGroup.Count > 0)

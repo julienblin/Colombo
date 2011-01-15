@@ -9,10 +9,6 @@ namespace Colombo
     [DataContract]
     public abstract class BaseMessage
     {
-        protected BaseMessage()
-        {
-        }
-
         private Guid correlationGuid = Guid.NewGuid();
         /// <summary>
         /// Represents an identifier that could relate several messages together.

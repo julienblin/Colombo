@@ -16,17 +16,9 @@ namespace Colombo.Interceptors
 
         private PerfCounterFactory perfCounterFactory;
 
-        protected PerfCounterFactory PerfCounterFactory
+        private PerfCounterFactory PerfCounterFactory
         {
-            get
-            {
-                if (perfCounterFactory == null)
-                {
-                    perfCounterFactory = new PerfCounterFactory();
-                    perfCounterFactory.Logger = Logger;
-                }
-                return perfCounterFactory;
-            }
+            get { return perfCounterFactory ?? (perfCounterFactory = new PerfCounterFactory {Logger = Logger}); }
         }
 
         public void Intercept(IColomboRequestHandleInvocation invocation)

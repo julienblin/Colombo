@@ -10,13 +10,6 @@ namespace Colombo.Impl.NotificationHandle
     /// </summary>
     public class KernelNotificationHandlerFactory : INotificationHandlerFactory
     {
-        private ILogger logger = NullLogger.Instance;
-        public ILogger Logger
-        {
-            get { return logger; }
-            set { logger = value; }
-        }
-
         private readonly IKernel kernel;
 
         public KernelNotificationHandlerFactory(IKernel kernel)
@@ -29,7 +22,7 @@ namespace Colombo.Impl.NotificationHandle
 
         public bool CanCreateNotificationHandlerFor(Notification notification)
         {
-            if (notification == null) throw new ArgumentNullException("reqnotificationuest");
+            if (notification == null) throw new ArgumentNullException("notification");
             Contract.EndContractBlock();
 
             var requestNotificationType = CreateNotificationHandlerTypeFrom(notification);
@@ -38,7 +31,7 @@ namespace Colombo.Impl.NotificationHandle
 
         public INotificationHandler[] CreateNotificationHandlersFor(Notification notification)
         {
-            if (notification == null) throw new ArgumentNullException("reqnotificationuest");
+            if (notification == null) throw new ArgumentNullException("notification");
             Contract.EndContractBlock();
 
             var requestNotificationType = CreateNotificationHandlerTypeFrom(notification);

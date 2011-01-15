@@ -65,10 +65,7 @@ namespace Colombo.Impl.Send
             var tasksProcessorAssociation = new Dictionary<IRequestProcessor, Task<ResponsesGroup>>();
             foreach (var processor in requestProcessorMapping.Keys)
             {
-                var task = Task.Factory.StartNew<ResponsesGroup>((proc) => 
-                    {
-                        return ((IRequestProcessor)proc).Process(requestProcessorMapping[(IRequestProcessor)proc].ToArray());
-                    },
+                var task = Task.Factory.StartNew(proc => ((IRequestProcessor)proc).Process(requestProcessorMapping[(IRequestProcessor)proc].ToArray()),
                     processor
                 );
                 tasks.Add(task);
@@ -91,7 +88,7 @@ namespace Colombo.Impl.Send
 
             foreach (var request in Requests)
             {
-                var processorAndRequestsThatProcessedTheRequest = requestProcessorMapping.Where((pair) => pair.Value.Contains(request)).First();
+                var processorAndRequestsThatProcessedTheRequest = requestProcessorMapping.Where(pair => pair.Value.Contains(request)).First();
                 var taskThatExecutedTheRequest = tasksProcessorAssociation[processorAndRequestsThatProcessedTheRequest.Key];
                 Responses[request] = taskThatExecutedTheRequest.Result[request];
             }

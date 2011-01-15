@@ -34,14 +34,14 @@ namespace Colombo.Wcf
                 var inputMessage = new MessageDescription(messageDescriptionBase + baseOperationName, MessageDirection.Input);
                 inputMessage.Body.WrapperName = baseOperationName;
                 inputMessage.Body.WrapperNamespace = WcfServices.Namespace;
-                var messagePartDescription = new MessagePartDescription(requestType.Name, WcfServices.Namespace);
-                messagePartDescription.Type = requestType;
+                var messagePartDescription = new MessagePartDescription(requestType.Name, WcfServices.Namespace)
+                                                 {Type = requestType};
                 inputMessage.Body.Parts.Add(messagePartDescription);
                 operationDescription.Messages.Add(inputMessage);
 
                 var outputMessage = new MessageDescription(messageDescriptionBase + baseOperationName + "Response", MessageDirection.Output);
-                outputMessage.Body.ReturnValue = new MessagePartDescription(baseOperationName + "Result", WcfServices.Namespace);
-                outputMessage.Body.ReturnValue.Type = responseType;
+                outputMessage.Body.ReturnValue = new MessagePartDescription(baseOperationName + "Result", WcfServices.Namespace)
+                                                     {Type = responseType};
                 outputMessage.Body.WrapperName = baseOperationName + "Response";
                 outputMessage.Body.WrapperNamespace = WcfServices.Namespace;
                 operationDescription.Messages.Add(outputMessage);

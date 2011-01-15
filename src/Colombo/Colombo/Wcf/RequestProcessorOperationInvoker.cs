@@ -14,13 +14,13 @@ namespace Colombo.Wcf
 
         public object[] AllocateInputs()
         {
-            return new object[] { Activator.CreateInstance(requestType) };
+            return new[] { Activator.CreateInstance(requestType) };
         }
 
         public object Invoke(object instance, object[] inputs, out object[] outputs)
         {
             var request = (BaseRequest)inputs[0];
-            var responses = WcfServices.ProcessLocally(new BaseRequest[] { request });
+            var responses = WcfServices.ProcessLocally(new[] { request });
             outputs = new object[0];
             return responses[0];
         }

@@ -16,7 +16,7 @@ namespace Colombo.Interceptors
             set { logger = value; }
         }
 
-        bool testPerfCountersCreated = false;
+        bool testPerfCountersCreated;
 
         public PerformanceCounter GetPerfCounter(PerfCounter counter, string instanceName, bool readOnly = false)
         {
@@ -85,28 +85,39 @@ namespace Colombo.Interceptors
             {
                 var counters = new CounterCreationDataCollection();
 
-                var numberOfRequestsHandled = new CounterCreationData();
-                numberOfRequestsHandled.CounterName = @"# requests handled";
-                numberOfRequestsHandled.CounterHelp = @"Total number of requests handled";
-                numberOfRequestsHandled.CounterType = PerformanceCounterType.NumberOfItems32;
+                var numberOfRequestsHandled = new CounterCreationData
+                                                  {
+                                                      CounterName = @"# requests handled",
+                                                      CounterHelp = @"Total number of requests handled",
+                                                      CounterType = PerformanceCounterType.NumberOfItems32
+                                                  };
                 counters.Add(numberOfRequestsHandled);
 
-                var numberOfRequestsHandledPerSec = new CounterCreationData();
-                numberOfRequestsHandledPerSec.CounterName = @"# requests handled / sec";
-                numberOfRequestsHandledPerSec.CounterHelp = @"Number of requests handled per second";
-                numberOfRequestsHandledPerSec.CounterType = PerformanceCounterType.RateOfCountsPerSecond32;
+                var numberOfRequestsHandledPerSec = new CounterCreationData
+                                                        {
+                                                            CounterName = @"# requests handled / sec",
+                                                            CounterHelp = @"Number of requests handled per second",
+                                                            CounterType = PerformanceCounterType.RateOfCountsPerSecond32
+                                                        };
                 counters.Add(numberOfRequestsHandledPerSec);
 
-                var averageDurationForRequestHandling = new CounterCreationData();
-                averageDurationForRequestHandling.CounterName = @"average time per request handling";
-                averageDurationForRequestHandling.CounterHelp = @"Average time spent handling (processing) a request";
-                averageDurationForRequestHandling.CounterType = PerformanceCounterType.AverageTimer32;
+                var averageDurationForRequestHandling = new CounterCreationData
+                                                            {
+                                                                CounterName = @"average time per request handling",
+                                                                CounterHelp =
+                                                                    @"Average time spent handling (processing) a request",
+                                                                CounterType = PerformanceCounterType.AverageTimer32
+                                                            };
                 counters.Add(averageDurationForRequestHandling);
 
-                var averageDurationForRequestHandlingBase = new CounterCreationData();
-                averageDurationForRequestHandlingBase.CounterName = @"average time per request handling base";
-                averageDurationForRequestHandlingBase.CounterHelp = @"Average time spent handling (processing) a request base";
-                averageDurationForRequestHandlingBase.CounterType = PerformanceCounterType.AverageBase;
+                var averageDurationForRequestHandlingBase = new CounterCreationData
+                                                                {
+                                                                    CounterName =
+                                                                        @"average time per request handling base",
+                                                                    CounterHelp =
+                                                                        @"Average time spent handling (processing) a request base",
+                                                                    CounterType = PerformanceCounterType.AverageBase
+                                                                };
                 counters.Add(averageDurationForRequestHandlingBase);
 
                 PerformanceCounterCategory.Create(
@@ -121,28 +132,38 @@ namespace Colombo.Interceptors
             {
                 var counters = new CounterCreationDataCollection();
 
-                var numberOfMessageSent = new CounterCreationData();
-                numberOfMessageSent.CounterName = @"# messages sent";
-                numberOfMessageSent.CounterHelp = @"Total number of messages sent";
-                numberOfMessageSent.CounterType = PerformanceCounterType.NumberOfItems32;
+                var numberOfMessageSent = new CounterCreationData
+                                              {
+                                                  CounterName = @"# messages sent",
+                                                  CounterHelp = @"Total number of messages sent",
+                                                  CounterType = PerformanceCounterType.NumberOfItems32
+                                              };
                 counters.Add(numberOfMessageSent);
 
-                var numberOfMessageSentPerSec = new CounterCreationData();
-                numberOfMessageSentPerSec.CounterName = @"# messages sent / sec";
-                numberOfMessageSentPerSec.CounterHelp = @"Number of messages sent per second";
-                numberOfMessageSentPerSec.CounterType = PerformanceCounterType.RateOfCountsPerSecond32;
+                var numberOfMessageSentPerSec = new CounterCreationData
+                                                    {
+                                                        CounterName = @"# messages sent / sec",
+                                                        CounterHelp = @"Number of messages sent per second",
+                                                        CounterType = PerformanceCounterType.RateOfCountsPerSecond32
+                                                    };
                 counters.Add(numberOfMessageSentPerSec);
 
-                var averageDurationForMessageSending = new CounterCreationData();
-                averageDurationForMessageSending.CounterName = @"average time per message sending";
-                averageDurationForMessageSending.CounterHelp = @"Average time spent sending messages";
-                averageDurationForMessageSending.CounterType = PerformanceCounterType.AverageTimer32;
+                var averageDurationForMessageSending = new CounterCreationData
+                                                           {
+                                                               CounterName = @"average time per message sending",
+                                                               CounterHelp = @"Average time spent sending messages",
+                                                               CounterType = PerformanceCounterType.AverageTimer32
+                                                           };
                 counters.Add(averageDurationForMessageSending);
 
-                var averageDurationForMessageSendingBase = new CounterCreationData();
-                averageDurationForMessageSendingBase.CounterName = @"average time per message sending base";
-                averageDurationForMessageSendingBase.CounterHelp = @"Average time spent sending messages base";
-                averageDurationForMessageSendingBase.CounterType = PerformanceCounterType.AverageBase;
+                var averageDurationForMessageSendingBase = new CounterCreationData
+                                                               {
+                                                                   CounterName =
+                                                                       @"average time per message sending base",
+                                                                   CounterHelp =
+                                                                       @"Average time spent sending messages base",
+                                                                   CounterType = PerformanceCounterType.AverageBase
+                                                               };
                 counters.Add(averageDurationForMessageSendingBase);
 
                 PerformanceCounterCategory.Create(

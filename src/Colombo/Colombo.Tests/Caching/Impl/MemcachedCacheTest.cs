@@ -22,7 +22,8 @@ namespace Colombo.Tests.Caching.Impl
         public void SetUp()
         {
             var memcachedServerPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "memcached.exe");
-            memcachedServerProcess = Process.Start(memcachedServerPath);
+            var processStartInfo = new ProcessStartInfo(memcachedServerPath) { UseShellExecute = false, CreateNoWindow = true };
+            memcachedServerProcess = Process.Start(processStartInfo);
         }
 
         [Test]

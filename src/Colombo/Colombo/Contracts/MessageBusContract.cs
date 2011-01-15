@@ -45,7 +45,6 @@ namespace Colombo.Contracts
             Contract.Requires<ArgumentNullException>(request != null, "request");
             Contract.Ensures(Contract.Result<IAsyncCallback<TResponse>>() != null);
             throw new NotImplementedException();
-            throw new NotImplementedException();
         }
 
         public ResponsesGroup Send(BaseSideEffectFreeRequest request, params BaseSideEffectFreeRequest[] followingRequests)

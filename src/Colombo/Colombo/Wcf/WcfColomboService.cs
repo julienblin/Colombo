@@ -14,8 +14,7 @@ namespace Colombo.Wcf
     {
         public IAsyncResult BeginProcessAsync(BaseRequest[] requests, AsyncCallback callback, object state)
         {
-            var asyncResult = new ProcessAsyncResult(callback, state);
-            asyncResult.Requests = requests;
+            var asyncResult = new ProcessAsyncResult(callback, state) { Requests = requests };
 
             Task.Factory.StartNew(() =>
             {
@@ -42,16 +41,12 @@ namespace Colombo.Wcf
                 processResult.AsyncWaitHandle.WaitOne();
 
                 if (processResult.Exception == null)
-                {
                     return processResult.Responses;
-                }
-                else
-                {
-                    // Preserve original stack trace.
-                    var remoteStackTraceString = typeof(Exception).GetField("_remoteStackTraceString", BindingFlags.Instance | BindingFlags.NonPublic);
-                    remoteStackTraceString.SetValue(processResult.Exception, processResult.Exception.StackTrace);
-                    throw processResult.Exception;
-                }
+
+                // Preserve original stack trace.
+                var remoteStackTraceString = typeof(Exception).GetField("_remoteStackTraceString", BindingFlags.Instance | BindingFlags.NonPublic);
+                remoteStackTraceString.SetValue(processResult.Exception, processResult.Exception.StackTrace);
+                throw processResult.Exception;
             }
         }
     }

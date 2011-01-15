@@ -34,13 +34,12 @@ namespace Colombo.Wcf
 
                 alerters = value;
 
-                if (Logger.IsInfoEnabled)
-                {
-                    if (alerters.Length == 0)
-                        Logger.Info("No alerters has been registered for the WcfClientRequestProcessor.");
-                    else
-                        Logger.InfoFormat("WcfClientRequestProcessor monitoring with the following alerters: {0}", string.Join(", ", alerters.Select(x => x.GetType().Name)));
-                }
+                if (!Logger.IsInfoEnabled) return;
+
+                if (alerters.Length == 0)
+                    Logger.Info("No alerters has been registered for the WcfClientRequestProcessor.");
+                else
+                    Logger.InfoFormat("WcfClientRequestProcessor monitoring with the following alerters: {0}", string.Join(", ", alerters.Select(x => x.GetType().Name)));
             }
         }
 
@@ -98,7 +97,7 @@ namespace Colombo.Wcf
             var tasksGroupAssociation = new Dictionary<string, Task<Response[]>>();
             foreach (var requestGroup in requestsGroups)
             {
-                var task = Task.Factory.StartNew<Response[]>((g) =>
+                var task = Task.Factory.StartNew(g =>
                     {
                         var group = (IGrouping<string, BaseRequest>)g;
                         IWcfColomboService wcfService = null;
@@ -166,7 +165,7 @@ namespace Colombo.Wcf
 
         private Timer healthCheckTimer;
 
-        private int healthCheckHeartBeatInSeconds = 0;
+        private int healthCheckHeartBeatInSeconds;
 
         public int HealthCheckHeartBeatInSeconds
         {
@@ -180,13 +179,11 @@ namespace Colombo.Wcf
                     healthCheckTimer = null;
                 }
 
-                if (healthCheckHeartBeatInSeconds > 0)
-                {
-                    healthCheckTimer = new Timer(healthCheckHeartBeatInSeconds * 1000);
-                    healthCheckTimer.AutoReset = true;
-                    healthCheckTimer.Elapsed += HealthCheckTimerElapsed;
-                    healthCheckTimer.Start();
-                }
+                if (healthCheckHeartBeatInSeconds <= 0) return;
+
+                healthCheckTimer = new Timer(healthCheckHeartBeatInSeconds * 1000) {AutoReset = true};
+                healthCheckTimer.Elapsed += HealthCheckTimerElapsed;
+                healthCheckTimer.Start();
             }
         }
 

@@ -9,8 +9,7 @@ namespace Colombo
     public abstract class NotificationHandler<TNotification> : INotificationHandler<TNotification>
         where TNotification : Notification
     {
-        private TNotification notification;
-        protected TNotification Notification { get { return notification; } }
+        protected TNotification Notification { get; private set; }
 
         public void Handle(Notification notification)
         {
@@ -22,7 +21,7 @@ namespace Colombo
 
         public void Handle(TNotification notification)
         {
-            this.notification = notification;
+            Notification = notification;
             Handle();
         }
 
@@ -31,18 +30,22 @@ namespace Colombo
         protected TRequest CreateRequest<TRequest>()
             where TRequest : BaseRequest, new()
         {
-            var result = new TRequest();
-            result.CorrelationGuid = Notification.CorrelationGuid;
-            result.Context = Notification.Context;
+            var result = new TRequest
+                             {
+                                 CorrelationGuid = Notification.CorrelationGuid,
+                                 Context = Notification.Context
+                             };
             return result;
         }
 
         protected TNewNotification CreateNotification<TNewNotification>()
             where TNewNotification : Notification, new()
         {
-            var result = new TNewNotification();
-            result.CorrelationGuid = Notification.CorrelationGuid;
-            result.Context = Notification.Context;
+            var result = new TNewNotification
+                             {
+                                 CorrelationGuid = Notification.CorrelationGuid,
+                                 Context = Notification.Context
+                             };
             return result;
         }
     }

@@ -7,15 +7,15 @@ namespace Colombo.Contracts
     public abstract class AsyncCallbackContract<TResponse> : IAsyncCallback<TResponse>
         where TResponse : Response, new()
     {
-        public void Register(Action<TResponse> callback)
+        public void Register(Action<TResponse> theCallback)
         {
-            Contract.Requires<ArgumentNullException>(callback != null, "callback");
+            Contract.Requires<ArgumentNullException>(theCallback != null, "callback");
             throw new NotImplementedException();
         }
 
-        public void Register(Action<TResponse> callback, Action<Exception> errorCallback)
+        public void Register(Action<TResponse> theCallback, Action<Exception> theErrorCallback)
         {
-            Contract.Requires<ArgumentNullException>(callback != null, "callback");
+            Contract.Requires<ArgumentNullException>(theCallback != null, "callback");
             throw new NotImplementedException();
         }
     }

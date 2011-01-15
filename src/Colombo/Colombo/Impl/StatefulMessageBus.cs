@@ -9,7 +9,7 @@ namespace Colombo.Impl
 {
     public class StatefulMessageBus : IStatefulMessageBus
     {
-        private static readonly ProxyGenerator proxyGenerator = new ProxyGenerator();
+        private static readonly ProxyGenerator ProxyGenerator = new ProxyGenerator();
 
         private readonly IMessageBus messageBus;
 
@@ -30,7 +30,7 @@ namespace Colombo.Impl
             CheckNumberOfSend(false);
 
             var options = new ProxyGenerationOptions(new NonVirtualCheckProxyGenerationHook());
-            var response = proxyGenerator.CreateClassProxy<TResponse>(options, new StatefulReponseInterceptor(this, request));
+            var response = ProxyGenerator.CreateClassProxy<TResponse>(options, new StatefulReponseInterceptor(this, request));
             PendingRequests.Add(request);
 
             Contract.Assume(response != null);
@@ -40,23 +40,13 @@ namespace Colombo.Impl
         private IList<BaseSideEffectFreeRequest> pendingRequests;
         private IList<BaseSideEffectFreeRequest> PendingRequests
         {
-            get
-            {
-                if (pendingRequests == null)
-                    pendingRequests = new List<BaseSideEffectFreeRequest>();
-                return pendingRequests;
-            }
+            get { return pendingRequests ?? (pendingRequests = new List<BaseSideEffectFreeRequest>()); }
         }
 
         private IDictionary<BaseSideEffectFreeRequest, Response> receivedRequests;
         private IDictionary<BaseSideEffectFreeRequest, Response> ReceivedRequests
         {
-            get
-            {
-                if (receivedRequests == null)
-                    receivedRequests = new Dictionary<BaseSideEffectFreeRequest, Response>();
-                return receivedRequests;
-            }
+            get { return receivedRequests ?? (receivedRequests = new Dictionary<BaseSideEffectFreeRequest, Response>()); }
         }
 
         public Response GetResponseForPendingRequest(BaseSideEffectFreeRequest request)
@@ -85,12 +75,7 @@ namespace Colombo.Impl
             return ReceivedRequests[request];
         }
 
-        int numberOfSend = 0;
-
-        public int NumberOfSend
-        {
-            get { return numberOfSend; }
-        }
+        public int NumberOfSend { get; private set; }
 
         public int MaxAllowedNumberOfSend { get; set; }
 
@@ -162,7 +147,7 @@ namespace Colombo.Impl
                 throw new ColomboException(string.Format("StatefulMessageBus has already sent {0} batches of request, you cannot send more. Change MaxAllowedNumberOfSend for this instance or MaxAllowedNumberOfSendForStatefulMessageBus in facility configuration to disable this behavior (currently: {1}).", NumberOfSend, MaxAllowedNumberOfSend));
 
             if (increment)
-                ++numberOfSend;
+                ++NumberOfSend;
         }
     }
 }

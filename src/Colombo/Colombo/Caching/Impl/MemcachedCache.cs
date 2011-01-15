@@ -32,13 +32,12 @@ namespace Colombo.Caching.Impl
 
                 alerters = value;
 
-                if (Logger.IsInfoEnabled)
-                {
-                    if (alerters.Length == 0)
-                        Logger.Info("No alerters has been registered for the MemcachedCache.");
-                    else
-                        Logger.InfoFormat("MemcachedCache monitoring with the following alerters: {0}", string.Join(", ", alerters.Select(x => x.GetType().Name)));
-                }
+                if (!Logger.IsInfoEnabled) return;
+
+                if (alerters.Length == 0)
+                    Logger.Info("No alerters has been registered for the MemcachedCache.");
+                else
+                    Logger.InfoFormat("MemcachedCache monitoring with the following alerters: {0}", string.Join(", ", alerters.Select(x => x.GetType().Name)));
             }
         }
 
@@ -47,7 +46,7 @@ namespace Colombo.Caching.Impl
         private readonly SHA1 sha1 = new SHA1CryptoServiceProvider();
 
         public MemcachedCache(string serverUri)
-            : this(new string[] { serverUri })
+            : this(new[] { serverUri })
         {
         }
 

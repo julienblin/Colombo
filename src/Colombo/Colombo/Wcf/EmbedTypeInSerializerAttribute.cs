@@ -34,11 +34,10 @@ namespace Colombo.Wcf
         private static void ForceNetDataContractSerializerOperationBehavior(OperationDescription operationDescription)
         {
             var dcsOperationBehavior = operationDescription.Behaviors.Find<DataContractSerializerOperationBehavior>();
-            if (dcsOperationBehavior != null)
-            {
-                operationDescription.Behaviors.Remove(dcsOperationBehavior);
-                operationDescription.Behaviors.Add(new NetDataContractSerializerOperationBehavior(operationDescription));
-            }
+            if (dcsOperationBehavior == null) return;
+
+            operationDescription.Behaviors.Remove(dcsOperationBehavior);
+            operationDescription.Behaviors.Add(new NetDataContractSerializerOperationBehavior(operationDescription));
         }
     }
 

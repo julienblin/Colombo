@@ -12,12 +12,7 @@ namespace Colombo
         /// </summary>
         public virtual IDictionary<string, string> Context
         {
-            get
-            {
-                if (context == null)
-                    context = new Dictionary<string, string>();
-                return context;
-            }
+            get { return context ?? (context = new Dictionary<string, string>()); }
             set
             {
                 if (value == null) throw new ArgumentNullException("Context");

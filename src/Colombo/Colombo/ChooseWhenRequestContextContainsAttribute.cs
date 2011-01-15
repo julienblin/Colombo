@@ -25,8 +25,8 @@ namespace Colombo
         {
             if (value == null)
                 return request.Context.ContainsKey(key);
-            else
-                return request.Context.ContainsKey(key) && request.Context[key].Equals(value, StringComparison.InvariantCultureIgnoreCase);
+            
+            return request.Context.ContainsKey(key) && request.Context[key].Equals(value, StringComparison.InvariantCultureIgnoreCase);
         }
     }
 }
