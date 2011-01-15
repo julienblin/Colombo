@@ -4,7 +4,7 @@ using System.Diagnostics.Contracts;
 namespace Colombo
 {
     [ContractClass(typeof(Contracts.AsyncCallbackContract<>))]
-    public interface IAsyncCallback<TResponse>
+    public interface IAsyncCallback<out TResponse>
         where TResponse : Response, new()
     {
         void Register(Action<TResponse> theCallback);

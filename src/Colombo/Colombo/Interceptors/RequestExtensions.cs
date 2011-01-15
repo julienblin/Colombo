@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace Colombo
+namespace Colombo.Interceptors
 {
     public static class RequestExtensions
     {

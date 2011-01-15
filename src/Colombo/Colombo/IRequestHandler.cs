@@ -16,7 +16,7 @@ namespace Colombo
     }
 
     [ContractClass(typeof(Contracts.GenericRequestHandlerContract<,>))]
-    public interface IRequestHandler<TRequest, TResponse> : IRequestHandler
+    public interface IRequestHandler<in TRequest, out TResponse> : IRequestHandler
         where TResponse : Response, new()
         where TRequest : Request<TResponse>, new()
     {

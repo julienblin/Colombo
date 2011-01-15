@@ -7,7 +7,7 @@ namespace Colombo.Impl.Async
 {
     public class StatefulReponseInterceptor : IInterceptor
     {
-        private static readonly MethodInfo Exception_InternalPreserveStackTrace =
+        private static readonly MethodInfo ExceptionInternalPreserveStackTrace =
     typeof(Exception).GetMethod("InternalPreserveStackTrace", BindingFlags.Instance | BindingFlags.NonPublic);
 
         private readonly StatefulMessageBus statefulMessageBus;
@@ -42,7 +42,7 @@ namespace Colombo.Impl.Async
                 {
                     // Propagate the inner exception so that the proxy throws the same exception as
                     // the real object would 
-                    Exception_InternalPreserveStackTrace.Invoke(tie.InnerException, new Object[] { });
+                    ExceptionInternalPreserveStackTrace.Invoke(tie.InnerException, new Object[] { });
                     throw tie.InnerException;
                 }
             }

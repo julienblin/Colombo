@@ -7,7 +7,7 @@ namespace Colombo.Wcf
     {
         private readonly AsyncCallback callback;
         private readonly object state;
-        private ManualResetEvent manualResetEvent;
+        private readonly ManualResetEvent manualResetEvent;
 
         public ProcessAsyncResult(AsyncCallback callback, object state)
         {

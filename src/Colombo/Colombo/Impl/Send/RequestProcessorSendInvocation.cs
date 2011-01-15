@@ -77,7 +77,7 @@ namespace Colombo.Impl.Send
             }
             catch (AggregateException ex)
             {
-                var message = "An exception occured inside one or several processors";
+                const string message = "An exception occured inside one or several processors";
                 Logger.Error(message, ex);
                 throw new ColomboException(message, ex);
             }
@@ -88,7 +88,8 @@ namespace Colombo.Impl.Send
 
             foreach (var request in Requests)
             {
-                var processorAndRequestsThatProcessedTheRequest = requestProcessorMapping.Where(pair => pair.Value.Contains(request)).First();
+                BaseRequest localRequest = request;
+                var processorAndRequestsThatProcessedTheRequest = requestProcessorMapping.Where(pair => pair.Value.Contains(localRequest)).First();
                 var taskThatExecutedTheRequest = tasksProcessorAssociation[processorAndRequestsThatProcessedTheRequest.Key];
                 Responses[request] = taskThatExecutedTheRequest.Result[request];
             }

@@ -27,7 +27,7 @@ namespace Colombo.Alerts
             Contract.Assume(Requests != null);
 
             return string.Format("SLA breached for {0}: allowed {1} ms, measured {2} ms.",
-                string.Join(", ", Requests.Select(x => x.ToString())),
+                Requests == null ? "" : string.Join(", ", Requests.Select(x => x.ToString())),
                 Allowed.TotalMilliseconds,
                 Measured.TotalMilliseconds
             );

@@ -64,7 +64,7 @@ namespace Colombo.Impl
                 Task.Factory.StartNew(i => ((IColomboNotificationHandleInvocation)i).Proceed(), invoc);
         }
 
-        private IEnumerable<IColomboNotificationHandleInvocation> BuildHandleInvocationChains(Notification[] notifications)
+        private IEnumerable<IColomboNotificationHandleInvocation> BuildHandleInvocationChains(IEnumerable<Notification> notifications)
         {
             foreach (var notification in notifications)
             {

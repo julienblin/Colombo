@@ -25,11 +25,8 @@ namespace Colombo
         public virtual TResponse Handle(TRequest request)
         {
             Request = request;
-            Response = new TResponse();
-            Response.CorrelationGuid = request.CorrelationGuid;
+            Response = new TResponse { CorrelationGuid = request.CorrelationGuid };
             Handle();
-
-            Contract.Assume(Response != null);
             return Response;
         }
 

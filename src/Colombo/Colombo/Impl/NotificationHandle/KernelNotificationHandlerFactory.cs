@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
-using Castle.Core.Logging;
 using Castle.MicroKernel;
 
 namespace Colombo.Impl.NotificationHandle

@@ -9,7 +9,7 @@ namespace Colombo
     }
 
     [ContractClass(typeof(Contracts.GenericNotificationHandler<>))]
-    public interface INotificationHandler<TNotification> : INotificationHandler
+    public interface INotificationHandler<in TNotification> : INotificationHandler
         where TNotification : Notification
     {
         void Handle(TNotification notification);

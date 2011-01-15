@@ -87,7 +87,7 @@ namespace Colombo.Impl
             }
             catch (AggregateException ex)
             {
-                var message = "An exception occured inside one or several request handlers";
+                const string message = "An exception occured inside one or several request handlers";
                 Logger.Error(message, ex);
                 foreach (var innerEx in ex.InnerExceptions)
                     Logger.Error(innerEx.ToString());

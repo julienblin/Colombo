@@ -25,7 +25,7 @@ namespace Colombo
             Handle();
         }
 
-        public abstract void Handle();
+        protected abstract void Handle();
 
         protected TRequest CreateRequest<TRequest>()
             where TRequest : BaseRequest, new()

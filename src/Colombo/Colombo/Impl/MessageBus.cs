@@ -224,7 +224,6 @@ namespace Colombo.Impl
             },
             asyncCallback);
 
-            Contract.Assert(asyncCallback != null);
             return asyncCallback;
         }
 
@@ -234,8 +233,7 @@ namespace Colombo.Impl
             Contract.Assume(requestProcessors.Length != 0);
             Contract.Assume(MessageBusSendInterceptors != null);
 
-            var requestProcessorInvocation = new RequestProcessorSendInvocation(requestProcessors);
-            requestProcessorInvocation.Logger = Logger;
+            var requestProcessorInvocation = new RequestProcessorSendInvocation(requestProcessors) { Logger = Logger };
             IColomboSendInvocation currentInvocation = requestProcessorInvocation;
 
             foreach (var interceptor in MessageBusSendInterceptors.Reverse())

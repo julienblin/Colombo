@@ -20,7 +20,7 @@ namespace Colombo
         public string GetCacheSegment(BaseRequest request)
         {
             if (string.IsNullOrEmpty(Name) && string.IsNullOrEmpty(FromContextKey))
-                throw new ColomboException(string.Format("Unable to determine cache segment for {0}. You must specified either the Name or the FromContextKey member."));
+                throw new ColomboException(string.Format("Unable to determine cache segment for {0}. You must specified either the Name or the FromContextKey member.", request));
 
             if (!string.IsNullOrEmpty(FromContextKey))
             {

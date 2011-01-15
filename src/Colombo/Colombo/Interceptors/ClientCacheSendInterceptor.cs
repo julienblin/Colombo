@@ -89,15 +89,14 @@ namespace Colombo.Interceptors
                 cache.Store(cacheSegment, cacheKey, nextInvocation.Responses[request], enableClientCachingAttribute.Duration);
             }
 
-            if (responsesGroup.Count > 0)
-            {
-                if (nextInvocation.Responses == null)
-                    nextInvocation.Responses = new ResponsesGroup();
+            if (responsesGroup.Count <= 0) return;
 
-                foreach (var item in responsesGroup)
-                {
-                    nextInvocation.Responses.Add(item.Key, item.Value);
-                }
+            if (nextInvocation.Responses == null)
+                nextInvocation.Responses = new ResponsesGroup();
+
+            foreach (var item in responsesGroup)
+            {
+                nextInvocation.Responses.Add(item.Key, item.Value);
             }
         }
 

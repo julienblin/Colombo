@@ -58,16 +58,14 @@ namespace Colombo.Interceptors
                     maxSla = slaAttribute.Allowed;
             }
 
-            if (maxSla != TimeSpan.MinValue)
-            {
-                if (watch.Elapsed <= maxSla) return;
+            if (maxSla == TimeSpan.MinValue) return;
+            if (watch.Elapsed <= maxSla) return;
 
-                var alert = new SLABreachedAlert(invocation.Requests.ToArray(), maxSla, watch.Elapsed);
-                Logger.Warn(alert.ToString());
-                foreach (var alerter in Alerters)
-                {
-                    alerter.Alert(alert);
-                }
+            var alert = new SLABreachedAlert(invocation.Requests.ToArray(), maxSla, watch.Elapsed);
+            Logger.Warn(alert.ToString());
+            foreach (var alerter in Alerters)
+            {
+                alerter.Alert(alert);
             }
         }
 

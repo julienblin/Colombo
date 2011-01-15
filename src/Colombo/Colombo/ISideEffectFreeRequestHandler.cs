@@ -3,7 +3,7 @@
 namespace Colombo
 {
     [ContractClass(typeof(Contracts.GenericSideEffectFreeRequestHandler<,>))]
-    public interface ISideEffectFreeRequestHandler<TRequest, TResponse> : IRequestHandler
+    public interface ISideEffectFreeRequestHandler<in TRequest, out TResponse> : IRequestHandler
         where TResponse : Response, new()
         where TRequest : SideEffectFreeRequest<TResponse>, new()
     {

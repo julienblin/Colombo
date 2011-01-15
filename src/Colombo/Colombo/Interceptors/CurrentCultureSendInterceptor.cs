@@ -17,7 +17,7 @@ namespace Colombo.Interceptors
 
             foreach (var request in nextInvocation.Requests)
             {
-                if ((Thread.CurrentThread.CurrentUICulture != null) && (Thread.CurrentThread.CurrentUICulture != CultureInfo.InvariantCulture))
+                if ((Thread.CurrentThread.CurrentUICulture != CultureInfo.InvariantCulture))
                     request.Context[CurrentCultureConstant.CultureContextKey] = Thread.CurrentThread.CurrentUICulture.Name;
             }
 

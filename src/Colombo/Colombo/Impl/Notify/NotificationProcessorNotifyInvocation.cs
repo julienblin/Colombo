@@ -2,7 +2,6 @@
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Threading.Tasks;
-using Castle.Core.Logging;
 
 namespace Colombo.Impl.Notify
 {

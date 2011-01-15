@@ -27,8 +27,6 @@ namespace Colombo
             Request = request;
             Response = new TResponse { CorrelationGuid = request.CorrelationGuid };
             Handle();
-
-            Contract.Assume(Response != null);
             return Response;
         }
 

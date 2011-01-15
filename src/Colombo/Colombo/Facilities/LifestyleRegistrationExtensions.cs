@@ -9,7 +9,7 @@ namespace Colombo.Facilities
         /// Inside a request handling activity, resolve one instance per handling.
         /// Outside a request handling, resolve one instance per thread.
         /// </summary>
-        public static ComponentRegistration<S> PerRequestHandling<S>(this LifestyleGroup<S> @group)
+        public static ComponentRegistration<TS> PerRequestHandling<TS>(this LifestyleGroup<TS> @group)
         {
             return group.Custom<PerRequestHandlingLifestyleManager>();
         }

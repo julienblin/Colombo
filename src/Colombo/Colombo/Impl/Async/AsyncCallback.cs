@@ -8,57 +8,57 @@ namespace Colombo.Impl.Async
     {
         private readonly object syncRoot = new object();
 
-        private Action<TResponse> callback;
-        private Action<Exception> errorCallback;
-        private TResponse response;
-        private Exception exception;
+        private Action<TResponse> registeredCallback;
+        private Action<Exception> registeredErrorCallback;
+        private TResponse arrivedResponse;
+        private Exception arrivedException;
 
-        public void Register(Action<TResponse> theCallback)
+        public void Register(Action<TResponse> callback)
         {
-            if (theCallback == null) throw new ArgumentNullException("theCallback");
+            if (callback == null) throw new ArgumentNullException("callback");
             Contract.EndContractBlock();
 
-            Register(theCallback, null);
+            Register(callback, null);
         }
 
-        public void Register(Action<TResponse> theCallback, Action<Exception> theErrorCallback)
+        public void Register(Action<TResponse> callback, Action<Exception> errorCallback)
         {
-            if (theCallback == null) throw new ArgumentNullException("theCallback");
+            if (callback == null) throw new ArgumentNullException("callback");
             Contract.EndContractBlock();
 
             lock (syncRoot)
             {
-                this.callback = theCallback;
-                this.errorCallback = theErrorCallback;
+                registeredCallback = callback;
+                registeredErrorCallback = errorCallback;
                 
-                if (this.response != null)
-                    theCallback(response);
+                if (arrivedResponse != null)
+                    callback(arrivedResponse);
 
-                if (this.exception != null)
-                    if(this.errorCallback != null)
-                        theCallback(response);
+                if (arrivedException != null)
+                    if(registeredErrorCallback != null)
+                        callback(arrivedResponse);
             }
         }
 
-        internal void ResponseArrived(TResponse theResponse)
+        internal void ResponseArrived(TResponse response)
         {
             lock (syncRoot)
             {
-                if (this.callback == null)
-                    this.response = theResponse;
+                if (registeredCallback == null)
+                    arrivedResponse = response;
                 else
-                    this.callback(theResponse);
+                    registeredCallback(response);
             }
         }
 
-        internal void ExceptionArrived(Exception theException)
+        internal void ExceptionArrived(Exception exception)
         {
             lock (syncRoot)
             {
-                if (this.errorCallback == null)
-                    this.exception = theException;
+                if (registeredErrorCallback == null)
+                    arrivedException = exception;
                 else
-                    this.errorCallback(theException);
+                    registeredErrorCallback(exception);
             }
         }
     }

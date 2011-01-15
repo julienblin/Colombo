@@ -135,7 +135,7 @@ namespace Colombo.Wcf
             }
             catch (AggregateException ex)
             {
-                var message = "An exception occured inside one or several WCF endpoint";
+                const string message = "An exception occured inside one or several WCF endpoint";
                 Logger.Error(message, ex);
                 foreach (var innerEx in ex.InnerExceptions)
                     Logger.Error(innerEx.ToString());

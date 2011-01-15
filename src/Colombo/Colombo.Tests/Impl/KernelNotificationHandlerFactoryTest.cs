@@ -73,7 +73,7 @@ namespace Colombo.Tests.Impl
 
         public class TestNotificationHandler : NotificationHandler<TestNotification>
         {
-            public override void Handle()
+            protected override void Handle()
             {
                 throw new NotImplementedException();
             }
@@ -81,7 +81,7 @@ namespace Colombo.Tests.Impl
 
         public class TestNotificationHandler2 : NotificationHandler<TestNotification>
         {
-            public override void Handle()
+            protected override void Handle()
             {
                 throw new NotImplementedException();
             }

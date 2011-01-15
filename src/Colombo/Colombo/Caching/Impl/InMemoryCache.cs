@@ -4,7 +4,6 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
-using Castle.Core.Logging;
 
 namespace Colombo.Caching.Impl
 {
@@ -84,7 +83,7 @@ namespace Colombo.Caching.Impl
             {
                 var data = GetSegmentData(segment);
                 var allItemsOfType = data.Where(x => x.Value.Object.GetType().Equals(objectType)).AsParallel().ToArray();
-                Parallel.ForEach(allItemsOfType, (item) => data.Remove(item.Key));
+                Parallel.ForEach(allItemsOfType, item => data.Remove(item.Key));
             }
         }
 
@@ -117,7 +116,7 @@ namespace Colombo.Caching.Impl
                 {
                     var data = GetSegmentData(segment);
                     var allExpiredItems = data.Where(x => x.Value.Expiration < DateTime.UtcNow).AsParallel().ToArray();
-                    Parallel.ForEach(allExpiredItems, (expiredItem) => data.Remove(expiredItem.Key));
+                    Parallel.ForEach(allExpiredItems, expiredItem => data.Remove(expiredItem.Key));
                 }
             }
         }

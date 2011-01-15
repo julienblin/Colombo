@@ -11,7 +11,7 @@ namespace Colombo.Wcf
     [AttributeUsage(AttributeTargets.Interface)]
     public class AddOperationsForRequestHandlersAttribute : Attribute, IContractBehavior
     {
-        private Dictionary<string, Type> operationRequestTypeByName = new Dictionary<string, Type>();
+        private readonly Dictionary<string, Type> operationRequestTypeByName = new Dictionary<string, Type>();
 
         public void AddBindingParameters(ContractDescription contractDescription, ServiceEndpoint endpoint, BindingParameterCollection bindingParameters)
         {
@@ -30,7 +30,7 @@ namespace Colombo.Wcf
 
                 var operationDescription = new OperationDescription(baseOperationName, contractDescription);
 
-                var messageDescriptionBase = WcfServices.Namespace + "/WcfSoapService/";
+                const string messageDescriptionBase = WcfServices.Namespace + "/WcfSoapService/";
                 var inputMessage = new MessageDescription(messageDescriptionBase + baseOperationName, MessageDirection.Input);
                 inputMessage.Body.WrapperName = baseOperationName;
                 inputMessage.Body.WrapperNamespace = WcfServices.Namespace;
