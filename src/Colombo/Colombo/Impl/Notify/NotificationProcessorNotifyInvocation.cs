@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Colombo.Impl.Notify
 {
-    public class NotificationProcessorNotifyInvocation : BaseNotifyInvocation
+    internal class NotificationProcessorNotifyInvocation : BaseNotifyInvocation
     {
         private readonly INotificationProcessor[] notificationProcessors;
 

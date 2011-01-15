@@ -3,7 +3,7 @@
     /// <summary>
     /// Base class for <see cref="IColomboRequestHandleInvocation"></see>.
     /// </summary>
-    public abstract class BaseRequestHandleInvocation : IColomboRequestHandleInvocation
+    internal abstract class BaseRequestHandleInvocation : IColomboRequestHandleInvocation
     {
         public BaseRequest Request { get; set; }
 

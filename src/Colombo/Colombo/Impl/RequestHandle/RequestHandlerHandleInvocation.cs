@@ -7,7 +7,7 @@ namespace Colombo.Impl.RequestHandle
     /// <summary>
     /// An <see cref="IColomboRequestHandleInvocation"/> that can invoke <see cref="IRequestHandler"/>.
     /// </summary>
-    public class RequestHandlerHandleInvocation : BaseRequestHandleInvocation
+    internal class RequestHandlerHandleInvocation : BaseRequestHandleInvocation
     {
         private ILogger logger = NullLogger.Instance;
         public ILogger Logger

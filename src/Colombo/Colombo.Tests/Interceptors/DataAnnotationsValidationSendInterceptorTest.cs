@@ -97,7 +97,7 @@ namespace Colombo.Tests.Interceptors
                 Is.EqualTo("LastName"));
         }
 
-        public class TestHandleInvocation : BaseSendInvocation
+        internal class TestHandleInvocation : BaseSendInvocation
         {
             public override void Proceed()
             {

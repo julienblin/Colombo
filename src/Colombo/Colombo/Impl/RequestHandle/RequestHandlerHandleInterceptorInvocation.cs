@@ -3,7 +3,7 @@ using System.Diagnostics.Contracts;
 
 namespace Colombo.Impl.RequestHandle
 {
-    public class RequestHandlerHandleInterceptorInvocation : BaseRequestHandleInvocation
+    internal class RequestHandlerHandleInterceptorInvocation : BaseRequestHandleInvocation
     {
         private readonly IRequestHandlerHandleInterceptor interceptor;
         private readonly IColomboRequestHandleInvocation nextInvocation;

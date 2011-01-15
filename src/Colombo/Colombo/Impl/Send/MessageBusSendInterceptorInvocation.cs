@@ -3,7 +3,7 @@ using System.Diagnostics.Contracts;
 
 namespace Colombo.Impl.Send
 {
-    public class MessageBusSendInterceptorInvocation : BaseSendInvocation
+    internal class MessageBusSendInterceptorInvocation : BaseSendInvocation
     {
         private readonly IMessageBusSendInterceptor interceptor;
         private readonly IColomboSendInvocation nextInvocation;

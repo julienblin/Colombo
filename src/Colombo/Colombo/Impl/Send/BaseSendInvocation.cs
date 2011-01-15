@@ -5,7 +5,7 @@ namespace Colombo.Impl.Send
     /// <summary>
     /// Base class for <see cref="IColomboSendInvocation"></see>.
     /// </summary>
-    public abstract class BaseSendInvocation : IColomboSendInvocation
+    internal abstract class BaseSendInvocation : IColomboSendInvocation
     {
         public IList<BaseRequest> Requests { get; set; }
         public ResponsesGroup Responses { get; set; }

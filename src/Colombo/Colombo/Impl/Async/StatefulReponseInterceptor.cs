@@ -5,7 +5,7 @@ using Castle.DynamicProxy;
 
 namespace Colombo.Impl.Async
 {
-    public class StatefulReponseInterceptor : IInterceptor
+    internal class StatefulReponseInterceptor : IInterceptor
     {
         private static readonly MethodInfo ExceptionInternalPreserveStackTrace =
     typeof(Exception).GetMethod("InternalPreserveStackTrace", BindingFlags.Instance | BindingFlags.NonPublic);

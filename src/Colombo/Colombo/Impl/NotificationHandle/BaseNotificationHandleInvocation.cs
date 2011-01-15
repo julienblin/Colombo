@@ -1,6 +1,6 @@
 ﻿namespace Colombo.Impl.NotificationHandle
 {
-    public abstract class BaseNotificationHandleInvocation : IColomboNotificationHandleInvocation
+    internal abstract class BaseNotificationHandleInvocation : IColomboNotificationHandleInvocation
     {
         public Notification Notification { get; set; }
 

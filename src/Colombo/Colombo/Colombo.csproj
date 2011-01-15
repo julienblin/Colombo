@@ -82,6 +82,7 @@
     <Compile Include="Alerts\HealthCheckFailedAlert.cs" />
     <Compile Include="Alerts\MemcachedUnreachableAlert.cs" />
     <Compile Include="Alerts\SLABreachedAlert.cs" />
+    <Compile Include="Properties\AssemblyVisibility.cs" />
     <Compile Include="BaseMessage.cs" />
     <Compile Include="BaseRequest.cs" />
     <Compile Include="BaseSideEffectFreeRequest.cs" />

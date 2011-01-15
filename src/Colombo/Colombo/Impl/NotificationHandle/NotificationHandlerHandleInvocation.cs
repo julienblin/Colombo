@@ -3,7 +3,7 @@ using Castle.Core.Logging;
 
 namespace Colombo.Impl.NotificationHandle
 {
-    public class NotificationHandlerHandleInvocation : BaseNotificationHandleInvocation
+    internal class NotificationHandlerHandleInvocation : BaseNotificationHandleInvocation
     {
         private ILogger logger = NullLogger.Instance;
         public ILogger Logger

@@ -3,7 +3,7 @@ using System.Diagnostics.Contracts;
 
 namespace Colombo.Impl.Notify
 {
-    public class MessageBusNotifyInterceptorInvocation : BaseNotifyInvocation
+    internal class MessageBusNotifyInterceptorInvocation : BaseNotifyInvocation
     {
         private readonly IMessageBusNotifyInterceptor interceptor;
         private readonly IColomboNotifyInvocation nextInvocation;

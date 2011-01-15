@@ -10,7 +10,7 @@ namespace Colombo.Impl.Send
     /// <summary>
     /// A <see cref="IColomboSendInvocation"/> that can invoke <see cref="IRequestProcessor"/>.
     /// </summary>
-    public class RequestProcessorSendInvocation : BaseSendInvocation
+    internal class RequestProcessorSendInvocation : BaseSendInvocation
     {
         private readonly IRequestProcessor[] requestProcessors;
 

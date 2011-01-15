@@ -3,7 +3,7 @@ using System.Diagnostics.Contracts;
 
 namespace Colombo.Impl.NotificationHandle
 {
-    public class NotificationHandleInterceptorInvocation : BaseNotificationHandleInvocation
+    internal class NotificationHandleInterceptorInvocation : BaseNotificationHandleInvocation
     {
         private readonly INotificationHandleInterceptor interceptor;
         private readonly IColomboNotificationHandleInvocation nextInvocation;

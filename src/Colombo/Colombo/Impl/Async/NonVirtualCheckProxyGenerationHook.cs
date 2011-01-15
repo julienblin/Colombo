@@ -4,7 +4,7 @@ using Castle.DynamicProxy;
 
 namespace Colombo.Impl.Async
 {
-    public class NonVirtualCheckProxyGenerationHook : IProxyGenerationHook
+    internal class NonVirtualCheckProxyGenerationHook : IProxyGenerationHook
     {
         public void MethodsInspected()
         {
