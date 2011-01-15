@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 namespace Colombo.Host.Internal
@@ -43,19 +42,12 @@ namespace Colombo.Host.Internal
             return configureThisEndpointTypes[0];
         }
 
-        internal IEnumerable<Type> GetConfigureThisEndPointTypes(IEnumerable<Assembly> assemblies)
+        internal static IEnumerable<Type> GetConfigureThisEndPointTypes(IEnumerable<Assembly> assemblies)
         {
-            foreach (var assembly in assemblies)
-            {
-                foreach (var type in assembly.GetTypes().Where(t => typeof(IAmAnEndpoint).IsAssignableFrom(t)
-                                                                    && !t.IsInterface
-                                                                    && !t.IsAbstract
-                                                              )
-                        )
-                {
-                    yield return type;
-                }
-            }
+            return assemblies.SelectMany(assembly => assembly.GetTypes().Where(t => typeof(IAmAnEndpoint).IsAssignableFrom(t)
+                                                                                    && !t.IsInterface
+                                                                                    && !t.IsAbstract
+                                                         ));
         }
 
         internal IEnumerable<Assembly> GetScannableAssemblies()

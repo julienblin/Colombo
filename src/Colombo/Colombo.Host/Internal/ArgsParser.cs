@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿using System.Collections.Generic;
 using NDesk.Options;
 
 namespace Colombo.Host.Internal
 {
     internal class ArgsParser
     {
-        internal void Parse(string[] args)
+        internal void Parse(IEnumerable<string> args)
         {
-            var p = new OptionSet() {
+            var p = new OptionSet {
    	            { "h|?|help",      v => Help = v != null },
                 { "serviceName=",  v => ServiceName = v  },
                 { "displayName=",  v => DisplayName = v  },

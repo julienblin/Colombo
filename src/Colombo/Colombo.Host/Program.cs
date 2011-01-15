@@ -1,17 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Reflection;
 using System.IO;
-using System.Configuration;
-using Castle.MicroKernel.Registration;
 using Colombo.Host.Internal;
-using Castle.Windsor;
-using Topshelf.Configuration;
-using Topshelf.Configuration.Dsl;
 using Topshelf;
-
+using Topshelf.Configuration.Dsl;
 
 namespace Colombo.Host
 {

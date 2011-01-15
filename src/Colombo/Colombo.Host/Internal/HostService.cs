@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Castle.Windsor;
-using Castle.Facilities.Logging;
-using Colombo.Facilities;
-using System.ComponentModel;
-using Castle.MicroKernel.Registration;
-using System.IO;
-using Castle.Core.Logging;
-using Colombo.Wcf;
 using System.Configuration;
+using System.IO;
+using System.Linq;
+using System.ServiceModel.Configuration;
+using Castle.Core.Logging;
+using Castle.Facilities.Logging;
+using Castle.MicroKernel.Registration;
+using Castle.Windsor;
+using Colombo.Facilities;
+using Colombo.Wcf;
 
 namespace Colombo.Host.Internal
 {
@@ -19,15 +18,11 @@ namespace Colombo.Host.Internal
                                  IWantToRegisterMessageHandlers, IWantToRegisterOtherComponents, IWantToCreateServiceHosts
     {
         private IAmAnEndpoint configureThisEndpoint;
-        private IWindsorContainer container;
+        private IWindsorContainer hostContainer;
 
-        private List<System.ServiceModel.ServiceHost> serviceHosts = new List<System.ServiceModel.ServiceHost>();
+        private readonly List<System.ServiceModel.ServiceHost> serviceHosts = new List<System.ServiceModel.ServiceHost>();
 
         private ILogger logger = NullLogger.Instance;
-
-        public HostService()
-        {
-        }
 
         public DirectoryInfo BaseDirectory { get; set; }
         public Type ConfigureThisEndpointType { get; set; }
@@ -41,15 +36,15 @@ namespace Colombo.Host.Internal
 
                 var iWantToBeNotifiedWhenStartAndStop = configureThisEndpoint as IWantToBeNotifiedWhenStartAndStop;
                 if (iWantToBeNotifiedWhenStartAndStop != null)
-                    iWantToBeNotifiedWhenStartAndStop.Start(container);
+                    iWantToBeNotifiedWhenStartAndStop.Start(hostContainer);
 
                 var iWantToCreateServiceHosts = configureThisEndpoint as IWantToCreateServiceHosts ?? this;
-                serviceHosts.AddRange(iWantToCreateServiceHosts.CreateServiceHosts(container));
+                serviceHosts.AddRange(iWantToCreateServiceHosts.CreateServiceHosts(hostContainer));
 
                 foreach (var serviceHost in serviceHosts)
                     serviceHost.Open();
 
-                container.Resolve<IMessageBus>(); // Forces container resolution. Some exception from configuration mistakes can be thrown at this point.
+                hostContainer.Resolve<IMessageBus>(); // Forces container resolution. Some exception from configuration mistakes can be thrown at this point.
 
                 logger.InfoFormat("{0} host is ready to serve incoming requests from {1}...",
                     configureThisEndpoint.GetType().Assembly.GetName().Name,
@@ -69,24 +64,21 @@ namespace Colombo.Host.Internal
         {
             logger.InfoFormat("{0} host is stopping...", configureThisEndpoint.GetType().Assembly.GetName().Name);
 
-            foreach (var serviceHost in serviceHosts)
+            foreach (var serviceHost in serviceHosts.Where(serviceHost => serviceHost != null))
             {
-                if (serviceHost != null)
+                try
                 {
-                    try
-                    {
-                        serviceHost.Close();
-                    }
-                    catch
-                    {
-                        serviceHost.Abort();
-                    }
+                    serviceHost.Close();
+                }
+                catch
+                {
+                    serviceHost.Abort();
                 }
             }
 
             var iWantToBeNotifiedWhenStartAndStop = configureThisEndpoint as IWantToBeNotifiedWhenStartAndStop;
             if (iWantToBeNotifiedWhenStartAndStop != null)
-                iWantToBeNotifiedWhenStartAndStop.Stop(container);
+                iWantToBeNotifiedWhenStartAndStop.Stop(hostContainer);
 
             logger.InfoFormat("{0} host has stopped.", configureThisEndpoint.GetType().Assembly.GetName().Name);
         }
@@ -94,22 +86,22 @@ namespace Colombo.Host.Internal
         private void ConfigureContainer()
         {
             var iWantToCreateTheContainer = configureThisEndpoint as IWantToCreateTheContainer ?? this;
-            container = iWantToCreateTheContainer.CreateContainer();
+            hostContainer = iWantToCreateTheContainer.CreateContainer();
 
             var iWantToConfigureLogging = configureThisEndpoint as IWantToConfigureLogging ?? this;
-            iWantToConfigureLogging.ConfigureLogging(container);
+            iWantToConfigureLogging.ConfigureLogging(hostContainer);
 
-            if(container.Kernel.HasComponent(typeof(ILogger)))
-                logger = container.Resolve<ILogger>();
+            if(hostContainer.Kernel.HasComponent(typeof(ILogger)))
+                logger = hostContainer.Resolve<ILogger>();
 
             var iWantToConfigureColombo = configureThisEndpoint as IWantToConfigureColombo ?? this;
-            iWantToConfigureColombo.ConfigureColombo(container);
+            iWantToConfigureColombo.ConfigureColombo(hostContainer);
 
             var iWantToRegisterMessageHandlers = configureThisEndpoint as IWantToRegisterMessageHandlers ?? this;
-            iWantToRegisterMessageHandlers.RegisterMessageHandlers(container);
+            iWantToRegisterMessageHandlers.RegisterMessageHandlers(hostContainer);
 
             var iWantToRegisterOtherComponents = configureThisEndpoint as IWantToRegisterOtherComponents ?? this;
-            iWantToRegisterOtherComponents.RegisterOtherComponents(container);
+            iWantToRegisterOtherComponents.RegisterOtherComponents(hostContainer);
         }
 
         public IWindsorContainer CreateContainer()
@@ -147,36 +139,34 @@ namespace Colombo.Host.Internal
 
         public IEnumerable<System.ServiceModel.ServiceHost> CreateServiceHosts(IWindsorContainer container)
         {
-            foreach (System.ServiceModel.Configuration.ServiceElement serviceElement in WcfConfigServicesSection.Services)
+            foreach (var contract in from ServiceElement serviceElement in WcfConfigServicesSection.Services
+                                     where serviceElement.Endpoints.Count > 0
+                                     select serviceElement.Endpoints[0].Contract)
             {
-                if (serviceElement.Endpoints.Count > 0)
+                switch (contract)
                 {
-                    var contract = serviceElement.Endpoints[0].Contract;
-                    switch (contract)
-                    {
-                        case "Colombo.Wcf.IWcfColomboService":
-                            yield return new System.ServiceModel.ServiceHost(typeof(WcfColomboService));
-                            break;
-                        case "Colombo.Wcf.IWcfSoapService":
-                            yield return new System.ServiceModel.ServiceHost(typeof(WcfSoapService));
-                            break;
-                        default:
-                            throw new ColomboException(string.Format("Unrecognized contract {0}. You should try implementing IWantToCreateServiceHosts in your IAmAnEndpoint component to create ServiceHosts yourself.", contract));
-                    }
+                    case "Colombo.Wcf.IWcfColomboService":
+                        yield return new System.ServiceModel.ServiceHost(typeof(WcfColomboService));
+                        break;
+                    case "Colombo.Wcf.IWcfSoapService":
+                        yield return new System.ServiceModel.ServiceHost(typeof(WcfSoapService));
+                        break;
+                    default:
+                        throw new ColomboException(string.Format("Unrecognized contract {0}. You should try implementing IWantToCreateServiceHosts in your IAmAnEndpoint component to create ServiceHosts yourself.", contract));
                 }
             }
         }
 
-        private System.ServiceModel.Configuration.ServicesSection wcfConfigServicesSection = null;
+        private ServicesSection wcfConfigServicesSection;
 
-        public System.ServiceModel.Configuration.ServicesSection WcfConfigServicesSection
+        private ServicesSection WcfConfigServicesSection
         {
             get
             {
                 if (wcfConfigServicesSection == null)
                 {
                     var configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-                    var serviceModelGroup = System.ServiceModel.Configuration.ServiceModelSectionGroup.GetSectionGroup(configuration);
+                    var serviceModelGroup = ServiceModelSectionGroup.GetSectionGroup(configuration);
                     if (serviceModelGroup != null)
                         wcfConfigServicesSection = serviceModelGroup.Services;
                 }

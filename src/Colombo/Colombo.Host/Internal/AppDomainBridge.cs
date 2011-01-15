@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 
 namespace Colombo.Host.Internal
@@ -22,9 +19,12 @@ namespace Colombo.Host.Internal
 
         internal void Start()
         {
-            var appDomainSetup = new AppDomainSetup();
-            appDomainSetup.ApplicationBase = baseDirectory.FullName;
-            appDomainSetup.ConfigurationFile = string.Concat(configureThisEndpointType.Assembly.Location, ".config");
+            var appDomainSetup = new AppDomainSetup
+                                     {
+                                         ApplicationBase = baseDirectory.FullName,
+                                         ConfigurationFile =
+                                             string.Concat(configureThisEndpointType.Assembly.Location, ".config")
+                                     };
 
             appDomain = AppDomain.CreateDomain("HostedAppDomain", null, appDomainSetup);
             hostService = (HostService)appDomain.CreateInstanceAndUnwrap(typeof(HostService).Assembly.FullName, typeof(HostService).FullName);
