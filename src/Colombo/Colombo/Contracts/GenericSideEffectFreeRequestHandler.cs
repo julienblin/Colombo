@@ -3,6 +3,7 @@ using System.Diagnostics.Contracts;
 
 namespace Colombo.Contracts
 {
+#pragma warning disable 1591 // docs
     [ContractClassFor(typeof(ISideEffectFreeRequestHandler<,>))]
     public abstract class GenericSideEffectFreeRequestHandler<TRequest, TResponse> : ISideEffectFreeRequestHandler<TRequest, TResponse>
         where TResponse : Response, new()
@@ -30,4 +31,5 @@ namespace Colombo.Contracts
             throw new NotImplementedException();
         }
     }
+#pragma warning restore 1591
 }

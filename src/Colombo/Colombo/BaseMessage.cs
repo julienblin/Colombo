@@ -31,6 +31,9 @@ namespace Colombo
             set { utcTimestamp = value; }
         }
 
+        /// <summary>
+        /// A standard message representation : {GetType} | {CorrelationGuid} | {UtcTimestamp}
+        /// </summary>
         public override string ToString()
         {
             return string.Format("{0} | {1} | {2:yyyy-MM-dd-HH:mm:ss}", GetType().Name, CorrelationGuid, UtcTimestamp);

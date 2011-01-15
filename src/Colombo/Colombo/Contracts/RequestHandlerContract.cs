@@ -3,6 +3,7 @@ using System.Diagnostics.Contracts;
 
 namespace Colombo.Contracts
 {
+#pragma warning disable 1591 // docs
     [ContractClassFor(typeof(IRequestHandler))]
     public abstract class RequestHandlerContract : IRequestHandler
     {
@@ -25,4 +26,5 @@ namespace Colombo.Contracts
             throw new NotImplementedException();
         }
     }
+#pragma warning restore 1591
 }

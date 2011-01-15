@@ -21,6 +21,9 @@ namespace Colombo.Facilities
             get { return map ?? (map = new Dictionary<IComponentActivator, IDictionary<int?, object>>()); }
         }
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
         public override void Dispose()
         {
             foreach (var instance in Map.Values)
@@ -29,6 +32,9 @@ namespace Colombo.Facilities
             }
         }
 
+        /// <summary>
+        /// Return the component instance based on the lifestyle semantic.
+        /// </summary>
         public override object Resolve(CreationContext context)
         {
             IDictionary<int?, object> instanceTaskMap;
@@ -53,6 +59,9 @@ namespace Colombo.Facilities
             return instanceTaskMap[Task.CurrentId ?? Int32.MinValue];
         }
 
+        /// <summary>
+        /// Release the component instance based on the lifestyle semantic.
+        /// </summary>
         public override bool Release(object instance)
         {
             // Do nothing.

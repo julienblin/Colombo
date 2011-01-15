@@ -5,6 +5,7 @@ using Colombo.Wcf;
 
 namespace Colombo.Contracts
 {
+#pragma warning disable 1591 // docs
     [ContractClassFor(typeof(IWcfColomboServiceFactory))]
     public abstract class WcfServiceFactoryContract : IWcfColomboServiceFactory
     {
@@ -31,4 +32,5 @@ namespace Colombo.Contracts
             throw new NotImplementedException();
         }
     }
+#pragma warning restore 1591
 }

@@ -3,6 +3,9 @@ using Castle.MicroKernel.Registration.Lifestyle;
 
 namespace Colombo.Facilities
 {
+    /// <summary>
+    /// Static class to hold extensions method for Castle Windsor Lifestyles.
+    /// </summary>
     public static class LifestyleRegistrationExtensions
     {
         /// <summary>

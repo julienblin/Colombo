@@ -7,14 +7,24 @@ using System.Timers;
 
 namespace Colombo.Caching.Impl
 {
+    /// <summary>
+    /// Implementation of a <see cref="IColomboCache"/> that stores values in-memory.
+    /// </summary>
+    /// <seealso cref="Colombo.Facilities.ColomboFacility.EnableInMemoryCaching"/>
     public class InMemoryCache : IColomboCache
     {
+        /// <summary>
+        /// Interval in milliseconds between scavenging operations. The scavenging empty expired objects from the cache.
+        /// </summary>
         public const double ScavengingTimeInMilliseconds = 10 * 60 * 1000;
 
         private readonly object syncRoot = new object();
 
         private readonly Timer scavengingTimer;
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
         public InMemoryCache()
         {
             scavengingTimer = new Timer(ScavengingTimeInMilliseconds) {AutoReset = true};
@@ -24,6 +34,13 @@ namespace Colombo.Caching.Impl
 
         private Dictionary<string, Dictionary<string, CacheData>> segments = new Dictionary<string, Dictionary<string, CacheData>>();
 
+        /// <summary>
+        /// Store an object inside the cache.
+        /// </summary>
+        /// <param name="segment">The segment to use. Can be null for default segment.</param>
+        /// <param name="cacheKey">The key for which the object will be store. Must be unique per Cache segment.</param>
+        /// <param name="object">The object to store.</param>
+        /// <param name="duration">The duration for which the object will be valid.</param>
         public void Store(string segment, string cacheKey, object @object, TimeSpan duration)
         {
             if (string.IsNullOrEmpty(cacheKey)) throw new ArgumentNullException("cacheKey");
@@ -48,6 +65,13 @@ namespace Colombo.Caching.Impl
             }
         }
 
+        /// <summary>
+        /// Get an object from the cache.
+        /// </summary>
+        /// <param name="segment">The segment to use. Can be null for default segment.</param>
+        /// <param name="objectType">The type of the object to retrieve.</param>
+        /// <param name="cacheKey">The key associated with the object.</param>
+        /// <returns>The object if it's in the cache and no expired, null otherwise.</returns>
         public object Get(string segment, Type objectType, string cacheKey)
         {
             if (objectType == null) throw new ArgumentNullException("objectType");
@@ -74,6 +98,11 @@ namespace Colombo.Caching.Impl
             }
         }
 
+        /// <summary>
+        /// Flush all objects of a specific type in a segment.
+        /// </summary>
+        /// <param name="segment">The segment to use. Can be null for default segment.</param>
+        /// <param name="objectType">The type of the objects to flush.</param>
         public void Flush(string segment, Type objectType)
         {
             if (objectType == null) throw new ArgumentNullException("objectType");
@@ -87,6 +116,9 @@ namespace Colombo.Caching.Impl
             }
         }
 
+        /// <summary>
+        /// Flush the entire cache.
+        /// </summary>
         public void FlushAll()
         {
             lock (syncRoot)
@@ -105,10 +137,12 @@ namespace Colombo.Caching.Impl
             return segmentData;
         }
 
-
+        /// <summary>
+        /// Number of items in the cache, in all segments.
+        /// </summary>
         public int Count { get { return segments.Sum(x => x.Value.Count); } }
 
-        public void ScavengingTimerElapsed(object sender, ElapsedEventArgs e)
+        internal void ScavengingTimerElapsed(object sender, ElapsedEventArgs e)
         {
             lock (syncRoot)
             {

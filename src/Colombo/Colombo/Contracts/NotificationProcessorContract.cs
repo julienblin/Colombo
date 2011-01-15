@@ -3,6 +3,7 @@ using System.Diagnostics.Contracts;
 
 namespace Colombo.Contracts
 {
+#pragma warning disable 1591 // docs
     [ContractClassFor(typeof(INotificationProcessor))]
     public abstract class NotificationProcessorContract : INotificationProcessor
     {
@@ -12,4 +13,5 @@ namespace Colombo.Contracts
             throw new NotImplementedException();
         }
     }
+#pragma warning restore 1591
 }

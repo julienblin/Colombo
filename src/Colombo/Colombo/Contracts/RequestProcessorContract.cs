@@ -4,6 +4,7 @@ using System.Diagnostics.Contracts;
 
 namespace Colombo.Contracts
 {
+#pragma warning disable 1591 // docs
     [ContractClassFor(typeof(IRequestProcessor))]
     public abstract class RequestProcessorContract : IRequestProcessor
     {
@@ -21,4 +22,5 @@ namespace Colombo.Contracts
             throw new NotImplementedException();
         }
     }
+#pragma warning restore 1591
 }

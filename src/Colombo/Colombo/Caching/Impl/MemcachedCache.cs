@@ -12,9 +12,23 @@ using Colombo.Alerts;
 
 namespace Colombo.Caching.Impl
 {
+    /// <summary>
+    /// Implementation of a <see cref="IColomboCache"/> that stores values in a memcached server.
+    /// </summary>
+    /// <seealso cref="Colombo.Facilities.ColomboFacility.EnableMemcachedCaching"/>
+    /// <remarks>
+    /// Memcached: http://memcached.org
+    /// 
+    /// This implementation encode the keys in a non human-readable format.
+    /// This cache is fail-safe: no exceptions should be thrown even if the memcached servers are unreachable.
+    /// Only <see cref="Colombo.Alerts.MemcachedUnreachableAlert"/> will be emitted.
+    /// </remarks>
     public class MemcachedCache : IColomboCache
     {
         private ILogger logger = NullLogger.Instance;
+        /// <summary>
+        /// Logger instance.
+        /// </summary>
         public ILogger Logger
         {
             get { return logger; }
@@ -22,6 +36,10 @@ namespace Colombo.Caching.Impl
         }
 
         private IColomboAlerter[] alerters = new IColomboAlerter[0];
+        /// <summary>
+        /// List of alerters to use when Memcached servers are unreachable.
+        /// Will emit <see cref="Colombo.Alerts.MemcachedUnreachableAlert"/>.
+        /// </summary>
         public IColomboAlerter[] Alerters
         {
             get { return alerters; }
@@ -45,11 +63,19 @@ namespace Colombo.Caching.Impl
         private readonly MemcachedClient memcachedClient;
         private readonly SHA1 sha1 = new SHA1CryptoServiceProvider();
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="serverUri">Uri of the memcached server to use.</param>
         public MemcachedCache(string serverUri)
             : this(new[] { serverUri })
         {
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="servers">List of memcached servers to use.</param>
         public MemcachedCache(string[] servers)
         {
             this.servers = servers;
@@ -83,6 +109,13 @@ namespace Colombo.Caching.Impl
             return GetEncodedKey(string.Format("{0}.{1}.{2}.{3}", segment, type, currentIncrementValue, cacheKey));
         }
 
+        /// <summary>
+        /// Store an object inside the cache.
+        /// </summary>
+        /// <param name="segment">The segment to use. Can be null for default segment.</param>
+        /// <param name="cacheKey">The key for which the object will be store. Must be unique per Cache segment.</param>
+        /// <param name="object">The object to store.</param>
+        /// <param name="duration">The duration for which the object will be valid.</param>
         public void Store(string segment, string cacheKey, object @object, TimeSpan duration)
         {
             if (string.IsNullOrEmpty(cacheKey)) throw new ArgumentNullException("cacheKey");
@@ -109,6 +142,13 @@ namespace Colombo.Caching.Impl
             }
         }
 
+        /// <summary>
+        /// Get an object from the cache.
+        /// </summary>
+        /// <param name="segment">The segment to use. Can be null for default segment.</param>
+        /// <param name="objectType">The type of the object to retrieve.</param>
+        /// <param name="cacheKey">The key associated with the object.</param>
+        /// <returns>The object if it's in the cache and no expired, null otherwise.</returns>
         public object Get(string segment, Type objectType, string cacheKey)
         {
             var finalCachekey = GetFinalCacheKey(segment, objectType.FullName, cacheKey);
@@ -124,6 +164,11 @@ namespace Colombo.Caching.Impl
             }
         }
 
+        /// <summary>
+        /// Flush all objects of a specific type in a segment.
+        /// </summary>
+        /// <param name="segment">The segment to use. Can be null for default segment.</param>
+        /// <param name="objectType">The type of the objects to flush.</param>
         public void Flush(string segment, Type objectType)
         {
             if (objectType == null) throw new ArgumentNullException("objectType");
@@ -133,6 +178,9 @@ namespace Colombo.Caching.Impl
             memcachedClient.Increment(keyForCurrentIncrement, 1);
         }
 
+        /// <summary>
+        /// Flush the entire cache.
+        /// </summary>
         public void FlushAll()
         {
             memcachedClient.FlushAll();

@@ -10,21 +10,36 @@ namespace Colombo
     [Serializable]
     public class ColomboException : Exception
     {
+        /// <summary>
+        /// Constructor.
+        /// </summary>
         public ColomboException() { }
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
         public ColomboException(string message)
             : base(message)
         { }
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
         public ColomboException(string message, Exception innerException) :
             base(message, innerException)
         { }
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
         protected ColomboException(SerializationInfo info,
            StreamingContext context)
             : base(info, context)
         { }
 
+        /// <summary>
+        /// String representation of the exception.
+        /// </summary>
         public override string ToString()
         {
             if ((InnerException == null) || !(InnerException is AggregateException))

@@ -57,6 +57,9 @@ namespace Colombo
             return response;
         }
 
+        /// <summary>
+        /// <see cref="BaseMessage.ToString"/>. Adds Context information.
+        /// </summary>
         public override string ToString()
         {
             if ((Context != null) && (Context.Count > 0))
@@ -65,9 +68,10 @@ namespace Colombo
             return base.ToString();
         }
 
-        protected const int SeedPrimeNumber = 691;
-        protected const int MultiplierPrimeNumber = 397;
-
+        /// <summary>
+        /// Returns the key that is meant to be used when put in a cache.
+        /// The default implementation throws an exception, this means you must explicitly override it in Request classes.
+        /// </summary>
         public virtual string GetCacheKey()
         {
             throw new ColomboException("You must provide an implementation of GetCacheKey() to use the Cache functionnality.");

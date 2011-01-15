@@ -4,6 +4,7 @@ using Colombo.Caching;
 
 namespace Colombo.Contracts
 {
+#pragma warning disable 1591 // docs
     [ContractClassFor(typeof(IColomboCache))]
     public abstract class ColomboCacheContract : IColomboCache
     {
@@ -33,4 +34,5 @@ namespace Colombo.Contracts
             throw new NotImplementedException();
         }
     }
+#pragma warning restore 1591
 }
