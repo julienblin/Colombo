@@ -7,12 +7,19 @@ using Colombo.Impl.Async;
 
 namespace Colombo.Impl
 {
+    /// <summary>
+    /// Default implementation of <see cref="IStatefulMessageBus"/> that uses an <see cref="IMessageBus"/> to send.
+    /// </summary>
     public class StatefulMessageBus : IStatefulMessageBus
     {
         private static readonly ProxyGenerator ProxyGenerator = new ProxyGenerator();
 
         private readonly IMessageBus messageBus;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="messageBus">The inner message bus to use.</param>
         public StatefulMessageBus(IMessageBus messageBus)
         {
             if (messageBus == null) throw new ArgumentNullException("messageBus");
@@ -21,6 +28,10 @@ namespace Colombo.Impl
             this.messageBus = messageBus;
         }
 
+        /// <summary>
+        /// Return a promise of response - that is a proxy that when accessed the first time, it will send.
+        /// This allow the batching of several FutureSend together.
+        /// </summary>
         public TResponse FutureSend<TResponse>(SideEffectFreeRequest<TResponse> request)
             where TResponse : Response, new()
         {
@@ -49,7 +60,7 @@ namespace Colombo.Impl
             get { return receivedRequests ?? (receivedRequests = new Dictionary<BaseSideEffectFreeRequest, Response>()); }
         }
 
-        public Response GetResponseForPendingRequest(BaseSideEffectFreeRequest request)
+        internal Response GetResponseForPendingRequest(BaseSideEffectFreeRequest request)
         {
             if (ReceivedRequests.ContainsKey(request))
                 return ReceivedRequests[request];
@@ -75,10 +86,20 @@ namespace Colombo.Impl
             return ReceivedRequests[request];
         }
 
+        /// <summary>
+        /// The number of time this <see cref="IStatefulMessageBus"/> has already sent.
+        /// </summary>
         public int NumberOfSend { get; private set; }
 
+        /// <summary>
+        /// The maximum allowed number of send that this <see cref="IStatefulMessageBus"/> will allow.
+        /// After this quota, every attempt to send will result in a <see cref="ColomboException"/>.
+        /// </summary>
         public int MaxAllowedNumberOfSend { get; set; }
 
+        /// <summary>
+        /// Send synchronously a request and returns the response.
+        /// </summary>
         public TResponse Send<TResponse>(Request<TResponse> request)
             where TResponse : Response, new()
         {
@@ -88,6 +109,9 @@ namespace Colombo.Impl
             return messageBus.Send(request);
         }
 
+        /// <summary>
+        /// Send a request asynchronously. You must register a callback with the result to get the response or the error.
+        /// </summary>
         public IAsyncCallback<TResponse> SendAsync<TResponse>(Request<TResponse> request)
             where TResponse : Response, new()
         {
@@ -97,6 +121,9 @@ namespace Colombo.Impl
             return messageBus.SendAsync(request);
         }
 
+        /// <summary>
+        /// Send synchronously a request and returns the response.
+        /// </summary>
         public TResponse Send<TResponse>(SideEffectFreeRequest<TResponse> request)
             where TResponse : Response, new()
         {
@@ -106,6 +133,9 @@ namespace Colombo.Impl
             return messageBus.Send(request);
         }
 
+        /// <summary>
+        /// Send synchronously a request and returns the response.
+        /// </summary>
         public TResponse Send<TRequest, TResponse>(Action<TRequest> action)
             where TRequest : SideEffectFreeRequest<TResponse>, new()
             where TResponse : Response, new()
@@ -116,6 +146,9 @@ namespace Colombo.Impl
             return messageBus.Send<TRequest, TResponse>(action);
         }
 
+        /// <summary>
+        /// Send a request asynchronously. You must register a callback with the result to get the response or the error.
+        /// </summary>
         public IAsyncCallback<TResponse> SendAsync<TResponse>(SideEffectFreeRequest<TResponse> request)
             where TResponse : Response, new()
         {
@@ -125,6 +158,10 @@ namespace Colombo.Impl
             return messageBus.SendAsync(request);
         }
 
+        /// <summary>
+        /// Send synchronously, but in parallel, several requests and returns all the responses at once.
+        /// Only side effect-free requests can be parallelized.
+        /// </summary>
         public ResponsesGroup Send(BaseSideEffectFreeRequest request, params BaseSideEffectFreeRequest[] followingRequests)
         {
             if (request == null) throw new ArgumentNullException("request");
@@ -133,6 +170,9 @@ namespace Colombo.Impl
             return messageBus.Send(request, followingRequests);
         }
 
+        /// <summary>
+        /// Dispatch notifications
+        /// </summary>
         public void Notify(Notification notification, params Notification[] notifications)
         {
             if (notification == null) throw new ArgumentNullException("notification");

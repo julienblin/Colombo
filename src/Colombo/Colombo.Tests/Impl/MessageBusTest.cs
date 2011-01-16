@@ -318,8 +318,8 @@ namespace Colombo.Tests.Impl
 
             With.Mocks(mocks).ExpectingInSameOrder(() =>
             {
-                Expect.Call(interceptor1.InterceptionPriority).Return(InterceptorPrority.High);
-                Expect.Call(interceptor2.InterceptionPriority).Return(InterceptorPrority.Medium);
+                Expect.Call(interceptor1.InterceptionPriority).Return(InterceptionPrority.High);
+                Expect.Call(interceptor2.InterceptionPriority).Return(InterceptionPrority.Medium);
 
                 interceptor1.Intercept(null);
                 LastCall.IgnoreArguments().Do(new InterceptSendDelegate((invocation) =>
@@ -384,8 +384,8 @@ namespace Colombo.Tests.Impl
 
             With.Mocks(mocks).ExpectingInSameOrder(() =>
             {
-                Expect.Call(interceptor1.InterceptionPriority).Return(InterceptorPrority.Low);
-                Expect.Call(interceptor2.InterceptionPriority).Return(InterceptorPrority.High);
+                Expect.Call(interceptor1.InterceptionPriority).Return(InterceptionPrority.Low);
+                Expect.Call(interceptor2.InterceptionPriority).Return(InterceptionPrority.High);
 
                 interceptor2.Intercept(null);
                 LastCall.IgnoreArguments().Do(new InterceptSendDelegate((invocation) =>
@@ -576,8 +576,8 @@ namespace Colombo.Tests.Impl
 
             With.Mocks(mocks).Expecting(() =>
             {
-                Expect.Call(interceptor1.InterceptionPriority).Return(InterceptorPrority.Low);
-                Expect.Call(interceptor2.InterceptionPriority).Return(InterceptorPrority.High);
+                Expect.Call(interceptor1.InterceptionPriority).Return(InterceptionPrority.Low);
+                Expect.Call(interceptor2.InterceptionPriority).Return(InterceptionPrority.High);
 
                 interceptor1.Intercept(null);
                 LastCall.IgnoreArguments().Do(new InterceptNotifyDelegate((invocation) =>

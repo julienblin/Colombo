@@ -5,15 +5,25 @@ using Castle.Core.Logging;
 
 namespace Colombo.Interceptors
 {
+    /// <summary>
+    /// Interceptor that validates the request annotated with <see cref="RequiredInContextAttribute"/>.
+    /// Throws a <see cref="RequiredInContextException"/> if the key is null or empty.
+    /// </summary>
     public class RequiredInContextHandleInterceptor : IRequestHandlerHandleInterceptor
     {
         private ILogger logger = NullLogger.Instance;
+        /// <summary>
+        /// Logger
+        /// </summary>
         public ILogger Logger
         {
             get { return logger; }
             set { logger = value; }
         }
 
+        /// <summary>
+        /// Performs the validation.
+        /// </summary>
         public void Intercept(IColomboRequestHandleInvocation nextInvocation)
         {
             if (nextInvocation == null) throw new ArgumentNullException("nextInvocation");
@@ -32,9 +42,12 @@ namespace Colombo.Interceptors
             nextInvocation.Proceed();
         }
 
+        /// <summary>
+        /// Medium.
+        /// </summary>
         public int InterceptionPriority
         {
-            get { return InterceptorPrority.Medium; }
+            get { return InterceptionPrority.Medium; }
         }
 
         private void LogAndThrowError(string format, params object[] args)

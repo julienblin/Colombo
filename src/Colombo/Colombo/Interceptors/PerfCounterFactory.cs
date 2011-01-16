@@ -4,12 +4,25 @@ using Castle.Core.Logging;
 
 namespace Colombo.Interceptors
 {
+    /// <summary>
+    /// Factory that creates and returns performance counters
+    /// </summary>
     public class PerfCounterFactory
     {
+        /// <summary>
+        /// Performance counters category for the counters related to request handling.
+        /// </summary>
         public const string PerfCounterCategoryRequestHandling = @"Colombo - Requests Handling";
+
+        /// <summary>
+        /// Performance counters category for the counters related to message sending.
+        /// </summary>
         public const string PerfCounterCategoryMessageSending = @"Colombo - Messages Sending";
 
         private ILogger logger = NullLogger.Instance;
+        /// <summary>
+        /// Logger
+        /// </summary>
         public ILogger Logger
         {
             get { return logger; }
@@ -18,6 +31,9 @@ namespace Colombo.Interceptors
 
         bool testPerfCountersCreated;
 
+        /// <summary>
+        /// Returns a performance counter.
+        /// </summary>
         public PerformanceCounter GetPerfCounter(PerfCounter counter, string instanceName, bool readOnly = false)
         {
             if (!testPerfCountersCreated)
@@ -79,6 +95,10 @@ namespace Colombo.Interceptors
             return perfCounter;
         }
 
+        /// <summary>
+        /// Create the necessary performance counters in the system.
+        /// Must be run with administrator privileges.
+        /// </summary>
         public static void CreatePerfCounters()
         {
             if (!PerformanceCounterCategory.Exists(PerfCounterCategoryRequestHandling))
@@ -176,16 +196,49 @@ namespace Colombo.Interceptors
         }
     }
 
+    /// <summary>
+    /// Performance counters
+    /// </summary>
     public enum PerfCounter
     {
+        /// <summary>
+        /// Total number of requests handled
+        /// </summary>
         NumRequestsHandled,
+
+        /// <summary>
+        /// Total number of requests handled per second
+        /// </summary>
         NumRequestsHandledPerSec,
+
+        /// <summary>
+        /// Average time spent handling (processing) a request
+        /// </summary>
         AverageDurationForRequestHandling,
+
+        /// <summary>
+        /// Average time spent handling (processing) a request base
+        /// </summary>
         AverageDurationForRequestHandlingBase,
 
+        /// <summary>
+        /// Total number of messages sent
+        /// </summary>
         NumMessagesSent,
+
+        /// <summary>
+        /// Number of messages sent per second
+        /// </summary>
         NumMessagesSentPerSec,
+
+        /// <summary>
+        /// Average time spent sending messages
+        /// </summary>
         AverageDurationForMessageSending,
+
+        /// <summary>
+        /// Average time spent sending messages base
+        /// </summary>
         AverageDurationForMessageSendingBase
     }
 }

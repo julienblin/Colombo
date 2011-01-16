@@ -6,9 +6,18 @@ using Colombo.Caching;
 
 namespace Colombo.Interceptors
 {
+    /// <summary>
+    /// Interceptor that puts request in the cache when possible, and also invalidates them.
+    /// </summary>
+    /// <see cref="EnableClientCachingAttribute"/>
+    /// <see cref="CacheSegmentAttribute"/>
+    /// <see cref="InvalidateCachedInstancesOfAttribute"/>
     public class ClientCacheSendInterceptor : IMessageBusSendInterceptor
     {
         private ILogger logger = NullLogger.Instance;
+        /// <summary>
+        /// Logger
+        /// </summary>
         public ILogger Logger
         {
             get { return logger; }
@@ -17,6 +26,10 @@ namespace Colombo.Interceptors
 
         private readonly IColomboCache cache;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="cache">The cache to use</param>
         public ClientCacheSendInterceptor(IColomboCache cache)
         {
             if (cache == null) throw new ArgumentNullException("cache");
@@ -25,6 +38,11 @@ namespace Colombo.Interceptors
             this.cache = cache;
         }
 
+        /// <summary>
+        /// Puts request marked with a <see cref="EnableClientCachingAttribute"/> attribute in the cache.
+        /// The segment is determined by the <see cref="CacheSegmentAttribute"/> attribute if any, otherwise <c>null</c> will be use.
+        /// It also invalidates the cache using <see cref="InvalidateCachedInstancesOfAttribute"/>.
+        /// </summary>
         public void Intercept(IColomboSendInvocation nextInvocation)
         {
             if (nextInvocation == null) throw new ArgumentNullException("nextInvocation");
@@ -100,9 +118,12 @@ namespace Colombo.Interceptors
             }
         }
 
+        /// <summary>
+        /// Runs last in the invocation chain.
+        /// </summary>
         public int InterceptionPriority
         {
-            get { return InterceptorPrority.ReservedLow; }
+            get { return InterceptionPrority.ReservedLow; }
         }
     }
 }

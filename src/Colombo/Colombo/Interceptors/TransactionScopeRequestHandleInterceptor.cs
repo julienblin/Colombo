@@ -5,10 +5,13 @@ using System.Transactions;
 namespace Colombo.Interceptors
 {
     /// <summary>
-    /// <see cref="IRequestHandlerHandleInterceptor"/> that surrounds Handle operation with a <see cref="TransactionScope"/>.
+    /// <see cref="IRequestHandlerHandleInterceptor"/> that surrounds Handle operations for requests with a <see cref="TransactionScope"/>.
     /// </summary>
     public class TransactionScopeRequestHandleInterceptor : IRequestHandlerHandleInterceptor
     {
+        /// <summary>
+        /// Surrounds the following invocations inside a <see cref="TransactionScope"/>
+        /// </summary>
         public void Intercept(IColomboRequestHandleInvocation nextInvocation)
         {
             if (nextInvocation == null) throw new ArgumentNullException("nextInvocation");
@@ -21,9 +24,12 @@ namespace Colombo.Interceptors
             }
         }
 
+        /// <summary>
+        /// High.
+        /// </summary>
         public int InterceptionPriority
         {
-            get { return InterceptorPrority.High; }
+            get { return InterceptionPrority.High; }
         }
     }
 }

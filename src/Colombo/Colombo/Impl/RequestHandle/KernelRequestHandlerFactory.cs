@@ -12,6 +12,10 @@ namespace Colombo.Impl.RequestHandle
     {
         private readonly IKernel kernel;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="kernel">Kernel used to resolve the request handlers.</param>
         public KernelRequestHandlerFactory(IKernel kernel)
         {
             if (kernel == null) throw new ArgumentNullException("kernel");
@@ -20,6 +24,11 @@ namespace Colombo.Impl.RequestHandle
             this.kernel = kernel;
         }
 
+        /// <summary>
+        /// <c>true</c> if the factory can create a <see cref="IRequestHandler"/> to handle the request, <c>false</c> otherwise.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         public bool CanCreateRequestHandlerFor(BaseRequest request)
         {
             if (request == null) throw new ArgumentNullException("request");
@@ -29,6 +38,9 @@ namespace Colombo.Impl.RequestHandle
             return kernel.HasComponent(requestHandlerType);
         }
 
+        /// <summary>
+        /// Creates a <see cref="IRequestHandler"/> to handle the <paramref name="request"/>.
+        /// </summary>
         public IRequestHandler CreateRequestHandlerFor(BaseRequest request)
         {
             if (request == null) throw new ArgumentNullException("request");
@@ -66,6 +78,9 @@ namespace Colombo.Impl.RequestHandle
             throw new ColomboException(string.Format("Request Handler {0} not found for {1}.", requestHandlerType, request));
         }
 
+        /// <summary>
+        /// Dispose the <paramref name="requestHandler"/>.
+        /// </summary>
         public void DisposeRequestHandler(IRequestHandler requestHandler)
         {
             if (requestHandler == null) throw new ArgumentNullException("requestHandler");

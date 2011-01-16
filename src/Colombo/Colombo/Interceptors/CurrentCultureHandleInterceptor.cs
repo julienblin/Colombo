@@ -10,6 +10,9 @@ namespace Colombo.Interceptors
     /// </summary>
     public class CurrentCultureHandleInterceptor : IRequestHandlerHandleInterceptor
     {
+        /// <summary>
+        /// Sets the current culture.
+        /// </summary>
         public void Intercept(IColomboRequestHandleInvocation nextInvocation)
         {
             if (nextInvocation == null) throw new ArgumentNullException("nextInvocation");
@@ -38,9 +41,12 @@ namespace Colombo.Interceptors
             nextInvocation.Proceed();
         }
 
+        /// <summary>
+        /// Medium
+        /// </summary>
         public int InterceptionPriority
         {
-            get { return InterceptorPrority.Medium; }
+            get { return InterceptionPrority.Medium; }
         }
     }
 }

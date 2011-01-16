@@ -5,8 +5,18 @@ using System.Diagnostics.Contracts;
 
 namespace Colombo.Interceptors
 {
+    /// <summary>
+    /// Interceptor that performs Data Annotations validations before requests are sent.
+    /// The validation will fill the <see cref="ValidatedResponse.ValidationResults"/> property of a <see cref="ValidatedResponse"/>
+    /// and returns it without sending if validation errors are found.
+    /// It will throw a <see cref="ValidationException"/> if the response associated with the request is not assignable to <see cref="ValidatedResponse"/>.
+    /// </summary>
+    /// <seealso cref="DataAnnotationsValidationHandleInterceptor"/>
     public class DataAnnotationsValidationSendInterceptor : IMessageBusSendInterceptor
     {
+        /// <summary>
+        /// Performs the validations
+        /// </summary>
         public void Intercept(IColomboSendInvocation nextInvocation)
         {
             if (nextInvocation == null) throw new ArgumentNullException("nextInvocation");
@@ -51,9 +61,12 @@ namespace Colombo.Interceptors
             }
         }
 
+        /// <summary>
+        /// Low.
+        /// </summary>
         public int InterceptionPriority
         {
-            get { return InterceptorPrority.Low; }
+            get { return InterceptionPrority.Low; }
         }
     }
 }

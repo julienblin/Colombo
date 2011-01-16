@@ -109,8 +109,8 @@ namespace Colombo.Tests.Impl
 
             With.Mocks(mocks).Expecting(() =>
             {
-                Expect.Call(interceptor1.InterceptionPriority).Return(InterceptorPrority.High);
-                Expect.Call(interceptor2.InterceptionPriority).Return(InterceptorPrority.Medium);
+                Expect.Call(interceptor1.InterceptionPriority).Return(InterceptionPrority.High);
+                Expect.Call(interceptor2.InterceptionPriority).Return(InterceptionPrority.Medium);
 
                 interceptor1.Intercept(null);
                 LastCall.IgnoreArguments().Repeat.Twice().Do(new InterceptDelegate((invocation) =>

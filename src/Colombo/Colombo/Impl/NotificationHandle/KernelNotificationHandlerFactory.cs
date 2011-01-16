@@ -11,6 +11,10 @@ namespace Colombo.Impl.NotificationHandle
     {
         private readonly IKernel kernel;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="kernel">Kernel used to resolve the notification handlers.</param>
         public KernelNotificationHandlerFactory(IKernel kernel)
         {
             if (kernel == null) throw new ArgumentNullException("kernel");
@@ -19,6 +23,9 @@ namespace Colombo.Impl.NotificationHandle
             this.kernel = kernel;
         }
 
+        /// <summary>
+        /// Return true if it can create a <see cref="INotificationHandler"/> that handles the <paramref name="notification"/>, false otherwise.
+        /// </summary>
         public bool CanCreateNotificationHandlerFor(Notification notification)
         {
             if (notification == null) throw new ArgumentNullException("notification");
@@ -28,6 +35,9 @@ namespace Colombo.Impl.NotificationHandle
             return kernel.HasComponent(requestNotificationType);
         }
 
+        /// <summary>
+        /// Create the <see cref="INotificationHandler">notification handlers</see> that can handle the <paramref name="notification"/>.
+        /// </summary>
         public INotificationHandler[] CreateNotificationHandlersFor(Notification notification)
         {
             if (notification == null) throw new ArgumentNullException("notification");
@@ -37,6 +47,9 @@ namespace Colombo.Impl.NotificationHandle
             return (INotificationHandler[])kernel.ResolveAll(requestNotificationType);
         }
 
+        /// <summary>
+        /// Dispose the <paramref name="notificationHandler"/>.
+        /// </summary>
         public void DisposeNotificationHandler(INotificationHandler notificationHandler)
         {
             if (notificationHandler == null) throw new ArgumentNullException("notificationHandler");

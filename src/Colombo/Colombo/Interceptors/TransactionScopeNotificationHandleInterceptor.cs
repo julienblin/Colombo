@@ -4,8 +4,14 @@ using System.Transactions;
 
 namespace Colombo.Interceptors
 {
+    /// <summary>
+    /// <see cref="INotificationHandleInterceptor"/> that surrounds Handle operations for notifications with a <see cref="TransactionScope"/>.
+    /// </summary>
     public class TransactionScopeNotificationHandleInterceptor : INotificationHandleInterceptor
     {
+        /// <summary>
+        /// Surrounds the following invocations inside a <see cref="TransactionScope"/>
+        /// </summary>
         public void Intercept(IColomboNotificationHandleInvocation invocation)
         {
             if (invocation == null) throw new ArgumentNullException("invocation");
@@ -18,9 +24,12 @@ namespace Colombo.Interceptors
             }
         }
 
+        /// <summary>
+        /// High.
+        /// </summary>
         public int InterceptionPriority
         {
-            get { return InterceptorPrority.High; }
+            get { return InterceptionPrority.High; }
         }
     }
 }

@@ -6,10 +6,13 @@ using System.Threading;
 namespace Colombo.Interceptors
 {
     /// <summary>
-    /// <see cref="IRequestHandlerHandleInterceptor"/> that places in a specific key in Context the CurrentThread.CurrentUICulture .
+    /// <see cref="IRequestHandlerHandleInterceptor"/> that puts in a specific key in Context the CurrentThread.CurrentUICulture .
     /// </summary>
     public class CurrentCultureSendInterceptor : IMessageBusSendInterceptor
     {
+        /// <summary>
+        /// Puts the key in the Context.
+        /// </summary>
         public void Intercept(IColomboSendInvocation nextInvocation)
         {
             if (nextInvocation == null) throw new ArgumentNullException("nextInvocation");
@@ -24,9 +27,12 @@ namespace Colombo.Interceptors
             nextInvocation.Proceed();
         }
 
+        /// <summary>
+        /// Medium.
+        /// </summary>
         public int InterceptionPriority
         {
-            get { return InterceptorPrority.Medium; }
+            get { return InterceptionPrority.Medium; }
         }
     }
 }

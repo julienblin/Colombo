@@ -7,9 +7,17 @@ using Colombo.Alerts;
 
 namespace Colombo.Interceptors
 {
+    /// <summary>
+    /// Interceptor that times and validates requests marked with <see cref="SLAAttribute"/>.
+    /// It will also print the elapsed send time in Log.Debug.
+    /// Uses <see cref="IColomboAlerter"/> to emit <see cref="Colombo.Alerts.SLABreachedAlert"/> if the requests takes more time than specified.
+    /// </summary>
     public class SLASendInterceptor : IMessageBusSendInterceptor
     {
         private ILogger logger = NullLogger.Instance;
+        /// <summary>
+        /// Logger.
+        /// </summary>
         public ILogger Logger
         {
             get { return logger; }
@@ -17,6 +25,9 @@ namespace Colombo.Interceptors
         }
 
         private IColomboAlerter[] alerters = new IColomboAlerter[0];
+        /// <summary>
+        /// Alerters to use. All will be notified.
+        /// </summary>
         public IColomboAlerter[] Alerters
         {
             get { return alerters; }
@@ -36,6 +47,9 @@ namespace Colombo.Interceptors
             }
         }
 
+        /// <summary>
+        /// Measure the time spent and raise alerts.
+        /// </summary>
         public void Intercept(IColomboSendInvocation invocation)
         {
             if (invocation == null) throw new ArgumentNullException("invocation");
@@ -69,9 +83,12 @@ namespace Colombo.Interceptors
             }
         }
 
+        /// <summary>
+        /// Really high - runs firt.
+        /// </summary>
         public int InterceptionPriority
         {
-            get { return InterceptorPrority.ReservedHigh; }
+            get { return InterceptionPrority.ReservedHigh; }
         }
     }
 }

@@ -5,9 +5,17 @@ using Colombo.Caching;
 
 namespace Colombo.Interceptors
 {
+    /// <summary>
+    /// Interceptor used server-side to invalidate objects from the cache.
+    /// It does not put them in the cache, just invalidate the values.
+    /// </summary>
+    /// <see cref="InvalidateCachedInstancesOfAttribute"/>
     public class CacheHandleInterceptor : IRequestHandlerHandleInterceptor
     {
         private ILogger logger = NullLogger.Instance;
+        /// <summary>
+        /// Logger
+        /// </summary>
         public ILogger Logger
         {
             get { return logger; }
@@ -16,6 +24,10 @@ namespace Colombo.Interceptors
 
         private readonly IColomboCache cache;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="cache">The cache to use</param>
         public CacheHandleInterceptor(IColomboCache cache)
         {
             if (cache == null) throw new ArgumentNullException("cache");
@@ -24,6 +36,9 @@ namespace Colombo.Interceptors
             this.cache = cache;
         }
 
+        /// <summary>
+        /// Performs the invalidation if the request has an <see cref="InvalidateCachedInstancesOfAttribute"/> attribute.
+        /// </summary>
         public void Intercept(IColomboRequestHandleInvocation nextInvocation)
         {
             var invalidateCachedInstancesOfAttributes = nextInvocation.Request.GetCustomAttributes<InvalidateCachedInstancesOfAttribute>();
@@ -44,9 +59,12 @@ namespace Colombo.Interceptors
             nextInvocation.Proceed();
         }
 
+        /// <summary>
+        /// Runs last in the invocation chain.
+        /// </summary>
         public int InterceptionPriority
         {
-            get { return InterceptorPrority.ReservedLow; }
+            get { return InterceptionPrority.ReservedLow; }
         }
     }
 }

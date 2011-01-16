@@ -4,7 +4,7 @@ using System.Diagnostics.Contracts;
 namespace Colombo
 {
     /// <summary>
-    /// Base class for requests handlers.
+    /// Represent a component that handles requests.
     /// </summary>
     [ContractClass(typeof(Contracts.RequestHandlerContract))]
     public interface IRequestHandler

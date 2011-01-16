@@ -6,9 +6,17 @@ using Castle.Core.Logging;
 
 namespace Colombo.Interceptors
 {
+    /// <summary>
+    /// Interceptor that monitor the performance of message sending through performance counters.
+    /// Will create a specific performance counter instance per request group name.
+    /// </summary>
+    /// <seealso cref="PerfCounterHandleInterceptor"/>
     public class PerfCounterSendInterceptor : IMessageBusSendInterceptor
     {
         private ILogger logger = NullLogger.Instance;
+        /// <summary>
+        /// Logger
+        /// </summary>
         public ILogger Logger
         {
             get { return logger; }
@@ -22,6 +30,9 @@ namespace Colombo.Interceptors
             get { return perfCounterFactory ?? (perfCounterFactory = new PerfCounterFactory {Logger = Logger}); }
         }
 
+        /// <summary>
+        /// Monitor the performance.
+        /// </summary>
         public void Intercept(IColomboSendInvocation invocation)
         {
             if (invocation == null) throw new ArgumentNullException("invocation");
@@ -60,9 +71,12 @@ namespace Colombo.Interceptors
             }
         }
 
+        /// <summary>
+        /// Really high - runs first.
+        /// </summary>
         public int InterceptionPriority
         {
-            get { return InterceptorPrority.ReservedHigh; }
+            get { return InterceptionPrority.ReservedHigh; }
         }
     }
 }

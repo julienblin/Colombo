@@ -16,7 +16,7 @@ namespace Colombo
         bool CanCreateRequestHandlerFor(BaseRequest request);
 
         /// <summary>
-        /// Creates a <see cref="IRequestHandler"/> to handler the <paramref name="request"/>.
+        /// Creates a <see cref="IRequestHandler"/> to handle the <paramref name="request"/>.
         /// </summary>
         IRequestHandler CreateRequestHandlerFor(BaseRequest request);
 
