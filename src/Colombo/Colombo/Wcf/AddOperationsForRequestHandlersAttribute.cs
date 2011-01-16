@@ -22,7 +22,11 @@ namespace Colombo.Wcf
         public void AddBindingParameters(ContractDescription contractDescription, ServiceEndpoint endpoint, BindingParameterCollection bindingParameters)
         {
             // Removing the dummy operation. At this point, WCF has loaded everything it needs and doesn't need the dummy operation anymore.
-            contractDescription.Operations.Remove(contractDescription.Operations.Where(x => x.Name.Equals("DummyOperationForWCF")).First());
+            if(contractDescription.Operations.Count > 0)
+                contractDescription.Operations.Remove(contractDescription.Operations.Where(x => x.Name.Equals("DummyOperationForWCF")).First());
+
+            if (WcfServices.Kernel == null)
+                throw new ColomboException("WcfServices.Kernel is null. You must register a IKernel through the WcfServices.Kernel static attribute.");
 
             var allHandlers = WcfServices.Kernel.ResolveAll<IRequestHandler>();
 
