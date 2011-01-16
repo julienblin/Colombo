@@ -249,6 +249,19 @@ namespace Colombo.Tests.Facilities
         }
 
         [Test]
+        public void It_should_register_ExceptionsSendInterceptor()
+        {
+            var container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>();
+
+            Assert.That(container.ResolveAll<IMessageBusSendInterceptor>().Any(x => x is ExceptionsSendInterceptor));
+
+            container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>(f => f.DoNotAlertOnSendExceptions());
+            Assert.That(!container.ResolveAll<IMessageBusSendInterceptor>().Any(x => x is ExceptionsSendInterceptor));
+        }
+
+        [Test]
         public void It_should_register_PerfCounterHandlerInterceptor()
         {
             var container = new WindsorContainer();

@@ -78,6 +78,7 @@
     <Compile Include="Interceptors\CurrentCultureSendInterceptorTest.cs" />
     <Compile Include="Interceptors\DataAnnotationsValidationHandleInterceptorTest.cs" />
     <Compile Include="Interceptors\DataAnnotationsValidationSendInterceptorTest.cs" />
+    <Compile Include="Interceptors\ExceptionsSendInterceptorTest.cs" />
     <Compile Include="Interceptors\RequiredInContextHandleInterceptorTest.cs" />
     <Compile Include="Interceptors\SLASendInterceptorTest.cs" />
     <Compile Include="Interceptors\TransactionScopeNotificationHandleInterceptorTest.cs" />

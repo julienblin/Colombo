@@ -50,7 +50,8 @@ namespace Colombo.Facilities
                                                     {
             typeof(CurrentCultureSendInterceptor),
             typeof(DataAnnotationsValidationSendInterceptor),
-            typeof(SLASendInterceptor)
+            typeof(SLASendInterceptor),
+            typeof(ExceptionsSendInterceptor)
         };
 
         readonly IList<Type> requestHandlerInterceptors = new List<Type>
@@ -245,6 +246,14 @@ namespace Colombo.Facilities
         public void DoNotManageSLA()
         {
             sendInterceptors.Remove(typeof(SLASendInterceptor));
+        }
+
+        /// <summary>
+        /// Disable alerts when a send operation throws an exception.
+        /// </summary>
+        public void DoNotAlertOnSendExceptions()
+        {
+            sendInterceptors.Remove(typeof(ExceptionsSendInterceptor));
         }
 
         /// <summary>

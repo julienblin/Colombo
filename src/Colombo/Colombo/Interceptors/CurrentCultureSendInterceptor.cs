@@ -6,7 +6,7 @@ using System.Threading;
 namespace Colombo.Interceptors
 {
     /// <summary>
-    /// <see cref="IRequestHandlerHandleInterceptor"/> that puts in a specific key in Context the CurrentThread.CurrentUICulture .
+    /// <see cref="IMessageBusSendInterceptor"/> that puts in a specific key in Context the CurrentThread.CurrentUICulture .
     /// </summary>
     public class CurrentCultureSendInterceptor : IMessageBusSendInterceptor
     {

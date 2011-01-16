@@ -79,9 +79,11 @@
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="ACKResponse.cs" />
+    <Compile Include="Alerts\ExceptionInSendAlert.cs" />
     <Compile Include="Alerts\HealthCheckFailedAlert.cs" />
     <Compile Include="Alerts\MemcachedUnreachableAlert.cs" />
     <Compile Include="Alerts\SLABreachedAlert.cs" />
+    <Compile Include="Interceptors\ExceptionsSendInterceptor.cs" />
     <Compile Include="Properties\AssemblyVisibility.cs" />
     <Compile Include="BaseMessage.cs" />
     <Compile Include="BaseRequest.cs" />
