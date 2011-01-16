@@ -206,7 +206,7 @@ namespace Colombo.Wcf
             }
         }
 
-        private void HealthCheckTimerElapsed(object sender, ElapsedEventArgs e)
+        internal void HealthCheckTimerElapsed(object sender, ElapsedEventArgs e)
         {
             IWcfColomboService currentWcfService = null;
 

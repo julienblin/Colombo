@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Colombo.Alerts;
 using NUnit.Framework;
 using Rhino.Mocks;
 using Colombo.Wcf;
@@ -105,6 +106,33 @@ namespace Colombo.Tests.Wcf
             }
         }
 
+        [Test]
+        public void It_should_emit_HealthCheck_alerts_if_endpoint_failed()
+        {
+            var mocks = new MockRepository();
+
+            var wcfServiceFactory = mocks.StrictMock<IWcfColomboServiceFactory>();
+            var alerter = mocks.StrictMock<IColomboAlerter>();
+
+            var channelFactory = new ChannelFactory<IWcfColomboService>(new NetNamedPipeBinding(), new EndpointAddress("net.pipe://localhost/unknown"));
+
+            With.Mocks(mocks).Expecting(() =>
+            {
+                Expect.Call(wcfServiceFactory.CreateChannelsForAllEndPoints()).Return(new[] { channelFactory.CreateChannel() });
+                alerter.Alert(null);
+                LastCall.IgnoreArguments().Constraints(
+                    Rhino.Mocks.Constraints.Is.TypeOf(typeof(HealthCheckFailedAlert))
+                );
+            }).Verify(() =>
+            {
+                var processor = new WcfClientRequestProcessor(wcfServiceFactory);
+                processor.Logger = GetConsoleLogger();
+                processor.Alerters = new[] { alerter };
+
+                processor.HealthCheckTimerElapsed(null, null);
+            });
+        }
+
         public delegate IWcfColomboService CreateChannelDelegate(string name);
 
         public class TestRequest : Request<TestResponse>
@@ -133,14 +161,6 @@ namespace Colombo.Tests.Wcf
         )]
         public class TestWcfService1 : IWcfColomboService
         {
-            public Response[] Process(BaseRequest[] requests)
-            {
-                return new Response[] { 
-                    new TestResponseIpc { Name = ((TestRequestIPC1)requests[0]).Name },
-                    new TestResponseIpc { Name = ((TestRequestIPC1)requests[1]).Name }
-                };
-            }
-
             public IAsyncResult BeginProcessAsync(BaseRequest[] requests, AsyncCallback callback, object state)
             {
                 var asyncResult = new ProcessAsyncResult(callback, state);
@@ -179,14 +199,6 @@ namespace Colombo.Tests.Wcf
         )]
         public class TestWcfService2 : IWcfColomboService
         {
-            public Response[] Process(BaseRequest[] requests)
-            {
-                return new Response[] { 
-                    new TestResponseIpc { Name = ((TestRequestIPC2)requests[0]).Name },
-                    new TestResponseIpc { Name = ((TestRequestIPC2)requests[1]).Name }
-                };
-            }
-
             public IAsyncResult BeginProcessAsync(BaseRequest[] requests, AsyncCallback callback, object state)
             {
                 var asyncResult = new ProcessAsyncResult(callback, state);
