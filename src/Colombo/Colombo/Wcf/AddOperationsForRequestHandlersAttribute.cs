@@ -8,11 +8,17 @@ using System.ServiceModel.Dispatcher;
 
 namespace Colombo.Wcf
 {
+    /// <summary>
+    /// <see cref="IContractBehavior"/> that dynamically adds registered request handlers operations as methods on a <see cref="ServiceContractAttribute"/>
+    /// </summary>
     [AttributeUsage(AttributeTargets.Interface)]
     public class AddOperationsForRequestHandlersAttribute : Attribute, IContractBehavior
     {
         private readonly Dictionary<string, Type> operationRequestTypeByName = new Dictionary<string, Type>();
 
+        /// <summary>
+        /// Adds all the dynamic operation to the <paramref name="contractDescription"/>
+        /// </summary>
         public void AddBindingParameters(ContractDescription contractDescription, ServiceEndpoint endpoint, BindingParameterCollection bindingParameters)
         {
             // Removing the dummy operation. At this point, WCF has loaded everything it needs and doesn't need the dummy operation anymore.
@@ -53,11 +59,17 @@ namespace Colombo.Wcf
             }
         }
 
+        /// <summary>
+        /// Do nothing
+        /// </summary>
         public void ApplyClientBehavior(ContractDescription contractDescription, ServiceEndpoint endpoint, ClientRuntime clientRuntime)
         {
 
         }
 
+        /// <summary>
+        /// Binds each operation to the <see cref="RequestProcessorOperationInvoker"/> invoker.
+        /// </summary>
         public void ApplyDispatchBehavior(ContractDescription contractDescription, ServiceEndpoint endpoint, DispatchRuntime dispatchRuntime)
         {
             foreach (var operation in dispatchRuntime.Operations)
@@ -67,6 +79,9 @@ namespace Colombo.Wcf
             }
         }
 
+        /// <summary>
+        /// Do nothing
+        /// </summary>
         public void Validate(ContractDescription contractDescription, ServiceEndpoint endpoint)
         {
 

@@ -4,7 +4,10 @@ using System.Diagnostics.Contracts;
 
 namespace Colombo
 {
-    public class Notification : BaseMessage
+    /// <summary>
+    /// Base class for notifications
+    /// </summary>
+    public abstract class Notification : BaseMessage
     {
         private IDictionary<string, string> context;
         /// <summary>

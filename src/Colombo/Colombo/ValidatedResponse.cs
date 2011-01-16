@@ -3,6 +3,10 @@ using System.Runtime.Serialization;
 
 namespace Colombo
 {
+    /// <summary>
+    /// Base class for responses that contains validation information.
+    /// Based on DataAnnotations format.
+    /// </summary>
     [DataContract]
     public abstract class ValidatedResponse : Response
     {
@@ -19,6 +23,9 @@ namespace Colombo
             }
         }
 
+        /// <summary>
+        /// <c>true</c> is the request was valid, <c>false</c> otherwise.
+        /// </summary>
         public virtual bool IsValid()
         {
             return (ValidationResults.Count == 0);

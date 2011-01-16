@@ -17,6 +17,9 @@ namespace Colombo.Wcf
     public class WcfClientRequestProcessor : IRequestProcessor
     {
         private ILogger logger = NullLogger.Instance;
+        /// <summary>
+        /// Logger
+        /// </summary>
         public ILogger Logger
         {
             get { return logger; }
@@ -24,6 +27,9 @@ namespace Colombo.Wcf
         }
 
         private IColomboAlerter[] alerters = new IColomboAlerter[0];
+        /// <summary>
+        /// Alerters to use. All will be notified.
+        /// </summary>
         public IColomboAlerter[] Alerters
         {
             get { return alerters; }
@@ -45,6 +51,10 @@ namespace Colombo.Wcf
 
         private readonly IWcfColomboServiceFactory serviceFactory;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="serviceFactory"></param>
         public WcfClientRequestProcessor(IWcfColomboServiceFactory serviceFactory)
         {
             if (serviceFactory == null) throw new ArgumentNullException("serviceFactory");
@@ -53,6 +63,9 @@ namespace Colombo.Wcf
             this.serviceFactory = serviceFactory;
         }
 
+        /// <summary>
+        /// <c>true</c> if the processor can process the request, <c>false</c> otherwise.
+        /// </summary>
         public bool CanProcess(BaseRequest request)
         {
             if (request == null) throw new ArgumentNullException("request");
@@ -65,6 +78,9 @@ namespace Colombo.Wcf
             return serviceFactory.CanCreateChannelForRequestGroup(groupName);
         }
 
+        /// <summary>
+        /// Process the requests.
+        /// </summary>
         public ResponsesGroup Process(IList<BaseRequest> requests)
         {
             if (requests == null) throw new ArgumentNullException("requests");
@@ -166,7 +182,10 @@ namespace Colombo.Wcf
         private Timer healthCheckTimer;
 
         private int healthCheckHeartBeatInSeconds;
-
+        /// <summary>
+        /// Interval in seconds between health check for endpoints.
+        /// Set to 0 or a negative number to disable the check.
+        /// </summary>
         public int HealthCheckHeartBeatInSeconds
         {
             get { return healthCheckHeartBeatInSeconds; }

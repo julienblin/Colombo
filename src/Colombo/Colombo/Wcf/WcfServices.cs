@@ -6,12 +6,24 @@ using Castle.MicroKernel;
 
 namespace Colombo.Wcf
 {
+    /// <summary>
+    /// Static class that can be used by all WCF services.
+    /// </summary>
     public static class WcfServices
     {
+        /// <summary>
+        /// The namespace to use with services.
+        /// </summary>
         public const string Namespace = @"http://Colombo";
 
+        /// <summary>
+        /// Static <see cref="IKernel"/> reference. - That means when using WCF Services, only one container is allowed per AppDomain.
+        /// </summary>
         public static IKernel Kernel { get; set; }
 
+        /// <summary>
+        /// Processes the requests locally using <see cref="ILocalRequestProcessor"/>.
+        /// </summary>
         public static Response[] ProcessLocally(BaseRequest[] requests)
         {
             if (requests == null) throw new ArgumentNullException("requests");

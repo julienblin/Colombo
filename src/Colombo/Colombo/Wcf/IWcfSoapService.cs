@@ -1,7 +1,12 @@
-﻿using System.ServiceModel;
+﻿using System.Runtime.Serialization;
+using System.ServiceModel;
 
 namespace Colombo.Wcf
 {
+    /// <summary>
+    /// Service that can be exposed to maximise interoperability.
+    /// Exposes each request handler as an individual method, and ensures that the <see cref="DataContractSerializer"/> is used.
+    /// </summary>
     [ServiceContract(Namespace = WcfServices.Namespace)]
     [AddOperationsForRequestHandlers]
     public interface IWcfSoapService

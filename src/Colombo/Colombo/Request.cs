@@ -9,6 +9,10 @@ namespace Colombo
     public abstract class Request<TResponse> : BaseRequest
         where TResponse : Response, new()
     {
+        /// <summary>
+        /// Get the System.Type of the response associated with this request.
+        /// </summary>
+        /// <returns></returns>
         public override Type GetResponseType()
         {
             return typeof(TResponse);

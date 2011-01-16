@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace Colombo.Wcf
 {
+    /// <summary>
+    /// Implementation of the <see cref="IWcfColomboService"/> service.
+    /// </summary>
     [ServiceBehavior(
         IncludeExceptionDetailInFaults = true,
         ConcurrencyMode = ConcurrencyMode.Multiple,
@@ -12,6 +15,9 @@ namespace Colombo.Wcf
     )]
     public class WcfColomboService : IWcfColomboService
     {
+        /// <summary>
+        /// Process requests asynchronously.
+        /// </summary>
         public IAsyncResult BeginProcessAsync(BaseRequest[] requests, AsyncCallback callback, object state)
         {
             var asyncResult = new ProcessAsyncResult(callback, state) { Requests = requests };
@@ -34,6 +40,9 @@ namespace Colombo.Wcf
             return asyncResult;
         }
 
+        /// <summary>
+        /// Process requests asynchronously.
+        /// </summary>
         public Response[] EndProcessAsync(IAsyncResult asyncResult)
         {
             using (var processResult = asyncResult as ProcessAsyncResult)

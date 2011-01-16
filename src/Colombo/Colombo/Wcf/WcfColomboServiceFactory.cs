@@ -15,6 +15,9 @@ namespace Colombo.Wcf
     /// </summary>
     public class WcfColomboServiceFactory : IWcfColomboServiceFactory
     {
+        /// <summary>
+        /// <c>true</c> if can create a channel for the group named <paramref name="name"/>, <c>false</c> otherwise.
+        /// </summary>
         public bool CanCreateChannelForRequestGroup(string name)
         {
             if (name == null) throw new ArgumentNullException("name");
@@ -23,6 +26,10 @@ namespace Colombo.Wcf
             return (GetChannelEndpointElement(name) != null);
         }
 
+        /// <summary>
+        /// Return the address of the endpoint associated with the name <paramref name="name"/>.
+        /// Return null if not found.
+        /// </summary>
         public string GetAddressForRequestGroup(string name)
         {
             if (name == null) throw new ArgumentNullException("name");
@@ -34,6 +41,9 @@ namespace Colombo.Wcf
 
         private readonly ConcurrentDictionary<string, ChannelFactory<IWcfColomboService>> channelFactories = new ConcurrentDictionary<string, ChannelFactory<IWcfColomboService>>();
 
+        /// <summary>
+        /// Create a <see cref="IClientChannel"/> associated with the name <paramref name="name"/>.
+        /// </summary>
         public IWcfColomboService CreateChannel(string name)
         {
             if (name == null) throw new ArgumentNullException("name");
@@ -59,6 +69,9 @@ namespace Colombo.Wcf
             }
         }
 
+        /// <summary>
+        /// Create a <see cref="IClientChannel"/> for all the available endpoints.
+        /// </summary>
         public IEnumerable<IWcfColomboService> CreateChannelsForAllEndPoints()
         {
             return from ChannelEndpointElement endPoint in WcfConfigClientSection.Endpoints select CreateChannel(endPoint.Name);
