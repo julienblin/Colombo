@@ -39,6 +39,7 @@ namespace Colombo.Tests.Wcf
                 catch (Exception ex) { testedException = ex; }
             }, null);
 
+            Thread.Sleep(200);
             while (testedException == null) ;
 
             Assert.That(() => testedException,
@@ -66,6 +67,7 @@ namespace Colombo.Tests.Wcf
                 catch (Exception ex) { testedException = ex; }
             }, null);
 
+            Thread.Sleep(200);
             while (testedException == null) ;
 
             Assert.That(() => testedException,
@@ -101,6 +103,7 @@ namespace Colombo.Tests.Wcf
                     catch (Exception ex) { testedException = ex; }
                 }, null);
 
+                Thread.Sleep(200);
                 while (testedException == null) ;
 
                 Assert.That(() => testedException,
@@ -148,6 +151,7 @@ namespace Colombo.Tests.Wcf
                     responses = service.EndProcessAsync(ar);
                 }, null);
 
+                Thread.Sleep(200);
                 while (responses == null) ;
 
                 Assert.That(() => responses[0],

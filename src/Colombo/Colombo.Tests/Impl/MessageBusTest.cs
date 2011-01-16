@@ -451,7 +451,7 @@ namespace Colombo.Tests.Impl
                     Assert.AreSame(r, response);
                     callbackThreadId = Thread.CurrentThread.ManagedThreadId;
                 });
-                Thread.Sleep(200);
+                Thread.Sleep(500);
                 Assert.That(() => callbackThreadId,
                     Is.Not.EqualTo(Thread.CurrentThread.ManagedThreadId));
             });
@@ -486,7 +486,7 @@ namespace Colombo.Tests.Impl
                         Contains.Substring("Test exception"));
                     callbackThreadId = Thread.CurrentThread.ManagedThreadId;
                 });
-                Thread.Sleep(200);
+                Thread.Sleep(500);
                 Assert.That(() => callbackThreadId,
                     Is.Not.EqualTo(Thread.CurrentThread.ManagedThreadId));
             });
