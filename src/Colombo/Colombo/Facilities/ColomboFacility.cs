@@ -59,7 +59,8 @@ namespace Colombo.Facilities
             typeof(TransactionScopeRequestHandleInterceptor),
             typeof(CurrentCultureHandleInterceptor),
             typeof(RequiredInContextHandleInterceptor),
-            typeof(DataAnnotationsValidationHandleInterceptor)
+            typeof(DataAnnotationsValidationHandleInterceptor),
+            typeof(ExceptionsHandleInterceptor)
         };
 
         readonly IList<Type> notificationHandlerInterceptors = new List<Type>
@@ -249,11 +250,12 @@ namespace Colombo.Facilities
         }
 
         /// <summary>
-        /// Disable alerts when a send operation throws an exception.
+        /// Disable alerts when a operation throws an exception.
         /// </summary>
-        public void DoNotAlertOnSendExceptions()
+        public void DoNotAlertOnExceptions()
         {
             sendInterceptors.Remove(typeof(ExceptionsSendInterceptor));
+            requestHandlerInterceptors.Remove(typeof (ExceptionsHandleInterceptor));
         }
 
         /// <summary>

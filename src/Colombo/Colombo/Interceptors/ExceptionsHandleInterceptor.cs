@@ -7,9 +7,9 @@ using Colombo.Alerts;
 namespace Colombo.Interceptors
 {
     /// <summary>
-    /// <see cref="IMessageBusSendInterceptor"/> that sends <see cref="ExceptionAlert"/> when an exception occurs.
+    /// <see cref="IRequestHandlerHandleInterceptor"/> that sends <see cref="ExceptionAlert"/> when an exception occurs.
     /// </summary>
-    public class ExceptionsSendInterceptor : IMessageBusSendInterceptor
+    public class ExceptionsHandleInterceptor : IRequestHandlerHandleInterceptor
     {
         private ILogger logger = NullLogger.Instance;
         /// <summary>
@@ -47,7 +47,7 @@ namespace Colombo.Interceptors
         /// <summary>
         /// Alerts when exceptions.
         /// </summary>
-        public void Intercept(IColomboSendInvocation nextInvocation)
+        public void Intercept(IColomboRequestHandleInvocation nextInvocation)
         {
             try
             {
@@ -57,7 +57,7 @@ namespace Colombo.Interceptors
             {
                 try
                 {
-                    var alert = new ExceptionAlert(nextInvocation.Requests.ToArray(), ex);
+                    var alert = new ExceptionAlert(new[] { nextInvocation.Request }, ex);
                     Logger.Warn(alert.ToString());
                     foreach (var alerter in Alerters)
                         alerter.Alert(alert);

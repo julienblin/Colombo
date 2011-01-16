@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
+using System.Linq;
+using System.Text;
 using Castle.Core.Logging;
 using Colombo.Alerts;
 using Colombo.Interceptors;
@@ -10,7 +11,7 @@ using Rhino.Mocks;
 namespace Colombo.Tests.Interceptors
 {
     [TestFixture]
-    public class ExceptionsSendInterceptorTest : BaseTest
+    public class ExceptionsHandleInterceptorTest
     {
         [Test]
         public void It_should_not_alert_when_no_exception_occurs()
@@ -18,25 +19,23 @@ namespace Colombo.Tests.Interceptors
             var mocks = new MockRepository();
             var logger = mocks.DynamicMock<ILogger>();
 
-            var invocation = mocks.StrictMock<IColomboSendInvocation>();
-            var request1 = new TestRequest();
-            var request2 = new SLASendInterceptorTest.TestRequestSLA();
-            var requests = new List<BaseRequest> { request1, request2 };
+            var invocation = mocks.StrictMock<IColomboRequestHandleInvocation>();
+            var request = new TestRequest();
 
             var alerter1 = mocks.StrictMock<IColomboAlerter>();
 
             With.Mocks(mocks).Expecting(() =>
             {
-                SetupResult.For(invocation.Requests).Return(requests);
+                SetupResult.For(invocation.Request).Return(request);
                 invocation.Proceed();
                 LastCall.Do(new ProceedDelegate(() =>
                 {
-                    
+
                 }));
 
             }).Verify(() =>
             {
-                var interceptor = new ExceptionsSendInterceptor();
+                var interceptor = new ExceptionsHandleInterceptor();
                 interceptor.Logger = logger;
                 interceptor.Alerters = new[] { alerter1 };
                 interceptor.Intercept(invocation);
@@ -49,14 +48,12 @@ namespace Colombo.Tests.Interceptors
             var mocks = new MockRepository();
             var logger = mocks.DynamicMock<ILogger>();
 
-            var invocation = mocks.StrictMock<IColomboSendInvocation>();
-            var request1 = new TestRequest();
-            var request2 = new SLASendInterceptorTest.TestRequestSLA();
-            var requests = new List<BaseRequest> { request1, request2 };
+            var invocation = mocks.StrictMock<IColomboRequestHandleInvocation>();
+            var request = new TestRequest();
 
             With.Mocks(mocks).Expecting(() =>
             {
-                SetupResult.For(invocation.Requests).Return(requests);
+                SetupResult.For(invocation.Request).Return(request);
                 invocation.Proceed();
                 LastCall.Do(new ProceedDelegate(() =>
                 {
@@ -66,7 +63,7 @@ namespace Colombo.Tests.Interceptors
                 LastCall.IgnoreArguments();
             }).Verify(() =>
             {
-                var interceptor = new ExceptionsSendInterceptor();
+                var interceptor = new ExceptionsHandleInterceptor();
                 interceptor.Logger = logger;
                 Assert.That(() => interceptor.Intercept(invocation),
                             Throws.Exception);
@@ -79,17 +76,15 @@ namespace Colombo.Tests.Interceptors
             var mocks = new MockRepository();
             var logger = mocks.DynamicMock<ILogger>();
 
-            var invocation = mocks.StrictMock<IColomboSendInvocation>();
-            var request1 = new TestRequest();
-            var request2 = new SLASendInterceptorTest.TestRequestSLA();
-            var requests = new List<BaseRequest> { request1, request2 };
+            var invocation = mocks.StrictMock<IColomboRequestHandleInvocation>();
+            var request = new TestRequest();
 
             var alerter1 = mocks.StrictMock<IColomboAlerter>();
             var alerter2 = mocks.StrictMock<IColomboAlerter>();
 
             With.Mocks(mocks).Expecting(() =>
             {
-                SetupResult.For(invocation.Requests).Return(requests);
+                SetupResult.For(invocation.Request).Return(request);
                 invocation.Proceed();
                 LastCall.Do(new ProceedDelegate(() =>
                 {
@@ -106,7 +101,7 @@ namespace Colombo.Tests.Interceptors
                 );
             }).Verify(() =>
             {
-                var interceptor = new ExceptionsSendInterceptor();
+                var interceptor = new ExceptionsHandleInterceptor();
                 interceptor.Alerters = new[] { alerter1, alerter2 };
                 Assert.That(() => interceptor.Intercept(invocation),
                             Throws.Exception);

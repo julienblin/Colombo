@@ -4,28 +4,28 @@ using System.Linq;
 namespace Colombo.Alerts
 {
     /// <summary>
-    /// This alert means that an exception occured when sending a request.
+    /// This alert means that an exception occured.
     /// </summary>
-    public class ExceptionInSendAlert : IColomboAlert
+    public class ExceptionAlert : IColomboAlert
     {
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="requests">Requests that where sent.</param>
-        /// <param name="ex">Exception that occured during the send.</param>
-        public ExceptionInSendAlert(BaseRequest[] requests, Exception ex)
+        /// <param name="requests">Requests that where operated.</param>
+        /// <param name="ex">Exception that occured.</param>
+        public ExceptionAlert(BaseRequest[] requests, Exception ex)
         {
             Requests = requests;
             Exception = ex;
         }
 
         /// <summary>
-        /// Requests that where sent.
+        /// Requests that where operated.
         /// </summary>
         public BaseRequest[] Requests { get; private set; }
 
         /// <summary>
-        /// Exception that occured during the send.
+        /// Exception that occured.
         /// </summary>
         public Exception Exception { get; private set; }
 
@@ -34,7 +34,7 @@ namespace Colombo.Alerts
         /// </summary>
         public override string ToString()
         {
-            return string.Format("An exception occured when sending {0}. Possible reason : {1}",
+            return string.Format("An exception occured when operating {0}. Possible reason : {1}",
                 string.Join(", ", Requests.Select(x => x.ToString())),
                 Exception
             );
