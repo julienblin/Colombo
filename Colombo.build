@@ -145,7 +145,7 @@
     </copy>
   </target>
 
-  <target name="package">
+  <target name="package" depends="release">
     <delete dir="${folder.package}" includeemptydirs="true" />
     <mkdir dir="${folder.package}" />
     
@@ -183,6 +183,27 @@
       <arg value="${folder.package}\Colombo.Host\Colombo.Host.nuspec" />
       <arg line="-o &quot;${folder.package}&quot;" />
     </exec>
+
+    <zip zipfile="${folder.package}\Colombo.${version.major}.${version.minor}.${version.patch}.zip">
+      <fileset basedir="${folder.package}\Colombo\lib\.Net 4">
+        <include name="Colombo.dll" />
+        <include name="Colombo.xml" />
+      </fileset>
+      <fileset basedir="${folder.package}\Colombo.Host\lib\.Net 4">
+        <include name="Colombo.Host.exe" />
+        <include name="Colombo.Host.xml" />
+      </fileset>
+      <fileset basedir="${folder.base}\lib\">
+        <include name="Castle.Windsor/**" />
+      </fileset>
+      <fileset basedir="${folder.base}">
+        <include name="LICENCE" />
+      </fileset>
+    </zip>
+
+    <delete dir="${folder.package}\Colombo" />
+    <delete dir="${folder.package}\Colombo.Host" />
+    
   </target>
 
   <target name="build-samples" depends="release">
