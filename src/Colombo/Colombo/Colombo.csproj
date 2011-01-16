@@ -189,6 +189,8 @@
     <Compile Include="SideEffectFreeRequestHandler.cs" />
     <Compile Include="SLAAttribute.cs" />
     <Compile Include="ChooseWhenRequestContextContainsAttribute.cs" />
+    <Compile Include="UnitTestSupport\ColomboTest.cs" />
+    <Compile Include="UnitTestSupport\ColomboTestException.cs" />
     <Compile Include="ValidatedResponse.cs" />
     <Compile Include="Wcf\AddOperationsForRequestHandlersAttribute.cs" />
     <Compile Include="Wcf\EmbedTypeInSerializerAttribute.cs" />

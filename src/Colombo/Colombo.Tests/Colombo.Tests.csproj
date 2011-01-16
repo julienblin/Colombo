@@ -86,6 +86,7 @@
     <Compile Include="MessageHandlersTest.cs" />
     <Compile Include="SideEffectFreeRequestHandlerTest.cs" />
     <Compile Include="TestResponse.cs" />
+    <Compile Include="UnitTestSupport\ColomboTestTest.cs" />
     <Compile Include="Wcf\WcfClientRequestProcessorTest.cs" />
     <Compile Include="Wcf\WcfColomboServiceTest.cs" />
     <Compile Include="Wcf\WcfColomboServiceFactoryTest.cs" />
