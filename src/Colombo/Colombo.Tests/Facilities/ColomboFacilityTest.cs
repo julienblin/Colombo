@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NUnit.Framework;
-using Castle.Windsor;
-using Colombo.Facilities;
-using Colombo.Wcf;
-using System.Reflection;
+﻿using System.Linq;
 using Castle.MicroKernel;
-using Colombo.Interceptors;
-using Colombo.Impl;
-using Colombo.HealthCheck;
+using Castle.Windsor;
 using Colombo.Caching;
 using Colombo.Caching.Impl;
+using Colombo.Facilities;
+using Colombo.HealthCheck;
 using Colombo.Impl.Alerters;
+using Colombo.Interceptors;
+using Colombo.Wcf;
+using NUnit.Framework;
 
 namespace Colombo.Tests.Facilities
 {
@@ -73,7 +68,7 @@ namespace Colombo.Tests.Facilities
             Assert.That(() => container.Resolve<IStatefulMessageBus>(),
                 Is.Not.SameAs(container.Resolve<IStatefulMessageBus>()));
 
-            IRequestProcessor[] messageProcessors = container.ResolveAll<IRequestProcessor>();
+            var messageProcessors = container.ResolveAll<IRequestProcessor>();
             Assert.That(() => messageProcessors.Length,
                 Is.AtLeast(1));
             foreach (var processor in messageProcessors)
@@ -110,7 +105,7 @@ namespace Colombo.Tests.Facilities
             var container = new WindsorContainer();
             container.AddFacility<ColomboFacility>();
 
-            WcfClientRequestProcessor wcfClientMessageProcessor = (WcfClientRequestProcessor)container.ResolveAll<IRequestProcessor>().Where(x => x is WcfClientRequestProcessor).FirstOrDefault();
+            var wcfClientMessageProcessor = (WcfClientRequestProcessor)container.ResolveAll<IRequestProcessor>().Where(x => x is WcfClientRequestProcessor).FirstOrDefault();
             Assert.That(() => wcfClientMessageProcessor,
                 Is.Not.Null);
 

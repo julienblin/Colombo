@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NUnit.Framework;
-using Colombo.Host.Internal;
 using System.Linq.Expressions;
+using Colombo.Host.Internal;
+using NUnit.Framework;
 
 namespace Colombo.Host.Tests.Internal
 {

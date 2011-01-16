@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NUnit.Framework;
-using Colombo.Caching.Impl;
 using System.Threading;
+using Colombo.Caching.Impl;
+using NUnit.Framework;
 
 namespace Colombo.Tests.Caching.Impl
 {

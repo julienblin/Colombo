@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.ServiceModel;
 using Colombo.Alerts;
+using Colombo.Wcf;
 using NUnit.Framework;
 using Rhino.Mocks;
-using Colombo.Wcf;
-using System.ServiceModel;
 
 namespace Colombo.Tests.Wcf
 {
@@ -52,8 +50,8 @@ namespace Colombo.Tests.Wcf
             const string IPCAddress1 = @"net.pipe://localhost/ipctest1";
             const string IPCAddress2 = @"net.pipe://localhost/ipctest2";
             // Create named-pipe services host for testing...
-            using (ServiceHost serviceHost1 = new ServiceHost(typeof(TestWcfService1), new Uri(IPCAddress1)))
-            using (ServiceHost serviceHost2 = new ServiceHost(typeof(TestWcfService2), new Uri(IPCAddress2)))
+            using (var serviceHost1 = new ServiceHost(typeof(TestWcfService1), new Uri(IPCAddress1)))
+            using (var serviceHost2 = new ServiceHost(typeof(TestWcfService2), new Uri(IPCAddress2)))
             {
                 serviceHost1.Open();
                 serviceHost2.Open();

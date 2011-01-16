@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NUnit.Framework;
-using Colombo.Impl;
-using Rhino.Mocks;
 using Castle.MicroKernel;
 using Castle.MicroKernel.Registration;
 using Colombo.Impl.NotificationHandle;
+using NUnit.Framework;
+using Rhino.Mocks;
 
 namespace Colombo.Tests.Impl
 {

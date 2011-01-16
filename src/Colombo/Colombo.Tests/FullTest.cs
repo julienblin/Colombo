@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NUnit.Framework;
-using Castle.Windsor;
-using Colombo.Facilities;
+using System.ServiceModel;
 using Castle.Facilities.Logging;
 using Castle.MicroKernel.Registration;
-using System.ServiceModel;
+using Castle.Windsor;
+using Colombo.Facilities;
 using Colombo.Wcf;
+using NUnit.Framework;
 
 namespace Colombo.Tests
 {
@@ -33,7 +30,7 @@ namespace Colombo.Tests
                     .ImplementedBy<TestRequestIPCHandler>()
             );
 
-            using (ServiceHost serviceHostServer = new ServiceHost(typeof(WcfColomboService), new Uri(@"net.pipe://localhost/ipctest")))
+            using (var serviceHostServer = new ServiceHost(typeof(WcfColomboService), new Uri(@"net.pipe://localhost/ipctest")))
             {
                 serviceHostServer.Open();
 
@@ -75,7 +72,7 @@ namespace Colombo.Tests
                     .ImplementedBy<TestRequestIPCHandler>()
             );
 
-            using (ServiceHost serviceHostServer = new ServiceHost(typeof(WcfColomboService), new Uri(@"net.pipe://localhost/ipctest")))
+            using (var serviceHostServer = new ServiceHost(typeof(WcfColomboService), new Uri(@"net.pipe://localhost/ipctest")))
             {
                 serviceHostServer.Open();
 
@@ -121,7 +118,7 @@ namespace Colombo.Tests
                     .ImplementedBy<TestRequestIPCHandler>()
             );
 
-            using (ServiceHost serviceHostServer = new ServiceHost(typeof(WcfColomboService), new Uri(@"net.pipe://localhost/ipctest")))
+            using (var serviceHostServer = new ServiceHost(typeof(WcfColomboService), new Uri(@"net.pipe://localhost/ipctest")))
             {
                 serviceHostServer.Open();
                 

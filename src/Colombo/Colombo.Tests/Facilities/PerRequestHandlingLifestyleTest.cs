@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NUnit.Framework;
+﻿using System.Collections.Generic;
+using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using Colombo.Facilities;
-using Castle.Facilities.Logging;
-using Castle.MicroKernel.Registration;
-using System.Threading;
-using System.Threading.Tasks;
+using NUnit.Framework;
 
 namespace Colombo.Tests.Facilities
 {
@@ -74,7 +68,7 @@ namespace Colombo.Tests.Facilities
 
             var messageBus = container.Resolve<IMessageBus>();
 
-            for (int i = 0; i < NumberOfRequests; i++)
+            for (var i = 0; i < NumberOfRequests; i++)
             {
                 messageBus.Send(new TestRequest());
             }
@@ -110,7 +104,7 @@ namespace Colombo.Tests.Facilities
 
             var messageBus = container.Resolve<IMessageBus>();
 
-            for (int i = 0; i < NumberOfRequests; i++)
+            for (var i = 0; i < NumberOfRequests; i++)
             {
                 messageBus.Send(new TestRequest(), new TestRequest(), new TestRequest(), new TestRequest());
             }

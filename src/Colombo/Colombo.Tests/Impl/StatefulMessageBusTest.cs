@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NUnit.Framework;
 using Colombo.Impl;
+using NUnit.Framework;
 using Rhino.Mocks;
 
 namespace Colombo.Tests.Impl
@@ -309,7 +307,7 @@ namespace Colombo.Tests.Impl
                 requestList.Add(request);
                 requestList.AddRange(followingRequests);
                 var responsesGroup = new ResponsesGroup();
-                for (int i = 0; i < responses.Length; i++)
+                for (var i = 0; i < responses.Length; i++)
                 {
                     responsesGroup[requestList[i]] = responses[i];
                 }

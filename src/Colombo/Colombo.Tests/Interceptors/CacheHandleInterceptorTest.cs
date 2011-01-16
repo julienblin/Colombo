@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NUnit.Framework;
-using Colombo.Interceptors;
-using Rhino.Mocks;
 using Colombo.Caching;
+using Colombo.Interceptors;
+using NUnit.Framework;
+using Rhino.Mocks;
 
 namespace Colombo.Tests.Interceptors
 {

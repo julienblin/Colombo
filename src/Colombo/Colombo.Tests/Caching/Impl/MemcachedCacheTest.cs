@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NUnit.Framework;
-using System.IO;
 using System.Diagnostics;
-using Colombo.Caching.Impl;
+using System.IO;
 using System.Threading;
-using Rhino.Mocks;
 using Colombo.Alerts;
+using Colombo.Caching.Impl;
+using NUnit.Framework;
+using Rhino.Mocks;
 
 namespace Colombo.Tests.Caching.Impl
 {

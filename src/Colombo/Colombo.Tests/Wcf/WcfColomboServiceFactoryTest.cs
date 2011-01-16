@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using NUnit.Framework;
-using Colombo.Wcf;
 using System.ServiceModel;
+using Colombo.Wcf;
+using NUnit.Framework;
 
 namespace Colombo.Tests.Wcf
 {

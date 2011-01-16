@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NUnit.Framework;
-using Rhino.Mocks;
+﻿using System.Collections.Generic;
+using System.Threading;
 using Castle.Core.Logging;
 using Colombo.Interceptors;
-using System.Threading;
+using NUnit.Framework;
+using Rhino.Mocks;
 
 namespace Colombo.Tests.Interceptors
 {

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Colombo.HealthCheck;
+﻿using Colombo.HealthCheck;
 using NUnit.Framework;
 
 namespace Colombo.Tests.HealthCheck

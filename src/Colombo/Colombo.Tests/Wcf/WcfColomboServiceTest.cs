@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NUnit.Framework;
-using Colombo.Wcf;
-using System.Reflection;
-using Rhino.Mocks;
+using System.ServiceModel;
 using System.Threading;
 using Castle.MicroKernel;
 using Castle.MicroKernel.Registration;
-using System.ServiceModel;
+using Colombo.Wcf;
+using NUnit.Framework;
+using Rhino.Mocks;
 
 namespace Colombo.Tests.Wcf
 {
@@ -196,7 +193,7 @@ namespace Colombo.Tests.Wcf
                 }));
             }).Verify(() =>
             {
-                using (ServiceHost serviceHost = new ServiceHost(typeof(WcfColomboService), new Uri(IPCAddress)))
+                using (var serviceHost = new ServiceHost(typeof(WcfColomboService), new Uri(IPCAddress)))
                 {
                     serviceHost.Open();
                     var channelFactory = new ChannelFactory<IWcfColomboService>(new NetNamedPipeBinding(), new EndpointAddress(IPCAddress));

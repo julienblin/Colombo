@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
+using Colombo.Impl.RequestHandle;
+using Colombo.Interceptors;
 using NUnit.Framework;
 using Rhino.Mocks;
-using Colombo.Interceptors;
-using System.ComponentModel.DataAnnotations;
-using Colombo.Impl;
-using Colombo.Impl.RequestHandle;
 
 namespace Colombo.Tests.Interceptors
 {

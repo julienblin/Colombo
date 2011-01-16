@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NUnit.Framework;
+﻿using System.ComponentModel.DataAnnotations;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization;
-using System.ComponentModel.DataAnnotations;
 using Castle.DynamicProxy;
-using Colombo.Impl;
 using Colombo.Impl.Async;
+using NUnit.Framework;
 
 namespace Colombo.Tests
 {
