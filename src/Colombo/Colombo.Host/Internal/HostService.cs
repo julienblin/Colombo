@@ -17,7 +17,6 @@ namespace Colombo.Host.Internal
                                  IWantToCreateTheContainer, IWantToConfigureLogging, IWantToConfigureColombo,
                                  IWantToRegisterMessageHandlers, IWantToRegisterOtherComponents, IWantToCreateServiceHosts
     {
-        private IAmAnEndpoint configureThisEndpoint;
         private IWindsorContainer hostContainer;
 
         private readonly List<System.ServiceModel.ServiceHost> serviceHosts = new List<System.ServiceModel.ServiceHost>();
@@ -27,18 +26,20 @@ namespace Colombo.Host.Internal
         public DirectoryInfo BaseDirectory { get; set; }
         public Type ConfigureThisEndpointType { get; set; }
 
+        internal IAmAnEndpoint ConfigureThisEndpoint { get; private set; }
+
         internal void Start()
         {
             try
             {
-                configureThisEndpoint = (IAmAnEndpoint)Activator.CreateInstance(ConfigureThisEndpointType);
+                ConfigureThisEndpoint = (IAmAnEndpoint)Activator.CreateInstance(ConfigureThisEndpointType);
                 ConfigureContainer();
 
-                var iWantToBeNotifiedWhenStartAndStop = configureThisEndpoint as IWantToBeNotifiedWhenStartAndStop;
+                var iWantToBeNotifiedWhenStartAndStop = ConfigureThisEndpoint as IWantToBeNotifiedWhenStartAndStop;
                 if (iWantToBeNotifiedWhenStartAndStop != null)
                     iWantToBeNotifiedWhenStartAndStop.Start(hostContainer);
 
-                var iWantToCreateServiceHosts = configureThisEndpoint as IWantToCreateServiceHosts ?? this;
+                var iWantToCreateServiceHosts = ConfigureThisEndpoint as IWantToCreateServiceHosts ?? this;
                 serviceHosts.AddRange(iWantToCreateServiceHosts.CreateServiceHosts(hostContainer));
 
                 foreach (var serviceHost in serviceHosts)
@@ -47,7 +48,7 @@ namespace Colombo.Host.Internal
                 hostContainer.Resolve<IMessageBus>(); // Forces container resolution. Some exception from configuration mistakes can be thrown at this point.
 
                 logger.InfoFormat("{0} host is ready to serve incoming requests from {1}...",
-                    configureThisEndpoint.GetType().Assembly.GetName().Name,
+                    ConfigureThisEndpoint.GetType().Assembly.GetName().Name,
                     string.Join(", ", serviceHosts.Select(h => 
                             string.Join(", ", h.Description.Endpoints.Select(x => x.Address.Uri.ToString()))
                         )
@@ -62,7 +63,7 @@ namespace Colombo.Host.Internal
 
         internal void Stop()
         {
-            logger.InfoFormat("{0} host is stopping...", configureThisEndpoint.GetType().Assembly.GetName().Name);
+            logger.InfoFormat("{0} host is stopping...", ConfigureThisEndpoint.GetType().Assembly.GetName().Name);
 
             foreach (var serviceHost in serviceHosts.Where(serviceHost => serviceHost != null))
             {
@@ -76,31 +77,34 @@ namespace Colombo.Host.Internal
                 }
             }
 
-            var iWantToBeNotifiedWhenStartAndStop = configureThisEndpoint as IWantToBeNotifiedWhenStartAndStop;
+            var iWantToBeNotifiedWhenStartAndStop = ConfigureThisEndpoint as IWantToBeNotifiedWhenStartAndStop;
             if (iWantToBeNotifiedWhenStartAndStop != null)
                 iWantToBeNotifiedWhenStartAndStop.Stop(hostContainer);
 
-            logger.InfoFormat("{0} host has stopped.", configureThisEndpoint.GetType().Assembly.GetName().Name);
+            logger.InfoFormat("{0} host has stopped.", ConfigureThisEndpoint.GetType().Assembly.GetName().Name);
         }
 
         private void ConfigureContainer()
         {
-            var iWantToCreateTheContainer = configureThisEndpoint as IWantToCreateTheContainer ?? this;
+            var iWantToCreateTheContainer = ConfigureThisEndpoint as IWantToCreateTheContainer ?? this;
             hostContainer = iWantToCreateTheContainer.CreateContainer();
 
-            var iWantToConfigureLogging = configureThisEndpoint as IWantToConfigureLogging ?? this;
+            if (hostContainer == null)
+                throw new ColomboHostException(string.Format("The endpoint {0} returned a null container.", ConfigureThisEndpointType));
+
+            var iWantToConfigureLogging = ConfigureThisEndpoint as IWantToConfigureLogging ?? this;
             iWantToConfigureLogging.ConfigureLogging(hostContainer);
 
             if(hostContainer.Kernel.HasComponent(typeof(ILogger)))
                 logger = hostContainer.Resolve<ILogger>();
 
-            var iWantToConfigureColombo = configureThisEndpoint as IWantToConfigureColombo ?? this;
+            var iWantToConfigureColombo = ConfigureThisEndpoint as IWantToConfigureColombo ?? this;
             iWantToConfigureColombo.ConfigureColombo(hostContainer);
 
-            var iWantToRegisterMessageHandlers = configureThisEndpoint as IWantToRegisterMessageHandlers ?? this;
+            var iWantToRegisterMessageHandlers = ConfigureThisEndpoint as IWantToRegisterMessageHandlers ?? this;
             iWantToRegisterMessageHandlers.RegisterMessageHandlers(hostContainer);
 
-            var iWantToRegisterOtherComponents = configureThisEndpoint as IWantToRegisterOtherComponents ?? this;
+            var iWantToRegisterOtherComponents = ConfigureThisEndpoint as IWantToRegisterOtherComponents ?? this;
             iWantToRegisterOtherComponents.RegisterOtherComponents(hostContainer);
         }
 
