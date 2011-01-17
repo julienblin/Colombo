@@ -40,7 +40,10 @@ namespace Colombo.TestSupport
             }
             catch (AggregateException ex)
             {
-                throw new ColomboException("An exception occured inside one or several request handlers", ex);
+                if ((ex.InnerExceptions.Count == 1) && (ex.InnerExceptions[0] is ColomboExpectationException))
+                    throw ex.InnerExceptions[0];
+                else
+                    throw new ColomboException("An exception occured inside one or several request handlers", ex);
             }
 
             if (Responses == null)

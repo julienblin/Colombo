@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using Colombo.TestSupport;
 using NUnit.Framework;
@@ -99,6 +100,53 @@ namespace Colombo.Tests.TestSupport
                 Is.Not.Null.And.Property("CorrelationGuid").EqualTo(testRequest2.CorrelationGuid));
         }
 
+        [Test]
+        public void It_should_not_throw_if_sub_expectations_are_met()
+        {
+            var container = new WindsorContainer();
+            var stubMessageBus = new StubMessageBus { Kernel = container.Kernel };
+            container.Register(Component.For<IStubMessageBus, IMessageBus>().Instance(stubMessageBus));
+
+            stubMessageBus
+                .Expect<TestRequest3, TestResponse2>()
+                .Reply((request, response) => response.Name = "SubHandler");
+
+            stubMessageBus.TestHandler<TestRequestHandler22>();
+
+            Assert.That(() => stubMessageBus.Send(new TestRequest2()),
+                        Is.Not.Null.And.Property("Name").EqualTo("SubHandler"));
+
+            Assert.DoesNotThrow(() => stubMessageBus.Verify());
+        }
+
+        [Test]
+        public void It_should_throw_if_sub_expectations_are_not_met()
+        {
+            var container = new WindsorContainer();
+            var stubMessageBus = new StubMessageBus { Kernel = container.Kernel };
+            container.Register(Component.For<IStubMessageBus, IMessageBus>().Instance(stubMessageBus));
+
+            stubMessageBus.TestHandler<TestRequestHandler22>();
+
+            Assert.That(() => stubMessageBus.Send(new TestRequest2()),
+                        Throws.Exception.TypeOf<ColomboExpectationException>()
+                        .With.Message.Contains("TestRequest3"));
+
+            container = new WindsorContainer();
+            stubMessageBus = new StubMessageBus { Kernel = container.Kernel };
+            container.Register(Component.For<IStubMessageBus, IMessageBus>().Instance(stubMessageBus));
+            stubMessageBus.TestHandler<TestRequestHandler2>();
+            stubMessageBus
+                .Expect<TestRequest3, TestResponse2>()
+                .Reply((request, response) => response.Name = "SubHandler");
+
+            stubMessageBus.Send(new TestRequest2());
+
+            Assert.That(() => stubMessageBus.Verify(),
+                        Throws.Exception.TypeOf<ColomboExpectationException>()
+                        .With.Message.Contains("TestRequest3"));
+        }
+
         public class TestResponse2 : Response
         {
             public virtual string Name { get; set; }
@@ -115,6 +163,22 @@ namespace Colombo.Tests.TestSupport
             {
                 Response.Name = "Handler" + Request.Name;
             }
+        }
+
+        public class TestRequestHandler22 : RequestHandler<TestRequest2, TestResponse2>
+        {
+            public IMessageBus MessageBus { get; set; }
+
+            protected override void Handle()
+            {
+                var subResponse = MessageBus.Send(new TestRequest3());
+                Response.Name = subResponse.Name;
+            }
+        }
+
+        public class TestRequest3 : Request<TestResponse2>
+        {
+            
         }
     }
 }
