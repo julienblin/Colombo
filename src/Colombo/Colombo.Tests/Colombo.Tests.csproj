@@ -88,7 +88,7 @@
     <Compile Include="MessageHandlersTest.cs" />
     <Compile Include="SideEffectFreeRequestHandlerTest.cs" />
     <Compile Include="TestResponse.cs" />
-    <Compile Include="UnitTestSupport\ColomboTestTest.cs" />
+    <Compile Include="TestSupport\ColomboTestTest.cs" />
     <Compile Include="Wcf\AddOperationsForRequestHandlersAttributeTest.cs" />
     <Compile Include="Wcf\RequestProcessorOperationInvokerTest.cs" />
     <Compile Include="Wcf\WcfClientRequestProcessorTest.cs" />

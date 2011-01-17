@@ -6,7 +6,7 @@ using Castle.DynamicProxy;
 using Colombo.Impl.Async;
 using System.Reflection;
 
-namespace Colombo.UnitTestSupport
+namespace Colombo.TestSupport
 {
     /// <summary>
     /// Base static classes for unit test support

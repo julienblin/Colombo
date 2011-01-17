@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
 
-namespace Colombo.UnitTestSupport
+namespace Colombo.TestSupport
 {
     /// <summary>
     /// An exception that occured inside a unit test support utilization.

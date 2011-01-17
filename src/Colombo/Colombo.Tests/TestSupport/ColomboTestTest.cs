@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Colombo.UnitTestSupport;
+﻿using Colombo.TestSupport;
 using NUnit.Framework;
 using System.ComponentModel.DataAnnotations;
 
-namespace Colombo.Tests.UnitTestSupport
+namespace Colombo.Tests.TestSupport
 {
     [TestFixture]
     public class ColomboTestTest
