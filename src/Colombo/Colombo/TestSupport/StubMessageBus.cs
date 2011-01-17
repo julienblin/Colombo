@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Castle.MicroKernel;
 using Castle.MicroKernel.Registration;
+using Colombo.Impl.Async;
 
 namespace Colombo.TestSupport
 {
@@ -32,26 +34,56 @@ namespace Colombo.TestSupport
         public IAsyncCallback<TResponse> SendAsync<TResponse>(Request<TResponse> request)
             where TResponse : Response, new()
         {
-            throw new NotImplementedException();
+            if (request == null) throw new ArgumentNullException("request");
+            Contract.EndContractBlock();
+
+            var response = InternalSendAsync<TResponse>(request);
+            if (response == null)
+                throw new ColomboTestSupportException("Internal error: response should not be null.");
+
+            return response;
         }
 
         public TResponse Send<TResponse>(SideEffectFreeRequest<TResponse> request)
             where TResponse : Response, new()
         {
-            throw new NotImplementedException();
+            if (request == null) throw new ArgumentNullException("request");
+            Contract.EndContractBlock();
+
+            var responses = InternalSend(new List<BaseRequest> { request });
+            Contract.Assume(responses != null);
+            Contract.Assume(responses.Count == 1);
+
+            var typedResponse = responses[request] as TResponse;
+            if (typedResponse == null)
+                throw new ColomboTestSupportException(string.Format("Internal error: InternalSend returned null or incorrect response type: expected {0}, actual {1}.", typeof(TResponse), responses[request].GetType()));
+
+            return typedResponse;
         }
 
         public TResponse Send<TRequest, TResponse>(Action<TRequest> action)
             where TRequest : SideEffectFreeRequest<TResponse>, new()
             where TResponse : Response, new()
         {
-            throw new NotImplementedException();
+            if (action == null) throw new ArgumentNullException("action");
+            Contract.EndContractBlock();
+
+            var request = new TRequest();
+            action(request);
+            return Send(request);
         }
 
         public IAsyncCallback<TResponse> SendAsync<TResponse>(SideEffectFreeRequest<TResponse> request)
             where TResponse : Response, new()
         {
-            throw new NotImplementedException();
+            if (request == null) throw new ArgumentNullException("request");
+            Contract.EndContractBlock();
+
+            var response = InternalSendAsync<TResponse>(request);
+            if (response == null)
+                throw new ColomboTestSupportException("Internal error: response should not be null.");
+
+            return response;
         }
 
         public ResponsesGroup Send(BaseSideEffectFreeRequest request, params BaseSideEffectFreeRequest[] followingRequests)
@@ -149,6 +181,27 @@ namespace Colombo.TestSupport
                 throw new ColomboException("Internal error: responses should not be null");
 
             return topInvocation.Responses;
+        }
+
+        protected virtual IAsyncCallback<TResponse> InternalSendAsync<TResponse>(BaseRequest request)
+            where TResponse : Response, new()
+        {
+            var asyncCallback = new AsyncCallback<TResponse>();
+            Task.Factory.StartNew(c =>
+            {
+                try
+                {
+                    var responsesGroup = InternalSend(new List<BaseRequest> { request });
+                    ((AsyncCallback<TResponse>)c).ResponseArrived((TResponse)responsesGroup[request]);
+                }
+                catch (Exception ex)
+                {
+                    ((AsyncCallback<TResponse>)c).ExceptionArrived(ex);
+                }
+            },
+            asyncCallback);
+
+            return asyncCallback;
         }
 
         private IColomboSendInvocation BuildSendInvocationChain()

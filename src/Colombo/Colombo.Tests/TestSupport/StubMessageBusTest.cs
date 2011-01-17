@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using Colombo.TestSupport;
@@ -13,7 +14,7 @@ namespace Colombo.Tests.TestSupport
     public class StubMessageBusTest
     {
         [Test]
-        public void It_should_work_with_expectation()
+        public void It_should_work_with_expectation_SendRequest()
         {
             var stubMessageBus = new StubMessageBus();
             stubMessageBus
@@ -22,6 +23,70 @@ namespace Colombo.Tests.TestSupport
 
             Assert.That(() => stubMessageBus.Send(new TestRequest2() { Name = "TheName" }),
                 Is.Not.Null.And.Property("Name").EqualTo("TheName"));
+
+            Assert.DoesNotThrow(() => stubMessageBus.Verify());
+        }
+
+        [Test]
+        public void It_should_work_with_expectation_SendAsyncRequest()
+        {
+            var stubMessageBus = new StubMessageBus();
+            stubMessageBus
+                .Expect<TestRequest2, TestResponse2>()
+                .Reply((request, response) => response.Name = request.Name);
+
+            stubMessageBus.SendAsync(new TestRequest2() { Name = "TheName" }).Register(response =>
+            {
+                Assert.That(() => response,
+                    Is.Not.Null.And.Property("Name").EqualTo("TheName"));
+            });
+
+            Thread.Sleep(200);
+            Assert.DoesNotThrow(() => stubMessageBus.Verify());
+        }
+
+        [Test]
+        public void It_should_work_with_expectation_SendSideEffectFreeRequest()
+        {
+            var stubMessageBus = new StubMessageBus();
+            stubMessageBus
+                .Expect<TestSideEffectFreeRequest2, TestResponse2>()
+                .Reply((request, response) => response.Name = request.Name);
+
+            Assert.That(() => stubMessageBus.Send(new TestSideEffectFreeRequest2() { Name = "TheName" }),
+                Is.Not.Null.And.Property("Name").EqualTo("TheName"));
+
+            Thread.Sleep(200);
+            Assert.DoesNotThrow(() => stubMessageBus.Verify());
+        }
+
+        [Test]
+        public void It_should_work_with_expectation_SendAction()
+        {
+            var stubMessageBus = new StubMessageBus();
+            stubMessageBus
+                .Expect<TestSideEffectFreeRequest2, TestResponse2>()
+                .Reply((request, response) => response.Name = request.Name);
+
+            Assert.That(() => stubMessageBus.Send<TestSideEffectFreeRequest2, TestResponse2>(r => r.Name = "TheName"),
+                Is.Not.Null.And.Property("Name").EqualTo("TheName"));
+
+            Assert.DoesNotThrow(() => stubMessageBus.Verify());
+        }
+
+        [Test]
+        public void It_should_work_with_expectation_SendAsyncSideEffectFreeRequest()
+        {
+            var stubMessageBus = new StubMessageBus();
+            stubMessageBus
+                .Expect<TestSideEffectFreeRequest2, TestResponse2>()
+                .Reply((request, response) => response.Name = request.Name);
+
+            stubMessageBus.SendAsync(new TestSideEffectFreeRequest2() { Name = "TheName" }).Register(response =>
+            {
+                Assert.That(() => response,
+                    Is.Not.Null.And.Property("Name").EqualTo("TheName"));
+            });
 
             Assert.DoesNotThrow(() => stubMessageBus.Verify());
         }
@@ -163,6 +228,10 @@ namespace Colombo.Tests.TestSupport
             {
                 Response.Name = "Handler" + Request.Name;
             }
+        }
+        public class TestSideEffectFreeRequest2 : SideEffectFreeRequest<TestResponse2>
+        {
+            public string Name { get; set; }
         }
 
         public class TestRequestHandler22 : RequestHandler<TestRequest2, TestResponse2>
