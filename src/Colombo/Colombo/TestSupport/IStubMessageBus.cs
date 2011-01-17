@@ -13,11 +13,11 @@ namespace Colombo.TestSupport
         RequestHandlerExpectation<THandler> TestHandler<THandler>()
             where THandler : IRequestHandler;
 
-        MessageBusSendExpectation<TRequest, TResponse> Expect<TRequest, TResponse>()
+        MessageBusSendExpectation<TRequest, TResponse> ExpectSend<TRequest, TResponse>()
             where TRequest : BaseRequest, new()
             where TResponse : Response, new();
 
-        MessageBusNotifyExpectation<TNotification> Expect<TNotification>()
+        MessageBusNotifyExpectation<TNotification> ExpectNotify<TNotification>()
             where TNotification : Notification, new();
 
         bool AllowUnexpectedMessages { get; set; }

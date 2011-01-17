@@ -117,7 +117,7 @@ namespace Colombo.TestSupport
             return expectation;
         }
 
-        public MessageBusSendExpectation<TRequest, TResponse> Expect<TRequest, TResponse>()
+        public MessageBusSendExpectation<TRequest, TResponse> ExpectSend<TRequest, TResponse>()
             where TRequest : BaseRequest, new()
             where TResponse : Response, new()
         {
@@ -134,7 +134,7 @@ namespace Colombo.TestSupport
             return expectation;
         }
 
-        public MessageBusNotifyExpectation<TNotification> Expect<TNotification>()
+        public MessageBusNotifyExpectation<TNotification> ExpectNotify<TNotification>()
             where TNotification : Notification, new()
         {
             var expectation = new MessageBusNotifyExpectation<TNotification>(this);

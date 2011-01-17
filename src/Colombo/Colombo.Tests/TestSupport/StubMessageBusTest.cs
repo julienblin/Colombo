@@ -18,7 +18,7 @@ namespace Colombo.Tests.TestSupport
         {
             var stubMessageBus = new StubMessageBus();
             stubMessageBus
-                .Expect<TestRequest2, TestResponse2>()
+                .ExpectSend<TestRequest2, TestResponse2>()
                 .Reply((request, response) => response.Name = request.Name);
 
             Assert.That(() => stubMessageBus.Send(new TestRequest2() { Name = "TheName" }),
@@ -32,7 +32,7 @@ namespace Colombo.Tests.TestSupport
         {
             var stubMessageBus = new StubMessageBus();
             stubMessageBus
-                .Expect<TestRequest2, TestResponse2>()
+                .ExpectSend<TestRequest2, TestResponse2>()
                 .Reply((request, response) => response.Name = request.Name);
 
             stubMessageBus.SendAsync(new TestRequest2() { Name = "TheName" }).Register(response =>
@@ -50,7 +50,7 @@ namespace Colombo.Tests.TestSupport
         {
             var stubMessageBus = new StubMessageBus();
             stubMessageBus
-                .Expect<TestSideEffectFreeRequest2, TestResponse2>()
+                .ExpectSend<TestSideEffectFreeRequest2, TestResponse2>()
                 .Reply((request, response) => response.Name = request.Name);
 
             Assert.That(() => stubMessageBus.Send(new TestSideEffectFreeRequest2() { Name = "TheName" }),
@@ -65,7 +65,7 @@ namespace Colombo.Tests.TestSupport
         {
             var stubMessageBus = new StubMessageBus();
             stubMessageBus
-                .Expect<TestSideEffectFreeRequest2, TestResponse2>()
+                .ExpectSend<TestSideEffectFreeRequest2, TestResponse2>()
                 .Reply((request, response) => response.Name = request.Name);
 
             Assert.That(() => stubMessageBus.Send<TestSideEffectFreeRequest2, TestResponse2>(r => r.Name = "TheName"),
@@ -79,7 +79,7 @@ namespace Colombo.Tests.TestSupport
         {
             var stubMessageBus = new StubMessageBus();
             stubMessageBus
-                .Expect<TestSideEffectFreeRequest2, TestResponse2>()
+                .ExpectSend<TestSideEffectFreeRequest2, TestResponse2>()
                 .Reply((request, response) => response.Name = request.Name);
 
             stubMessageBus.SendAsync(new TestSideEffectFreeRequest2() { Name = "TheName" }).Register(response =>
@@ -88,6 +88,7 @@ namespace Colombo.Tests.TestSupport
                     Is.Not.Null.And.Property("Name").EqualTo("TheName"));
             });
 
+            Thread.Sleep(200);
             Assert.DoesNotThrow(() => stubMessageBus.Verify());
         }
 
@@ -96,7 +97,7 @@ namespace Colombo.Tests.TestSupport
         {
             var stubMessageBus = new StubMessageBus();
             stubMessageBus
-                .Expect<TestRequest2, TestResponse2>()
+                .ExpectSend<TestRequest2, TestResponse2>()
                 .Reply((request, response) => response.Name = request.Name)
                 .Repeat(2);
 
@@ -130,14 +131,14 @@ namespace Colombo.Tests.TestSupport
             var stubMessageBus = new StubMessageBus { Kernel = container.Kernel };
             stubMessageBus.TestHandler<TestRequestHandler2>();
 
-            Assert.That(() => stubMessageBus.Expect<TestRequest2, TestResponse2>(),
+            Assert.That(() => stubMessageBus.ExpectSend<TestRequest2, TestResponse2>(),
                 Throws.Exception.TypeOf<ColomboTestSupportException>()
                 .With.Message.Contains("TestRequest2"));
 
             container = new WindsorContainer();
             stubMessageBus = new StubMessageBus { Kernel = container.Kernel };
 
-            stubMessageBus.Expect<TestRequest2, TestResponse2>();
+            stubMessageBus.ExpectSend<TestRequest2, TestResponse2>();
 
             Assert.That(() => stubMessageBus.TestHandler<TestRequestHandler2>(),
                 Throws.Exception.TypeOf<ColomboTestSupportException>()
@@ -173,7 +174,7 @@ namespace Colombo.Tests.TestSupport
             container.Register(Component.For<IStubMessageBus, IMessageBus>().Instance(stubMessageBus));
 
             stubMessageBus
-                .Expect<TestRequest3, TestResponse2>()
+                .ExpectSend<TestRequest3, TestResponse2>()
                 .Reply((request, response) => response.Name = "SubHandler");
 
             stubMessageBus.TestHandler<TestRequestHandler22>();
@@ -202,7 +203,7 @@ namespace Colombo.Tests.TestSupport
             container.Register(Component.For<IStubMessageBus, IMessageBus>().Instance(stubMessageBus));
             stubMessageBus.TestHandler<TestRequestHandler2>();
             stubMessageBus
-                .Expect<TestRequest3, TestResponse2>()
+                .ExpectSend<TestRequest3, TestResponse2>()
                 .Reply((request, response) => response.Name = "SubHandler");
 
             stubMessageBus.Send(new TestRequest2());
