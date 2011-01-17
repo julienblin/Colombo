@@ -11,7 +11,7 @@ namespace Colombo.Tests.TestSupport
         public void It_should_reject_requests_that_cannot_be_created_using_Activator()
         {
             Assert.That(() => ColomboTest.AssertThat.RequestIsConform<RequestWithoutDefaultConstructor>(),
-                Throws.Exception.TypeOf<ColomboTestException>()
+                Throws.Exception.TypeOf<ColomboTestSupportException>()
                 .With.Message.Contains("default constructor"));
         }
 
@@ -19,7 +19,7 @@ namespace Colombo.Tests.TestSupport
         public void It_should_reject_requests_that_are_not_serializable_with_DataContractSerializer()
         {
             Assert.That(() => ColomboTest.AssertThat.RequestIsConform<RequestNotSerializable>(),
-                Throws.Exception.TypeOf<ColomboTestException>()
+                Throws.Exception.TypeOf<ColomboTestSupportException>()
                 .With.Message.Contains("DataContractSerializer"));
         }
 
@@ -27,7 +27,7 @@ namespace Colombo.Tests.TestSupport
         public void It_should_reject_notifications_that_cannot_be_created_using_Activator()
         {
             Assert.That(() => ColomboTest.AssertThat.NotificationIsConform<NotificationWithoutDefaultConstructor>(),
-                Throws.Exception.TypeOf<ColomboTestException>()
+                Throws.Exception.TypeOf<ColomboTestSupportException>()
                 .With.Message.Contains("default constructor"));
         }
 
@@ -35,7 +35,7 @@ namespace Colombo.Tests.TestSupport
         public void It_should_reject_notifications_that_are_not_serializable_with_DataContractSerializer()
         {
             Assert.That(() => ColomboTest.AssertThat.NotificationIsConform<NotificationNotSerializable>(),
-                Throws.Exception.TypeOf<ColomboTestException>()
+                Throws.Exception.TypeOf<ColomboTestSupportException>()
                 .With.Message.Contains("DataContractSerializer"));
         }
 
@@ -43,7 +43,7 @@ namespace Colombo.Tests.TestSupport
         public void It_should_reject_responses_that_cannot_be_created_using_Activator()
         {
             Assert.That(() => ColomboTest.AssertThat.ResponseIsConform<ResponseWithoutDefaultConstructor>(),
-                Throws.Exception.TypeOf<ColomboTestException>()
+                Throws.Exception.TypeOf<ColomboTestSupportException>()
                 .With.Message.Contains("default constructor"));
         }
 
@@ -51,7 +51,7 @@ namespace Colombo.Tests.TestSupport
         public void It_should_reject_responses_that_are_not_serializable_with_DataContractSerializer()
         {
             Assert.That(() => ColomboTest.AssertThat.ResponseIsConform<ResponseNotSerializable>(),
-                Throws.Exception.TypeOf<ColomboTestException>()
+                Throws.Exception.TypeOf<ColomboTestSupportException>()
                 .With.Message.Contains("DataContractSerializer"));
         }
 
@@ -59,7 +59,7 @@ namespace Colombo.Tests.TestSupport
         public void It_should_reject_responses_when_a_member_is_not_virtual()
         {
             Assert.That(() => ColomboTest.AssertThat.ResponseIsConform<ResponseWithNonVirtualMember>(),
-                Throws.Exception.TypeOf<ColomboTestException>()
+                Throws.Exception.TypeOf<ColomboTestSupportException>()
                 .With.Message.Contains("virtual"));
         }
 

@@ -19,7 +19,7 @@ namespace Colombo.TestSupport
         public static class AssertThat
         {
             /// <summary>
-            /// Will raise a <see cref="ColomboTestException"/> if any message (i.e. requests, notifications, responses)
+            /// Will raise a <see cref="ColomboTestSupportException"/> if any message (i.e. requests, notifications, responses)
             /// in the assembly that contains <typeparamref name="T"/> cannot be used by Colombo.
             /// </summary>
             public static void AllMessagesAreConformInAssemblyThatContains<T>()
@@ -28,7 +28,7 @@ namespace Colombo.TestSupport
             }
 
             /// <summary>
-            /// Will raise a <see cref="ColomboTestException"/> if any message (i.e. requests, notifications, responses)
+            /// Will raise a <see cref="ColomboTestSupportException"/> if any message (i.e. requests, notifications, responses)
             /// in the assembly <paramref name="assembly"/> cannot be used by Colombo.
             /// </summary>
             public static void AllMessagesAreConformInAssembly(Assembly assembly)
@@ -39,7 +39,7 @@ namespace Colombo.TestSupport
             }
 
             /// <summary>
-            /// Will raise a <see cref="ColomboTestException"/> if any request
+            /// Will raise a <see cref="ColomboTestSupportException"/> if any request
             /// in the assembly that contains <typeparamref name="T"/> cannot be used by Colombo.
             /// </summary>
             public static void AllRequestsAreConformInAssemblyThatContains<T>()
@@ -48,7 +48,7 @@ namespace Colombo.TestSupport
             }
 
             /// <summary>
-            /// Will raise a <see cref="ColomboTestException"/> if any request
+            /// Will raise a <see cref="ColomboTestSupportException"/> if any request
             /// in the assembly <paramref name="assembly"/> cannot be used by Colombo.
             /// </summary>
             public static void AllRequestsAreConformInAssembly(Assembly assembly)
@@ -63,7 +63,7 @@ namespace Colombo.TestSupport
             }
 
             /// <summary>
-            /// Will raise a <see cref="ColomboTestException"/> if the <typeparam name="TRequest" /> cannot be used by Colombo.
+            /// Will raise a <see cref="ColomboTestSupportException"/> if the <typeparam name="TRequest" /> cannot be used by Colombo.
             /// </summary>
             public static void RequestIsConform<TRequest>()
                 where TRequest: BaseRequest
@@ -72,7 +72,7 @@ namespace Colombo.TestSupport
             }
 
             /// <summary>
-            /// Will raise a <see cref="ColomboTestException"/> if the <paramref name="requestType"/> cannot be used by Colombo.
+            /// Will raise a <see cref="ColomboTestSupportException"/> if the <paramref name="requestType"/> cannot be used by Colombo.
             /// </summary>
             public static void RequestIsConform(Type requestType)
             {
@@ -82,7 +82,7 @@ namespace Colombo.TestSupport
                 }
                 catch (Exception ex)
                 {
-                    throw new ColomboTestException(string.Format("Request {0} cannot be instantiated. Probably because you forgot to include a default constructor.", requestType), ex);
+                    throw new ColomboTestSupportException(string.Format("Request {0} cannot be instantiated. Probably because you forgot to include a default constructor.", requestType), ex);
                 }
 
                 using (var stream = new MemoryStream())
@@ -97,13 +97,13 @@ namespace Colombo.TestSupport
                     }
                     catch (Exception ex)
                     {
-                        throw new ColomboTestException(string.Format("Request {0} should be serializable using the DataContractSerializer.", requestType), ex);
+                        throw new ColomboTestSupportException(string.Format("Request {0} should be serializable using the DataContractSerializer.", requestType), ex);
                     }
                 }
             }
 
             /// <summary>
-            /// Will raise a <see cref="ColomboTestException"/> if any notification
+            /// Will raise a <see cref="ColomboTestSupportException"/> if any notification
             /// in the assembly that contains <typeparamref name="T"/> cannot be used by Colombo.
             /// </summary>
             public static void AllNotificationsAreConformInAssemblyThatContains<T>()
@@ -112,7 +112,7 @@ namespace Colombo.TestSupport
             }
 
             /// <summary>
-            /// Will raise a <see cref="ColomboTestException"/> if any notification
+            /// Will raise a <see cref="ColomboTestSupportException"/> if any notification
             /// in the assembly <paramref name="assembly"/> cannot be used by Colombo.
             /// </summary>
             public static void AllNotificationsAreConformInAssembly(Assembly assembly)
@@ -127,7 +127,7 @@ namespace Colombo.TestSupport
             }
 
             /// <summary>
-            /// Will raise a <see cref="ColomboTestException"/> if the <typeparam name="TNotification" /> cannot be used by Colombo.
+            /// Will raise a <see cref="ColomboTestSupportException"/> if the <typeparam name="TNotification" /> cannot be used by Colombo.
             /// </summary>
             public static void NotificationIsConform<TNotification>()
                 where TNotification : Notification
@@ -136,7 +136,7 @@ namespace Colombo.TestSupport
             }
 
             /// <summary>
-            /// Will raise a <see cref="ColomboTestException"/> if the <paramref name="notificationType"/> cannot be used by Colombo.
+            /// Will raise a <see cref="ColomboTestSupportException"/> if the <paramref name="notificationType"/> cannot be used by Colombo.
             /// </summary>
             public static void NotificationIsConform(Type notificationType)
             {
@@ -146,7 +146,7 @@ namespace Colombo.TestSupport
                 }
                 catch (Exception ex)
                 {
-                    throw new ColomboTestException(string.Format("Notification {0} cannot be instantiated. Probably because you forgot to include a default constructor.", notificationType), ex);
+                    throw new ColomboTestSupportException(string.Format("Notification {0} cannot be instantiated. Probably because you forgot to include a default constructor.", notificationType), ex);
                 }
 
                 using (var stream = new MemoryStream())
@@ -161,13 +161,13 @@ namespace Colombo.TestSupport
                     }
                     catch (Exception ex)
                     {
-                        throw new ColomboTestException(string.Format("Notification {0} should be serializable using the DataContractSerializer.", notificationType), ex);
+                        throw new ColomboTestSupportException(string.Format("Notification {0} should be serializable using the DataContractSerializer.", notificationType), ex);
                     }
                 }
             }
 
             /// <summary>
-            /// Will raise a <see cref="ColomboTestException"/> if any response
+            /// Will raise a <see cref="ColomboTestSupportException"/> if any response
             /// in the assembly that contains <typeparamref name="T"/> cannot be used by Colombo.
             /// </summary>
             public static void AllResponsesAreConformInAssemblyThatContains<T>()
@@ -176,7 +176,7 @@ namespace Colombo.TestSupport
             }
 
             /// <summary>
-            /// Will raise a <see cref="ColomboTestException"/> if any response
+            /// Will raise a <see cref="ColomboTestSupportException"/> if any response
             /// in the assembly <paramref name="assembly"/> cannot be used by Colombo.
             /// </summary>
             public static void AllResponsesAreConformInAssembly(Assembly assembly)
@@ -191,7 +191,7 @@ namespace Colombo.TestSupport
             }
 
             /// <summary>
-            /// Will raise a <see cref="ColomboTestException"/> if the <typeparam name="TResponse" /> cannot be used by Colombo.
+            /// Will raise a <see cref="ColomboTestSupportException"/> if the <typeparam name="TResponse" /> cannot be used by Colombo.
             /// </summary>
             public static void ResponseIsConform<TResponse>()
                 where TResponse : Response
@@ -200,7 +200,7 @@ namespace Colombo.TestSupport
             }
 
             /// <summary>
-            /// Will raise a <see cref="ColomboTestException"/> if the <paramref name="responseType"/> cannot be used by Colombo.
+            /// Will raise a <see cref="ColomboTestSupportException"/> if the <paramref name="responseType"/> cannot be used by Colombo.
             /// </summary>
             public static void ResponseIsConform(Type responseType)
             {
@@ -210,7 +210,7 @@ namespace Colombo.TestSupport
                 }
                 catch (Exception ex)
                 {
-                    throw new ColomboTestException(string.Format("Response {0} cannot be instantiated. Probably because you forgot to include a default constructor.", responseType), ex);
+                    throw new ColomboTestSupportException(string.Format("Response {0} cannot be instantiated. Probably because you forgot to include a default constructor.", responseType), ex);
                 }
 
                 using (var stream = new MemoryStream())
@@ -225,7 +225,7 @@ namespace Colombo.TestSupport
                     }
                     catch (Exception ex)
                     {
-                        throw new ColomboTestException(string.Format("Response {0} should be serializable using the DataContractSerializer.", responseType), ex);
+                        throw new ColomboTestSupportException(string.Format("Response {0} should be serializable using the DataContractSerializer.", responseType), ex);
                     }
                 }
 
@@ -237,7 +237,7 @@ namespace Colombo.TestSupport
                 }
                 catch (Exception ex)
                 {
-                    throw new ColomboTestException(string.Format("Response {0} cannot be proxied, probably because one or several of its members are not virtual.", responseType), ex);
+                    throw new ColomboTestSupportException(string.Format("Response {0} cannot be proxied, probably because one or several of its members are not virtual.", responseType), ex);
                 }
             }
         }
