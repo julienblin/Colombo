@@ -12,6 +12,7 @@ using Colombo.Impl.Alerters;
 using Colombo.Impl.NotificationHandle;
 using Colombo.Impl.RequestHandle;
 using Colombo.Interceptors;
+using Colombo.TestSupport;
 using Colombo.Wcf;
 
 namespace Colombo.Facilities
@@ -45,6 +46,7 @@ namespace Colombo.Facilities
         bool enableInMemoryCaching;
         bool enableMemcachedCaching;
         string[] memCachedServers;
+        bool testSupportMode;
 
         readonly IList<Type> sendInterceptors = new List<Type>
                                                     {
@@ -83,25 +85,39 @@ namespace Colombo.Facilities
 
             Kernel.Resolver.AddSubResolver(new ArrayResolver(Kernel, true));
 
-            Kernel.Register(
-                Component.For<IWcfColomboServiceFactory>()
-                    .ImplementedBy<WcfColomboServiceFactory>(),
-                Component.For<IRequestProcessor>()
-                    .ImplementedBy<WcfClientRequestProcessor>()
-                    .OnCreate((kernel, item) => ((WcfClientRequestProcessor)item).HealthCheckHeartBeatInSeconds = healthCheckHeartBeatInSeconds),
+            if (testSupportMode)
+            {
+                Kernel.Register(
+                    Component.For<IStubMessageBus, IMessageBus>()
+                        .ImplementedBy<StubMessageBus>(),
+                    Component.For<IStatefulMessageBus>()
+                        .LifeStyle.Transient
+                        .ImplementedBy<StatefulMessageBus>()
+                        .OnCreate((kernel, item) => item.MaxAllowedNumberOfSend = maxAllowedNumberOfSendForStatefulMessageBus)
+                );
+            }
+            else
+            {
+                Kernel.Register(
+                    Component.For<IWcfColomboServiceFactory>()
+                        .ImplementedBy<WcfColomboServiceFactory>(),
+                    Component.For<IRequestProcessor>()
+                        .ImplementedBy<WcfClientRequestProcessor>()
+                        .OnCreate((kernel, item) => ((WcfClientRequestProcessor)item).HealthCheckHeartBeatInSeconds = healthCheckHeartBeatInSeconds),
 
-                Component.For<INotificationHandlerFactory>()
-                    .ImplementedBy<KernelNotificationHandlerFactory>(),
-                Component.For<INotificationProcessor>()
-                    .ImplementedBy<LocalNotificationProcessor>(),
+                    Component.For<INotificationHandlerFactory>()
+                        .ImplementedBy<KernelNotificationHandlerFactory>(),
+                    Component.For<INotificationProcessor>()
+                        .ImplementedBy<LocalNotificationProcessor>(),
 
-                Component.For<IMessageBus>()
-                    .ImplementedBy<MessageBus>(),
-                Component.For<IStatefulMessageBus>()
-                    .LifeStyle.Transient
-                    .ImplementedBy<StatefulMessageBus>()
-                    .OnCreate((kernel, item) => item.MaxAllowedNumberOfSend = maxAllowedNumberOfSendForStatefulMessageBus)
-            );
+                    Component.For<IMessageBus>()
+                        .ImplementedBy<MessageBus>(),
+                    Component.For<IStatefulMessageBus>()
+                        .LifeStyle.Transient
+                        .ImplementedBy<StatefulMessageBus>()
+                        .OnCreate((kernel, item) => item.MaxAllowedNumberOfSend = maxAllowedNumberOfSendForStatefulMessageBus)
+                );
+            }
 
             foreach (var sendType in sendInterceptors)
             {
@@ -123,17 +139,36 @@ namespace Colombo.Facilities
 
             if (registerLocalProcessing)
             {
-                Kernel.Register(
-                    Component.For<IRequestHandlerFactory>()
-                        .ImplementedBy<KernelRequestHandlerFactory>(),
-                    Component.For<ILocalRequestProcessor, IRequestProcessor>()
-                        .ImplementedBy<LocalRequestProcessor>(),
-                    Component.For<ISideEffectFreeRequestHandler<HealthCheckRequest, ACKResponse>>()
-                        .LifeStyle.Transient
-                        .ImplementedBy<HealthCheckRequestHandler>()
-                );
+                if (!testSupportMode)
+                {
+                    Kernel.Register(
+                        Component.For<IRequestHandlerFactory>()
+                            .ImplementedBy<KernelRequestHandlerFactory>(),
+                        Component.For<ILocalRequestProcessor, IRequestProcessor>()
+                            .ImplementedBy<LocalRequestProcessor>(),
+                        Component.For<ISideEffectFreeRequestHandler<HealthCheckRequest, ACKResponse>>()
+                            .LifeStyle.Transient
+                            .ImplementedBy<HealthCheckRequestHandler>()
+                        );
 
-                WcfServices.Kernel = Kernel;
+                    WcfServices.Kernel = Kernel;
+
+                    if (enableInMemoryCaching)
+                    {
+                        Kernel.Register(
+                            Component.For<IColomboCache>().ImplementedBy<InMemoryCache>()
+                        );
+                    }
+
+                    if (enableMemcachedCaching)
+                    {
+                        Kernel.Register(
+                            Component.For<IColomboCache>()
+                            .ImplementedBy<MemcachedCache>()
+                            .UsingFactoryMethod(() => new MemcachedCache(memCachedServers))
+                        );
+                    }
+                }
 
                 foreach (var handlerType in requestHandlerInterceptors)
                 {
@@ -152,22 +187,6 @@ namespace Colombo.Facilities
                             .ImplementedBy(handlerType)
                     );
                 }
-            }
-
-            if (enableInMemoryCaching)
-            {
-                Kernel.Register(
-                    Component.For<IColomboCache>().ImplementedBy<InMemoryCache>()
-                );
-            }
-
-            if (enableMemcachedCaching)
-            {
-                Kernel.Register(
-                    Component.For<IColomboCache>()
-                    .ImplementedBy<MemcachedCache>()
-                    .UsingFactoryMethod(() => new MemcachedCache(memCachedServers))
-                );
             }
         }
 
@@ -255,7 +274,7 @@ namespace Colombo.Facilities
         public void DoNotAlertOnExceptions()
         {
             sendInterceptors.Remove(typeof(ExceptionsSendInterceptor));
-            requestHandlerInterceptors.Remove(typeof (ExceptionsHandleInterceptor));
+            requestHandlerInterceptors.Remove(typeof(ExceptionsHandleInterceptor));
         }
 
         /// <summary>
@@ -301,6 +320,11 @@ namespace Colombo.Facilities
             memCachedServers = servers;
             sendInterceptors.Add(typeof(ClientCacheSendInterceptor));
             requestHandlerInterceptors.Add(typeof(CacheHandleInterceptor));
+        }
+
+        public void TestSupportMode()
+        {
+            testSupportMode = true;
         }
     }
 }

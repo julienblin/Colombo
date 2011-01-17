@@ -5,8 +5,10 @@ using Colombo.Caching;
 using Colombo.Caching.Impl;
 using Colombo.Facilities;
 using Colombo.HealthCheck;
+using Colombo.Impl;
 using Colombo.Impl.Alerters;
 using Colombo.Interceptors;
+using Colombo.TestSupport;
 using Colombo.Wcf;
 using NUnit.Framework;
 
@@ -330,6 +332,21 @@ namespace Colombo.Tests.Facilities
                 }),
                 Throws.Exception.TypeOf<ColomboException>()
                 .With.Message.Contains("ICache"));
+        }
+
+        [Test]
+        public void It_should_register_components_in_TestSupportMode()
+        {
+            var container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>();
+            Assert.That(() => container.Resolve<IMessageBus>(), Is.TypeOf<MessageBus>());
+            Assert.That(() => container.Resolve<IStubMessageBus>(), Throws.Exception.TypeOf<ComponentNotFoundException>());
+
+            container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>(f => f.TestSupportMode());
+
+            Assert.That(() => container.Resolve<IMessageBus>(), Is.TypeOf<StubMessageBus>());
+            Assert.That(() => container.Resolve<IStubMessageBus>(), Is.TypeOf<StubMessageBus>());
         }
     }
 }
