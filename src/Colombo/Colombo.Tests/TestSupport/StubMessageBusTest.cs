@@ -7,6 +7,7 @@ using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using Colombo.TestSupport;
 using NUnit.Framework;
+using Rhino.Mocks;
 
 namespace Colombo.Tests.TestSupport
 {
@@ -101,8 +102,8 @@ namespace Colombo.Tests.TestSupport
                 .Reply((request, response) => response.Name = request.Name)
                 .Repeat(2);
 
-            var request1 = new TestSideEffectFreeRequest2() {Name = "Req1"};
-            var request2 = new TestSideEffectFreeRequest2() {Name = "Req2"};
+            var request1 = new TestSideEffectFreeRequest2() { Name = "Req1" };
+            var request2 = new TestSideEffectFreeRequest2() { Name = "Req2" };
 
             var responses = stubMessageBus.Send(request1, request2);
 
@@ -269,7 +270,7 @@ namespace Colombo.Tests.TestSupport
             container = new WindsorContainer();
             stubMessageBus = new StubMessageBus { Kernel = container.Kernel };
             container.Register(Component.For<IStubMessageBus, IMessageBus>().Instance(stubMessageBus));
-            
+
             stubMessageBus.ExpectNotify<TestNotification>();
             stubMessageBus.TestHandler<TestRequestHandler2>();
 
@@ -293,12 +294,64 @@ namespace Colombo.Tests.TestSupport
 
             stubMessageBus.TestHandler<TestRequestHandlerWithNotification>();
 
-            stubMessageBus.Send(new TestRequest3{ Name = "AName"});
+            stubMessageBus.Send(new TestRequest3 { Name = "AName" });
 
             Thread.Sleep(200);
             Assert.That(() => stubMessageBus.Verify(),
                 Throws.Exception.TypeOf<AssertionException>()
                 .With.Message.Contains("AnotherName"));
+        }
+
+        [Test]
+        public void It_should_use_registered_send_interceptors()
+        {
+            var mocks = new MockRepository();
+
+            var interceptor = mocks.StrictMock<IMessageBusSendInterceptor>();
+
+            With.Mocks(mocks).Expecting(() =>
+            {
+                Expect.Call(interceptor.InterceptionPriority).Return(InterceptionPrority.High);
+                interceptor.Intercept(null);
+                LastCall.IgnoreArguments().Do(new InterceptSendDelegate(invocation => invocation.Proceed()));
+            }).Verify(() =>
+            {
+                var stubMessageBus = new StubMessageBus();
+                stubMessageBus.MessageBusSendInterceptors = new[] { interceptor };
+                stubMessageBus
+                    .ExpectSend<TestRequest2, TestResponse2>()
+                    .Reply((request, response) => response.Name = request.Name);
+
+                Assert.That(() => stubMessageBus.Send(new TestRequest2() { Name = "TheName" }),
+                    Is.Not.Null.And.Property("Name").EqualTo("TheName"));
+
+                Assert.DoesNotThrow(() => stubMessageBus.Verify());
+            });
+        }
+
+        [Test]
+        public void It_should_use_registered_notify_interceptors()
+        {
+            var mocks = new MockRepository();
+
+            var interceptor = mocks.StrictMock<IMessageBusNotifyInterceptor>();
+
+            With.Mocks(mocks).Expecting(() =>
+            {
+                Expect.Call(interceptor.InterceptionPriority).Return(InterceptionPrority.High);
+                interceptor.Intercept(null);
+                LastCall.IgnoreArguments().Do(new InterceptNotifyDelegate(invocation => invocation.Proceed()));
+            }).Verify(() =>
+            {
+                var stubMessageBus = new StubMessageBus();
+                stubMessageBus.MessageBusNotifyInterceptors = new[] { interceptor };
+
+                stubMessageBus.ExpectNotify<TestNotification>();
+                stubMessageBus.Notify(new TestNotification());
+
+                Thread.Sleep(200);
+                Assert.DoesNotThrow(() => stubMessageBus.Verify());
+            });
         }
 
         public class TestResponse2 : Response
@@ -356,5 +409,8 @@ namespace Colombo.Tests.TestSupport
                 MessageBus.Notify(notification);
             }
         }
+
+        public delegate void InterceptSendDelegate(IColomboSendInvocation invocation);
+        public delegate void InterceptNotifyDelegate(IColomboNotifyInvocation invocation);
     }
 }

@@ -8,6 +8,8 @@ using Castle.MicroKernel;
 using Castle.MicroKernel.Registration;
 using Colombo.Impl.Async;
 using Colombo.Impl;
+using Colombo.Impl.Notify;
+using Colombo.Impl.Send;
 
 namespace Colombo.TestSupport
 {
@@ -114,12 +116,26 @@ namespace Colombo.TestSupport
         protected override IColomboSendInvocation BuildSendInvocationChain()
         {
             IColomboSendInvocation currentInvocation = new StubSendInvocation(this);
+
+            foreach (var interceptor in MessageBusSendInterceptors.Reverse())
+            {
+                if (interceptor != null)
+                    currentInvocation = new MessageBusSendInterceptorInvocation(interceptor, currentInvocation);
+            }
+
             return currentInvocation;
         }
 
         protected override IColomboNotifyInvocation BuildNotifyInvocationChain()
         {
             IColomboNotifyInvocation currentInvocation = new StubNotifyInvocation(this);
+
+            foreach (var interceptor in MessageBusNotifyInterceptors.Reverse())
+            {
+                if (interceptor != null)
+                    currentInvocation = new MessageBusNotifyInterceptorInvocation(interceptor, currentInvocation);
+            }
+
             return currentInvocation;
         }
     }
