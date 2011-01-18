@@ -7,6 +7,6 @@ namespace Colombo.Samples.Messages
 {
     public class HelloWorldResponse : ValidatedResponse
     {
-        public string Message { get; set; }
+        public virtual string Message { get; set; }
     }
 }
