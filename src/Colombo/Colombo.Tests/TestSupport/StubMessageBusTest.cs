@@ -354,6 +354,58 @@ namespace Colombo.Tests.TestSupport
             });
         }
 
+        [Test]
+        public void It_should_use_registered_handle_requests_interceptors()
+        {
+            var mocks = new MockRepository();
+
+            var interceptor = mocks.StrictMock<IRequestHandlerHandleInterceptor>();
+
+            With.Mocks(mocks).Expecting(() =>
+            {
+                Expect.Call(interceptor.InterceptionPriority).Return(InterceptionPrority.High);
+                interceptor.Intercept(null);
+                LastCall.IgnoreArguments().Do(new InterceptRequestHandleDelegate(invocation => invocation.Proceed()));
+            }).Verify(() =>
+            {
+                var stubMessageBus = new StubMessageBus();
+                stubMessageBus.RequestHandlerInterceptors = new[] { interceptor };
+                stubMessageBus
+                    .ExpectSend<TestRequest2, TestResponse2>()
+                    .Reply((request, response) => response.Name = request.Name);
+
+                Assert.That(() => stubMessageBus.Send(new TestRequest2() { Name = "TheName" }),
+                    Is.Not.Null.And.Property("Name").EqualTo("TheName"));
+
+                Assert.DoesNotThrow(() => stubMessageBus.Verify());
+            });
+        }
+
+        [Test]
+        public void It_should_use_registered_handle_notifications_interceptors()
+        {
+            var mocks = new MockRepository();
+
+            var interceptor = mocks.StrictMock<INotificationHandleInterceptor>();
+
+            With.Mocks(mocks).Expecting(() =>
+            {
+                Expect.Call(interceptor.InterceptionPriority).Return(InterceptionPrority.High);
+                interceptor.Intercept(null);
+                LastCall.IgnoreArguments().Do(new InterceptNotificationHandleDelegate(invocation => invocation.Proceed()));
+            }).Verify(() =>
+            {
+                var stubMessageBus = new StubMessageBus();
+                stubMessageBus.NotificationHandleInterceptors = new[] { interceptor };
+
+                stubMessageBus.ExpectNotify<TestNotification>();
+                stubMessageBus.Notify(new TestNotification());
+
+                Thread.Sleep(200);
+                Assert.DoesNotThrow(() => stubMessageBus.Verify());
+            });
+        }
+
         public class TestResponse2 : Response
         {
             public virtual string Name { get; set; }
@@ -412,5 +464,7 @@ namespace Colombo.Tests.TestSupport
 
         public delegate void InterceptSendDelegate(IColomboSendInvocation invocation);
         public delegate void InterceptNotifyDelegate(IColomboNotifyInvocation invocation);
+        public delegate void InterceptRequestHandleDelegate(IColomboRequestHandleInvocation nextInvocation);
+        public delegate void InterceptNotificationHandleDelegate(IColomboNotificationHandleInvocation nextInvocation);
     }
 }

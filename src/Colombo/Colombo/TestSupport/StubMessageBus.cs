@@ -17,6 +17,45 @@ namespace Colombo.TestSupport
     {
         private readonly Dictionary<Type, BaseExpectation> expectations = new Dictionary<Type, BaseExpectation>();
 
+        private IRequestHandlerHandleInterceptor[] requestHandlerInterceptors = new IRequestHandlerHandleInterceptor[0];
+        /// <summary>
+        /// The list of <see cref="IRequestHandlerHandleInterceptor"/> to use.
+        /// </summary>
+        public IRequestHandlerHandleInterceptor[] RequestHandlerInterceptors
+        {
+            get { return requestHandlerInterceptors; }
+            set
+            {
+                if (value == null) throw new ArgumentNullException("RequestHandlerInterceptors");
+                Contract.EndContractBlock();
+
+                requestHandlerInterceptors = value.OrderBy(x => x.InterceptionPriority).ToArray();
+                Logger.InfoFormat("Using the following interceptors: {0}", string.Join(", ", requestHandlerInterceptors.Select(x => x.GetType().Name)));
+            }
+        }
+
+        private INotificationHandleInterceptor[] notificationHandleInterceptors = new INotificationHandleInterceptor[0];
+        /// <summary>
+        /// The list of <see cref="INotificationHandleInterceptor"/> to use.
+        /// </summary>
+        public INotificationHandleInterceptor[] NotificationHandleInterceptors
+        {
+            get { return notificationHandleInterceptors; }
+            set
+            {
+                if (value == null) throw new ArgumentNullException("NotificationHandleInterceptors");
+                Contract.EndContractBlock();
+
+                notificationHandleInterceptors = value.OrderBy(x => x.InterceptionPriority).ToArray();
+                if (!Logger.IsInfoEnabled) return;
+
+                if (notificationHandleInterceptors.Length == 0)
+                    Logger.Info("No interceptor has been registered for handling notifications.");
+                else
+                    Logger.InfoFormat("Handling notifications with the following interceptors: {0}", string.Join(", ", notificationHandleInterceptors.Select(x => x.GetType().Name)));
+            }
+        }
+
         #region IStubMessageBus implementation
 
         public IKernel Kernel { get; set; }
@@ -115,7 +154,7 @@ namespace Colombo.TestSupport
 
         protected override IColomboSendInvocation BuildSendInvocationChain()
         {
-            IColomboSendInvocation currentInvocation = new StubSendInvocation(this);
+            IColomboSendInvocation currentInvocation = new StubSendInvocation(this, RequestHandlerInterceptors);
 
             foreach (var interceptor in MessageBusSendInterceptors.Reverse())
             {
@@ -128,7 +167,7 @@ namespace Colombo.TestSupport
 
         protected override IColomboNotifyInvocation BuildNotifyInvocationChain()
         {
-            IColomboNotifyInvocation currentInvocation = new StubNotifyInvocation(this);
+            IColomboNotifyInvocation currentInvocation = new StubNotifyInvocation(this, NotificationHandleInterceptors);
 
             foreach (var interceptor in MessageBusNotifyInterceptors.Reverse())
             {

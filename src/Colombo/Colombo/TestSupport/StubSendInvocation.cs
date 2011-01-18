@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Colombo.Impl.RequestHandle;
 using Colombo.Impl.Send;
 
 namespace Colombo.TestSupport
@@ -10,10 +11,12 @@ namespace Colombo.TestSupport
     internal class StubSendInvocation : BaseSendInvocation
     {
         private readonly IStubMessageBus stubMessageBus;
+        private readonly IRequestHandlerHandleInterceptor[] requestHandlerInterceptors;
 
-        public StubSendInvocation(IStubMessageBus stubMessageBus)
+        public StubSendInvocation(IStubMessageBus stubMessageBus, IRequestHandlerHandleInterceptor[] requestHandlerInterceptors)
         {
             this.stubMessageBus = stubMessageBus;
+            this.requestHandlerInterceptors = requestHandlerInterceptors;
         }
 
         public override void Proceed()
@@ -56,6 +59,11 @@ namespace Colombo.TestSupport
         public IColomboRequestHandleInvocation BuildHandleInvocationChain()
         {
             IColomboRequestHandleInvocation currentInvocation = new StubRequestHandleInvocation(stubMessageBus);
+            foreach (var interceptor in requestHandlerInterceptors.Reverse())
+            {
+                if (interceptor != null)
+                    currentInvocation = new RequestHandlerHandleInterceptorInvocation(interceptor, currentInvocation);
+            }
             return currentInvocation;
         }
     }

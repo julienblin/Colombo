@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Colombo.Impl.NotificationHandle;
 using Colombo.Impl.Notify;
 
 namespace Colombo.TestSupport
@@ -10,10 +11,12 @@ namespace Colombo.TestSupport
     internal class StubNotifyInvocation : BaseNotifyInvocation
     {
         private readonly IStubMessageBus stubMessageBus;
+        private readonly INotificationHandleInterceptor[] notificationHandleInterceptors;
 
-        public StubNotifyInvocation(IStubMessageBus stubMessageBus)
+        public StubNotifyInvocation(IStubMessageBus stubMessageBus, INotificationHandleInterceptor[] notificationHandleInterceptors)
         {
             this.stubMessageBus = stubMessageBus;
+            this.notificationHandleInterceptors = notificationHandleInterceptors;
         }
 
         public override void Proceed()
@@ -27,6 +30,11 @@ namespace Colombo.TestSupport
             foreach (var notification in notifications)
             {
                 IColomboNotificationHandleInvocation currentInvocation = new StubNotificationHandleInvocation(this.stubMessageBus);
+                foreach (var interceptor in notificationHandleInterceptors.Reverse())
+                {
+                    if (interceptor != null)
+                        currentInvocation = new NotificationHandleInterceptorInvocation(interceptor, currentInvocation);
+                }
                 currentInvocation.Notification = notification;
                 yield return currentInvocation;
             }
