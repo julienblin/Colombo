@@ -9,6 +9,9 @@ using Colombo.Impl.Async;
 
 namespace Colombo.Impl
 {
+    /// <summary>
+    /// Base class for <see cref="IMessageBus"/>.
+    /// </summary>
     public abstract class BaseMessageBus : IMessageBus
     {
         private ILogger logger = NullLogger.Instance;
@@ -173,6 +176,7 @@ namespace Colombo.Impl
 
         /// <summary>
         /// Real sending of the requests. All the other send methods delegates to this one.
+        /// Uses <see cref="BuildSendInvocationChain"/>.
         /// </summary>
         protected virtual ResponsesGroup InternalSend(IList<BaseRequest> requests)
         {
@@ -205,6 +209,9 @@ namespace Colombo.Impl
             topInvocation.Proceed();
         }
 
+        /// <summary>
+        /// Internal method that is used by Async send operations. Uses <see cref="InternalSend"/> under the cover.
+        /// </summary>
         protected virtual IAsyncCallback<TResponse> InternalSendAsync<TResponse>(BaseRequest request)
             where TResponse : Response, new()
         {
@@ -240,8 +247,14 @@ namespace Colombo.Impl
             throw new ColomboException(errorMessage);
         }
 
+        /// <summary>
+        /// Return a invocation chain for the Send operation.
+        /// </summary>
         protected abstract IColomboSendInvocation BuildSendInvocationChain();
 
+        /// <summary>
+        /// Return a invocation chain for the Notify operation.
+        /// </summary>
         protected abstract IColomboNotifyInvocation BuildNotifyInvocationChain();
     }
 }

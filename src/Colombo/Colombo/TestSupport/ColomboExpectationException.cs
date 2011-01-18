@@ -6,6 +6,9 @@ using System.Text;
 
 namespace Colombo.TestSupport
 {
+    /// <summary>
+    /// Indicates that an expectation failed.
+    /// </summary>
     public class ColomboExpectationException : ColomboTestSupportException
     {
         /// <summary>

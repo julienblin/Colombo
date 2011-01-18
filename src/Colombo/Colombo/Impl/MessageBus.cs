@@ -41,6 +41,9 @@ namespace Colombo.Impl
             this.notificationProcessors = notificationProcessors;
         }
 
+        /// <summary>
+        /// Return a invocation chain for the Send operation.
+        /// </summary>
         protected override IColomboSendInvocation BuildSendInvocationChain()
         {
             Contract.Assume(requestProcessors != null);
@@ -59,6 +62,9 @@ namespace Colombo.Impl
             return currentInvocation;
         }
 
+        /// <summary>
+        /// Return a invocation chain for the Notify operation.
+        /// </summary>
         protected override IColomboNotifyInvocation BuildNotifyInvocationChain()
         {
             if ((notificationProcessors == null) || (notificationProcessors.Length == 0))

@@ -322,6 +322,10 @@ namespace Colombo.Facilities
             requestHandlerInterceptors.Add(typeof(CacheHandleInterceptor));
         }
 
+        /// <summary>
+        /// Registers Colombo components in test mode. It means that no real send or notify operations will be performed,
+        /// But using the <see cref="IStubMessageBus"/> you will be able to assert certain operations.
+        /// </summary>
         public void TestSupportMode()
         {
             testSupportMode = true;

@@ -5,9 +5,15 @@ using System.Text;
 
 namespace Colombo.TestSupport
 {
+    /// <summary>
+    /// Expectation that is used to execute a <see cref="IRequestHandler"/>.
+    /// </summary>
     public class RequestHandlerExpectation<THandler> : BaseExpectation
         where THandler : IRequestHandler
     {
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public RequestHandlerExpectation(IStubMessageBus stubMessageBus) : base(stubMessageBus)
         {
             ExpectedNumCalled = 1;
@@ -20,12 +26,18 @@ namespace Colombo.TestSupport
             return requestHandler.Handle((BaseRequest)parameter);
         }
 
+        /// <summary>
+        /// Indicates that this expectation should be repeated n <paramref name="times"/>.
+        /// </summary>
         public RequestHandlerExpectation<THandler> Repeat(int times)
         {
             ExpectedNumCalled = times;
             return this;
         }
 
+        /// <summary>
+        /// Verify that all the operations meet what this expectation planned.
+        /// </summary>
         public override void Verify()
         {
             if (ExpectedNumCalled != NumCalled)

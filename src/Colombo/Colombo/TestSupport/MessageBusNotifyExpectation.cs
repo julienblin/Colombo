@@ -5,9 +5,16 @@ using System.Text;
 
 namespace Colombo.TestSupport
 {
+    /// <summary>
+    /// Expectation for the Notify operation.
+    /// </summary>
+    /// <typeparam name="TNotification">The type of Notification that should be notified.</typeparam>
     public class MessageBusNotifyExpectation<TNotification> : BaseExpectation
         where TNotification : Notification, new()
     {
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public MessageBusNotifyExpectation(IStubMessageBus stubMessageBus)
             : base(stubMessageBus)
         {
@@ -23,6 +30,9 @@ namespace Colombo.TestSupport
             return null;
         }
 
+        /// <summary>
+        /// Indicates that this expectation should be repeated n <paramref name="times"/>.
+        /// </summary>
         public MessageBusNotifyExpectation<TNotification> Repeat(int times)
         {
             ExpectedNumCalled = times;
@@ -31,12 +41,19 @@ namespace Colombo.TestSupport
 
         private Action<TNotification> assertion;
 
+        /// <summary>
+        /// Allows to specify an action to assert certain properties on the notification.
+        /// These asserts will be executed when <see cref="Verify"/> is called.
+        /// </summary>
         public MessageBusNotifyExpectation<TNotification> Assert(Action<TNotification> action)
         {
             assertion = action;
             return this;
         }
 
+        /// <summary>
+        /// Verify that all the operations meet what this expectation planned.
+        /// </summary>
         public override void Verify()
         {
             if (ExpectedNumCalled != NumCalled)

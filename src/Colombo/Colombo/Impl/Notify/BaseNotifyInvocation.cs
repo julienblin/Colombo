@@ -2,7 +2,7 @@
 
 namespace Colombo.Impl.Notify
 {
-    public abstract class BaseNotifyInvocation : IColomboNotifyInvocation
+    internal abstract class BaseNotifyInvocation : IColomboNotifyInvocation
     {
         public IList<Notification> Notifications {get;set;}
 

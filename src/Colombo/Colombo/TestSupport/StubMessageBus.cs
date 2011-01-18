@@ -13,6 +13,9 @@ using Colombo.Impl.Send;
 
 namespace Colombo.TestSupport
 {
+    /// <summary>
+    /// Implementation of the <see cref="IStubMessageBus"/>.
+    /// </summary>
     public class StubMessageBus : BaseMessageBus, IStubMessageBus
     {
         private readonly Dictionary<Type, BaseExpectation> expectations = new Dictionary<Type, BaseExpectation>();
@@ -58,8 +61,14 @@ namespace Colombo.TestSupport
 
         #region IStubMessageBus implementation
 
+        /// <summary>
+        /// The <see cref="IKernel"/> that will be injected.
+        /// </summary>
         public IKernel Kernel { get; set; }
 
+        /// <summary>
+        /// Indicates a handler type that is under test.
+        /// </summary>
         public RequestHandlerExpectation<THandler> TestHandler<THandler>()
             where THandler : IRequestHandler
         {
@@ -75,6 +84,9 @@ namespace Colombo.TestSupport
             return expectation;
         }
 
+        /// <summary>
+        /// Indicates an expectation that a type of Request will be sent.
+        /// </summary>
         public MessageBusSendExpectation<TRequest, TResponse> ExpectSend<TRequest, TResponse>()
             where TRequest : BaseRequest, new()
             where TResponse : Response, new()
@@ -92,6 +104,11 @@ namespace Colombo.TestSupport
             return expectation;
         }
 
+        /// <summary>
+        /// Indicates an expectation that a type of <see cref="Notification"/> will be notified.
+        /// </summary>
+        /// <typeparam name="TNotification"></typeparam>
+        /// <returns></returns>
         public MessageBusNotifyExpectation<TNotification> ExpectNotify<TNotification>()
             where TNotification : Notification, new()
         {
@@ -100,8 +117,15 @@ namespace Colombo.TestSupport
             return expectation;
         }
 
+        /// <summary>
+        /// <c>true</c> to allow the <see cref="IStubMessageBus"/> to reply to requests using empty responses,
+        /// <c>false</c> to disallow and throw a <see cref="ColomboExpectationException"/> when sending an unexpected request or notification.
+        /// </summary>
         public bool AllowUnexpectedMessages { get; set; }
 
+        /// <summary>
+        /// Returns the <see cref="BaseExpectation"/> associated with the <paramref name="messageType"/>
+        /// </summary>
         public BaseExpectation GetExpectationFor(Type messageType)
         {
             if (expectations.ContainsKey(messageType))
@@ -110,6 +134,10 @@ namespace Colombo.TestSupport
             return null;
         }
 
+        /// <summary>
+        /// Verify all the expectations
+        /// </summary>
+        /// <exception cref="ColomboExpectationException" />
         public void Verify()
         {
             foreach (var expectation in expectations.Values)
@@ -120,6 +148,9 @@ namespace Colombo.TestSupport
 
         #endregion
 
+        /// <summary>
+        /// Dispatch notifications
+        /// </summary>
         public override void Notify(Notification notification, params Notification[] notifications)
         {
             var finalNotifications = new List<Notification> { notification };
@@ -138,6 +169,10 @@ namespace Colombo.TestSupport
             base.Notify(notification, notifications);
         }
 
+        /// <summary>
+        /// Real sending of the requests. All the other send methods delegates to this one.
+        /// Uses <see cref="BaseMessageBus.BuildSendInvocationChain"/>.
+        /// </summary>
         protected override ResponsesGroup InternalSend(IList<BaseRequest> requests)
         {
             if (!AllowUnexpectedMessages && requests.Any(request => !expectations.ContainsKey(request.GetType())))
@@ -152,6 +187,9 @@ namespace Colombo.TestSupport
             return base.InternalSend(requests);
         }
 
+        /// <summary>
+        /// Return a invocation chain for the Send operation.
+        /// </summary>
         protected override IColomboSendInvocation BuildSendInvocationChain()
         {
             IColomboSendInvocation currentInvocation = new StubSendInvocation(this, RequestHandlerInterceptors);
@@ -165,6 +203,9 @@ namespace Colombo.TestSupport
             return currentInvocation;
         }
 
+        /// <summary>
+        /// Return a invocation chain for the Notify operation.
+        /// </summary>
         protected override IColomboNotifyInvocation BuildNotifyInvocationChain()
         {
             IColomboNotifyInvocation currentInvocation = new StubNotifyInvocation(this, NotificationHandleInterceptors);
