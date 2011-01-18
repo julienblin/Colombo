@@ -11,16 +11,25 @@ namespace Colombo.TestSupport
         public MessageBusNotifyExpectation(IStubMessageBus stubMessageBus)
             : base(stubMessageBus)
         {
+            ExpectedNumCalled = 1;
         }
 
         internal override object Execute(object parameter)
         {
-            throw new NotImplementedException();
+            ++NumCalled;
+            return null;
+        }
+
+        public MessageBusNotifyExpectation<TNotification> Repeat(int times)
+        {
+            ExpectedNumCalled = times;
+            return this;
         }
 
         public override void Verify()
         {
-            throw new NotImplementedException();
+            if (ExpectedNumCalled != NumCalled)
+                throw new ColomboExpectationException(string.Format("Expected {0} to notify {1} time(s), actual: {2}", typeof(TNotification), ExpectedNumCalled, NumCalled));
         }
     }
 }

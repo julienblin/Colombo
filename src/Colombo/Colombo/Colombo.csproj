@@ -201,6 +201,8 @@
     <Compile Include="TestSupport\MessageBusSendExpectation.cs" />
     <Compile Include="TestSupport\RequestHandlerExpectation.cs" />
     <Compile Include="TestSupport\StubMessageBus.cs" />
+    <Compile Include="TestSupport\StubNotificationHandleInvocation.cs" />
+    <Compile Include="TestSupport\StubNotifyInvocation.cs" />
     <Compile Include="TestSupport\StubRequestHandleInvocation.cs" />
     <Compile Include="TestSupport\StubSendInvocation.cs" />
     <Compile Include="ValidatedResponse.cs" />

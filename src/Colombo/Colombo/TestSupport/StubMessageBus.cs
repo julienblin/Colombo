@@ -88,12 +88,36 @@ namespace Colombo.TestSupport
 
         public ResponsesGroup Send(BaseSideEffectFreeRequest request, params BaseSideEffectFreeRequest[] followingRequests)
         {
-            throw new NotImplementedException();
+            if (request == null) throw new ArgumentNullException("request");
+            Contract.EndContractBlock();
+
+            var listRequests = new List<BaseRequest> { request };
+            if (followingRequests != null)
+                listRequests.AddRange(followingRequests);
+            var responsesGroup = InternalSend(listRequests);
+
+            Contract.Assume(responsesGroup != null);
+            return responsesGroup;
         }
 
         public void Notify(Notification notification, params Notification[] notifications)
         {
-            throw new NotImplementedException();
+            var finalNotifications = new List<Notification> { notification };
+            if (notifications != null)
+                finalNotifications.AddRange(notifications);
+
+            if (!AllowUnexpectedMessages && finalNotifications.Any(notif => !expectations.ContainsKey(notif.GetType())))
+            {
+                var unexpectedNotifications = finalNotifications.Where(notif => !expectations.ContainsKey(notif.GetType()));
+                if (unexpectedNotifications.Count() == 1)
+                    throw new ColomboExpectationException(string.Format("Notification {0} was not expected. If you want to disable this check, try the AllowUnexpectedMessages property.", unexpectedNotifications.First()));
+                else
+                    throw new ColomboExpectationException(string.Format("Notifications {0} were not expected. If you want to disable this check, try the AllowUnexpectedMessages property.", string.Join(", ", unexpectedNotifications.Select(r => r.ToString()))));
+            }
+
+            var topInvocation = BuildNotifyInvocationChain();
+            topInvocation.Notifications = finalNotifications;
+            topInvocation.Proceed();
         }
 
         #endregion
@@ -207,6 +231,12 @@ namespace Colombo.TestSupport
         private IColomboSendInvocation BuildSendInvocationChain()
         {
             IColomboSendInvocation currentInvocation = new StubSendInvocation(this);
+            return currentInvocation;
+        }
+
+        private IColomboNotifyInvocation BuildNotifyInvocationChain()
+        {
+            IColomboNotifyInvocation currentInvocation = new StubNotifyInvocation(this);
             return currentInvocation;
         }
     }

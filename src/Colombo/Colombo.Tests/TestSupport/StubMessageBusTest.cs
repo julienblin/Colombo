@@ -93,6 +93,29 @@ namespace Colombo.Tests.TestSupport
         }
 
         [Test]
+        public void It_should_work_with_expectation_SendParallel()
+        {
+            var stubMessageBus = new StubMessageBus();
+            stubMessageBus
+                .ExpectSend<TestSideEffectFreeRequest2, TestResponse2>()
+                .Reply((request, response) => response.Name = request.Name)
+                .Repeat(2);
+
+            var request1 = new TestSideEffectFreeRequest2() {Name = "Req1"};
+            var request2 = new TestSideEffectFreeRequest2() {Name = "Req2"};
+
+            var responses = stubMessageBus.Send(request1, request2);
+
+            Assert.That(() => responses.GetFrom(request1),
+                Is.Not.Null.And.Property("Name").EqualTo("Req1"));
+
+            Assert.That(() => responses.GetFrom(request2),
+                Is.Not.Null.And.Property("Name").EqualTo("Req2"));
+
+            Assert.DoesNotThrow(() => stubMessageBus.Verify());
+        }
+
+        [Test]
         public void It_should_verify_expectations()
         {
             var stubMessageBus = new StubMessageBus();
@@ -186,6 +209,22 @@ namespace Colombo.Tests.TestSupport
         }
 
         [Test]
+        public void It_should_not_throw_if_sub_expectations_are_met_with_notifications()
+        {
+            var container = new WindsorContainer();
+            var stubMessageBus = new StubMessageBus { Kernel = container.Kernel };
+            container.Register(Component.For<IStubMessageBus, IMessageBus>().Instance(stubMessageBus));
+
+            stubMessageBus.ExpectNotify<TestNotification>();
+
+            stubMessageBus.TestHandler<TestRequestHandlerWithNotification>();
+
+            stubMessageBus.Send(new TestRequest3());
+
+            Assert.DoesNotThrow(() => stubMessageBus.Verify());
+        }
+
+        [Test]
         public void It_should_throw_if_sub_expectations_are_not_met()
         {
             var container = new WindsorContainer();
@@ -211,6 +250,33 @@ namespace Colombo.Tests.TestSupport
             Assert.That(() => stubMessageBus.Verify(),
                         Throws.Exception.TypeOf<ColomboExpectationException>()
                         .With.Message.Contains("TestRequest3"));
+        }
+
+        [Test]
+        public void It_should_throw_if_sub_expectations_are_not_met_with_notifications()
+        {
+            var container = new WindsorContainer();
+            var stubMessageBus = new StubMessageBus { Kernel = container.Kernel };
+            container.Register(Component.For<IStubMessageBus, IMessageBus>().Instance(stubMessageBus));
+
+            stubMessageBus.TestHandler<TestRequestHandlerWithNotification>();
+
+            Assert.That(() => stubMessageBus.Send(new TestRequest3()),
+                        Throws.Exception.TypeOf<ColomboExpectationException>()
+                        .With.Message.Contains("TestNotification"));
+
+            container = new WindsorContainer();
+            stubMessageBus = new StubMessageBus { Kernel = container.Kernel };
+            container.Register(Component.For<IStubMessageBus, IMessageBus>().Instance(stubMessageBus));
+            
+            stubMessageBus.ExpectNotify<TestNotification>();
+            stubMessageBus.TestHandler<TestRequestHandler2>();
+
+            stubMessageBus.Send(new TestRequest2());
+
+            Assert.That(() => stubMessageBus.Verify(),
+                        Throws.Exception.TypeOf<ColomboExpectationException>()
+                        .With.Message.Contains("TestNotification"));
         }
 
         public class TestResponse2 : Response
@@ -241,14 +307,31 @@ namespace Colombo.Tests.TestSupport
 
             protected override void Handle()
             {
-                var subResponse = MessageBus.Send(new TestRequest3());
+                var subRequest = CreateRequest<TestRequest3>();
+                var subResponse = MessageBus.Send(subRequest);
                 Response.Name = subResponse.Name;
             }
         }
 
         public class TestRequest3 : Request<TestResponse2>
         {
+
+        }
+
+        public class TestNotification : Notification
+        {
             
+        }
+
+        public class TestRequestHandlerWithNotification : RequestHandler<TestRequest3, TestResponse2>
+        {
+            public IMessageBus MessageBus { get; set; }
+
+            protected override void Handle()
+            {
+                var notification = CreateNotification<TestNotification>();
+                MessageBus.Notify(notification);
+            }
         }
     }
 }
