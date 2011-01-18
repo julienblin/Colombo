@@ -36,6 +36,15 @@ namespace Colombo.TestSupport
         }
 
         /// <summary>
+        /// Indicates that an interceptor should respond in lieu of the handler.
+        /// </summary>
+        public RequestHandlerExpectation<THandler> ShouldBeInterceptedBeforeHandling()
+        {
+            Repeat(0);
+            return this;
+        }
+
+        /// <summary>
         /// Verify that all the operations meet what this expectation planned.
         /// </summary>
         public override void Verify()

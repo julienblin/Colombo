@@ -406,6 +406,35 @@ namespace Colombo.Tests.TestSupport
             });
         }
 
+        [Test]
+        public void It_should_accept_expectations_for_interceptors()
+        {
+            var mocks = new MockRepository();
+
+            var interceptor = mocks.StrictMock<IRequestHandlerHandleInterceptor>();
+
+            With.Mocks(mocks).Expecting(() =>
+            {
+                Expect.Call(interceptor.InterceptionPriority).Return(InterceptionPrority.High);
+                interceptor.Intercept(null);
+                LastCall.IgnoreArguments().Do(new InterceptRequestHandleDelegate(invocation =>
+                {
+                    invocation.Response = new TestResponse2();
+                }));
+            }).Verify(() =>
+            {
+                var container = new WindsorContainer();
+                var stubMessageBus = new StubMessageBus { Kernel = container.Kernel };
+                container.Register(Component.For<IStubMessageBus, IMessageBus>().Instance(stubMessageBus));
+                stubMessageBus.RequestHandlerInterceptors = new[] { interceptor };
+                stubMessageBus.TestHandler<TestRequestHandler2>().ShouldBeInterceptedBeforeHandling();
+
+                stubMessageBus.Send(new TestRequest2() { Name = "TheName" });
+
+                Assert.DoesNotThrow(() => stubMessageBus.Verify());
+            });
+        }
+
         public class TestResponse2 : Response
         {
             public virtual string Name { get; set; }
