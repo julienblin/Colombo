@@ -279,6 +279,26 @@ namespace Colombo.Tests.TestSupport
                         .With.Message.Contains("TestNotification"));
         }
 
+        [Test]
+        public void It_should_verify_assertions_for_notifications()
+        {
+            var container = new WindsorContainer();
+            var stubMessageBus = new StubMessageBus { Kernel = container.Kernel };
+            container.Register(Component.For<IStubMessageBus, IMessageBus>().Instance(stubMessageBus));
+
+            stubMessageBus
+                .ExpectNotify<TestNotification>()
+                .Assert(notif => Assert.That(() => notif.Name, Is.EqualTo("AnotherName")));
+
+            stubMessageBus.TestHandler<TestRequestHandlerWithNotification>();
+
+            stubMessageBus.Send(new TestRequest3{ Name = "AName"});
+
+            Assert.That(() => stubMessageBus.Verify(),
+                Throws.Exception.TypeOf<AssertionException>()
+                .With.Message.Contains("AnotherName"));
+        }
+
         public class TestResponse2 : Response
         {
             public virtual string Name { get; set; }
@@ -315,12 +335,12 @@ namespace Colombo.Tests.TestSupport
 
         public class TestRequest3 : Request<TestResponse2>
         {
-
+            public string Name { get; set; }
         }
 
         public class TestNotification : Notification
         {
-            
+            public string Name { get; set; }
         }
 
         public class TestRequestHandlerWithNotification : RequestHandler<TestRequest3, TestResponse2>
@@ -330,6 +350,7 @@ namespace Colombo.Tests.TestSupport
             protected override void Handle()
             {
                 var notification = CreateNotification<TestNotification>();
+                notification.Name = Request.Name;
                 MessageBus.Notify(notification);
             }
         }
