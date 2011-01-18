@@ -88,7 +88,7 @@ namespace Colombo.Impl.Send
 
             foreach (var request in Requests)
             {
-                BaseRequest localRequest = request;
+                var localRequest = request;
                 var processorAndRequestsThatProcessedTheRequest = requestProcessorMapping.Where(pair => pair.Value.Contains(localRequest)).First();
                 var taskThatExecutedTheRequest = tasksProcessorAssociation[processorAndRequestsThatProcessedTheRequest.Key];
                 Responses[request] = taskThatExecutedTheRequest.Result[request];

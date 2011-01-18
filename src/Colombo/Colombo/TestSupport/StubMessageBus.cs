@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Castle.MicroKernel;
 using Castle.MicroKernel.Registration;
-using Colombo.Impl.Async;
 using Colombo.Impl;
 using Colombo.Impl.Notify;
 using Colombo.Impl.Send;

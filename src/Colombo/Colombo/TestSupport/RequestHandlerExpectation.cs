@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Colombo.TestSupport
+﻿namespace Colombo.TestSupport
 {
     /// <summary>
     /// Expectation that is used to execute a <see cref="IRequestHandler"/>.

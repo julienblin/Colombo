@@ -1,10 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
 using Castle.DynamicProxy;
 using Colombo.Impl.Async;
-using System.Reflection;
 
 namespace Colombo.TestSupport
 {
