@@ -221,6 +221,7 @@ namespace Colombo.Tests.TestSupport
 
             stubMessageBus.Send(new TestRequest3());
 
+            Thread.Sleep(200);
             Assert.DoesNotThrow(() => stubMessageBus.Verify());
         }
 
@@ -294,6 +295,7 @@ namespace Colombo.Tests.TestSupport
 
             stubMessageBus.Send(new TestRequest3{ Name = "AName"});
 
+            Thread.Sleep(200);
             Assert.That(() => stubMessageBus.Verify(),
                 Throws.Exception.TypeOf<AssertionException>()
                 .With.Message.Contains("AnotherName"));

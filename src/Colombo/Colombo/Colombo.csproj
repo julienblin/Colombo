@@ -83,6 +83,7 @@
     <Compile Include="Alerts\HealthCheckFailedAlert.cs" />
     <Compile Include="Alerts\MemcachedUnreachableAlert.cs" />
     <Compile Include="Alerts\SLABreachedAlert.cs" />
+    <Compile Include="Impl\BaseMessageBus.cs" />
     <Compile Include="Interceptors\ExceptionsHandleInterceptor.cs" />
     <Compile Include="Interceptors\ExceptionsSendInterceptor.cs" />
     <Compile Include="Properties\AssemblyVisibility.cs" />
