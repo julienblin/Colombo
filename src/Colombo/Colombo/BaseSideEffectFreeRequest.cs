@@ -5,5 +5,9 @@
     /// </summary>
     public abstract class BaseSideEffectFreeRequest : BaseRequest
     {
+        public override bool IsSideEffectFree
+        {
+            get { return true; }
+        }
     }
 }

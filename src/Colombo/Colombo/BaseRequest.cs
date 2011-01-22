@@ -43,6 +43,8 @@ namespace Colombo
         /// <returns></returns>
         public abstract Type GetResponseType();
 
+        public abstract bool IsSideEffectFree { get; }
+
         /// <summary>
         /// Create a Response object that is related to the current request.
         /// </summary>

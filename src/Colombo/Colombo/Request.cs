@@ -17,5 +17,10 @@ namespace Colombo
         {
             return typeof(TResponse);
         }
+
+        public override bool IsSideEffectFree
+        {
+            get { return false; }
+        }
     }
 }

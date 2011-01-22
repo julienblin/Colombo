@@ -17,24 +17,35 @@ namespace Colombo.Wcf
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
     public class WcfJsBridgeService
     {
-        private readonly static Dictionary<string, Type> MessageNameTypeMapping = new Dictionary<string, Type>();
-        private readonly static List<Type> ResponseTypes = new List<Type>();
+        private readonly static Dictionary<string, Type> GetTypeMapping = new Dictionary<string, Type>();
+        private readonly static Dictionary<string, Type> PostTypeMapping = new Dictionary<string, Type>();
+        private readonly static List<Type> KnownTypes = new List<Type>();
 
         public static void RegisterRequestType(Type requestType)
         {
-            var messageName = requestType.Name.Replace("Request", string.Empty);
-            MessageNameTypeMapping[messageName] = requestType;
+            if(!typeof(BaseRequest).IsAssignableFrom(requestType))
+                throw new ColomboException(string.Format("{0} is no assignable to BaseRequest. You can only register BaseRequest types.", requestType));
 
             var request = (BaseRequest)Activator.CreateInstance(requestType);
             var responseType = request.GetResponseType();
 
-            if (!ResponseTypes.Contains(responseType))
-                ResponseTypes.Add(responseType);
+            var messageName = requestType.Name.Replace("Request", string.Empty);
+
+            if(request.IsSideEffectFree)
+                GetTypeMapping[messageName] = requestType;
+            else
+                PostTypeMapping[messageName] = requestType;
+
+            if (!KnownTypes.Contains(requestType))
+                KnownTypes.Add(requestType);
+
+            if (!KnownTypes.Contains(responseType))
+                KnownTypes.Add(responseType);
         }
 
         public static IEnumerable<Type> GetKnownTypes(ICustomAttributeProvider provider)
         {
-            return ResponseTypes;
+            return KnownTypes;
         }
 
         [OperationContract]
@@ -42,17 +53,20 @@ namespace Colombo.Wcf
         [ServiceKnownType("GetKnownTypes", typeof(WcfJsBridgeService))]
         public Response InvokeGet(string messageName)
         {
+            if(!GetTypeMapping.ContainsKey(messageName))
+                throw new ColomboException(string.Format("No request with the name {0} or {0}Request has been registered. You must register your request type using WcfJsBridgeService.RegisterRequestType before using the bridge.", messageName));
+
             var properties = OperationContext.Current.IncomingMessageProperties;
             var property = (HttpRequestMessageProperty)properties[HttpRequestMessageProperty.Name];
             var parameters = HttpUtility.ParseQueryString(property.QueryString);
 
-            var requestType = MessageNameTypeMapping[messageName];
+            var requestType = GetTypeMapping[messageName];
             var request = (BaseRequest)RecurseType(parameters, requestType, string.Empty);
 
             return WcfServices.Process(request);
         }
 
-        private object RecurseType(NameValueCollection collection, Type type, string prefix)
+        private static object RecurseType(NameValueCollection collection, Type type, string prefix)
         {
             try
             {
