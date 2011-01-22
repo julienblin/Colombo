@@ -60,12 +60,11 @@ namespace Colombo.Wcf
                 throw new ColomboException(string.Format("No request with the name {0} or {0}Request has been registered. You must register your request type using WcfJsBridgeService.RegisterRequestType before using the bridge.", messageName));
             }
 
+            var requestType = GetTypeMapping[messageName];
             var properties = OperationContext.Current.IncomingMessageProperties;
             var property = (HttpRequestMessageProperty)properties[HttpRequestMessageProperty.Name];
-            var parameters = HttpUtility.ParseQueryString(property.QueryString);
 
-            var requestType = GetTypeMapping[messageName];
-            var request = (BaseRequest)RecurseType(parameters, requestType, string.Empty);
+            var request = (BaseRequest)QueryStringMapper.Map(property.QueryString, requestType);
 
             return WcfServices.Process(request);
         }
@@ -75,58 +74,21 @@ namespace Colombo.Wcf
         [ServiceKnownType("GetKnownTypes", typeof(WcfJsBridgeService))]
         public Response InvokePost(string messageName)
         {
-            if (!PostTypeMapping.ContainsKey(messageName) && !GetTypeMapping.ContainsKey(messageName))
-                throw new ColomboException(string.Format("No request with the name {0} or {0}Request has been registered. You must register your request type using WcfJsBridgeService.RegisterRequestType before using the bridge.", messageName));
+            if (!PostTypeMapping.ContainsKey(messageName))
+            {
+                if (GetTypeMapping.ContainsKey(messageName))
+                    throw new ColomboException(string.Format("{0} is a side-effect free request. You must invoke using GET, not POST.", GetTypeMapping[messageName]));
 
+                throw new ColomboException(string.Format("No request with the name {0} or {0}Request has been registered. You must register your request type using WcfJsBridgeService.RegisterRequestType before using the bridge.", messageName));
+            }
+
+            var requestType = PostTypeMapping[messageName];
             var properties = OperationContext.Current.IncomingMessageProperties;
             var property = (HttpRequestMessageProperty)properties[HttpRequestMessageProperty.Name];
-            var parameters = HttpUtility.ParseQueryString(property.QueryString);
 
-            Type requestType = null;
-            if (PostTypeMapping.ContainsKey(messageName))
-                requestType = PostTypeMapping[messageName];
-
-            if (GetTypeMapping.ContainsKey(messageName))
-                requestType = GetTypeMapping[messageName];
-
-            var request = (BaseRequest)RecurseType(parameters, requestType, string.Empty);
+            var request = (BaseRequest)QueryStringMapper.Map(property.QueryString, requestType);
 
             return WcfServices.Process(request);
-        }
-
-        private static object RecurseType(NameValueCollection collection, Type type, string prefix)
-        {
-            try
-            {
-                var returnObject = Activator.CreateInstance(type);
-
-                foreach (var property in type.GetProperties())
-                {
-                    foreach (var key in collection.AllKeys)
-                    {
-                        if (String.IsNullOrEmpty(prefix) || key.Length > prefix.Length)
-                        {
-                            var propertyNameToMatch = String.IsNullOrEmpty(prefix) ? key : key.Substring(property.Name.IndexOf(prefix) + prefix.Length + 1);
-
-                            if (property.Name == propertyNameToMatch)
-                            {
-                                property.SetValue(returnObject, Convert.ChangeType(collection.Get(key), property.PropertyType), null);
-                            }
-                            else if (property.GetValue(returnObject, null) == null)
-                            {
-                                property.SetValue(returnObject, RecurseType(collection, property.PropertyType, String.Concat(prefix, property.PropertyType.Name)), null);
-                            }
-                        }
-                    }
-                }
-
-                return returnObject;
-            }
-            catch (MissingMethodException)
-            {
-                //Quite a blunt way of dealing with Types without default constructor
-                return null;
-            }
         }
     }
 }
