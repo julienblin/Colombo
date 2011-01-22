@@ -13,7 +13,6 @@ using System.Web;
 namespace Colombo.Wcf
 {
     [ServiceContract(Namespace = "")]
-    [ServiceBehavior(IncludeExceptionDetailInFaults = true)]
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
     public class WcfJsBridgeService
     {
@@ -23,7 +22,7 @@ namespace Colombo.Wcf
 
         public static void RegisterRequestType(Type requestType)
         {
-            if(!typeof(BaseRequest).IsAssignableFrom(requestType))
+            if (!typeof(BaseRequest).IsAssignableFrom(requestType))
                 throw new ColomboException(string.Format("{0} is no assignable to BaseRequest. You can only register BaseRequest types.", requestType));
 
             var request = (BaseRequest)Activator.CreateInstance(requestType);
@@ -31,7 +30,7 @@ namespace Colombo.Wcf
 
             var messageName = requestType.Name.Replace("Request", string.Empty);
 
-            if(request.IsSideEffectFree)
+            if (request.IsSideEffectFree)
                 GetTypeMapping[messageName] = requestType;
             else
                 PostTypeMapping[messageName] = requestType;
@@ -53,14 +52,43 @@ namespace Colombo.Wcf
         [ServiceKnownType("GetKnownTypes", typeof(WcfJsBridgeService))]
         public Response InvokeGet(string messageName)
         {
-            if(!GetTypeMapping.ContainsKey(messageName))
+            if (!GetTypeMapping.ContainsKey(messageName))
+            {
+                if (PostTypeMapping.ContainsKey(messageName))
+                    throw new ColomboException(string.Format("{0} is not a side-effect free request. You must invoke using POST, not GET.", PostTypeMapping[messageName]));
+
                 throw new ColomboException(string.Format("No request with the name {0} or {0}Request has been registered. You must register your request type using WcfJsBridgeService.RegisterRequestType before using the bridge.", messageName));
+            }
 
             var properties = OperationContext.Current.IncomingMessageProperties;
             var property = (HttpRequestMessageProperty)properties[HttpRequestMessageProperty.Name];
             var parameters = HttpUtility.ParseQueryString(property.QueryString);
 
             var requestType = GetTypeMapping[messageName];
+            var request = (BaseRequest)RecurseType(parameters, requestType, string.Empty);
+
+            return WcfServices.Process(request);
+        }
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "/{messageName}", BodyStyle = WebMessageBodyStyle.Bare, ResponseFormat = WebMessageFormat.Json)]
+        [ServiceKnownType("GetKnownTypes", typeof(WcfJsBridgeService))]
+        public Response InvokePost(string messageName)
+        {
+            if (!PostTypeMapping.ContainsKey(messageName) && !GetTypeMapping.ContainsKey(messageName))
+                throw new ColomboException(string.Format("No request with the name {0} or {0}Request has been registered. You must register your request type using WcfJsBridgeService.RegisterRequestType before using the bridge.", messageName));
+
+            var properties = OperationContext.Current.IncomingMessageProperties;
+            var property = (HttpRequestMessageProperty)properties[HttpRequestMessageProperty.Name];
+            var parameters = HttpUtility.ParseQueryString(property.QueryString);
+
+            Type requestType = null;
+            if (PostTypeMapping.ContainsKey(messageName))
+                requestType = PostTypeMapping[messageName];
+
+            if (GetTypeMapping.ContainsKey(messageName))
+                requestType = GetTypeMapping[messageName];
+
             var request = (BaseRequest)RecurseType(parameters, requestType, string.Empty);
 
             return WcfServices.Process(request);

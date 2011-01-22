@@ -22,11 +22,15 @@ namespace WebApplication1
 
             container.Register(
                 Component.For<IRequestHandler, ISideEffectFreeRequestHandler<HelloWorldRequest, HelloWorldResponse>>()
-                .ImplementedBy<HelloWorldRequestHandler>()
-                .LifeStyle.Transient
+                    .ImplementedBy<HelloWorldRequestHandler>()
+                    .LifeStyle.Transient,
+                Component.For<IRequestHandler, IRequestHandler<CreateCandidateRequest, CreateCandidateResponse>>()
+                    .ImplementedBy<CreateCandidateRequestHandler>()
+                    .LifeStyle.Transient
                 );
-
+            
             WcfJsBridgeService.RegisterRequestType(typeof(HelloWorldRequest));
+            WcfJsBridgeService.RegisterRequestType(typeof(CreateCandidateRequest));
         }
 
         protected void Session_Start(object sender, EventArgs e)
