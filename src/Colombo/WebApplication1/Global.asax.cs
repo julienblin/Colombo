@@ -29,8 +29,8 @@ namespace WebApplication1
                     .LifeStyle.Transient
                 );
             
-            WcfJsBridgeService.RegisterRequestType(typeof(HelloWorldRequest));
-            WcfJsBridgeService.RegisterRequestType(typeof(CreateCandidateRequest));
+            WcfJsBridgeService.RegisterRequest(typeof(HelloWorldRequest));
+            WcfJsBridgeService.RegisterRequest(typeof(CreateCandidateRequest));
         }
 
         protected void Session_Start(object sender, EventArgs e)

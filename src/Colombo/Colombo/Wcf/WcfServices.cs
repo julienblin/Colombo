@@ -17,7 +17,7 @@ namespace Colombo.Wcf
         public const string Namespace = @"http://Colombo";
 
         /// <summary>
-        /// Static <see cref="IKernel"/> reference. - That means when using WCF Services, only one container is allowed per AppDomain.
+        /// Static <see cref="IKernel"/> reference. - That means that when using WCF Services, only one container is allowed per AppDomain.
         /// </summary>
         public static IKernel Kernel { get; set; }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -11,41 +12,64 @@ namespace Colombo.Wcf
     {
         public static object Map(string queryString, Type type)
         {
-            return Map(HttpUtility.ParseQueryString(queryString), type, string.Empty);
+            return Map(HttpUtility.ParseQueryString(queryString), type);
         }
 
-        public static object Map(NameValueCollection collection, Type type, string prefix)
+        public static object Map(NameValueCollection collection, Type type)
         {
+            object result = null;
             try
             {
-                var returnObject = Activator.CreateInstance(type);
+                result = Activator.CreateInstance(type);
+            }
+            catch (MissingMethodException ex)
+            {
+                throw new ColomboException(string.Format("Unable to create object of type {0}: No default constructor was found.", type), ex);
+            }
 
-                foreach (var property in type.GetProperties())
+            MapInstance(collection, result);
+            return result;
+        }
+
+        public static void MapInstance(NameValueCollection collection, object instance)
+        {
+            var objectType = instance.GetType();
+            foreach (var key in collection.AllKeys)
+            {
+                var indexOfDot = key.IndexOf('.');
+
+                if (indexOfDot != -1)
                 {
-                    foreach (var key in collection.AllKeys)
-                    {
-                        if (String.IsNullOrEmpty(prefix) || key.Length > prefix.Length)
-                        {
-                            var propertyNameToMatch = String.IsNullOrEmpty(prefix) ? key : key.Substring(property.Name.IndexOf(prefix) + prefix.Length + 1);
+                    var propertyName = key.Substring(0, indexOfDot);
+                    var leadingPropertyName = key.Substring(key.IndexOf('.') + 1);
+                    var property = objectType.GetProperty(propertyName);
+                    if (property == null)
+                        throw new ColomboException(string.Format("Property with name {0} not found on {1}.", propertyName, instance));
 
-                            if (property.Name == propertyNameToMatch)
-                            {
-                                property.SetValue(returnObject, Convert.ChangeType(collection.Get(key), property.PropertyType), null);
-                            }
-                            else if (property.GetValue(returnObject, null) == null)
-                            {
-                                property.SetValue(returnObject, Map(collection, property.PropertyType, String.Concat(prefix, property.PropertyType.Name)), null);
-                            }
+                    var propertyInstance = property.GetValue(instance, null);
+                    if (propertyInstance == null)
+                    {
+                        try
+                        {
+                            propertyInstance = Activator.CreateInstance(property.PropertyType);
+                            property.SetValue(instance, propertyInstance, null);
+                        }
+                        catch (MissingMethodException ex)
+                        {
+                            throw new ColomboException(string.Format("Unable to create object of type {0}: No default constructor was found.", property.PropertyType), ex);
                         }
                     }
+                    MapInstance(new NameValueCollection { { leadingPropertyName, collection.Get(key) } }, propertyInstance);
                 }
 
-                return returnObject;
-            }
-            catch (MissingMethodException)
-            {
-                //Quite a blunt way of dealing with Types without default constructor
-                return null;
+                if(indexOfDot == -1)
+                {
+                    var property = objectType.GetProperty(key);
+                    if (property == null)
+                        throw new ColomboException(string.Format("Unable to map property {0} to {1}", key, instance));
+
+                    property.SetValue(instance, Convert.ChangeType(collection.Get(key), property.PropertyType, CultureInfo.InvariantCulture), null);
+                }
             }
         }
     }

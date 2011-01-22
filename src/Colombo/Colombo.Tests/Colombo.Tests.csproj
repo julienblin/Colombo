@@ -91,10 +91,12 @@
     <Compile Include="TestSupport\ColomboTestTest.cs" />
     <Compile Include="TestSupport\StubMessageBusTest.cs" />
     <Compile Include="Wcf\AddOperationsForRequestHandlersAttributeTest.cs" />
+    <Compile Include="Wcf\QueryStringMapperTest.cs" />
     <Compile Include="Wcf\RequestProcessorOperationInvokerTest.cs" />
     <Compile Include="Wcf\WcfClientRequestProcessorTest.cs" />
     <Compile Include="Wcf\WcfColomboServiceTest.cs" />
     <Compile Include="Wcf\WcfColomboServiceFactoryTest.cs" />
+    <Compile Include="Wcf\WcfJsBridgeServiceTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Colombo\Colombo.csproj">

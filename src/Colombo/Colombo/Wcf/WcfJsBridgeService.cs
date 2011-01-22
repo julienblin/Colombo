@@ -16,11 +16,17 @@ namespace Colombo.Wcf
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
     public class WcfJsBridgeService
     {
-        private readonly static Dictionary<string, Type> GetTypeMapping = new Dictionary<string, Type>();
-        private readonly static Dictionary<string, Type> PostTypeMapping = new Dictionary<string, Type>();
+        internal readonly static Dictionary<string, Type> GetTypeMapping = new Dictionary<string, Type>();
+        internal readonly static Dictionary<string, Type> PostTypeMapping = new Dictionary<string, Type>();
         private readonly static List<Type> KnownTypes = new List<Type>();
 
-        public static void RegisterRequestType(Type requestType)
+        public static void RegisterRequest<TRequest>()
+            where TRequest : BaseRequest, new()
+        {
+            RegisterRequest(typeof(TRequest));
+        }
+
+        public static void RegisterRequest(Type requestType)
         {
             if (!typeof(BaseRequest).IsAssignableFrom(requestType))
                 throw new ColomboException(string.Format("{0} is no assignable to BaseRequest. You can only register BaseRequest types.", requestType));
@@ -31,15 +37,32 @@ namespace Colombo.Wcf
             var messageName = requestType.Name.Replace("Request", string.Empty);
 
             if (request.IsSideEffectFree)
+            {
+                if (GetTypeMapping.ContainsKey(requestType.Name) || GetTypeMapping.ContainsKey(messageName))
+                    throw new ColomboException(string.Format("Unable to register request {0} because a request with the same name (either {1} or {2}) is already registered.", requestType, messageName, requestType.Name));
+                GetTypeMapping[requestType.Name] = requestType;
                 GetTypeMapping[messageName] = requestType;
+            }
             else
+            {
+                if (PostTypeMapping.ContainsKey(requestType.Name) || PostTypeMapping.ContainsKey(messageName))
+                    throw new ColomboException(string.Format("Unable to register request {0} because a request with the same name (either {1} or {2}) is already registered.", requestType, messageName, requestType.Name));
+                PostTypeMapping[requestType.Name] = requestType;
                 PostTypeMapping[messageName] = requestType;
+            }
 
             if (!KnownTypes.Contains(requestType))
                 KnownTypes.Add(requestType);
 
             if (!KnownTypes.Contains(responseType))
                 KnownTypes.Add(responseType);
+        }
+
+        public static void ClearRegistrations()
+        {
+            GetTypeMapping.Clear();
+            PostTypeMapping.Clear();
+            KnownTypes.Clear();
         }
 
         public static IEnumerable<Type> GetKnownTypes(ICustomAttributeProvider provider)
