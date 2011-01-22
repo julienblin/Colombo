@@ -71,7 +71,9 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Web" />
     <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -217,6 +219,7 @@
     <Compile Include="Wcf\WcfClientRequestProcessor.cs" />
     <Compile Include="Wcf\WcfColomboServiceFactory.cs" />
     <Compile Include="Wcf\WcfColomboService.cs" />
+    <Compile Include="Wcf\WcfJsBridgeService.cs" />
     <Compile Include="Wcf\WcfServices.cs" />
     <Compile Include="Wcf\WcfSoapService.cs" />
   </ItemGroup>
