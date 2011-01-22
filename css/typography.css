@@ -1,0 +1,33 @@
+/*	-------------------------------------------------------------
+ 
+	Quadro
+ 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+	Description:Typography cascading style sheet
+	Nom:typography.css
+	Version:1.0
+	Date:October 12th, 2009 
+ 
+	This file is part of a site template for sale at ThemeForest.net.
+	See: http://themeforest.net/user/simonbouchard/portfolio
+	Copyright ©2009 Simon Bouchard <info@simonbouchard.com>
+ 
+-------------------------------------------------------------	*/
+
+/*	-------------------------------------------------------------
+	Droid Sans
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -	*/
+
+@font-face {
+	font-family: 'Droid Sans Regular';
+	src: url('../fonts/DroidSans.eot');
+	src: local('Droid Sans Regular'), local('DroidSans-Regular'), url('../fonts/DroidSans.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: 'Droid Sans Bold';
+	src: url('../fonts/DroidSans-Bold.eot');
+	src: local('Droid Sans Bold'), local('DroidSans-Bold'), url('../fonts/DroidSans-Bold.ttf') format('truetype');
+}
+
