@@ -12,6 +12,11 @@ namespace Colombo
         /// <summary>
         /// Send synchronously a request and returns the response.
         /// </summary>
+        Response Send(BaseRequest request);
+
+        /// <summary>
+        /// Send synchronously a request and returns the response.
+        /// </summary>
         TResponse Send<TResponse>(Request<TResponse> request)
             where TResponse : Response, new();
 

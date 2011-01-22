@@ -268,6 +268,11 @@ namespace Colombo.Tests.Impl
                 NumSendCalled = 0;
             }
 
+            public Response Send(BaseRequest request)
+            {
+                throw new NotImplementedException();
+            }
+
             public TResponse Send<TResponse>(Request<TResponse> request)
                 where TResponse : Response, new()
             {

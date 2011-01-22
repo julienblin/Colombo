@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ServiceModel;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
@@ -110,6 +111,11 @@ namespace Colombo.Host.Tests.Internal
 
         public class FakeMessageBus : IMessageBus
         {
+            public Response Send(BaseRequest request)
+            {
+                throw new NotImplementedException();
+            }
+
             public TResponse Send<TResponse>(Request<TResponse> request) where TResponse : Response, new()
             {
                 throw new System.NotImplementedException();

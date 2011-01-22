@@ -7,6 +7,13 @@ namespace Colombo.Contracts
     [ContractClassFor(typeof(IMessageBus))]
     public abstract class MessageBusContract : IMessageBus
     {
+        public Response Send(BaseRequest request)
+        {
+            Contract.Requires<ArgumentNullException>(request != null, "request");
+            Contract.Ensures(Contract.Result<Response>() != null);
+            throw new NotImplementedException();
+        }
+
         public TResponse Send<TResponse>(Request<TResponse> request)
             where TResponse : Response, new()
         {

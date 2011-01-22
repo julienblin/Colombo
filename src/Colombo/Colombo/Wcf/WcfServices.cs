@@ -61,5 +61,30 @@ namespace Colombo.Wcf
                     Kernel.ReleaseComponent(localRequestProcessor);
             }
         }
+
+        public static Response Process(BaseRequest request)
+        {
+            if (request == null) throw new ArgumentNullException("request");
+            Contract.EndContractBlock();
+
+            if (Kernel == null)
+                throw new ColomboException("No Kernel has been registered. You must asign a Castle.IKernel to WcfServices.Kernel before receiving any request.");
+
+            IMessageBus messageBus = null;
+            try
+            {
+                messageBus = Kernel.Resolve<IMessageBus>();
+                return messageBus.Send(request);
+            }
+            catch (ComponentNotFoundException ex)
+            {
+                throw new ColomboException("No IMessageBus could be resolved. You must register an IMessageBus into the container.", ex);
+            }
+            finally
+            {
+                if (messageBus != null)
+                    Kernel.ReleaseComponent(messageBus);
+            }
+        }
     }
 }

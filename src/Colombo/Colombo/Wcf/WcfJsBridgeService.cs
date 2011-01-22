@@ -49,9 +49,7 @@ namespace Colombo.Wcf
             var requestType = MessageNameTypeMapping[messageName];
             var request = (BaseRequest)RecurseType(parameters, requestType, string.Empty);
 
-            var responses = WcfServices.ProcessLocally(new[] { request });
-
-            return responses[0];
+            return WcfServices.Process(request);
         }
 
         private object RecurseType(NameValueCollection collection, Type type, string prefix)

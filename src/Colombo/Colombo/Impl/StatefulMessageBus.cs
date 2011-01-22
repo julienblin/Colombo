@@ -97,6 +97,14 @@ namespace Colombo.Impl
         /// </summary>
         public int MaxAllowedNumberOfSend { get; set; }
 
+        public Response Send(BaseRequest request)
+        {
+            if (request == null) throw new ArgumentNullException("request");
+            Contract.EndContractBlock();
+            CheckNumberOfSend();
+            return messageBus.Send(request);
+        }
+
         /// <summary>
         /// Send synchronously a request and returns the response.
         /// </summary>

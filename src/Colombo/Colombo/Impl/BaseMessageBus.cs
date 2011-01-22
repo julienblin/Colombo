@@ -67,6 +67,18 @@ namespace Colombo.Impl
             }
         }
 
+        public virtual Response Send(BaseRequest request)
+        {
+            if (request == null) throw new ArgumentNullException("request");
+            Contract.EndContractBlock();
+
+            var responses = InternalSend(new List<BaseRequest> { request });
+            Contract.Assume(responses != null);
+            Contract.Assume(responses.Count == 1);
+
+            return responses[request];
+        }
+
         /// <summary>
         /// Send synchronously a request and returns the response.
         /// </summary>

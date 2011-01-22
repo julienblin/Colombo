@@ -87,16 +87,10 @@ namespace Colombo.Wcf
 
         private ClientSection WcfConfigClientSection
         {
-            get
-            {
-                if (wcfConfigClientSection == null)
-                {
-                    var configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-                    var serviceModelGroup = ServiceModelSectionGroup.GetSectionGroup(configuration);
-                    if (serviceModelGroup != null)
-                        wcfConfigClientSection = serviceModelGroup.Client;
-                }
-                return wcfConfigClientSection;
+            get {
+                return wcfConfigClientSection ??
+                       (wcfConfigClientSection =
+                        ConfigurationManager.GetSection("system.serviceModel/client") as ClientSection);
             }
         }
 
