@@ -6,8 +6,8 @@ using Colombo.Wcf;
 namespace Colombo.Contracts
 {
 #pragma warning disable 1591 // docs
-    [ContractClassFor(typeof(IWcfColomboServiceFactory))]
-    public abstract class WcfServiceFactoryContract : IWcfColomboServiceFactory
+    [ContractClassFor(typeof(IColomboServiceFactory))]
+    public abstract class ColomboServiceFactoryContract : IColomboServiceFactory
     {
         public bool CanCreateChannelForRequestGroup(string name)
         {
@@ -21,13 +21,13 @@ namespace Colombo.Contracts
             throw new NotImplementedException();
         }
 
-        public IWcfColomboService CreateChannel(string name)
+        public IColomboService CreateChannel(string name)
         {
             Contract.Requires<ArgumentNullException>(name != null, "name");
             throw new NotImplementedException();
         }
 
-        public IEnumerable<IWcfColomboService> CreateChannelsForAllEndPoints()
+        public IEnumerable<IColomboService> CreateChannelsForAllEndPoints()
         {
             throw new NotImplementedException();
         }

@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 namespace Colombo.Wcf
 {
     /// <summary>
-    /// Implementation of the <see cref="IWcfColomboService"/> service.
+    /// Implementation of the <see cref="IColomboService"/> service.
     /// </summary>
     [ServiceBehavior(
         IncludeExceptionDetailInFaults = true,
         ConcurrencyMode = ConcurrencyMode.Multiple,
         InstanceContextMode = InstanceContextMode.PerCall
     )]
-    public class WcfColomboService : IWcfColomboService
+    public class ColomboService : IColomboService
     {
         /// <summary>
         /// Process requests asynchronously.

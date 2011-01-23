@@ -149,11 +149,11 @@ namespace Colombo.Host.Internal
             {
                 switch (contract)
                 {
-                    case "Colombo.Wcf.IWcfColomboService":
-                        yield return new System.ServiceModel.ServiceHost(typeof(WcfColomboService));
+                    case "Colombo.Wcf.IColomboService":
+                        yield return new System.ServiceModel.ServiceHost(typeof(ColomboService));
                         break;
-                    case "Colombo.Wcf.IWcfSoapService":
-                        yield return new System.ServiceModel.ServiceHost(typeof(WcfSoapService));
+                    case "Colombo.Wcf.ISoapService":
+                        yield return new System.ServiceModel.ServiceHost(typeof(SoapService));
                         break;
                     default:
                         throw new ColomboException(string.Format("Unrecognized contract {0}. You should try implementing IWantToCreateServiceHosts in your IAmAnEndpoint component to create ServiceHosts yourself.", contract));

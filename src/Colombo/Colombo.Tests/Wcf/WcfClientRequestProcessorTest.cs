@@ -17,7 +17,7 @@ namespace Colombo.Tests.Wcf
             var mocks = new MockRepository();
             var requestInThisAssembly = new TestRequest();
             var requestInDynamicAssembly = mocks.Stub<Request<TestResponse>>();
-            var wcfServiceFactory = mocks.StrictMock<IWcfColomboServiceFactory>();
+            var wcfServiceFactory = mocks.StrictMock<IColomboServiceFactory>();
 
             With.Mocks(mocks).Expecting(() =>
             {
@@ -50,15 +50,15 @@ namespace Colombo.Tests.Wcf
             const string IPCAddress1 = @"net.pipe://localhost/ipctest1";
             const string IPCAddress2 = @"net.pipe://localhost/ipctest2";
             // Create named-pipe services host for testing...
-            using (var serviceHost1 = new ServiceHost(typeof(TestWcfService1), new Uri(IPCAddress1)))
-            using (var serviceHost2 = new ServiceHost(typeof(TestWcfService2), new Uri(IPCAddress2)))
+            using (var serviceHost1 = new ServiceHost(typeof(TestService1), new Uri(IPCAddress1)))
+            using (var serviceHost2 = new ServiceHost(typeof(TestService2), new Uri(IPCAddress2)))
             {
                 serviceHost1.Open();
                 serviceHost2.Open();
 
                 var mocks = new MockRepository();
 
-                var wcfServiceFactory = mocks.StrictMock<IWcfColomboServiceFactory>();
+                var wcfServiceFactory = mocks.StrictMock<IColomboServiceFactory>();
 
                 var request1 = new TestRequestIPC1 { Name = @"Request1" };
                 var request2 = new TestRequestIPC2 { Name = @"Request2" };
@@ -66,8 +66,8 @@ namespace Colombo.Tests.Wcf
                 var request4 = new TestRequestIPC2 { Name = @"Request4" };
                 var requests = new List<BaseRequest> { request1, request2, request3, request4 };
 
-                var channelFactory1 = new ChannelFactory<IWcfColomboService>(new NetNamedPipeBinding(), new EndpointAddress(IPCAddress1));
-                var channelFactory2 = new ChannelFactory<IWcfColomboService>(new NetNamedPipeBinding(), new EndpointAddress(IPCAddress2));
+                var channelFactory1 = new ChannelFactory<IColomboService>(new NetNamedPipeBinding(), new EndpointAddress(IPCAddress1));
+                var channelFactory2 = new ChannelFactory<IColomboService>(new NetNamedPipeBinding(), new EndpointAddress(IPCAddress2));
 
                 With.Mocks(mocks).Expecting(() =>
                 {
@@ -109,10 +109,10 @@ namespace Colombo.Tests.Wcf
         {
             var mocks = new MockRepository();
 
-            var wcfServiceFactory = mocks.StrictMock<IWcfColomboServiceFactory>();
+            var wcfServiceFactory = mocks.StrictMock<IColomboServiceFactory>();
             var alerter = mocks.StrictMock<IColomboAlerter>();
 
-            var channelFactory = new ChannelFactory<IWcfColomboService>(new NetNamedPipeBinding(), new EndpointAddress("net.pipe://localhost/unknown"));
+            var channelFactory = new ChannelFactory<IColomboService>(new NetNamedPipeBinding(), new EndpointAddress("net.pipe://localhost/unknown"));
 
             With.Mocks(mocks).Expecting(() =>
             {
@@ -131,7 +131,7 @@ namespace Colombo.Tests.Wcf
             });
         }
 
-        public delegate IWcfColomboService CreateChannelDelegate(string name);
+        public delegate IColomboService CreateChannelDelegate(string name);
 
         public class TestRequest : Request<TestResponse>
         {
@@ -157,7 +157,7 @@ namespace Colombo.Tests.Wcf
             ConcurrencyMode = ConcurrencyMode.Multiple,
             InstanceContextMode = InstanceContextMode.PerCall
         )]
-        public class TestWcfService1 : IWcfColomboService
+        public class TestService1 : IColomboService
         {
             public IAsyncResult BeginProcessAsync(BaseRequest[] requests, AsyncCallback callback, object state)
             {
@@ -195,7 +195,7 @@ namespace Colombo.Tests.Wcf
             ConcurrencyMode = ConcurrencyMode.Multiple,
             InstanceContextMode = InstanceContextMode.PerCall
         )]
-        public class TestWcfService2 : IWcfColomboService
+        public class TestService2 : IColomboService
         {
             public IAsyncResult BeginProcessAsync(BaseRequest[] requests, AsyncCallback callback, object state)
             {

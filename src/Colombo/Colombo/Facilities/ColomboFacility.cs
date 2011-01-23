@@ -99,8 +99,8 @@ namespace Colombo.Facilities
             else
             {
                 Kernel.Register(
-                    Component.For<IWcfColomboServiceFactory>()
-                        .ImplementedBy<WcfColomboServiceFactory>(),
+                    Component.For<IColomboServiceFactory>()
+                        .ImplementedBy<ColomboServiceFactory>(),
                     Component.For<IRequestProcessor>()
                         .ImplementedBy<WcfClientRequestProcessor>()
                         .OnCreate((kernel, item) => ((WcfClientRequestProcessor)item).HealthCheckHeartBeatInSeconds = healthCheckHeartBeatInSeconds),
@@ -118,6 +118,8 @@ namespace Colombo.Facilities
                         .OnCreate((kernel, item) => item.MaxAllowedNumberOfSend = maxAllowedNumberOfSendForStatefulMessageBus)
                 );
             }
+
+            WcfServices.Kernel = Kernel;
 
             foreach (var sendType in sendInterceptors)
             {
@@ -150,8 +152,6 @@ namespace Colombo.Facilities
                             .LifeStyle.Transient
                             .ImplementedBy<HealthCheckRequestHandler>()
                         );
-
-                    WcfServices.Kernel = Kernel;
 
                     if (enableInMemoryCaching)
                     {

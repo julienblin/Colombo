@@ -30,7 +30,7 @@ namespace Colombo.Tests
                     .ImplementedBy<TestRequestIPCHandler>()
             );
 
-            using (var serviceHostServer = new ServiceHost(typeof(WcfColomboService), new Uri(@"net.pipe://localhost/ipctest")))
+            using (var serviceHostServer = new ServiceHost(typeof(ColomboService), new Uri(@"net.pipe://localhost/ipctest")))
             {
                 serviceHostServer.Open();
 
@@ -72,7 +72,7 @@ namespace Colombo.Tests
                     .ImplementedBy<TestRequestIPCHandler>()
             );
 
-            using (var serviceHostServer = new ServiceHost(typeof(WcfColomboService), new Uri(@"net.pipe://localhost/ipctest")))
+            using (var serviceHostServer = new ServiceHost(typeof(ColomboService), new Uri(@"net.pipe://localhost/ipctest")))
             {
                 serviceHostServer.Open();
 
@@ -118,7 +118,7 @@ namespace Colombo.Tests
                     .ImplementedBy<TestRequestIPCHandler>()
             );
 
-            using (var serviceHostServer = new ServiceHost(typeof(WcfColomboService), new Uri(@"net.pipe://localhost/ipctest")))
+            using (var serviceHostServer = new ServiceHost(typeof(ColomboService), new Uri(@"net.pipe://localhost/ipctest")))
             {
                 serviceHostServer.Open();
                 

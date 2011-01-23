@@ -118,7 +118,7 @@
     <Compile Include="Contracts\RequestHandlerHandleInterceptorContract.cs" />
     <Compile Include="Contracts\RequestProcessorContract.cs" />
     <Compile Include="Contracts\StatefulMessageBusContract.cs" />
-    <Compile Include="Contracts\WcfServiceFactoryContract.cs" />
+    <Compile Include="Contracts\ColomboServiceFactoryContract.cs" />
     <Compile Include="Facilities\ColomboFacility.cs" />
     <Compile Include="Facilities\LifestyleRegistrationExtensions.cs" />
     <Compile Include="Facilities\PerRequestHandlingLifestyleManager.cs" />
@@ -214,18 +214,18 @@
     <Compile Include="ValidatedResponse.cs" />
     <Compile Include="Wcf\AddOperationsForRequestHandlersAttribute.cs" />
     <Compile Include="Wcf\EmbedTypeInSerializerAttribute.cs" />
-    <Compile Include="Wcf\IWcfColomboServiceFactory.cs" />
-    <Compile Include="Wcf\IWcfColomboService.cs" />
-    <Compile Include="Wcf\IWcfSoapService.cs" />
+    <Compile Include="Wcf\IColomboServiceFactory.cs" />
+    <Compile Include="Wcf\IColomboService.cs" />
+    <Compile Include="Wcf\ISoapService.cs" />
     <Compile Include="Wcf\ProcessAsyncResult.cs" />
     <Compile Include="Wcf\QueryStringMapper.cs" />
     <Compile Include="Wcf\RequestProcessorOperationInvoker.cs" />
     <Compile Include="Wcf\WcfClientRequestProcessor.cs" />
-    <Compile Include="Wcf\WcfColomboServiceFactory.cs" />
-    <Compile Include="Wcf\WcfColomboService.cs" />
-    <Compile Include="Wcf\WcfJsBridgeService.cs" />
+    <Compile Include="Wcf\ColomboServiceFactory.cs" />
+    <Compile Include="Wcf\ColomboService.cs" />
+    <Compile Include="Wcf\ClientRestService.cs" />
     <Compile Include="Wcf\WcfServices.cs" />
-    <Compile Include="Wcf\WcfSoapService.cs" />
+    <Compile Include="Wcf\SoapService.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

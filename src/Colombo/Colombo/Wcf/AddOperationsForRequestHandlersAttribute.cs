@@ -40,7 +40,7 @@ namespace Colombo.Wcf
 
                 var operationDescription = new OperationDescription(baseOperationName, contractDescription);
 
-                const string messageDescriptionBase = WcfServices.Namespace + "/WcfSoapService/";
+                const string messageDescriptionBase = WcfServices.Namespace + "/SoapService/";
                 var inputMessage = new MessageDescription(messageDescriptionBase + baseOperationName, MessageDirection.Input);
                 inputMessage.Body.WrapperName = baseOperationName;
                 inputMessage.Body.WrapperNamespace = WcfServices.Namespace;

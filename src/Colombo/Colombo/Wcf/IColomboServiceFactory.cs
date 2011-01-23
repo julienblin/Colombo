@@ -5,10 +5,10 @@ using System.ServiceModel;
 namespace Colombo.Wcf
 {
     /// <summary>
-    /// Components that create <see cref="IWcfColomboService"/> channels.
+    /// Components that create <see cref="IColomboService"/> channels.
     /// </summary>
-    [ContractClass(typeof(Contracts.WcfServiceFactoryContract))]
-    public interface IWcfColomboServiceFactory
+    [ContractClass(typeof(Contracts.ColomboServiceFactoryContract))]
+    public interface IColomboServiceFactory
     {
         /// <summary>
         /// <c>true</c> if can create a channel for the group named <paramref name="name"/>, <c>false</c> otherwise.
@@ -24,11 +24,11 @@ namespace Colombo.Wcf
         /// <summary>
         /// Create a <see cref="IClientChannel"/> associated with the name <paramref name="name"/>.
         /// </summary>
-        IWcfColomboService CreateChannel(string name);
+        IColomboService CreateChannel(string name);
 
         /// <summary>
         /// Create a <see cref="IClientChannel"/> for all the available endpoints.
         /// </summary>
-        IEnumerable<IWcfColomboService> CreateChannelsForAllEndPoints();
+        IEnumerable<IColomboService> CreateChannelsForAllEndPoints();
     }
 }

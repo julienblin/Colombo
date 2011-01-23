@@ -19,14 +19,14 @@ namespace Colombo.Wcf
     /// </summary>
     [ServiceContract(Namespace = "")]
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
-    public class WcfJsBridgeService
+    public class ClientRestService
     {
         internal readonly static Dictionary<string, Type> GetTypeMapping = new Dictionary<string, Type>();
         internal readonly static Dictionary<string, Type> PostTypeMapping = new Dictionary<string, Type>();
         private readonly static List<Type> KnownTypes = new List<Type>();
 
         /// <summary>
-        /// Register a request of type <typeparamref name="TRequest"/>, it will be available to REST.
+        /// Register a request of type <typeparamref name="TRequest"/>, it will be available to <see cref="ClientRestService"/>.
         /// </summary>
         public static void RegisterRequest<TRequest>()
             where TRequest : BaseRequest, new()
@@ -35,7 +35,7 @@ namespace Colombo.Wcf
         }
 
         /// <summary>
-        /// Register a request of type <paramref name="requestType"/>, it will be available to REST.
+        /// Register a request of type <paramref name="requestType"/>, it will be available to <see cref="ClientRestService"/>.
         /// </summary>
         public static void RegisterRequest(Type requestType)
         {
@@ -92,7 +92,7 @@ namespace Colombo.Wcf
         /// </summary>
         [OperationContract]
         [WebGet(UriTemplate = "/{messageName}", BodyStyle = WebMessageBodyStyle.Bare, ResponseFormat = WebMessageFormat.Json)]
-        [ServiceKnownType("GetKnownTypes", typeof(WcfJsBridgeService))]
+        [ServiceKnownType("GetKnownTypes", typeof(ClientRestService))]
         public Response InvokeGet(string messageName)
         {
             if (!GetTypeMapping.ContainsKey(messageName))
@@ -100,7 +100,7 @@ namespace Colombo.Wcf
                 if (PostTypeMapping.ContainsKey(messageName))
                     throw new ColomboException(string.Format("{0} is not a side-effect free request. You must invoke using POST, not GET.", PostTypeMapping[messageName]));
 
-                throw new ColomboException(string.Format("No request with the name {0} or {0}Request has been registered. You must register your request type using WcfJsBridgeService.RegisterRequestType before using the bridge.", messageName));
+                throw new ColomboException(string.Format("No request with the name {0} or {0}Request has been registered. You must register your request type using ClientRestService.RegisterRequestType before using the bridge.", messageName));
             }
 
             var requestType = GetTypeMapping[messageName];
@@ -117,7 +117,7 @@ namespace Colombo.Wcf
         /// </summary>
         [OperationContract]
         [WebInvoke(UriTemplate = "/{messageName}", BodyStyle = WebMessageBodyStyle.Bare, ResponseFormat = WebMessageFormat.Json)]
-        [ServiceKnownType("GetKnownTypes", typeof(WcfJsBridgeService))]
+        [ServiceKnownType("GetKnownTypes", typeof(ClientRestService))]
         public Response InvokePost(string messageName)
         {
             if (!PostTypeMapping.ContainsKey(messageName))
@@ -125,7 +125,7 @@ namespace Colombo.Wcf
                 if (GetTypeMapping.ContainsKey(messageName))
                     throw new ColomboException(string.Format("{0} is a side-effect free request. You must invoke using GET, not POST.", GetTypeMapping[messageName]));
 
-                throw new ColomboException(string.Format("No request with the name {0} or {0}Request has been registered. You must register your request type using WcfJsBridgeService.RegisterRequestType before using the bridge.", messageName));
+                throw new ColomboException(string.Format("No request with the name {0} or {0}Request has been registered. You must register your request type using ClientRestService.RegisterRequestType before using the bridge.", messageName));
             }
 
             var requestType = PostTypeMapping[messageName];

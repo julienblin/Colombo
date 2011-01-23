@@ -94,9 +94,9 @@
     <Compile Include="Wcf\QueryStringMapperTest.cs" />
     <Compile Include="Wcf\RequestProcessorOperationInvokerTest.cs" />
     <Compile Include="Wcf\WcfClientRequestProcessorTest.cs" />
-    <Compile Include="Wcf\WcfColomboServiceTest.cs" />
-    <Compile Include="Wcf\WcfColomboServiceFactoryTest.cs" />
-    <Compile Include="Wcf\WcfJsBridgeServiceTest.cs" />
+    <Compile Include="Wcf\ColomboServiceTest.cs" />
+    <Compile Include="Wcf\ColomboServiceFactoryTest.cs" />
+    <Compile Include="Wcf\ClientRestServiceTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Colombo\Colombo.csproj">

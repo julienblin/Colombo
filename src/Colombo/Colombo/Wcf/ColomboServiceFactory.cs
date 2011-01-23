@@ -10,10 +10,10 @@ using System.ServiceModel.Configuration;
 namespace Colombo.Wcf
 {
     /// <summary>
-    /// <see cref="IWcfColomboServiceFactory"/> that creates <see cref="IWcfColomboService"/> channels based on standard
+    /// <see cref="IColomboServiceFactory"/> that creates <see cref="IColomboService"/> channels based on standard
     /// WCF configuration.
     /// </summary>
-    public class WcfColomboServiceFactory : IWcfColomboServiceFactory
+    public class ColomboServiceFactory : IColomboServiceFactory
     {
         /// <summary>
         /// <c>true</c> if can create a channel for the group named <paramref name="name"/>, <c>false</c> otherwise.
@@ -39,12 +39,12 @@ namespace Colombo.Wcf
             return channelEndpointElement == null ? null : channelEndpointElement.Address.AbsoluteUri;
         }
 
-        private readonly ConcurrentDictionary<string, ChannelFactory<IWcfColomboService>> channelFactories = new ConcurrentDictionary<string, ChannelFactory<IWcfColomboService>>();
+        private readonly ConcurrentDictionary<string, ChannelFactory<IColomboService>> channelFactories = new ConcurrentDictionary<string, ChannelFactory<IColomboService>>();
 
         /// <summary>
         /// Create a <see cref="IClientChannel"/> associated with the name <paramref name="name"/>.
         /// </summary>
-        public IWcfColomboService CreateChannel(string name)
+        public IColomboService CreateChannel(string name)
         {
             if (name == null) throw new ArgumentNullException("name");
             Contract.EndContractBlock();
@@ -53,7 +53,7 @@ namespace Colombo.Wcf
             {
                 var channelFactory = channelFactories.GetOrAdd(name, n =>
                 {
-                    var channelFact = new ChannelFactory<IWcfColomboService>(n);
+                    var channelFact = new ChannelFactory<IColomboService>(n);
                     channelFact.Faulted += FactoryFaulted;
                     channelFact.Open();
                     return channelFact;
@@ -72,7 +72,7 @@ namespace Colombo.Wcf
         /// <summary>
         /// Create a <see cref="IClientChannel"/> for all the available endpoints.
         /// </summary>
-        public IEnumerable<IWcfColomboService> CreateChannelsForAllEndPoints()
+        public IEnumerable<IColomboService> CreateChannelsForAllEndPoints()
         {
             return from ChannelEndpointElement endPoint in WcfConfigClientSection.Endpoints select CreateChannel(endPoint.Name);
         }
@@ -96,7 +96,7 @@ namespace Colombo.Wcf
 
         private void FactoryFaulted(object sender, EventArgs args)
         {
-            var factory = (ChannelFactory<IWcfColomboService>)sender;
+            var factory = (ChannelFactory<IColomboService>)sender;
             try
             {
                 factory.Close();
@@ -106,7 +106,7 @@ namespace Colombo.Wcf
                 factory.Abort();
             }
 
-            ChannelFactory<IWcfColomboService> outFactory;
+            ChannelFactory<IColomboService> outFactory;
             channelFactories.TryRemove(factory.Endpoint.Name, out outFactory);
         }
 

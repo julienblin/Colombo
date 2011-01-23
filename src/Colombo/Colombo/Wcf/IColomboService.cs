@@ -6,10 +6,10 @@ namespace Colombo.Wcf
     /// <summary>
     /// Service exposed by Colombo to allow remote communications.
     /// This service is dedicated to Colombo exchange communication, and not adapted for interoperability.
-    /// See <see cref="IWcfSoapService"/> for exposing SOAP information correctly.
+    /// See <see cref="ISoapService"/> for exposing SOAP information correctly.
     /// </summary>
     [ServiceContract(Namespace = WcfServices.Namespace)]
-    public interface IWcfColomboService
+    public interface IColomboService
     {
         /// <summary>
         /// Process requests asynchronously.

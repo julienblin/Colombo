@@ -7,12 +7,12 @@ using NUnit.Framework;
 namespace Colombo.Tests.Wcf
 {
     [TestFixture]
-    public class WcfColomboServiceFactoryTest : BaseTest
+    public class ColomboServiceFactoryTest : BaseTest
     {
         [Test]
         public void It_should_check_WCF_client_configuration_to_determine_if_it_can_create_Channel()
         {
-            var factory = new WcfColomboServiceFactory();
+            var factory = new ColomboServiceFactory();
             Assert.That(() => factory.CanCreateChannelForRequestGroup("Colombo.Tests"),
                 Is.True);
             Assert.That(() => factory.CanCreateChannelForRequestGroup("AnotherGroupName"),
@@ -22,7 +22,7 @@ namespace Colombo.Tests.Wcf
         [Test]
         public void It_should_return_address_from_WCF_configuration()
         {
-            var factory = new WcfColomboServiceFactory();
+            var factory = new ColomboServiceFactory();
             Assert.That(() => factory.GetAddressForRequestGroup("Colombo.Tests"),
                 Is.EqualTo(@"http://localhost/Colombo.svc"));
             Assert.That(() => factory.GetAddressForRequestGroup("AnotherAssembly"),
@@ -34,7 +34,7 @@ namespace Colombo.Tests.Wcf
         [Test]
         public void It_should_create_a_Channel_from_configuration()
         {
-            var factory = new WcfColomboServiceFactory();
+            var factory = new ColomboServiceFactory();
 
             var wcfService = factory.CreateChannel("Colombo.Tests");
 
@@ -49,7 +49,7 @@ namespace Colombo.Tests.Wcf
         [Test]
         public void It_should_return_a_Channel_for_all_endpoints_from_configuration()
         {
-            var factory = new WcfColomboServiceFactory();
+            var factory = new ColomboServiceFactory();
             var allChannels = factory.CreateChannelsForAllEndPoints().ToArray();
 
             Assert.That(() => allChannels.Length,

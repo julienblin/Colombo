@@ -12,7 +12,7 @@ using Colombo.HealthCheck;
 namespace Colombo.Wcf
 {
     /// <summary>
-    /// <see cref="IRequestProcessor"/> implementation that uses WCF to transfer requests. See <see cref="IWcfColomboService"/>.
+    /// <see cref="IRequestProcessor"/> implementation that uses WCF to transfer requests. See <see cref="IColomboService"/>.
     /// </summary>
     public class WcfClientRequestProcessor : IRequestProcessor
     {
@@ -49,13 +49,13 @@ namespace Colombo.Wcf
             }
         }
 
-        private readonly IWcfColomboServiceFactory serviceFactory;
+        private readonly IColomboServiceFactory serviceFactory;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="serviceFactory"></param>
-        public WcfClientRequestProcessor(IWcfColomboServiceFactory serviceFactory)
+        public WcfClientRequestProcessor(IColomboServiceFactory serviceFactory)
         {
             if (serviceFactory == null) throw new ArgumentNullException("serviceFactory");
             Contract.EndContractBlock();
@@ -116,26 +116,26 @@ namespace Colombo.Wcf
                 var task = Task.Factory.StartNew(g =>
                     {
                         var group = (IGrouping<string, BaseRequest>)g;
-                        IWcfColomboService wcfService = null;
+                        IColomboService service = null;
                         try
                         {
-                            wcfService = serviceFactory.CreateChannel(group.Key);
-                            Logger.DebugFormat("Sending {0} request(s) to {1}...", group.Count(), ((IClientChannel)wcfService).RemoteAddress.Uri);
-                            var asyncResult = wcfService.BeginProcessAsync(group.ToArray(), null, null);
+                            service = serviceFactory.CreateChannel(group.Key);
+                            Logger.DebugFormat("Sending {0} request(s) to {1}...", group.Count(), ((IClientChannel)service).RemoteAddress.Uri);
+                            var asyncResult = service.BeginProcessAsync(group.ToArray(), null, null);
                             asyncResult.AsyncWaitHandle.WaitOne();
-                            return wcfService.EndProcessAsync(asyncResult);
+                            return service.EndProcessAsync(asyncResult);
                         }
                         finally
                         {
-                            if (wcfService != null)
+                            if (service != null)
                             {
                                 try
                                 {
-                                    ((IClientChannel)wcfService).Close();
+                                    ((IClientChannel)service).Close();
                                 }
                                 catch (Exception)
                                 {
-                                    ((IClientChannel)wcfService).Abort();
+                                    ((IClientChannel)service).Abort();
                                 }
                             }
                         }
@@ -208,7 +208,7 @@ namespace Colombo.Wcf
 
         internal void HealthCheckTimerElapsed(object sender, ElapsedEventArgs e)
         {
-            IWcfColomboService currentWcfService = null;
+            IColomboService currentService = null;
 
             try
             {
@@ -216,19 +216,19 @@ namespace Colombo.Wcf
                 {
                     if(wcfService == null) throw new ColomboException("Internal error: channel should not be null.");
 
-                    currentWcfService = wcfService;
+                    currentService = wcfService;
                     try
                     {
                         var hcRequest = new HealthCheckRequest();
-                        Logger.DebugFormat("Sending healthcheck request to {0}...", ((IClientChannel)currentWcfService).RemoteAddress.Uri);
-                        var asyncResult = currentWcfService.BeginProcessAsync(new BaseRequest[] { hcRequest }, null, null);
+                        Logger.DebugFormat("Sending healthcheck request to {0}...", ((IClientChannel)currentService).RemoteAddress.Uri);
+                        var asyncResult = currentService.BeginProcessAsync(new BaseRequest[] { hcRequest }, null, null);
                         asyncResult.AsyncWaitHandle.WaitOne();
-                        currentWcfService.EndProcessAsync(asyncResult);
-                        Logger.DebugFormat("Healthcheck OK for {0}...", ((IClientChannel)currentWcfService).RemoteAddress.Uri);
+                        currentService.EndProcessAsync(asyncResult);
+                        Logger.DebugFormat("Healthcheck OK for {0}...", ((IClientChannel)currentService).RemoteAddress.Uri);
                     }
                     catch (Exception ex)
                     {
-                        var alert = new HealthCheckFailedAlert(Environment.MachineName, ((IClientChannel)currentWcfService).RemoteAddress.Uri.ToString(), ex);
+                        var alert = new HealthCheckFailedAlert(Environment.MachineName, ((IClientChannel)currentService).RemoteAddress.Uri.ToString(), ex);
                         Logger.Warn(alert.ToString());
                         foreach (var alerter in Alerters)
                         {
@@ -244,15 +244,15 @@ namespace Colombo.Wcf
             }
             finally
             {
-                if (currentWcfService != null)
+                if (currentService != null)
                 {
                     try
                     {
-                        ((IClientChannel)currentWcfService).Close();
+                        ((IClientChannel)currentService).Close();
                     }
                     catch (Exception)
                     {
-                        ((IClientChannel)currentWcfService).Abort();
+                        ((IClientChannel)currentService).Abort();
                     }
                 }
             }

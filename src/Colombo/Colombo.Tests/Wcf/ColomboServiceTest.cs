@@ -11,7 +11,7 @@ using Rhino.Mocks;
 namespace Colombo.Tests.Wcf
 {
     [TestFixture]
-    public class WcfColomboServiceTest : BaseTest
+    public class ColomboServiceTest : BaseTest
     {
         [SetUp]
         public void SetUp()
@@ -26,7 +26,7 @@ namespace Colombo.Tests.Wcf
             var request1 = mocks.Stub<Request<TestResponse>>();
             var request2 = mocks.Stub<Request<TestResponse>>();
             var requests = new BaseRequest[] { request1, request2 };
-            var service = new WcfColomboService();
+            var service = new ColomboService();
 
             Exception testedException = null;
 
@@ -50,7 +50,7 @@ namespace Colombo.Tests.Wcf
             var mocks = new MockRepository();
             var request = mocks.Stub<Request<TestResponse>>();
             var requests = new BaseRequest[] { request };
-            var service = new WcfColomboService();
+            var service = new ColomboService();
 
             var kernel = new DefaultKernel();
 
@@ -79,7 +79,7 @@ namespace Colombo.Tests.Wcf
             var request = mocks.Stub<Request<TestResponse>>();
             var requests = new BaseRequest[] { request };
             var processor = mocks.StrictMock<ILocalRequestProcessor>();
-            var service = new WcfColomboService();
+            var service = new ColomboService();
 
             var kernel = new DefaultKernel();
             kernel.Register(
@@ -126,7 +126,7 @@ namespace Colombo.Tests.Wcf
             };
 
             var processor = mocks.StrictMock<ILocalRequestProcessor>();
-            var service = new WcfColomboService();
+            var service = new ColomboService();
 
             var kernel = new DefaultKernel();
             kernel.Register(
@@ -172,7 +172,7 @@ namespace Colombo.Tests.Wcf
             var response2 = new TestResponse();
 
             var processor = mocks.DynamicMock<ILocalRequestProcessor>();
-            var service = new WcfColomboService();
+            var service = new ColomboService();
 
             var kernel = new DefaultKernel();
             kernel.Register(
@@ -193,10 +193,10 @@ namespace Colombo.Tests.Wcf
                 }));
             }).Verify(() =>
             {
-                using (var serviceHost = new ServiceHost(typeof(WcfColomboService), new Uri(IPCAddress)))
+                using (var serviceHost = new ServiceHost(typeof(ColomboService), new Uri(IPCAddress)))
                 {
                     serviceHost.Open();
-                    var channelFactory = new ChannelFactory<IWcfColomboService>(new NetNamedPipeBinding(), new EndpointAddress(IPCAddress));
+                    var channelFactory = new ChannelFactory<IColomboService>(new NetNamedPipeBinding(), new EndpointAddress(IPCAddress));
                     var wcfService = channelFactory.CreateChannel();
 
                     var asyncResult = wcfService.BeginProcessAsync(requests, null, null);
