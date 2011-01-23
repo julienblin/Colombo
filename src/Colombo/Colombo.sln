@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Colombo.Host", "Colombo.Hos
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Colombo.Host.Tests", "Colombo.Host.Tests\Colombo.Host.Tests.csproj", "{9D19CE2F-A06F-47D9-9790-AF99B70AFCC5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication1", "WebApplication1\WebApplication1.csproj", "{CB5C6C84-A501-4B38-A7BB-7A1B2913D82C}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,16 +59,6 @@ Global
 		{9D19CE2F-A06F-47D9-9790-AF99B70AFCC5}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{9D19CE2F-A06F-47D9-9790-AF99B70AFCC5}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{9D19CE2F-A06F-47D9-9790-AF99B70AFCC5}.Release|x86.ActiveCfg = Release|Any CPU
-		{CB5C6C84-A501-4B38-A7BB-7A1B2913D82C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CB5C6C84-A501-4B38-A7BB-7A1B2913D82C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CB5C6C84-A501-4B38-A7BB-7A1B2913D82C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{CB5C6C84-A501-4B38-A7BB-7A1B2913D82C}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{CB5C6C84-A501-4B38-A7BB-7A1B2913D82C}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{CB5C6C84-A501-4B38-A7BB-7A1B2913D82C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CB5C6C84-A501-4B38-A7BB-7A1B2913D82C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CB5C6C84-A501-4B38-A7BB-7A1B2913D82C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{CB5C6C84-A501-4B38-A7BB-7A1B2913D82C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{CB5C6C84-A501-4B38-A7BB-7A1B2913D82C}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
