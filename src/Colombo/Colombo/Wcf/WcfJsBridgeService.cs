@@ -12,6 +12,11 @@ using System.Web;
 
 namespace Colombo.Wcf
 {
+    /// <summary>
+    /// Service that exposes requests to Javascript GET and POST XMLHTTPRequests.
+    /// Must be used inside an ASP.NET application, il will then use <see cref="IMessageBus"/> to send the requests normally.
+    /// Requests must be registered to be exposed.
+    /// </summary>
     [ServiceContract(Namespace = "")]
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
     public class WcfJsBridgeService
@@ -20,12 +25,18 @@ namespace Colombo.Wcf
         internal readonly static Dictionary<string, Type> PostTypeMapping = new Dictionary<string, Type>();
         private readonly static List<Type> KnownTypes = new List<Type>();
 
+        /// <summary>
+        /// Register a request of type <typeparamref name="TRequest"/>, it will be available to REST.
+        /// </summary>
         public static void RegisterRequest<TRequest>()
             where TRequest : BaseRequest, new()
         {
             RegisterRequest(typeof(TRequest));
         }
 
+        /// <summary>
+        /// Register a request of type <paramref name="requestType"/>, it will be available to REST.
+        /// </summary>
         public static void RegisterRequest(Type requestType)
         {
             if (!typeof(BaseRequest).IsAssignableFrom(requestType))
@@ -58,6 +69,9 @@ namespace Colombo.Wcf
                 KnownTypes.Add(responseType);
         }
 
+        /// <summary>
+        /// Clear all the previous requests registrations.
+        /// </summary>
         public static void ClearRegistrations()
         {
             GetTypeMapping.Clear();
@@ -65,11 +79,17 @@ namespace Colombo.Wcf
             KnownTypes.Clear();
         }
 
+        /// <summary>
+        /// Return the list of Known Types (Response) for the WCF infrastructure.
+        /// </summary>
         public static IEnumerable<Type> GetKnownTypes(ICustomAttributeProvider provider)
         {
             return KnownTypes;
         }
 
+        /// <summary>
+        /// GET operation.
+        /// </summary>
         [OperationContract]
         [WebGet(UriTemplate = "/{messageName}", BodyStyle = WebMessageBodyStyle.Bare, ResponseFormat = WebMessageFormat.Json)]
         [ServiceKnownType("GetKnownTypes", typeof(WcfJsBridgeService))]
@@ -92,6 +112,9 @@ namespace Colombo.Wcf
             return WcfServices.Process(request);
         }
 
+        /// <summary>
+        /// POST operation.
+        /// </summary>
         [OperationContract]
         [WebInvoke(UriTemplate = "/{messageName}", BodyStyle = WebMessageBodyStyle.Bare, ResponseFormat = WebMessageFormat.Json)]
         [ServiceKnownType("GetKnownTypes", typeof(WcfJsBridgeService))]

@@ -67,6 +67,9 @@ namespace Colombo.Impl
             }
         }
 
+        /// <summary>
+        /// Send synchronously a request and returns the response.
+        /// </summary>
         public virtual Response Send(BaseRequest request)
         {
             if (request == null) throw new ArgumentNullException("request");

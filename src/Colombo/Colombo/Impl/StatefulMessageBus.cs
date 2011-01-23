@@ -97,6 +97,9 @@ namespace Colombo.Impl
         /// </summary>
         public int MaxAllowedNumberOfSend { get; set; }
 
+        /// <summary>
+        /// Send synchronously a request and returns the response.
+        /// </summary>
         public Response Send(BaseRequest request)
         {
             if (request == null) throw new ArgumentNullException("request");

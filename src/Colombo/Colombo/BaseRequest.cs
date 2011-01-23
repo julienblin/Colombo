@@ -43,6 +43,9 @@ namespace Colombo
         /// <returns></returns>
         public abstract Type GetResponseType();
 
+        /// <summary>
+        /// <c>true</c> is this request is side-effect free, <c>false</c> otherwise.
+        /// </summary>
         public abstract bool IsSideEffectFree { get; }
 
         /// <summary>

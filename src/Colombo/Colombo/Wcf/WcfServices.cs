@@ -62,6 +62,9 @@ namespace Colombo.Wcf
             }
         }
 
+        /// <summary>
+        /// Process a request by using the Send method of the currently registeres <see cref="IMessageBus"/>.
+        /// </summary>
         public static Response Process(BaseRequest request)
         {
             if (request == null) throw new ArgumentNullException("request");

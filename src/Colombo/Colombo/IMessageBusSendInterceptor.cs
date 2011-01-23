@@ -3,7 +3,7 @@
 namespace Colombo
 {
     /// <summary>
-    /// Interceptor for the <see cref="IMessageBus.Send"/> operation.
+    /// Interceptor for the Send operation.
     /// </summary>
     [ContractClass(typeof(Contracts.MessageBusSendInterceptorContract))]
     public interface IMessageBusSendInterceptor : IColomboInterceptor

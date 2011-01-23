@@ -8,13 +8,22 @@ using System.Web;
 
 namespace Colombo.Wcf
 {
+    /// <summary>
+    /// Helper that maps Query string to objects.
+    /// </summary>
     public static class QueryStringMapper
     {
+        /// <summary>
+        /// Map a querystring to a object of type <paramref name="type"/>.
+        /// </summary>
         public static object Map(string queryString, Type type)
         {
             return Map(HttpUtility.ParseQueryString(queryString), type);
         }
 
+        /// <summary>
+        /// Map a <see cref="NameValueCollection"/> extracted from a query string to an object of type <paramref name="type"/>.
+        /// </summary>
         public static object Map(NameValueCollection collection, Type type)
         {
             object result = null;
@@ -31,6 +40,9 @@ namespace Colombo.Wcf
             return result;
         }
 
+        /// <summary>
+        /// Map values from a <see cref="NameValueCollection"/> to an <paramref name="instance"/>.
+        /// </summary>
         public static void MapInstance(NameValueCollection collection, object instance)
         {
             var objectType = instance.GetType();
