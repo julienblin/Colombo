@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Handlers.Tests", "src\Handl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleClient", "src\ConsoleClient\ConsoleClient.csproj", "{E65CEECB-B896-4E89-9B31-7A5FE28F7F6F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvcClient", "src\MvcClient\MvcClient.csproj", "{5E910E24-96E2-4E55-BEB6-24CB0F10374D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +73,16 @@ Global
 		{E65CEECB-B896-4E89-9B31-7A5FE28F7F6F}.Release|Mixed Platforms.Build.0 = Release|x86
 		{E65CEECB-B896-4E89-9B31-7A5FE28F7F6F}.Release|x86.ActiveCfg = Release|x86
 		{E65CEECB-B896-4E89-9B31-7A5FE28F7F6F}.Release|x86.Build.0 = Release|x86
+		{5E910E24-96E2-4E55-BEB6-24CB0F10374D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E910E24-96E2-4E55-BEB6-24CB0F10374D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E910E24-96E2-4E55-BEB6-24CB0F10374D}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{5E910E24-96E2-4E55-BEB6-24CB0F10374D}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{5E910E24-96E2-4E55-BEB6-24CB0F10374D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5E910E24-96E2-4E55-BEB6-24CB0F10374D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E910E24-96E2-4E55-BEB6-24CB0F10374D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E910E24-96E2-4E55-BEB6-24CB0F10374D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{5E910E24-96E2-4E55-BEB6-24CB0F10374D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{5E910E24-96E2-4E55-BEB6-24CB0F10374D}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
