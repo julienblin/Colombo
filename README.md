@@ -1,7 +1,9 @@
 Colombo - A messaging framework for .Net 4
 =======
 
-![Colombo](http://colombo-messaging.com/images/colombo-logo.png "Colombo")
+<div style="float: right">
+	![Colombo](http://colombo-messaging.com/images/colombo-logo.png "Colombo")
+</div>
 
 # DOCUMENTATION
 Complete documentation is available at the project web site : [http://colombo-messaging.com/](http://colombo-messaging.com/)
