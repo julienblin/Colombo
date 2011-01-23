@@ -1,4 +1,4 @@
-Colombo - A lightweight RPC/messaging framework for .Net 4
+Colombo - A messaging framework for .Net 4
 =======
 
 # LICENSE
