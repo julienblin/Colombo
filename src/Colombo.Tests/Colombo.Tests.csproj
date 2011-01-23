@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{FC42FD4C-04C3-4C43-B6F6-1B0A265EA7D0}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Colombo.Tests</RootNamespace>
+    <AssemblyName>Colombo.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\bin\Debug\Colombo.Tests\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\bin\Release\Colombo.Tests\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Castle.Core">
+      <HintPath>..\..\packages\Castle.Core.2.5.2\lib\NET35\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Facilities.Logging">
+      <HintPath>..\..\lib\Castle.Facilities.Logging\Castle.Facilities.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Windsor">
+      <HintPath>..\..\packages\Castle.Windsor.2.5.2\lib\NET40\Castle.Windsor.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>..\..\lib\NUnit\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="Rhino.Mocks">
+      <HintPath>..\..\lib\Rhino.Mocks\Rhino.Mocks.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.XML" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\GlobalAssemblyInfo.cs">
+      <Link>Properties\GlobalAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="BaseTest.cs" />
+    <Compile Include="Caching\Impl\InMemoryCacheTest.cs" />
+    <Compile Include="Caching\Impl\MemcachedCacheTest.cs" />
+    <Compile Include="ColomboExceptionTest.cs" />
+    <Compile Include="Facilities\ColomboFacilityTest.cs" />
+    <Compile Include="Facilities\PerRequestHandlingLifestyleTest.cs" />
+    <Compile Include="FullTest.cs" />
+    <Compile Include="HealthCheck\HealthCheckRequestHandlerTest.cs" />
+    <Compile Include="Impl\KernelNotificationHandlerFactoryTest.cs" />
+    <Compile Include="Impl\KernelRequestHandlerFactoryTest.cs" />
+    <Compile Include="Impl\LocalNotificationProcessorTest.cs" />
+    <Compile Include="Impl\LocalRequestProcessorTest.cs" />
+    <Compile Include="Impl\MessageBusTest.cs" />
+    <Compile Include="Impl\StatefulMessageBusTest.cs" />
+    <Compile Include="Interceptors\CacheHandleInterceptorTest.cs" />
+    <Compile Include="Interceptors\ClientCacheSendInterceptorTest.cs" />
+    <Compile Include="Interceptors\CurrentCultureHandleInterceptorTest.cs" />
+    <Compile Include="Interceptors\CurrentCultureSendInterceptorTest.cs" />
+    <Compile Include="Interceptors\DataAnnotationsValidationHandleInterceptorTest.cs" />
+    <Compile Include="Interceptors\DataAnnotationsValidationSendInterceptorTest.cs" />
+    <Compile Include="Interceptors\ExceptionsHandleInterceptorTest.cs" />
+    <Compile Include="Interceptors\ExceptionsSendInterceptorTest.cs" />
+    <Compile Include="Interceptors\RequiredInContextHandleInterceptorTest.cs" />
+    <Compile Include="Interceptors\SLASendInterceptorTest.cs" />
+    <Compile Include="Interceptors\TransactionScopeNotificationHandleInterceptorTest.cs" />
+    <Compile Include="Interceptors\TransactionScopeRequestHandleInterceptorTest.cs" />
+    <Compile Include="MessagesTest.cs" />
+    <Compile Include="MessageHandlersTest.cs" />
+    <Compile Include="SideEffectFreeRequestHandlerTest.cs" />
+    <Compile Include="TestResponse.cs" />
+    <Compile Include="TestSupport\ColomboTestTest.cs" />
+    <Compile Include="TestSupport\StubMessageBusTest.cs" />
+    <Compile Include="Wcf\AddOperationsForRequestHandlersAttributeTest.cs" />
+    <Compile Include="Wcf\QueryStringMapperTest.cs" />
+    <Compile Include="Wcf\RequestProcessorOperationInvokerTest.cs" />
+    <Compile Include="Wcf\WcfClientRequestProcessorTest.cs" />
+    <Compile Include="Wcf\ColomboServiceTest.cs" />
+    <Compile Include="Wcf\ColomboServiceFactoryTest.cs" />
+    <Compile Include="Wcf\ClientRestServiceTest.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Colombo\Colombo.csproj">
+      <Project>{E828FC62-6CE7-4D54-B20B-63F86E12072B}</Project>
+      <Name>Colombo</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\lib\Memcached\memcached.exe">
+      <Link>memcached.exe</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

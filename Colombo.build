@@ -21,8 +21,7 @@
   <property name="folder.test" value="${folder.base}\test"/>
   <property name="folder.release" value="${folder.base}\release"/>
   <property name="folder.package" value="${folder.base}\package"/>
-  <property name="project.solution" value="${folder.src}\${project.name}\${project.name}.sln" />
-  <property name="samples.solution" value="${folder.src}\Samples\${project.name}.Samples.sln" />
+  <property name="project.solution" value="${project.name}.sln" />
 
   <property name="now" value="${datetime::now()}"/>
 
@@ -54,7 +53,7 @@
 
   <target name="build" depends="clean, determine-version">
     <echo message="Building ${project.name}..."/>
-    <asminfo output="${folder.src}\Colombo\GlobalAssemblyInfo.cs" language="CSharp">
+    <asminfo output="${folder.src}\GlobalAssemblyInfo.cs" language="CSharp">
       <imports>
         <import namespace="System" />
         <import namespace="System.Reflection" />
@@ -121,7 +120,7 @@
         <include name="*" />
         <exclude name="BeITMemcached.*" />
         <exclude name="Colombo.*" />
-        <exclude name="Castle.Components.Binder.*"/>
+        <exclude name="Castle.*"/>
       </fileset>
     </copy>
     <exec program="${app.ilmerge}">
@@ -132,6 +131,7 @@
       <arg value="${folder.bin}\${msbuild.configuration}\Colombo\Castle.Components.Binder.dll" />
     </exec>
 
+	<delete file="${folder.bin}\${msbuild.configuration}\Colombo.Host\Topshelf.pdb" />
     <exec program="${app.ilmerge}">
       <arg line="/out:&quot;${folder.release}\Colombo.Host.exe&quot;" />
       <arg line="/internalize /xmldocs /targetplatform:v4,C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319" />
@@ -140,11 +140,6 @@
       <arg value="${folder.bin}\${msbuild.configuration}\Colombo.Host\NDesk.Options.dll" />
       <arg value="${folder.bin}\${msbuild.configuration}\Colombo.Host\Castle.Facilities.Logging.dll" />
     </exec>
-    <copy todir="${folder.release}">
-      <fileset basedir="${folder.bin}\${msbuild.configuration}\Colombo.Host">
-        <include name="Colombo.Host.exe.config"/>
-      </fileset>
-    </copy>
   </target>
 
   <target name="package" depends="release">
@@ -195,9 +190,6 @@
         <include name="Colombo.Host.exe" />
         <include name="Colombo.Host.xml" />
       </fileset>
-      <fileset basedir="${folder.base}\lib\">
-        <include name="Castle.Windsor/**" />
-      </fileset>
       <fileset basedir="${folder.base}">
         <include name="LICENCE" />
       </fileset>
@@ -206,15 +198,6 @@
     <delete dir="${folder.package}\Colombo" />
     <delete dir="${folder.package}\Colombo.Host" />
 
-  </target>
-
-  <target name="build-samples" depends="release">
-    <exec program="${app.msbuild}">
-      <arg line='"${samples.solution}"' />
-      <arg line="/property:Configuration=${msbuild.configuration}" />
-      <arg value="/verbosity:normal" />
-      <arg value="/nologo" />
-    </exec>
   </target>
 
 </project>
