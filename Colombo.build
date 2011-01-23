@@ -78,7 +78,7 @@
       <arg value="/verbosity:normal" />
       <arg value="/nologo" />
     </exec>
-        
+
   </target>
 
   <target name="test" depends="build">
@@ -119,17 +119,19 @@
     <copy todir="${folder.release}">
       <fileset basedir="${folder.bin}\${msbuild.configuration}\Colombo">
         <include name="*" />
-		<exclude name="BeITMemcached.*" />
-		<exclude name="Colombo.*" />
+        <exclude name="BeITMemcached.*" />
+        <exclude name="Colombo.*" />
+        <exclude name="Castle.Components.Binder.*"/>
       </fileset>
     </copy>
-	<exec program="${app.ilmerge}">
+    <exec program="${app.ilmerge}">
       <arg line="/out:&quot;${folder.release}\Colombo.dll&quot;" />
       <arg line="/internalize /xmldocs /targetplatform:v4,C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319" />
       <arg value="${folder.bin}\${msbuild.configuration}\Colombo\Colombo.dll" />
       <arg value="${folder.bin}\${msbuild.configuration}\Colombo\BeITMemcached.dll" />
+      <arg value="${folder.bin}\${msbuild.configuration}\Colombo\Castle.Components.Binder.dll" />
     </exec>
-	
+
     <exec program="${app.ilmerge}">
       <arg line="/out:&quot;${folder.release}\Colombo.Host.exe&quot;" />
       <arg line="/internalize /xmldocs /targetplatform:v4,C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319" />
@@ -148,14 +150,14 @@
   <target name="package" depends="release">
     <delete dir="${folder.package}" includeemptydirs="true" />
     <mkdir dir="${folder.package}" />
-    
+
     <copy todir="${folder.package}\Colombo" file="${folder.base}\Colombo.nuspec" />
     <xmlpoke file="${folder.package}\Colombo\Colombo.nuspec" xpath="//version" value="${version.major}.${version.minor}.${version.patch}" />
 
     <copy todir="${folder.package}\Colombo.Host" file="${folder.base}\Colombo.Host.nuspec" />
     <xmlpoke file="${folder.package}\Colombo.Host\Colombo.Host.nuspec" xpath="//version" value="${version.major}.${version.minor}.${version.patch}" />
     <xmlpoke file="${folder.package}\Colombo.Host\Colombo.Host.nuspec" xpath="//dependencies/dependency[@id='Colombo']/@version" value="${version.major}.${version.minor}.${version.patch}" />
-    
+
     <mkdir dir="${folder.package}\Colombo\lib\.Net 4"/>
     <copy todir="${folder.package}\Colombo\lib\.Net 4">
       <fileset basedir="${folder.release}">
@@ -203,7 +205,7 @@
 
     <delete dir="${folder.package}\Colombo" />
     <delete dir="${folder.package}\Colombo.Host" />
-    
+
   </target>
 
   <target name="build-samples" depends="release">

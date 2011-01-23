@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Web;
+using Castle.Components.Binder;
 
 namespace Colombo.Wcf
 {
@@ -26,62 +27,19 @@ namespace Colombo.Wcf
         /// </summary>
         public static object Map(NameValueCollection collection, Type type)
         {
-            object result = null;
+            var treeBuilder = new TreeBuilder();
+            var sourceNode = treeBuilder.BuildSourceNode(collection);
+            var baseNode = new CompositeNode("");
+            baseNode.AddChildNode(sourceNode);
+
+            var binder = new DataBinder();
             try
             {
-                result = Activator.CreateInstance(type);
+                return binder.BindObject(type, "root", baseNode);
             }
-            catch (MissingMethodException ex)
+            catch (Exception ex)
             {
-                throw new ColomboException(string.Format("Unable to create object of type {0}: No default constructor was found.", type), ex);
-            }
-
-            MapInstance(collection, result);
-            return result;
-        }
-
-        /// <summary>
-        /// Map values from a <see cref="NameValueCollection"/> to an <paramref name="instance"/>.
-        /// </summary>
-        public static void MapInstance(NameValueCollection collection, object instance)
-        {
-            var objectType = instance.GetType();
-            foreach (var key in collection.AllKeys)
-            {
-                var indexOfDot = key.IndexOf('.');
-
-                if (indexOfDot != -1)
-                {
-                    var propertyName = key.Substring(0, indexOfDot);
-                    var leadingPropertyName = key.Substring(key.IndexOf('.') + 1);
-                    var property = objectType.GetProperty(propertyName);
-                    if (property == null)
-                        throw new ColomboException(string.Format("Property with name {0} not found on {1}.", propertyName, instance));
-
-                    var propertyInstance = property.GetValue(instance, null);
-                    if (propertyInstance == null)
-                    {
-                        try
-                        {
-                            propertyInstance = Activator.CreateInstance(property.PropertyType);
-                            property.SetValue(instance, propertyInstance, null);
-                        }
-                        catch (MissingMethodException ex)
-                        {
-                            throw new ColomboException(string.Format("Unable to create object of type {0}: No default constructor was found.", property.PropertyType), ex);
-                        }
-                    }
-                    MapInstance(new NameValueCollection { { leadingPropertyName, collection.Get(key) } }, propertyInstance);
-                }
-
-                if(indexOfDot == -1)
-                {
-                    var property = objectType.GetProperty(key);
-                    if (property == null)
-                        throw new ColomboException(string.Format("Unable to map property {0} to {1}", key, instance));
-
-                    property.SetValue(instance, Convert.ChangeType(collection.Get(key), property.PropertyType, CultureInfo.InvariantCulture), null);
-                }
+                throw new ColomboException(string.Format("An error occured when binding Query string to {0}", type), ex);
             }
         }
     }
