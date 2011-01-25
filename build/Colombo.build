@@ -27,7 +27,7 @@ THE SOFTWARE.-->
   <property name="nant.settings.currentframework" value="net-4.0" />
 
   <property name="project.name" value="${project::get-name()}" />
-  <property name="folder.base" value="${project::get-base-directory()}"/>
+  <property name="folder.base" value="${project::get-base-directory()}\.."/>
 
   <loadtasks assembly="${folder.base}\lib\NAnt\NAnt.Contrib.Tasks.dll" />
 
@@ -43,7 +43,7 @@ THE SOFTWARE.-->
   <property name="folder.bin" value="${folder.base}\bin"/>
   <property name="folder.test" value="${folder.base}\test"/>
   <property name="folder.release" value="${folder.base}\release"/>
-  <property name="folder.package" value="${folder.base}\package"/>
+  <property name="folder.package" value="${folder.base}\packages_built"/>
   <property name="project.solution" value="${folder.base}\${project.name}.sln" />
   <property name="project.key" value="${folder.src}\${project.name}.snk" />
 
@@ -171,10 +171,10 @@ THE SOFTWARE.-->
     <delete dir="${folder.package}" includeemptydirs="true" />
     <mkdir dir="${folder.package}" />
 
-    <copy todir="${folder.package}\Colombo" file="${folder.base}\Colombo.nuspec" />
+    <copy todir="${folder.package}\Colombo" file="${folder.base}\build\Colombo.nuspec" />
     <xmlpoke file="${folder.package}\Colombo\Colombo.nuspec" xpath="//version" value="${version.major}.${version.minor}.${version.patch}" />
 
-    <copy todir="${folder.package}\Colombo.Host" file="${folder.base}\Colombo.Host.nuspec" />
+    <copy todir="${folder.package}\Colombo.Host" file="${folder.base}\build\Colombo.Host.nuspec" />
     <xmlpoke file="${folder.package}\Colombo.Host\Colombo.Host.nuspec" xpath="//version" value="${version.major}.${version.minor}.${version.patch}" />
     <xmlpoke file="${folder.package}\Colombo.Host\Colombo.Host.nuspec" xpath="//dependencies/dependency[@id='Colombo']/@version" value="${version.major}.${version.minor}.${version.patch}" />
 

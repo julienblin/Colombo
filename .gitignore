@@ -5,7 +5,7 @@ obj
 _ReSharper*
 /test
 /release
-/package
+/packages_built
 
 *.suo
 *.user 
