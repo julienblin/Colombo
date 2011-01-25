@@ -1,8 +1,33 @@
-﻿using System;
+﻿#region License
+// The MIT License
+// 
+// Copyright (c) 2011 Julien Blin, julien.blin@gmail.com
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+#endregion
+
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.ServiceModel;
 using System.ServiceModel.Configuration;
 using Castle.Core.Logging;
 using Castle.Facilities.Logging;
@@ -19,7 +44,7 @@ namespace Colombo.Host.Internal
     {
         private IWindsorContainer hostContainer;
 
-        private readonly List<System.ServiceModel.ServiceHost> serviceHosts = new List<System.ServiceModel.ServiceHost>();
+        private readonly List<ServiceHost> serviceHosts = new List<ServiceHost>();
 
         private ILogger logger = NullLogger.Instance;
 
@@ -141,7 +166,7 @@ namespace Colombo.Host.Internal
         {
         }
 
-        public IEnumerable<System.ServiceModel.ServiceHost> CreateServiceHosts(IWindsorContainer container)
+        public IEnumerable<ServiceHost> CreateServiceHosts(IWindsorContainer container)
         {
             foreach (var contract in from ServiceElement serviceElement in WcfConfigServicesSection.Services
                                      where serviceElement.Endpoints.Count > 0
@@ -150,10 +175,10 @@ namespace Colombo.Host.Internal
                 switch (contract)
                 {
                     case "Colombo.Wcf.IColomboService":
-                        yield return new System.ServiceModel.ServiceHost(typeof(ColomboService));
+                        yield return new ServiceHost(typeof(ColomboService));
                         break;
                     case "Colombo.Wcf.ISoapService":
-                        yield return new System.ServiceModel.ServiceHost(typeof(SoapService));
+                        yield return new ServiceHost(typeof(SoapService));
                         break;
                     default:
                         throw new ColomboException(string.Format("Unrecognized contract {0}. You should try implementing IWantToCreateServiceHosts in your IAmAnEndpoint component to create ServiceHosts yourself.", contract));
