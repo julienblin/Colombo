@@ -6,7 +6,7 @@
     <authors>Julien Blin</authors>
     <description>Colombo.Host is a Console and Windows Service Host for Colombo, a messaging framework based on WCF.</description> 
     <language>en-US</language>
-    <licenseUrl>http://colombo-messaging.com/nuget/LICENCE.txt</licenseUrl>
+    <licenseUrl>http://colombo-messaging.com/License</licenseUrl>
     <projectUrl>http://colombo-messaging.com</projectUrl>
     <iconUrl>http://colombo-messaging.com/nuget/icon.png</iconUrl>
     <dependencies>
