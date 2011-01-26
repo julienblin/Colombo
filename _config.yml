@@ -1,5 +1,5 @@
 auto: true
 server: true
 markdown: rdiscount
-permalink: /:categories/:title.html
+permalink: /:categories/:title
 exclude: templates
