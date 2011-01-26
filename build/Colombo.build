@@ -178,16 +178,16 @@ THE SOFTWARE.-->
     <xmlpoke file="${folder.package}\Colombo.Host\Colombo.Host.nuspec" xpath="//version" value="${version.major}.${version.minor}.${version.patch}" />
     <xmlpoke file="${folder.package}\Colombo.Host\Colombo.Host.nuspec" xpath="//dependencies/dependency[@id='Colombo']/@version" value="${version.major}.${version.minor}.${version.patch}" />
 
-    <mkdir dir="${folder.package}\Colombo\lib\.Net 4"/>
-    <copy todir="${folder.package}\Colombo\lib\.Net 4">
+    <mkdir dir="${folder.package}\Colombo\lib\Net40"/>
+    <copy todir="${folder.package}\Colombo\lib\Net40">
       <fileset basedir="${folder.release}">
         <include name="Colombo.dll" />
         <include name="Colombo.xml" />
       </fileset>
     </copy>
 
-    <mkdir dir="${folder.package}\Colombo.Host\lib\.Net 4"/>
-    <copy todir="${folder.package}\Colombo.Host\lib\.Net 4">
+    <mkdir dir="${folder.package}\Colombo.Host\lib\Net40"/>
+    <copy todir="${folder.package}\Colombo.Host\lib\Net40">
       <fileset basedir="${folder.release}">
         <include name="Colombo.Host.exe" />
         <include name="Colombo.Host.xml" />
@@ -207,11 +207,11 @@ THE SOFTWARE.-->
     </exec>
 
     <zip zipfile="${folder.package}\Colombo.${version.major}.${version.minor}.${version.patch}.zip">
-      <fileset basedir="${folder.package}\Colombo\lib\.Net 4">
+      <fileset basedir="${folder.package}\Colombo\lib\Net40">
         <include name="Colombo.dll" />
         <include name="Colombo.xml" />
       </fileset>
-      <fileset basedir="${folder.package}\Colombo.Host\lib\.Net 4">
+      <fileset basedir="${folder.package}\Colombo.Host\lib\Net40">
         <include name="Colombo.Host.exe" />
         <include name="Colombo.Host.xml" />
       </fileset>

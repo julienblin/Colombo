@@ -4,13 +4,14 @@
     <id>Colombo.Host</id> 
     <version></version> 
     <authors>Julien Blin</authors>
-    <description>Colombo.Host is a Host for Colombo, a request/response framework for .Net 4 based on WCF.</description> 
+    <description>Colombo.Host is a Console and Windows Service Host for Colombo, a messaging framework based on WCF.</description> 
     <language>en-US</language>
-    <licenseUrl>https://github.com/julienblin/Colombo/blob/master/LICENCE</licenseUrl>
-    <projectUrl>https://github.com/julienblin/Colombo/wiki</projectUrl>
+    <licenseUrl>http://colombo-messaging.com/nuget/LICENCE.txt</licenseUrl>
+    <projectUrl>http://colombo-messaging.com</projectUrl>
+    <iconUrl>http://colombo-messaging.com/nuget/icon.png</iconUrl>
     <dependencies>
-      <dependency id="Castle.Core" version="[2.5.2, 3.0)" />
-      <dependency id="Castle.Windsor" version="[2.5.2, 3.0)" />
+      <dependency id="Castle.Core" version="2.5.2" />
+      <dependency id="Castle.Windsor" version="2.5.2" />
       <dependency id="Colombo" version="" />
     </dependencies>
   </metadata> 
