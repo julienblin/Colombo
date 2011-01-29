@@ -56,11 +56,6 @@ namespace Colombo.Tests.Facilities
             Assert.That(() => container.Resolve<IRequestHandlerFactory>(),
                 Is.Not.Null);
 
-            Assert.That(() => container.Resolve<INotificationHandlerFactory>(),
-                Is.Not.Null);
-            Assert.That(() => container.Resolve<INotificationProcessor>(),
-                Is.Not.Null);
-
             Assert.That(() => container.Resolve<IStatefulMessageBus>(),
                 Is.Not.Null);
             Assert.That(() => container.Resolve<IStatefulMessageBus>(),
@@ -172,7 +167,6 @@ namespace Colombo.Tests.Facilities
             container.AddFacility<ColomboFacility>();
 
             Assert.That(container.ResolveAll<IRequestHandlerHandleInterceptor>().Any(x => x is TransactionScopeRequestHandleInterceptor));
-            Assert.That(container.ResolveAll<INotificationHandleInterceptor>().Any(x => x is TransactionScopeNotificationHandleInterceptor));
 
             container = new WindsorContainer();
             container.AddFacility<ColomboFacility>(f =>
@@ -180,7 +174,6 @@ namespace Colombo.Tests.Facilities
                 f.DoNotHandleInsideTransactionScope();
             });
             Assert.That(!container.ResolveAll<IRequestHandlerHandleInterceptor>().Any(x => x is TransactionScopeRequestHandleInterceptor));
-            Assert.That(!container.ResolveAll<INotificationHandleInterceptor>().Any(x => x is TransactionScopeNotificationHandleInterceptor));
         }
 
         [Test]

@@ -29,7 +29,6 @@ using System.Linq;
 using Castle.MicroKernel;
 using Castle.MicroKernel.Registration;
 using Colombo.Impl;
-using Colombo.Impl.Notify;
 using Colombo.Impl.Send;
 
 namespace Colombo.TestSupport
@@ -55,28 +54,6 @@ namespace Colombo.TestSupport
 
                 requestHandlerInterceptors = value.OrderBy(x => x.InterceptionPriority).ToArray();
                 Logger.InfoFormat("Using the following interceptors: {0}", string.Join(", ", requestHandlerInterceptors.Select(x => x.GetType().Name)));
-            }
-        }
-
-        private INotificationHandleInterceptor[] notificationHandleInterceptors = new INotificationHandleInterceptor[0];
-        /// <summary>
-        /// The list of <see cref="INotificationHandleInterceptor"/> to use.
-        /// </summary>
-        public INotificationHandleInterceptor[] NotificationHandleInterceptors
-        {
-            get { return notificationHandleInterceptors; }
-            set
-            {
-                if (value == null) throw new ArgumentNullException("NotificationHandleInterceptors");
-                Contract.EndContractBlock();
-
-                notificationHandleInterceptors = value.OrderBy(x => x.InterceptionPriority).ToArray();
-                if (!Logger.IsInfoEnabled) return;
-
-                if (notificationHandleInterceptors.Length == 0)
-                    Logger.Info("No interceptor has been registered for handling notifications.");
-                else
-                    Logger.InfoFormat("Handling notifications with the following interceptors: {0}", string.Join(", ", notificationHandleInterceptors.Select(x => x.GetType().Name)));
             }
         }
 
@@ -126,21 +103,8 @@ namespace Colombo.TestSupport
         }
 
         /// <summary>
-        /// Indicates an expectation that a type of <see cref="Notification"/> will be notified.
-        /// </summary>
-        /// <typeparam name="TNotification"></typeparam>
-        /// <returns></returns>
-        public MessageBusNotifyExpectation<TNotification> ExpectNotify<TNotification>()
-            where TNotification : Notification, new()
-        {
-            var expectation = new MessageBusNotifyExpectation<TNotification>(this);
-            expectations[typeof (TNotification)] = expectation;
-            return expectation;
-        }
-
-        /// <summary>
         /// <c>true</c> to allow the <see cref="IStubMessageBus"/> to reply to requests using empty responses,
-        /// <c>false</c> to disallow and throw a <see cref="ColomboExpectationException"/> when sending an unexpected request or notification.
+        /// <c>false</c> to disallow and throw a <see cref="ColomboExpectationException"/> when sending an unexpected request.
         /// </summary>
         public bool AllowUnexpectedMessages { get; set; }
 
@@ -168,27 +132,6 @@ namespace Colombo.TestSupport
         }
 
         #endregion
-
-        /// <summary>
-        /// Dispatch notifications
-        /// </summary>
-        public override void Notify(Notification notification, params Notification[] notifications)
-        {
-            var finalNotifications = new List<Notification> { notification };
-            if (notifications != null)
-                finalNotifications.AddRange(notifications);
-
-            if (!AllowUnexpectedMessages && finalNotifications.Any(notif => !expectations.ContainsKey(notif.GetType())))
-            {
-                var unexpectedNotifications = finalNotifications.Where(notif => !expectations.ContainsKey(notif.GetType()));
-                if (unexpectedNotifications.Count() == 1)
-                    throw new ColomboExpectationException(string.Format("Notification {0} was not expected. If you want to disable this check, try the AllowUnexpectedMessages property.", unexpectedNotifications.First()));
-                else
-                    throw new ColomboExpectationException(string.Format("Notifications {0} were not expected. If you want to disable this check, try the AllowUnexpectedMessages property.", string.Join(", ", unexpectedNotifications.Select(r => r.ToString()))));
-            }
-
-            base.Notify(notification, notifications);
-        }
 
         /// <summary>
         /// Real sending of the requests. All the other send methods delegates to this one.
@@ -219,22 +162,6 @@ namespace Colombo.TestSupport
             {
                 if (interceptor != null)
                     currentInvocation = new MessageBusSendInterceptorInvocation(interceptor, currentInvocation);
-            }
-
-            return currentInvocation;
-        }
-
-        /// <summary>
-        /// Return a invocation chain for the Notify operation.
-        /// </summary>
-        protected override IColomboNotifyInvocation BuildNotifyInvocationChain()
-        {
-            IColomboNotifyInvocation currentInvocation = new StubNotifyInvocation(this, NotificationHandleInterceptors);
-
-            foreach (var interceptor in MessageBusNotifyInterceptors.Reverse())
-            {
-                if (interceptor != null)
-                    currentInvocation = new MessageBusNotifyInterceptorInvocation(interceptor, currentInvocation);
             }
 
             return currentInvocation;

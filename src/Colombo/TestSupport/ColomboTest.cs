@@ -43,7 +43,7 @@ namespace Colombo.TestSupport
         public static class AssertThat
         {
             /// <summary>
-            /// Will raise a <see cref="ColomboTestSupportException"/> if any message (i.e. requests, notifications, responses)
+            /// Will raise a <see cref="ColomboTestSupportException"/> if any message (i.e. requests and responses)
             /// in the assembly that contains <typeparamref name="T"/> cannot be used by Colombo.
             /// </summary>
             public static void AllMessagesAreConformInAssemblyThatContains<T>()
@@ -52,13 +52,12 @@ namespace Colombo.TestSupport
             }
 
             /// <summary>
-            /// Will raise a <see cref="ColomboTestSupportException"/> if any message (i.e. requests, notifications, responses)
+            /// Will raise a <see cref="ColomboTestSupportException"/> if any message (i.e. requests and responses)
             /// in the assembly <paramref name="assembly"/> cannot be used by Colombo.
             /// </summary>
             public static void AllMessagesAreConformInAssembly(Assembly assembly)
             {
                 AllRequestsAreConformInAssembly(assembly);
-                AllNotificationsAreConformInAssembly(assembly);
                 AllResponsesAreConformInAssembly(assembly);
             }
 
@@ -122,70 +121,6 @@ namespace Colombo.TestSupport
                     catch (Exception ex)
                     {
                         throw new ColomboTestSupportException(string.Format("Request {0} should be serializable using the DataContractSerializer.", requestType), ex);
-                    }
-                }
-            }
-
-            /// <summary>
-            /// Will raise a <see cref="ColomboTestSupportException"/> if any notification
-            /// in the assembly that contains <typeparamref name="T"/> cannot be used by Colombo.
-            /// </summary>
-            public static void AllNotificationsAreConformInAssemblyThatContains<T>()
-            {
-                AllNotificationsAreConformInAssembly(typeof(T).Assembly);
-            }
-
-            /// <summary>
-            /// Will raise a <see cref="ColomboTestSupportException"/> if any notification
-            /// in the assembly <paramref name="assembly"/> cannot be used by Colombo.
-            /// </summary>
-            public static void AllNotificationsAreConformInAssembly(Assembly assembly)
-            {
-                var allNotificationsTypes =
-                    assembly.GetTypes().Where(
-                        x => typeof(Notification).IsAssignableFrom(x) && !x.IsAbstract && !x.IsInterface);
-                foreach (var notificationType in allNotificationsTypes)
-                {
-                    NotificationIsConform(notificationType);
-                }
-            }
-
-            /// <summary>
-            /// Will raise a <see cref="ColomboTestSupportException"/> if the <typeparam name="TNotification" /> cannot be used by Colombo.
-            /// </summary>
-            public static void NotificationIsConform<TNotification>()
-                where TNotification : Notification
-            {
-                NotificationIsConform(typeof(TNotification));
-            }
-
-            /// <summary>
-            /// Will raise a <see cref="ColomboTestSupportException"/> if the <paramref name="notificationType"/> cannot be used by Colombo.
-            /// </summary>
-            public static void NotificationIsConform(Type notificationType)
-            {
-                try
-                {
-                    Activator.CreateInstance(notificationType);
-                }
-                catch (Exception ex)
-                {
-                    throw new ColomboTestSupportException(string.Format("Notification {0} cannot be instantiated. Probably because you forgot to include a default constructor.", notificationType), ex);
-                }
-
-                using (var stream = new MemoryStream())
-                {
-                    try
-                    {
-                        var serializer = new DataContractSerializer(notificationType);
-                        var request = Activator.CreateInstance(notificationType);
-                        serializer.WriteObject(stream, request);
-                        stream.Position = 0;
-                        serializer.ReadObject(stream);
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new ColomboTestSupportException(string.Format("Notification {0} should be serializable using the DataContractSerializer.", notificationType), ex);
                     }
                 }
             }

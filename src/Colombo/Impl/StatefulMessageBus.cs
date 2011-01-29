@@ -205,17 +205,6 @@ namespace Colombo.Impl
             return messageBus.Send(request, followingRequests);
         }
 
-        /// <summary>
-        /// Dispatch notifications
-        /// </summary>
-        public void Notify(Notification notification, params Notification[] notifications)
-        {
-            if (notification == null) throw new ArgumentNullException("notification");
-            Contract.EndContractBlock();
-
-            messageBus.Notify(notification, notifications);
-        }
-
         private void CheckNumberOfSend(bool increment = true)
         {
             if ((MaxAllowedNumberOfSend > 0) && (NumberOfSend >= MaxAllowedNumberOfSend))

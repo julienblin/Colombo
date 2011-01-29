@@ -39,24 +39,22 @@ namespace Colombo.Tests.Impl
         {
             var mocks = new MockRepository();
             var requestProcessor = mocks.Stub<IRequestProcessor>();
-            var notificationProcessor = mocks.Stub<INotificationProcessor>();
 
             Assert.That(() => new MessageBus(null),
                 Throws.Exception.TypeOf<ArgumentException>()
                 .With.Message.Contains("requestProcessors"));
 
-            Assert.That(() => new MessageBus(new IRequestProcessor[] { }, null),
+            Assert.That(() => new MessageBus(new IRequestProcessor[] { }),
                 Throws.Exception.TypeOf<ArgumentException>()
                 .With.Message.Contains("requestProcessors"));
 
-            var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor }, null);
+            var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor });
         }
 
         [Test]
         public void It_should_throw_an_exception_when_no_IRequestProcessor_can_process()
         {
             var mocks = new MockRepository();
-            var notificationProcessor = mocks.Stub<INotificationProcessor>();
 
             var request = mocks.Stub<Request<TestResponse>>();
 
@@ -67,7 +65,7 @@ namespace Colombo.Tests.Impl
                 Expect.Call(requestProcessor.CanProcess(request)).Return(false);
             }).Verify(() =>
             {
-                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor }, new INotificationProcessor[] { notificationProcessor });
+                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor });
                 messageBus.Logger = GetConsoleLogger();
                 Assert.That(() => messageBus.Send(request),
                     Throws.Exception.TypeOf<ColomboException>()
@@ -79,7 +77,6 @@ namespace Colombo.Tests.Impl
         public void It_should_throw_an_exception_when_no_IRequestProcessor_can_process_with_multiple_requests()
         {
             var mocks = new MockRepository();
-            var notificationProcessor = mocks.Stub<INotificationProcessor>();
             var request1 = mocks.Stub<SideEffectFreeRequest<TestResponse>>();
             var request2 = mocks.Stub<SideEffectFreeRequest<TestResponse>>();
 
@@ -94,7 +91,7 @@ namespace Colombo.Tests.Impl
                 Expect.Call(requestProcessor2.CanProcess(request2)).Return(false);
             }).Verify(() =>
             {
-                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor1, requestProcessor2 }, new INotificationProcessor[] { notificationProcessor });
+                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor1, requestProcessor2 });
                 messageBus.Logger = GetConsoleLogger();
                 Assert.That(() => messageBus.Send(request1, request2),
                     Throws.Exception.TypeOf<ColomboException>()
@@ -107,7 +104,6 @@ namespace Colombo.Tests.Impl
         public void It_should_throw_an_exception_when_too_many_IRequestProcessors_can_process()
         {
             var mocks = new MockRepository();
-            var notificationProcessor = mocks.Stub<INotificationProcessor>();
             var request = mocks.Stub<Request<TestResponse>>();
 
             var requestProcessor1 = mocks.StrictMock<IRequestProcessor>();
@@ -119,7 +115,7 @@ namespace Colombo.Tests.Impl
                 Expect.Call(requestProcessor2.CanProcess(request)).Return(true);
             }).Verify(() =>
             {
-                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor1, requestProcessor2 }, new INotificationProcessor[] { notificationProcessor });
+                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor1, requestProcessor2 });
                 messageBus.Logger = GetConsoleLogger();
                 Assert.That(() => messageBus.Send(request),
                     Throws.Exception.TypeOf<ColomboException>()
@@ -132,7 +128,6 @@ namespace Colombo.Tests.Impl
         public void It_should_throw_an_exception_when_too_many_IRequestProcessors_can_process_multiple_requests()
         {
             var mocks = new MockRepository();
-            var notificationProcessor = mocks.Stub<INotificationProcessor>();
             var request1 = mocks.Stub<SideEffectFreeRequest<TestResponse>>();
             var request2 = mocks.Stub<SideEffectFreeRequest<TestResponse>>();
 
@@ -147,7 +142,7 @@ namespace Colombo.Tests.Impl
                 Expect.Call(requestProcessor2.CanProcess(request2)).Return(true);
             }).Verify(() =>
             {
-                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor1, requestProcessor2 }, new INotificationProcessor[] { notificationProcessor });
+                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor1, requestProcessor2 });
                 messageBus.Logger = GetConsoleLogger();
                 Assert.That(() => messageBus.Send(request1, request2),
                     Throws.Exception.TypeOf<ColomboException>()
@@ -178,7 +173,7 @@ namespace Colombo.Tests.Impl
                 Expect.Call(requestProcessor2.Process(requests)).Return(responses);
             }).Verify(() =>
             {
-                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor1, requestProcessor2 }, null);
+                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor1, requestProcessor2 });
                 messageBus.Logger = GetConsoleLogger();
                 Assert.That(() => messageBus.Send(request),
                     Is.SameAs(response));
@@ -205,7 +200,7 @@ namespace Colombo.Tests.Impl
                 }));
             }).Verify(() =>
             {
-                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor }, null);
+                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor });
                 messageBus.Logger = GetConsoleLogger();
                 var responseTest = messageBus.Send<TestRequestForSendAction, TestResponse>(r =>
                 {
@@ -220,7 +215,6 @@ namespace Colombo.Tests.Impl
         public void It_should_call_selected_IRequestProcessors_Process_method_with_sideeffectfree()
         {
             var mocks = new MockRepository();
-            var notificationProcessor = mocks.Stub<INotificationProcessor>();
             var request = mocks.Stub<SideEffectFreeRequest<TestResponse>>();
             var requests = new BaseRequest[] { request };
             var response = new TestResponse();
@@ -239,7 +233,7 @@ namespace Colombo.Tests.Impl
                 Expect.Call(requestProcessor2.Process(requests)).Return(responses);
             }).Verify(() =>
             {
-                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor1, requestProcessor2 }, new INotificationProcessor[] { notificationProcessor });
+                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor1, requestProcessor2 });
                 messageBus.Logger = GetConsoleLogger();
                 Assert.That(() => messageBus.Send(request),
                     Is.SameAs(response));
@@ -250,7 +244,6 @@ namespace Colombo.Tests.Impl
         public void It_should_call_selected_IRequestProcessors_Process_method_multiple_requests()
         {
             var mocks = new MockRepository();
-            var notificationProcessor = mocks.Stub<INotificationProcessor>();
             var request1 = mocks.Stub<SideEffectFreeRequest<TestResponse>>();
             var request2 = mocks.Stub<SideEffectFreeRequest<TestResponse>>();
             var request3 = mocks.Stub<SideEffectFreeRequest<TestResponse>>();
@@ -279,7 +272,7 @@ namespace Colombo.Tests.Impl
             var requestProcessor1 = new TestRequestProcessor(responsesForProcessor1);
             var requestProcessor2 = new TestRequestProcessor(responsesForProcessor2);
             
-            var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor1, requestProcessor2 }, new INotificationProcessor[] { notificationProcessor });
+            var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor1, requestProcessor2 });
             messageBus.Logger = GetConsoleLogger();
             var responses = messageBus.Send(request1, request2, request3, request4);
             Assert.That(() => responses[request1],
@@ -317,7 +310,6 @@ namespace Colombo.Tests.Impl
         public void It_should_run_all_the_IMessageBusSendInterceptors()
         {
             var mocks = new MockRepository();
-            var notificationProcessor = mocks.Stub<INotificationProcessor>();
             var request = mocks.Stub<Request<TestResponse>>();
             var requests = new BaseRequest[] { request };
             var newCorrelationGuid = Guid.NewGuid();
@@ -365,7 +357,7 @@ namespace Colombo.Tests.Impl
                 Expect.Call(requestProcessor.Process(requests)).Return(responsesFromProcessor);
             }).Verify(() =>
             {
-                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor }, new INotificationProcessor[] { notificationProcessor });
+                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor });
                 messageBus.Logger = GetConsoleLogger();
                 messageBus.MessageBusSendInterceptors = new IMessageBusSendInterceptor[] { interceptor1, interceptor2 };
                 Assert.That(() => messageBus.Send(request),
@@ -377,7 +369,6 @@ namespace Colombo.Tests.Impl
         public void It_should_run_all_the_IMessageBusSendInterceptors_multiple_requests()
         {
             var mocks = new MockRepository();
-            var notificationProcessor = mocks.Stub<INotificationProcessor>();
             var request1 = mocks.Stub<SideEffectFreeRequest<TestResponse>>();
             var request2 = mocks.Stub<SideEffectFreeRequest<TestResponse>>();
             var requests = new BaseRequest[] { request1, request2 };
@@ -436,7 +427,7 @@ namespace Colombo.Tests.Impl
                 Expect.Call(requestProcessor.Process(requests)).Return(responsesFromProcessor);
             }).Verify(() =>
             {
-                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor }, new INotificationProcessor[] { notificationProcessor });
+                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor });
                 messageBus.Logger = GetConsoleLogger();
                 messageBus.MessageBusSendInterceptors = new IMessageBusSendInterceptor[] { interceptor1, interceptor2 };
                 Assert.That(() => messageBus.Send(request1, request2),
@@ -448,7 +439,6 @@ namespace Colombo.Tests.Impl
         public void It_should_be_able_to_send_asynchronously()
         {
             var mocks = new MockRepository();
-            var notificationProcessor = mocks.Stub<INotificationProcessor>();
             var request = mocks.Stub<Request<TestResponse>>();
             var requests = new BaseRequest[] { request };
             var response = new TestResponse();
@@ -465,7 +455,7 @@ namespace Colombo.Tests.Impl
                 Expect.Call(requestProcessor.Process(requests)).Return(responses);
             }).Verify(() =>
             {
-                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor }, new INotificationProcessor[] { notificationProcessor });
+                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor });
                 messageBus.Logger = GetConsoleLogger();
                 var callbackThreadId = 0;
                 messageBus.SendAsync(request).Register(r =>
@@ -483,7 +473,6 @@ namespace Colombo.Tests.Impl
         public void It_should_be_able_to_handle_exceptions_asynchronously()
         {
             var mocks = new MockRepository();
-            var notificationProcessor = mocks.Stub<INotificationProcessor>();
             var request = mocks.Stub<Request<TestResponse>>();
             var requests = new BaseRequest[] { request };
 
@@ -495,7 +484,7 @@ namespace Colombo.Tests.Impl
                 Expect.Call(requestProcessor.Process(requests)).Throw(new Exception("Test exception"));
             }).Verify(() =>
             {
-                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor }, new INotificationProcessor[] { notificationProcessor });
+                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor });
                 messageBus.Logger = GetConsoleLogger();
                 var callbackThreadId = 0;
                 messageBus.SendAsync(request).Register(r =>
@@ -514,119 +503,7 @@ namespace Colombo.Tests.Impl
             });
         }
 
-        [Test]
-        public void It_should_throw_an_exception_when_notifying_without_INotificationProcessor()
-        {
-            var mocks = new MockRepository();
-            var requestProcessor = mocks.StrictMock<IRequestProcessor>();
-            var notification = mocks.Stub<Notification>();
-            With.Mocks(mocks).Expecting(() =>
-            {
-            }).Verify(() =>
-            {
-                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor }, null);
-                Assert.That(() => messageBus.Notify(notification),
-                    Throws.Exception.TypeOf<ColomboException>()
-                    .With.Message.Contains("INotificationProcessor"));
-
-                messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor }, new INotificationProcessor[] { });
-                Assert.That(() => messageBus.Notify(notification),
-                    Throws.Exception.TypeOf<ColomboException>()
-                    .With.Message.Contains("INotificationProcessor"));
-            });
-        }
-
-        [Test]
-        public void It_should_use_all_the_INotificationProcessor_to_process_notifications()
-        {
-            var mocks = new MockRepository();
-            var requestProcessor = mocks.StrictMock<IRequestProcessor>();
-
-            var notificationProcessor1 = new TestNotificationProcessor();
-            var notificationProcessor2 = new TestNotificationProcessor();
-
-            var notification1 = mocks.Stub<Notification>();
-            var notification2 = mocks.Stub<Notification>();
-
-            With.Mocks(mocks).Expecting(() =>
-            {
-            }).Verify(() =>
-            {
-                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor }, new INotificationProcessor[] { notificationProcessor1, notificationProcessor2 });
-                messageBus.Logger = GetConsoleLogger();
-
-                messageBus.Notify(notification1);
-                Thread.Sleep(200);
-                Assert.That(() => notificationProcessor1.Notifications,
-                    Is.EquivalentTo(new[] { notification1 }));
-                Assert.That(() => notificationProcessor2.Notifications,
-                    Is.EquivalentTo(new[] { notification1 }));
-
-                messageBus.Notify(notification1, notification2);
-                Thread.Sleep(200);
-                Assert.That(() => notificationProcessor1.Notifications,
-                    Is.EquivalentTo(new[] { notification1, notification2 }));
-                Assert.That(() => notificationProcessor2.Notifications,
-                    Is.EquivalentTo(new[] { notification1, notification2 }));
-            });
-        }
-
-        public class TestNotificationProcessor : INotificationProcessor
-        {
-            public Notification[] Notifications { get; private set; }
-
-            public void Process(Notification[] notifications)
-            {
-                Notifications = notifications;
-            }
-        }
-
-
-        [Test]
-        public void It_should_run_all_the_IMessageBusNotifyInterceptors()
-        {
-            var mocks = new MockRepository();
-            var requestProcessor = mocks.StrictMock<IRequestProcessor>();
-
-            var notificationProcessor = mocks.Stub<INotificationProcessor>();
-
-            var notification1 = mocks.Stub<Notification>();
-            var notification2 = mocks.Stub<Notification>();
-
-            var interceptor1 = mocks.StrictMock<IMessageBusNotifyInterceptor>();
-            var interceptor2 = mocks.StrictMock<IMessageBusNotifyInterceptor>();
-
-            With.Mocks(mocks).Expecting(() =>
-            {
-                Expect.Call(interceptor1.InterceptionPriority).Return(InterceptionPrority.Low);
-                Expect.Call(interceptor2.InterceptionPriority).Return(InterceptionPrority.High);
-
-                interceptor1.Intercept(null);
-                LastCall.IgnoreArguments().Do(new InterceptNotifyDelegate((invocation) =>
-                {
-                    invocation.Proceed();
-                }));
-
-                interceptor2.Intercept(null);
-                LastCall.IgnoreArguments().Do(new InterceptNotifyDelegate((invocation) =>
-                {
-                    invocation.Notifications.Remove(notification2);
-                    invocation.Proceed();
-                }));
-
-                notificationProcessor.Process(new Notification[] { notification1 });
-            }).Verify(() =>
-            {
-                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor }, new INotificationProcessor[] { notificationProcessor });
-                messageBus.Logger = GetConsoleLogger();
-                messageBus.MessageBusNotifyInterceptors = new IMessageBusNotifyInterceptor[] { interceptor1, interceptor2 };
-
-                messageBus.Notify(notification1, notification2);
-            });
-        }
-
         public delegate void InterceptSendDelegate(IColomboSendInvocation invocation);
-        public delegate void InterceptNotifyDelegate(IColomboNotifyInvocation invocation);
         public delegate ResponsesGroup ProcessDelegate(IList<BaseRequest> requests);
 
         public class TestRequestForSendAction : SideEffectFreeRequest<TestResponse>

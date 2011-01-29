@@ -48,22 +48,6 @@ namespace Colombo.Tests.TestSupport
         }
 
         [Test]
-        public void It_should_reject_notifications_that_cannot_be_created_using_Activator()
-        {
-            Assert.That(() => ColomboTest.AssertThat.NotificationIsConform<NotificationWithoutDefaultConstructor>(),
-                Throws.Exception.TypeOf<ColomboTestSupportException>()
-                .With.Message.Contains("default constructor"));
-        }
-
-        [Test]
-        public void It_should_reject_notifications_that_are_not_serializable_with_DataContractSerializer()
-        {
-            Assert.That(() => ColomboTest.AssertThat.NotificationIsConform<NotificationNotSerializable>(),
-                Throws.Exception.TypeOf<ColomboTestSupportException>()
-                .With.Message.Contains("DataContractSerializer"));
-        }
-
-        [Test]
         public void It_should_reject_responses_that_cannot_be_created_using_Activator()
         {
             Assert.That(() => ColomboTest.AssertThat.ResponseIsConform<ResponseWithoutDefaultConstructor>(),
@@ -95,18 +79,6 @@ namespace Colombo.Tests.TestSupport
         }
 
         public class RequestNotSerializable : Request<TestResponse>
-        {
-            public ValidationResult ValidationResult { get; set; }
-        }
-
-        public class NotificationWithoutDefaultConstructor : Notification
-        {
-            public NotificationWithoutDefaultConstructor(string name)
-            {
-            }
-        }
-
-        public class NotificationNotSerializable : Notification
         {
             public ValidationResult ValidationResult { get; set; }
         }

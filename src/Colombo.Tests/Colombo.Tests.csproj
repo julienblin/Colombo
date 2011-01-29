@@ -72,9 +72,7 @@
     <Compile Include="Facilities\PerRequestHandlingLifestyleTest.cs" />
     <Compile Include="FullTest.cs" />
     <Compile Include="HealthCheck\HealthCheckRequestHandlerTest.cs" />
-    <Compile Include="Impl\KernelNotificationHandlerFactoryTest.cs" />
     <Compile Include="Impl\KernelRequestHandlerFactoryTest.cs" />
-    <Compile Include="Impl\LocalNotificationProcessorTest.cs" />
     <Compile Include="Impl\LocalRequestProcessorTest.cs" />
     <Compile Include="Impl\MessageBusTest.cs" />
     <Compile Include="Impl\StatefulMessageBusTest.cs" />
@@ -88,7 +86,6 @@
     <Compile Include="Interceptors\ExceptionsSendInterceptorTest.cs" />
     <Compile Include="Interceptors\RequiredInContextHandleInterceptorTest.cs" />
     <Compile Include="Interceptors\SLASendInterceptorTest.cs" />
-    <Compile Include="Interceptors\TransactionScopeNotificationHandleInterceptorTest.cs" />
     <Compile Include="Interceptors\TransactionScopeRequestHandleInterceptorTest.cs" />
     <Compile Include="MessagesTest.cs" />
     <Compile Include="MessageHandlersTest.cs" />

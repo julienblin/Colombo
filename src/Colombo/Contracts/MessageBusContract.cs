@@ -85,12 +85,6 @@ namespace Colombo.Contracts
             Contract.Ensures(Contract.Result<ResponsesGroup>() != null);
             throw new NotImplementedException();
         }
-
-        public void Notify(Notification notification, params Notification[] notifications)
-        {
-            Contract.Requires<ArgumentNullException>(notification != null, "notification");
-            throw new NotImplementedException();
-        }
     }
 #pragma warning restore 1591
 }

@@ -29,7 +29,7 @@ using Colombo.Contracts;
 namespace Colombo
 {
     /// <summary>
-    /// Allow the sending of messages through Colombo (requests and notifications).
+    /// Allow the sending of messages through Colombo.
     /// </summary>
     [ContractClass(typeof(MessageBusContract))]
     public interface IMessageBus
@@ -75,10 +75,5 @@ namespace Colombo
         /// Only side effect-free requests can be parallelized.
         /// </summary>
         ResponsesGroup Send(BaseSideEffectFreeRequest request, params BaseSideEffectFreeRequest[] followingRequests);
-
-        /// <summary>
-        /// Dispatch notifications
-        /// </summary>
-        void Notify(Notification notification, params Notification[] notifications);
     }
 }

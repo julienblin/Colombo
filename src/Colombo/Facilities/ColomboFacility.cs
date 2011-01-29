@@ -33,7 +33,6 @@ using Colombo.Caching.Impl;
 using Colombo.HealthCheck;
 using Colombo.Impl;
 using Colombo.Impl.Alerters;
-using Colombo.Impl.NotificationHandle;
 using Colombo.Impl.RequestHandle;
 using Colombo.Interceptors;
 using Colombo.TestSupport;
@@ -89,11 +88,6 @@ namespace Colombo.Facilities
             typeof(ExceptionsHandleInterceptor)
         };
 
-        readonly IList<Type> notificationHandlerInterceptors = new List<Type>
-                                                                   {
-            typeof(TransactionScopeNotificationHandleInterceptor)
-        };
-
         readonly IList<Type> alerters = new List<Type>
                                             {
             typeof(EventLogColomboAlerter)
@@ -128,11 +122,6 @@ namespace Colombo.Facilities
                     Component.For<IRequestProcessor>()
                         .ImplementedBy<WcfClientRequestProcessor>()
                         .OnCreate((kernel, item) => ((WcfClientRequestProcessor)item).HealthCheckHeartBeatInSeconds = healthCheckHeartBeatInSeconds),
-
-                    Component.For<INotificationHandlerFactory>()
-                        .ImplementedBy<KernelNotificationHandlerFactory>(),
-                    Component.For<INotificationProcessor>()
-                        .ImplementedBy<LocalNotificationProcessor>(),
 
                     Component.For<IMessageBus>()
                         .ImplementedBy<MessageBus>(),
@@ -202,15 +191,6 @@ namespace Colombo.Facilities
                             .ImplementedBy(handlerType)
                     );
                 }
-
-                foreach (var handlerType in notificationHandlerInterceptors)
-                {
-                    Kernel.Register(
-                        Component.For<INotificationHandleInterceptor>()
-                            .LifeStyle.Singleton
-                            .ImplementedBy(handlerType)
-                    );
-                }
             }
         }
 
@@ -246,7 +226,6 @@ namespace Colombo.Facilities
         public void DoNotHandleInsideTransactionScope()
         {
             requestHandlerInterceptors.Remove(typeof(TransactionScopeRequestHandleInterceptor));
-            notificationHandlerInterceptors.Remove(typeof(TransactionScopeNotificationHandleInterceptor));
         }
 
         /// <summary>
@@ -347,7 +326,7 @@ namespace Colombo.Facilities
         }
 
         /// <summary>
-        /// Registers Colombo components in test mode. It means that no real send or notify operations will be performed,
+        /// Registers Colombo components in test mode. It means that no real send operations will be performed,
         /// But using the <see cref="IStubMessageBus"/> you will be able to assert certain operations.
         /// </summary>
         public void TestSupportMode()

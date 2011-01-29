@@ -230,23 +230,6 @@ namespace Colombo.Tests.TestSupport
         }
 
         [Test]
-        public void It_should_not_throw_if_sub_expectations_are_met_with_notifications()
-        {
-            var container = new WindsorContainer();
-            var stubMessageBus = new StubMessageBus { Kernel = container.Kernel };
-            container.Register(Component.For<IStubMessageBus, IMessageBus>().Instance(stubMessageBus));
-
-            stubMessageBus.ExpectNotify<TestNotification>();
-
-            stubMessageBus.TestHandler<TestRequestHandlerWithNotification>();
-
-            stubMessageBus.Send(new TestRequest3());
-
-            Thread.Sleep(200);
-            Assert.DoesNotThrow(() => stubMessageBus.Verify());
-        }
-
-        [Test]
         public void It_should_throw_if_sub_expectations_are_not_met()
         {
             var container = new WindsorContainer();
@@ -272,54 +255,6 @@ namespace Colombo.Tests.TestSupport
             Assert.That(() => stubMessageBus.Verify(),
                         Throws.Exception.TypeOf<ColomboExpectationException>()
                         .With.Message.Contains("TestRequest3"));
-        }
-
-        [Test]
-        public void It_should_throw_if_sub_expectations_are_not_met_with_notifications()
-        {
-            var container = new WindsorContainer();
-            var stubMessageBus = new StubMessageBus { Kernel = container.Kernel };
-            container.Register(Component.For<IStubMessageBus, IMessageBus>().Instance(stubMessageBus));
-
-            stubMessageBus.TestHandler<TestRequestHandlerWithNotification>();
-
-            Assert.That(() => stubMessageBus.Send(new TestRequest3()),
-                        Throws.Exception.TypeOf<ColomboExpectationException>()
-                        .With.Message.Contains("TestNotification"));
-
-            container = new WindsorContainer();
-            stubMessageBus = new StubMessageBus { Kernel = container.Kernel };
-            container.Register(Component.For<IStubMessageBus, IMessageBus>().Instance(stubMessageBus));
-
-            stubMessageBus.ExpectNotify<TestNotification>();
-            stubMessageBus.TestHandler<TestRequestHandler2>();
-
-            stubMessageBus.Send(new TestRequest2());
-
-            Assert.That(() => stubMessageBus.Verify(),
-                        Throws.Exception.TypeOf<ColomboExpectationException>()
-                        .With.Message.Contains("TestNotification"));
-        }
-
-        [Test]
-        public void It_should_verify_assertions_for_notifications()
-        {
-            var container = new WindsorContainer();
-            var stubMessageBus = new StubMessageBus { Kernel = container.Kernel };
-            container.Register(Component.For<IStubMessageBus, IMessageBus>().Instance(stubMessageBus));
-
-            stubMessageBus
-                .ExpectNotify<TestNotification>()
-                .Assert(notif => Assert.That(() => notif.Name, Is.EqualTo("AnotherName")));
-
-            stubMessageBus.TestHandler<TestRequestHandlerWithNotification>();
-
-            stubMessageBus.Send(new TestRequest3 { Name = "AName" });
-
-            Thread.Sleep(200);
-            Assert.That(() => stubMessageBus.Verify(),
-                Throws.Exception.TypeOf<AssertionException>()
-                .With.Message.Contains("AnotherName"));
         }
 
         [Test]
@@ -350,31 +285,6 @@ namespace Colombo.Tests.TestSupport
         }
 
         [Test]
-        public void It_should_use_registered_notify_interceptors()
-        {
-            var mocks = new MockRepository();
-
-            var interceptor = mocks.StrictMock<IMessageBusNotifyInterceptor>();
-
-            With.Mocks(mocks).Expecting(() =>
-            {
-                Expect.Call(interceptor.InterceptionPriority).Return(InterceptionPrority.High);
-                interceptor.Intercept(null);
-                LastCall.IgnoreArguments().Do(new InterceptNotifyDelegate(invocation => invocation.Proceed()));
-            }).Verify(() =>
-            {
-                var stubMessageBus = new StubMessageBus();
-                stubMessageBus.MessageBusNotifyInterceptors = new[] { interceptor };
-
-                stubMessageBus.ExpectNotify<TestNotification>();
-                stubMessageBus.Notify(new TestNotification());
-
-                Thread.Sleep(200);
-                Assert.DoesNotThrow(() => stubMessageBus.Verify());
-            });
-        }
-
-        [Test]
         public void It_should_use_registered_handle_requests_interceptors()
         {
             var mocks = new MockRepository();
@@ -397,31 +307,6 @@ namespace Colombo.Tests.TestSupport
                 Assert.That(() => stubMessageBus.Send(new TestRequest2() { Name = "TheName" }),
                     Is.Not.Null.And.Property("Name").EqualTo("TheName"));
 
-                Assert.DoesNotThrow(() => stubMessageBus.Verify());
-            });
-        }
-
-        [Test]
-        public void It_should_use_registered_handle_notifications_interceptors()
-        {
-            var mocks = new MockRepository();
-
-            var interceptor = mocks.StrictMock<INotificationHandleInterceptor>();
-
-            With.Mocks(mocks).Expecting(() =>
-            {
-                Expect.Call(interceptor.InterceptionPriority).Return(InterceptionPrority.High);
-                interceptor.Intercept(null);
-                LastCall.IgnoreArguments().Do(new InterceptNotificationHandleDelegate(invocation => invocation.Proceed()));
-            }).Verify(() =>
-            {
-                var stubMessageBus = new StubMessageBus();
-                stubMessageBus.NotificationHandleInterceptors = new[] { interceptor };
-
-                stubMessageBus.ExpectNotify<TestNotification>();
-                stubMessageBus.Notify(new TestNotification());
-
-                Thread.Sleep(200);
                 Assert.DoesNotThrow(() => stubMessageBus.Verify());
             });
         }
@@ -494,26 +379,7 @@ namespace Colombo.Tests.TestSupport
             public string Name { get; set; }
         }
 
-        public class TestNotification : Notification
-        {
-            public string Name { get; set; }
-        }
-
-        public class TestRequestHandlerWithNotification : RequestHandler<TestRequest3, TestResponse2>
-        {
-            public IMessageBus MessageBus { get; set; }
-
-            protected override void Handle()
-            {
-                var notification = CreateNotification<TestNotification>();
-                notification.Name = Request.Name;
-                MessageBus.Notify(notification);
-            }
-        }
-
         public delegate void InterceptSendDelegate(IColomboSendInvocation invocation);
-        public delegate void InterceptNotifyDelegate(IColomboNotifyInvocation invocation);
         public delegate void InterceptRequestHandleDelegate(IColomboRequestHandleInvocation nextInvocation);
-        public delegate void InterceptNotificationHandleDelegate(IColomboNotificationHandleInvocation nextInvocation);
     }
 }

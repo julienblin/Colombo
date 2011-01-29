@@ -83,17 +83,6 @@ namespace Colombo
         }
 
         /// <summary>
-        /// Create a new notification to be used inside this request handler.
-        /// The CorrelationGuid and the Context are copied.
-        /// </summary>
-        protected TNotification CreateNotification<TNotification>()
-            where TNotification : Notification, new()
-        {
-            var result = new TNotification { CorrelationGuid = Request.CorrelationGuid, Context = Request.Context };
-            return result;
-        }
-
-        /// <summary>
         /// Get the type of request that this request handler handles.
         /// </summary>
         /// <returns></returns>

@@ -69,28 +69,6 @@ namespace Colombo.Impl
             }
         }
 
-        private IMessageBusNotifyInterceptor[] messageBusNotifyInterceptors = new IMessageBusNotifyInterceptor[0];
-        /// <summary>
-        /// The list of <see cref="IMessageBusSendInterceptor"/> to use.
-        /// </summary>
-        public IMessageBusNotifyInterceptor[] MessageBusNotifyInterceptors
-        {
-            get { return messageBusNotifyInterceptors; }
-            set
-            {
-                if (value == null) throw new ArgumentNullException("MessageBusNotifyInterceptors");
-                Contract.EndContractBlock();
-
-                messageBusNotifyInterceptors = value.OrderBy(x => x.InterceptionPriority).ToArray();
-                if (!Logger.IsInfoEnabled) return;
-
-                if (messageBusNotifyInterceptors.Length == 0)
-                    Logger.Info("No interceptor has been registered for sending notifications.");
-                else
-                    Logger.InfoFormat("Sending notifications with the following interceptors: {0}", string.Join(", ", messageBusNotifyInterceptors.Select(x => x.GetType().Name)));
-            }
-        }
-
         /// <summary>
         /// Send synchronously a request and returns the response.
         /// </summary>
@@ -229,25 +207,6 @@ namespace Colombo.Impl
         }
 
         /// <summary>
-        /// Dispatch notifications
-        /// </summary>
-        public virtual void Notify(Notification notification, params Notification[] notifications)
-        {
-            if (notification == null) throw new ArgumentNullException("notification");
-            Contract.EndContractBlock();
-
-            var finalNotifications = new List<Notification> { notification };
-            if (notifications != null)
-                finalNotifications.AddRange(notifications);
-
-            Logger.DebugFormat("Sending notifications {0}...", string.Join(", ", finalNotifications.Select(x => x.ToString())));
-
-            var topInvocation = BuildNotifyInvocationChain();
-            topInvocation.Notifications = finalNotifications;
-            topInvocation.Proceed();
-        }
-
-        /// <summary>
         /// Internal method that is used by Async send operations. Uses <see cref="InternalSend"/> under the cover.
         /// </summary>
         protected virtual IAsyncCallback<TResponse> InternalSendAsync<TResponse>(BaseRequest request)
@@ -289,10 +248,5 @@ namespace Colombo.Impl
         /// Return a invocation chain for the Send operation.
         /// </summary>
         protected abstract IColomboSendInvocation BuildSendInvocationChain();
-
-        /// <summary>
-        /// Return a invocation chain for the Notify operation.
-        /// </summary>
-        protected abstract IColomboNotifyInvocation BuildNotifyInvocationChain();
     }
 }

@@ -171,11 +171,6 @@ namespace Colombo.Host.Tests.Internal
             {
                 throw new NotImplementedException();
             }
-
-            public void Notify(Notification notification, params Notification[] notifications)
-            {
-                throw new NotImplementedException();
-            }
         }
 
     }

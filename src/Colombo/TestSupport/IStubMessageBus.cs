@@ -51,16 +51,8 @@ namespace Colombo.TestSupport
             where TResponse : Response, new();
 
         /// <summary>
-        /// Indicates an expectation that a type of <see cref="Notification"/> will be notified.
-        /// </summary>
-        /// <typeparam name="TNotification"></typeparam>
-        /// <returns></returns>
-        MessageBusNotifyExpectation<TNotification> ExpectNotify<TNotification>()
-            where TNotification : Notification, new();
-
-        /// <summary>
         /// <c>true</c> to allow the <see cref="IStubMessageBus"/> to reply to requests using empty responses,
-        /// <c>false</c> to disallow and throw a <see cref="ColomboExpectationException"/> when sending an unexpected request or notification.
+        /// <c>false</c> to disallow and throw a <see cref="ColomboExpectationException"/> when sending an unexpected request.
         /// </summary>
         bool AllowUnexpectedMessages { get; set; }
 

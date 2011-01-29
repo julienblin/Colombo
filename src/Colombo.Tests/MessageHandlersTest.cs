@@ -58,18 +58,6 @@ namespace Colombo.Tests
                 Is.True);
         }
 
-        [Test]
-        public void NotificationHandler_inherited_functionality_should_work()
-        {
-            var notificationHandler = new TestNotificationHandler();
-            var notification = new TestNotification();
-            notification.CorrelationGuid = CorrelationGuid;
-            notification.Context["SomeKey"] = "SomeValue";
-
-            notificationHandler.Handle(notification);
-            Assert.That(() => notificationHandler.HandleWasCalled,
-                Is.True);
-        }
 
         public class TestRequest : Request<TestResponse>
         {
@@ -89,12 +77,6 @@ namespace Colombo.Tests
                 Assert.That(() => newRequest.CorrelationGuid,
                     Is.EqualTo(Request.CorrelationGuid));
                 Assert.That(() => newRequest.Context,
-                    Is.EqualTo(Request.Context));
-
-                var newNotification = CreateNotification<TestNotification>();
-                Assert.That(() => newNotification.CorrelationGuid,
-                    Is.EqualTo(Request.CorrelationGuid));
-                Assert.That(() => newNotification.Context,
                     Is.EqualTo(Request.Context));
             }
         }
@@ -117,38 +99,6 @@ namespace Colombo.Tests
                 Assert.That(() => newRequest.Context,
                     Is.EqualTo(Request.Context));
 
-                var newNotification = CreateNotification<TestNotification>();
-                Assert.That(() => newNotification.CorrelationGuid,
-                    Is.EqualTo(Request.CorrelationGuid));
-                Assert.That(() => newNotification.Context,
-                    Is.EqualTo(Request.Context));
-
-            }
-        }
-
-        public class TestNotification : Notification { }
-
-        public class TestNotificationHandler : NotificationHandler<TestNotification>
-        {
-            public bool HandleWasCalled { get; set; }
-
-            protected override void Handle()
-            {
-                HandleWasCalled = true;
-                Assert.That(() => Notification.CorrelationGuid,
-                    Is.EqualTo(CorrelationGuid));
-
-                var newRequest = CreateRequest<TestRequest>();
-                Assert.That(() => newRequest.CorrelationGuid,
-                    Is.EqualTo(Notification.CorrelationGuid));
-                Assert.That(() => newRequest.Context,
-                    Is.EqualTo(Notification.Context));
-
-                var newNotification = CreateNotification<TestNotification>();
-                Assert.That(() => newNotification.CorrelationGuid,
-                    Is.EqualTo(Notification.CorrelationGuid));
-                Assert.That(() => newNotification.Context,
-                    Is.EqualTo(Notification.Context));
             }
         }
 

@@ -96,11 +96,6 @@ namespace Colombo.Contracts
         {
             throw new NotImplementedException();
         }
-
-        public void Notify(Notification notification, params Notification[] notifications)
-        {
-            throw new NotImplementedException();
-        }
     }
 #pragma warning restore 1591
 }
