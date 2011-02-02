@@ -185,7 +185,7 @@ namespace Colombo.Tests.Impl
         }
 
         [Test]
-        public void It_should_include_ContextMeta()
+        public void It_should_include_MetaContextKeys()
         {
             var mocks = new MockRepository();
             var request1 = new TestRequest();
@@ -204,12 +204,12 @@ namespace Colombo.Tests.Impl
                 processor.Logger = GetConsoleLogger();
                 processor.Process(requests);
 
-                Assert.That(requestHandler1.ReceivedRequest.Context[ContextMeta.HandlerMachineName], Is.EqualTo(Environment.MachineName));
+                Assert.That(requestHandler1.ReceivedRequest.Context[MetaContextKeys.HandlerMachineName], Is.EqualTo(Environment.MachineName));
             });
         }
 
         [Test]
-        public void It_should_not_include_ContextMeta_when_disabled()
+        public void It_should_not_include_MetaContextKeys_when_disabled()
         {
             var mocks = new MockRepository();
             var request1 = new TestRequest();
@@ -226,12 +226,12 @@ namespace Colombo.Tests.Impl
             {
                 var processor = new LocalRequestProcessor(requestHandlerFactory)
                                     {
-                                        DoNotManageContextMeta = true,
+                                        DoNotManageMetaContextKeys = true,
                                         Logger = GetConsoleLogger()
                                     };
                 processor.Process(requests);
 
-                Assert.That(requestHandler1.ReceivedRequest.Context.ContainsKey(ContextMeta.HandlerMachineName), Is.False);
+                Assert.That(requestHandler1.ReceivedRequest.Context.ContainsKey(MetaContextKeys.HandlerMachineName), Is.False);
             });
         }
 

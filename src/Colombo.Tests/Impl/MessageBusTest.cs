@@ -502,7 +502,7 @@ namespace Colombo.Tests.Impl
         }
 
         [Test]
-        public void It_should_include_ContextMeta()
+        public void It_should_include_MetaContextKeys()
         {
             var mocks = new MockRepository();
             var request = new TestRequest();
@@ -531,12 +531,12 @@ namespace Colombo.Tests.Impl
                 messageBus.Send(request);
 
                 Assert.That(collectedRequests, Is.Not.Null);
-                Assert.That(collectedRequests.First().Context[ContextMeta.SenderMachineName], Is.EqualTo(Environment.MachineName));
+                Assert.That(collectedRequests.First().Context[MetaContextKeys.SenderMachineName], Is.EqualTo(Environment.MachineName));
             });
         }
 
         [Test]
-        public void It_should_not_include_ContextMeta_when_disabled()
+        public void It_should_not_include_MetaContextKeys_when_disabled()
         {
             var mocks = new MockRepository();
             var request = new TestRequest();
@@ -563,13 +563,13 @@ namespace Colombo.Tests.Impl
             {
                 var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor })
                                      {
-                                         DoNotManageContextMeta = true,
+                                         DoNotManageMetaContextKeys = true,
                                          Logger = GetConsoleLogger()
                                      };
                 messageBus.Send(request);
 
                 Assert.That(collectedRequests, Is.Not.Null);
-                Assert.That(collectedRequests.First().Context.ContainsKey(ContextMeta.SenderMachineName), Is.False);
+                Assert.That(collectedRequests.First().Context.ContainsKey(MetaContextKeys.SenderMachineName), Is.False);
             });
         }
 

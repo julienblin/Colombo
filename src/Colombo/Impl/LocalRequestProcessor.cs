@@ -35,7 +35,7 @@ namespace Colombo.Impl
     /// <summary>
     /// Default implementation for processing requests locally.
     /// </summary>
-    public class LocalRequestProcessor : ILocalRequestProcessor
+    public class LocalRequestProcessor : ILocalRequestProcessor, IMetaContextKeysManager
     {
         private ILogger logger = NullLogger.Instance;
         /// <summary>
@@ -78,7 +78,7 @@ namespace Colombo.Impl
             this.requestHandlerFactory = requestHandlerFactory;
         }
 
-        public bool DoNotManageContextMeta { get; set; }
+        public bool DoNotManageMetaContextKeys { get; set; }
 
         /// <summary>
         /// <c>true</c> if the processor can process the request, <c>false</c> otherwise.
@@ -96,11 +96,11 @@ namespace Colombo.Impl
         /// </summary>
         public ResponsesGroup Process(IList<BaseRequest> requests)
         {
-            if (!DoNotManageContextMeta)
+            if (!DoNotManageMetaContextKeys)
             {
                 foreach (var request in requests)
                 {
-                    request.Context[ContextMeta.HandlerMachineName] = Environment.MachineName;
+                    request.Context[MetaContextKeys.HandlerMachineName] = Environment.MachineName;
                 }
             }
 

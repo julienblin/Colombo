@@ -123,7 +123,7 @@ namespace Colombo.Facilities
                         .ImplementedBy<WcfClientRequestProcessor>()
                         .OnCreate((kernel, item) => ((WcfClientRequestProcessor)item).HealthCheckHeartBeatInSeconds = healthCheckHeartBeatInSeconds),
 
-                    Component.For<IMessageBus>()
+                    Component.For<IMessageBus, IMetaContextKeysManager>()
                         .ImplementedBy<MessageBus>(),
                     Component.For<IStatefulMessageBus>()
                         .LifeStyle.Transient
@@ -159,7 +159,7 @@ namespace Colombo.Facilities
                     Kernel.Register(
                         Component.For<IRequestHandlerFactory>()
                             .ImplementedBy<KernelRequestHandlerFactory>(),
-                        Component.For<ILocalRequestProcessor, IRequestProcessor>()
+                        Component.For<ILocalRequestProcessor, IRequestProcessor, IMetaContextKeysManager>()
                             .ImplementedBy<LocalRequestProcessor>(),
                         Component.For<ISideEffectFreeRequestHandler<HealthCheckRequest, ACKResponse>>()
                             .LifeStyle.Transient

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Colombo
 {
-    public static class ContextMeta
+    public static class MetaContextKeys
     {
         public const string MetaPrefix = @"_";
 

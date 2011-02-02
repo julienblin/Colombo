@@ -35,7 +35,7 @@ namespace Colombo.Impl
     /// <summary>
     /// Base class for <see cref="IMessageBus"/>.
     /// </summary>
-    public abstract class BaseMessageBus : IMessageBus
+    public abstract class BaseMessageBus : IMessageBus, IMetaContextKeysManager
     {
         private ILogger logger = NullLogger.Instance;
         /// <summary>
@@ -69,7 +69,7 @@ namespace Colombo.Impl
             }
         }
 
-        public bool DoNotManageContextMeta { get; set; }
+        public bool DoNotManageMetaContextKeys { get; set; }
 
         /// <summary>
         /// Send synchronously a request and returns the response.
@@ -198,11 +198,11 @@ namespace Colombo.Impl
         /// </summary>
         protected virtual ResponsesGroup InternalSend(IList<BaseRequest> requests)
         {
-            if (!DoNotManageContextMeta)
+            if (!DoNotManageMetaContextKeys)
             {
                 foreach (var request in requests)
                 {
-                    request.Context[ContextMeta.SenderMachineName] = Environment.MachineName;
+                    request.Context[MetaContextKeys.SenderMachineName] = Environment.MachineName;
                 }
             }
 

@@ -92,7 +92,7 @@ namespace Colombo
         public override string ToString()
         {
             if ((Context != null) && (Context.Count > 0))
-                return string.Format("{0} | {1}", base.ToString(), string.Join(", ", Context.Where(x => !x.Key.StartsWith(ContextMeta.MetaPrefix)).Select(x => string.Format("{0}={1}", x.Key, x.Value))));
+                return string.Format("{0} | {1}", base.ToString(), string.Join(", ", Context.Where(x => !x.Key.StartsWith(MetaContextKeys.MetaPrefix)).Select(x => string.Format("{0}={1}", x.Key, x.Value))));
             
             return base.ToString();
         }

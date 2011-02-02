@@ -130,7 +130,7 @@ namespace Colombo.Tests
         {
             var request = new TestRequest();
             request.Context["key1"] = "value1";
-            request.Context[ContextMeta.MetaPrefix + "key2"] = "value2";
+            request.Context[MetaContextKeys.MetaPrefix + "key2"] = "value2";
 
             var result = request.ToString();
 
@@ -138,7 +138,7 @@ namespace Colombo.Tests
             Assert.That(result, Contains.Substring(request.CorrelationGuid.ToString()));
             Assert.That(result, Contains.Substring(request.UtcTimestamp.ToString("yyyy-MM-dd-HH:mm:ss")));
             Assert.That(result, Contains.Substring("key1=value1"));
-            Assert.That(result, !Contains.Substring(ContextMeta.MetaPrefix + "key2=value2"));
+            Assert.That(result, !Contains.Substring(MetaContextKeys.MetaPrefix + "key2=value2"));
         }
 
         public class TestRequest : Request<TestResponse> { }
