@@ -186,8 +186,8 @@ THE SOFTWARE.-->
       </fileset>
     </copy>
 
-    <mkdir dir="${folder.package}\Colombo.Host\lib\Net40"/>
-    <copy todir="${folder.package}\Colombo.Host\lib\Net40">
+    <mkdir dir="${folder.package}\Colombo\tools\Net40"/>
+    <copy todir="${folder.package}\Colombo\tools\Net40">
       <fileset basedir="${folder.release}">
         <include name="Colombo.Host.exe" />
         <include name="Colombo.Host.xml" />
@@ -197,12 +197,6 @@ THE SOFTWARE.-->
     <exec program="${app.nuget}" basedir="${folder.package}\Colombo">
       <arg value="pack" />
       <arg value="${folder.package}\Colombo\Colombo.nuspec" />
-      <arg line="-o &quot;${folder.package}&quot;" />
-    </exec>
-
-    <exec program="${app.nuget}" basedir="${folder.package}\Colombo.Host">
-      <arg value="pack" />
-      <arg value="${folder.package}\Colombo.Host\Colombo.Host.nuspec" />
       <arg line="-o &quot;${folder.package}&quot;" />
     </exec>
 
