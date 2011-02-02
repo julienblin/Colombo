@@ -70,6 +70,7 @@ namespace Colombo.Facilities
         bool enableMemcachedCaching;
         string[] memCachedServers;
         bool testSupportMode;
+        bool doNotManageMetaContextKeys;
 
         readonly IList<Type> sendInterceptors = new List<Type>
                                                     {
@@ -192,6 +193,11 @@ namespace Colombo.Facilities
                     );
                 }
             }
+
+            foreach (var metaContextKeysManager in Kernel.ResolveAll<IMetaContextKeysManager>())
+                metaContextKeysManager.DoNotManageMetaContextKeys = doNotManageMetaContextKeys;
+
+            WcfServices.DoNotManageMetaContextKeys = doNotManageMetaContextKeys;
         }
 
         /// <summary>
@@ -332,6 +338,11 @@ namespace Colombo.Facilities
         public void TestSupportMode()
         {
             testSupportMode = true;
+        }
+
+        public void DoNotManageMetaContextKeys()
+        {
+            doNotManageMetaContextKeys = true;
         }
     }
 }

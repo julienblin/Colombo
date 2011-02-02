@@ -365,5 +365,31 @@ namespace Colombo.Tests.Facilities
             Assert.That(() => container.Resolve<IMessageBus>(), Is.TypeOf<StubMessageBus>());
             Assert.That(() => container.Resolve<IStubMessageBus>(), Is.TypeOf<StubMessageBus>());
         }
+
+        [Test]
+        public void It_should_position_DoNotManageMetaContextKeys_accordingly()
+        {
+            var container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>();
+
+            var messageBus = (IMetaContextKeysManager)container.Resolve<IMessageBus>();
+            Assert.That(messageBus.DoNotManageMetaContextKeys, Is.False);
+
+            var localRequestProcessor = (IMetaContextKeysManager)container.Resolve<ILocalRequestProcessor>();
+            Assert.That(localRequestProcessor.DoNotManageMetaContextKeys, Is.False);
+
+            Assert.That(WcfServices.DoNotManageMetaContextKeys, Is.False);
+
+            container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>(f => f.DoNotManageMetaContextKeys());
+
+            messageBus = (IMetaContextKeysManager)container.Resolve<IMessageBus>();
+            Assert.That(messageBus.DoNotManageMetaContextKeys, Is.True);
+
+            localRequestProcessor = (IMetaContextKeysManager)container.Resolve<ILocalRequestProcessor>();
+            Assert.That(localRequestProcessor.DoNotManageMetaContextKeys, Is.True);
+
+            Assert.That(WcfServices.DoNotManageMetaContextKeys, Is.True);
+        }
     }
 }
