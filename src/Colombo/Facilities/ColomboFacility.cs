@@ -340,6 +340,9 @@ namespace Colombo.Facilities
             testSupportMode = true;
         }
 
+        /// <summary>
+        /// Disable the management of MetaContextKeys. No value will be set in the Context if disabled.
+        /// </summary>
         public void DoNotManageMetaContextKeys()
         {
             doNotManageMetaContextKeys = true;

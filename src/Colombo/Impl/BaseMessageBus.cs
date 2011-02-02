@@ -69,6 +69,9 @@ namespace Colombo.Impl
             }
         }
 
+        /// <summary>
+        /// Disable the management of <see cref="MetaContextKeys"/>.
+        /// </summary>
         public bool DoNotManageMetaContextKeys { get; set; }
 
         /// <summary>

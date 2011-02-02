@@ -37,6 +37,9 @@ namespace Colombo.Impl
     /// </summary>
     public class LocalRequestProcessor : ILocalRequestProcessor, IMetaContextKeysManager
     {
+        /// <summary>
+        /// Constant used for the value associated with the <see cref="MetaContextKeys.EndpointAddressUri"/> when handled locally.
+        /// </summary>
         public const string LocalMetaContextKeyEndpointAddressUri = @"local";
 
         private ILogger logger = NullLogger.Instance;
@@ -80,6 +83,9 @@ namespace Colombo.Impl
             this.requestHandlerFactory = requestHandlerFactory;
         }
 
+        /// <summary>
+        /// Disable the management of <see cref="MetaContextKeys"/>.
+        /// </summary>
         public bool DoNotManageMetaContextKeys { get; set; }
 
         /// <summary>

@@ -45,6 +45,9 @@ namespace Colombo.Wcf
         /// </summary>
         public static IKernel Kernel { get; set; }
 
+        /// <summary>
+        /// Disable the management of <see cref="MetaContextKeys"/> for WCF Services.
+        /// </summary>
         public static bool DoNotManageMetaContextKeys { get; set; }
 
         /// <summary>
