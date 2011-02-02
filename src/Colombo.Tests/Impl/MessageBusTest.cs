@@ -25,6 +25,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using Colombo.Impl;
 using NUnit.Framework;
@@ -532,6 +533,7 @@ namespace Colombo.Tests.Impl
 
                 Assert.That(collectedRequests, Is.Not.Null);
                 Assert.That(collectedRequests.First().Context[MetaContextKeys.SenderMachineName], Is.EqualTo(Environment.MachineName));
+                Assert.That(collectedRequests.First().Context[MetaContextKeys.CodeOrigin], Contains.Substring(MethodInfo.GetCurrentMethod().Name));
             });
         }
 

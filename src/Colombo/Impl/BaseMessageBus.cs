@@ -24,8 +24,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Security;
 using System.Threading.Tasks;
 using Castle.Core.Logging;
 using Colombo.Impl.Async;
@@ -196,6 +198,16 @@ namespace Colombo.Impl
         }
 
         /// <summary>
+        /// Number of method in stackframes that will not be captured by CodeOrigin
+        /// </summary>
+        private const int NumStackFrameToSkipWhenCapturingCodeOrigin = 2;
+
+        /// <summary>
+        /// The stacktrace is truncated to avoid big message size.
+        /// </summary>
+        private const int MaxStrLengthInStackTrace = 255;
+
+        /// <summary>
         /// Real sending of the requests. All the other send methods delegates to this one.
         /// Uses <see cref="BuildSendInvocationChain"/>.
         /// </summary>
@@ -203,9 +215,28 @@ namespace Colombo.Impl
         {
             if (!DoNotManageMetaContextKeys)
             {
+                string stackTraceStr = null;
+                try
+                {
+                    if (requests.Any(x => !x.Context.ContainsKey(MetaContextKeys.CodeOrigin)))
+                    {
+                        var stackTrace = new StackTrace(NumStackFrameToSkipWhenCapturingCodeOrigin, false);
+                        stackTraceStr = stackTrace.ToString();
+                        if (stackTraceStr.Length > MaxStrLengthInStackTrace)
+                            stackTraceStr = stackTraceStr.Substring(0, MaxStrLengthInStackTrace);
+                    }
+                }
+                catch (SecurityException)
+                {
+                    // Security exception might occured when capturing StackTrace - ignored.
+                }
+
                 foreach (var request in requests)
                 {
                     request.Context[MetaContextKeys.SenderMachineName] = Environment.MachineName;
+
+                    if (!request.Context.ContainsKey(MetaContextKeys.CodeOrigin) && (stackTraceStr != null))
+                        request.Context[MetaContextKeys.CodeOrigin] = stackTraceStr;
                 }
             }
 

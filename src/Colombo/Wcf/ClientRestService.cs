@@ -24,6 +24,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Reflection;
 using System.ServiceModel;
 using System.ServiceModel.Activation;
@@ -128,6 +129,13 @@ namespace Colombo.Wcf
             var property = (HttpRequestMessageProperty)properties[HttpRequestMessageProperty.Name];
 
             var request = (BaseRequest)QueryStringMapper.Map(property.QueryString, requestType);
+            
+            if(!WcfServices.DoNotManageMetaContextKeys)
+            {
+                var referrer = property.Headers[HttpRequestHeader.Referer];
+                var endpointAddressUri = OperationContext.Current.EndpointDispatcher.EndpointAddress.Uri.ToString();
+                request.Context[MetaContextKeys.CodeOrigin] = string.Format("javascript: {0} -> {1}", referrer, endpointAddressUri);
+            }
 
             return WcfServices.Process(request);
         }
@@ -153,6 +161,13 @@ namespace Colombo.Wcf
             var property = (HttpRequestMessageProperty)properties[HttpRequestMessageProperty.Name];
 
             var request = (BaseRequest)QueryStringMapper.Map(property.QueryString, requestType);
+
+            if (!WcfServices.DoNotManageMetaContextKeys)
+            {
+                var referrer = property.Headers[HttpRequestHeader.Referer];
+                var endpointAddressUri = OperationContext.Current.EndpointDispatcher.EndpointAddress.Uri.ToString();
+                request.Context[MetaContextKeys.CodeOrigin] = string.Format("javascript: {0} -> {1}", referrer, endpointAddressUri);
+            }
 
             return WcfServices.Process(request);
         }

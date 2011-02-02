@@ -50,5 +50,7 @@ namespace Colombo
         /// When processed remotely, contains the address of the endpoint that received the requests.
         /// </summary>
         public const string EndpointAddressUri = MetaPrefix + @"endpointAddressUri";
+
+        public const string CodeOrigin = MetaPrefix + @"codeOrigin";
     }
 }
