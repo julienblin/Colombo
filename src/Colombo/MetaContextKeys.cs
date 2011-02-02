@@ -21,8 +21,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 #endregion
-
-
 namespace Colombo
 {
     /// <summary>
@@ -51,6 +49,9 @@ namespace Colombo
         /// </summary>
         public const string EndpointAddressUri = MetaPrefix + @"endpointAddressUri";
 
+        /// <summary>
+        /// Indication of where the caller code used a Send method - could be a partial call stack or javascript/HTTP-REFERRER for example.
+        /// </summary>
         public const string CodeOrigin = MetaPrefix + @"codeOrigin";
     }
 }
