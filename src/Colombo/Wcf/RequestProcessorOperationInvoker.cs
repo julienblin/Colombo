@@ -23,6 +23,7 @@
 #endregion
 
 using System;
+using System.ServiceModel;
 using System.ServiceModel.Dispatcher;
 
 namespace Colombo.Wcf
@@ -65,6 +66,10 @@ namespace Colombo.Wcf
         public object Invoke(object instance, object[] inputs, out object[] outputs)
         {
             var request = (BaseRequest)inputs[0];
+            if (!WcfServices.DoNotManageMetaContextKeys && OperationContext.Current != null)
+                request.Context[MetaContextKeys.EndpointAddressUri] =
+                        OperationContext.Current.EndpointDispatcher.EndpointAddress.Uri.ToString();
+
             var responses = WcfServices.ProcessLocally(new[] { request });
             outputs = new object[0];
             return responses[0];

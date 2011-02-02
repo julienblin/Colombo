@@ -189,15 +189,20 @@ namespace Colombo.Tests.Impl
         {
             var mocks = new MockRepository();
             var request1 = new TestRequest();
-            var requests = new List<BaseRequest> { request1 };
+            var request2 = new TestRequest();
+            request2.Context[MetaContextKeys.EndpointAddressUri] = @"http://foo";
+            var requests = new List<BaseRequest> { request1, request2 };
             var response1 = new TestResponse();
             var requestHandlerFactory = mocks.StrictMock<IRequestHandlerFactory>();
             var requestHandler1 = new TestRequestHandler(response1);
+            var requestHandler2 = new TestRequestHandler(response1);
 
             With.Mocks(mocks).Expecting(() =>
             {
                 Expect.Call(requestHandlerFactory.CreateRequestHandlerFor(request1)).Return(requestHandler1);
+                Expect.Call(requestHandlerFactory.CreateRequestHandlerFor(request2)).Return(requestHandler2);
                 requestHandlerFactory.DisposeRequestHandler(requestHandler1);
+                requestHandlerFactory.DisposeRequestHandler(requestHandler2);
             }).Verify(() =>
             {
                 var processor = new LocalRequestProcessor(requestHandlerFactory);
@@ -205,6 +210,10 @@ namespace Colombo.Tests.Impl
                 processor.Process(requests);
 
                 Assert.That(requestHandler1.ReceivedRequest.Context[MetaContextKeys.HandlerMachineName], Is.EqualTo(Environment.MachineName));
+                Assert.That(requestHandler2.ReceivedRequest.Context[MetaContextKeys.HandlerMachineName], Is.EqualTo(Environment.MachineName));
+
+                Assert.That(requestHandler1.ReceivedRequest.Context[MetaContextKeys.EndpointAddressUri], Is.EqualTo(LocalRequestProcessor.LocalMetaContextKeyEndpointAddressUri));
+                Assert.That(requestHandler2.ReceivedRequest.Context[MetaContextKeys.EndpointAddressUri], Is.EqualTo(@"http://foo"));
             });
         }
 
@@ -232,6 +241,7 @@ namespace Colombo.Tests.Impl
                 processor.Process(requests);
 
                 Assert.That(requestHandler1.ReceivedRequest.Context.ContainsKey(MetaContextKeys.HandlerMachineName), Is.False);
+                Assert.That(requestHandler1.ReceivedRequest.Context.ContainsKey(MetaContextKeys.EndpointAddressUri), Is.False);
             });
         }
 

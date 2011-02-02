@@ -183,7 +183,7 @@ namespace Colombo.Tests.Wcf
         }
 
         [Test]
-        public void It_should_handle_WCF_calls()
+        public void It_should_handle_WCF_calls_and_include_MetaContextKeys()
         {
             const string IPCAddress = @"net.pipe://localhost/ipctest";
 
@@ -204,11 +204,14 @@ namespace Colombo.Tests.Wcf
             );
             WcfServices.Kernel = kernel;
 
+            IList<BaseRequest> receivedRequests = null;
+
             With.Mocks(mocks).Expecting(() =>
             {
                 Expect.Call(processor.CanProcess(null)).IgnoreArguments().Return(true);
-                Expect.Call(processor.Process(null)).IgnoreArguments().Do(new ProcessDelegate((delegateRequests) =>
+                Expect.Call(processor.Process(null)).IgnoreArguments().Do(new ProcessDelegate(delegateRequests =>
                 {
+                    receivedRequests = delegateRequests;
                     return new ResponsesGroup
                     {
                         { delegateRequests[0], response1 },
@@ -231,6 +234,10 @@ namespace Colombo.Tests.Wcf
                     Is.EqualTo(response1.CorrelationGuid));
                     Assert.That(() => responses[1].CorrelationGuid,
                         Is.EqualTo(response2.CorrelationGuid));
+
+                    Assert.That(receivedRequests[0].Context[MetaContextKeys.EndpointAddressUri], Is.EqualTo(IPCAddress));
+                    Assert.That(receivedRequests[1].Context[MetaContextKeys.EndpointAddressUri], Is.EqualTo(IPCAddress));
+
                     ((IClientChannel)wcfService).Close();
                 }
             });

@@ -45,6 +45,8 @@ namespace Colombo.Wcf
         /// </summary>
         public static IKernel Kernel { get; set; }
 
+        public static bool DoNotManageMetaContextKeys { get; set; }
+
         /// <summary>
         /// Processes the requests locally using <see cref="ILocalRequestProcessor"/>.
         /// </summary>

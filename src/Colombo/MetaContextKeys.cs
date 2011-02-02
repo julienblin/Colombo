@@ -11,5 +11,7 @@ namespace Colombo
 
         public const string SenderMachineName = MetaPrefix + @"senderMachineName";
         public const string HandlerMachineName = MetaPrefix + @"handlerMachineName";
+
+        public const string EndpointAddressUri = MetaPrefix + @"endpointAddressUri";
     }
 }

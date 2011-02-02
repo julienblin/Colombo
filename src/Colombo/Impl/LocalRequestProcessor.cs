@@ -37,6 +37,8 @@ namespace Colombo.Impl
     /// </summary>
     public class LocalRequestProcessor : ILocalRequestProcessor, IMetaContextKeysManager
     {
+        public const string LocalMetaContextKeyEndpointAddressUri = @"local";
+
         private ILogger logger = NullLogger.Instance;
         /// <summary>
         /// Logger.
@@ -101,6 +103,8 @@ namespace Colombo.Impl
                 foreach (var request in requests)
                 {
                     request.Context[MetaContextKeys.HandlerMachineName] = Environment.MachineName;
+                    if (!request.Context.ContainsKey(MetaContextKeys.EndpointAddressUri))
+                        request.Context[MetaContextKeys.EndpointAddressUri] = LocalMetaContextKeyEndpointAddressUri;
                 }
             }
 

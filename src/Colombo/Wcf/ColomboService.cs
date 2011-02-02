@@ -44,6 +44,13 @@ namespace Colombo.Wcf
         /// </summary>
         public IAsyncResult BeginProcessAsync(BaseRequest[] requests, AsyncCallback callback, object state)
         {
+            if (!WcfServices.DoNotManageMetaContextKeys && OperationContext.Current != null)
+                foreach (var request in requests)
+                {
+                    request.Context[MetaContextKeys.EndpointAddressUri] =
+                        OperationContext.Current.EndpointDispatcher.EndpointAddress.Uri.ToString();
+                }
+
             var asyncResult = new ProcessAsyncResult(callback, state) { Requests = requests };
 
             Task.Factory.StartNew(() =>
