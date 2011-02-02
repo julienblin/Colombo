@@ -125,6 +125,22 @@ namespace Colombo.Tests
             }
         }
 
+        [Test]
+        public void BaseRequest_should_default_ToString_to_Type_CorrelationGuid_TimeStamp_and_Context_without_Meta()
+        {
+            var request = new TestRequest();
+            request.Context["key1"] = "value1";
+            request.Context[ContextMeta.MetaPrefix + "key2"] = "value2";
+
+            var result = request.ToString();
+
+            Assert.That(result, Contains.Substring(request.GetType().Name));
+            Assert.That(result, Contains.Substring(request.CorrelationGuid.ToString()));
+            Assert.That(result, Contains.Substring(request.UtcTimestamp.ToString("yyyy-MM-dd-HH:mm:ss")));
+            Assert.That(result, Contains.Substring("key1=value1"));
+            Assert.That(result, !Contains.Substring(ContextMeta.MetaPrefix + "key2=value2"));
+        }
+
         public class TestRequest : Request<TestResponse> { }
 
         public class TestSideEffectFreeRequest : SideEffectFreeRequest<TestResponse> { }
