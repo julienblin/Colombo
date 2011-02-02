@@ -78,6 +78,8 @@ namespace Colombo.Impl
             this.requestHandlerFactory = requestHandlerFactory;
         }
 
+        public bool DoNotManageContextMeta { get; set; }
+
         /// <summary>
         /// <c>true</c> if the processor can process the request, <c>false</c> otherwise.
         /// </summary>
@@ -94,6 +96,14 @@ namespace Colombo.Impl
         /// </summary>
         public ResponsesGroup Process(IList<BaseRequest> requests)
         {
+            if (!DoNotManageContextMeta)
+            {
+                foreach (var request in requests)
+                {
+                    request.Context[ContextMeta.HandlerMachineName] = Environment.MachineName;
+                }
+            }
+
             if (requests == null) throw new ArgumentNullException("requests");
             Contract.EndContractBlock();
 

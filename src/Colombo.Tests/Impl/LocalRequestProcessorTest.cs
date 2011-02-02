@@ -45,7 +45,7 @@ namespace Colombo.Tests.Impl
         public void It_should_rely_on_IRequestHandlerFactory_for_CanProcess()
         {
             var mocks = new MockRepository();
-            var request = mocks.Stub<Request<TestResponse>>();
+            var request = new TestRequest();
             var requestHandlerFactory = mocks.StrictMock<IRequestHandlerFactory>();
 
             With.Mocks(mocks).Expecting(() =>
@@ -64,7 +64,7 @@ namespace Colombo.Tests.Impl
         public void It_should_ensure_that_IRequestHandlerFactory_returns_a_handler_in_Create()
         {
             var mocks = new MockRepository();
-            var request = mocks.Stub<Request<TestResponse>>();
+            var request = new TestRequest();
             var requests = new List<BaseRequest> { request };
             var requestHandlerFactory = mocks.StrictMock<IRequestHandlerFactory>();
 
@@ -116,7 +116,8 @@ namespace Colombo.Tests.Impl
 
         public class TestRequestHandler : RequestHandler<TestRequest, TestResponse>
         {
-            private TestResponse response;
+            private readonly TestResponse response;
+            public BaseRequest ReceivedRequest { get; set; }
 
             public TestRequestHandler(TestResponse response)
             {
@@ -125,6 +126,7 @@ namespace Colombo.Tests.Impl
 
             protected override void Handle()
             {
+                ReceivedRequest = Request;
                 Response = response;
             }
         }
@@ -133,8 +135,8 @@ namespace Colombo.Tests.Impl
         public void It_should_run_all_the_IRequestHandlerHandleInterceptors()
         {
             var mocks = new MockRepository();
-            var request1 = mocks.Stub<Request<TestResponse>>();
-            var request2 = mocks.Stub<Request<TestResponse>>();
+            var request1 = new TestRequest();
+            var request2 = new TestRequest();
             var requests = new List<BaseRequest> { request1, request2 };
             var response1 = new TestResponse();
             var response2 = new TestResponse();
@@ -179,6 +181,57 @@ namespace Colombo.Tests.Impl
                     Is.SameAs(response2));
                 Assert.That(() => responses[request2],
                     Is.SameAs(response2));
+            });
+        }
+
+        [Test]
+        public void It_should_include_ContextMeta()
+        {
+            var mocks = new MockRepository();
+            var request1 = new TestRequest();
+            var requests = new List<BaseRequest> { request1 };
+            var response1 = new TestResponse();
+            var requestHandlerFactory = mocks.StrictMock<IRequestHandlerFactory>();
+            var requestHandler1 = new TestRequestHandler(response1);
+
+            With.Mocks(mocks).Expecting(() =>
+            {
+                Expect.Call(requestHandlerFactory.CreateRequestHandlerFor(request1)).Return(requestHandler1);
+                requestHandlerFactory.DisposeRequestHandler(requestHandler1);
+            }).Verify(() =>
+            {
+                var processor = new LocalRequestProcessor(requestHandlerFactory);
+                processor.Logger = GetConsoleLogger();
+                processor.Process(requests);
+
+                Assert.That(requestHandler1.ReceivedRequest.Context[ContextMeta.HandlerMachineName], Is.EqualTo(Environment.MachineName));
+            });
+        }
+
+        [Test]
+        public void It_should_not_include_ContextMeta_when_disabled()
+        {
+            var mocks = new MockRepository();
+            var request1 = new TestRequest();
+            var requests = new List<BaseRequest> { request1 };
+            var response1 = new TestResponse();
+            var requestHandlerFactory = mocks.StrictMock<IRequestHandlerFactory>();
+            var requestHandler1 = new TestRequestHandler(response1);
+
+            With.Mocks(mocks).Expecting(() =>
+            {
+                Expect.Call(requestHandlerFactory.CreateRequestHandlerFor(request1)).Return(requestHandler1);
+                requestHandlerFactory.DisposeRequestHandler(requestHandler1);
+            }).Verify(() =>
+            {
+                var processor = new LocalRequestProcessor(requestHandlerFactory)
+                                    {
+                                        DoNotManageContextMeta = true,
+                                        Logger = GetConsoleLogger()
+                                    };
+                processor.Process(requests);
+
+                Assert.That(requestHandler1.ReceivedRequest.Context.ContainsKey(ContextMeta.HandlerMachineName), Is.False);
             });
         }
 

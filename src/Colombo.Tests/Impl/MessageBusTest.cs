@@ -24,6 +24,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Colombo.Impl;
 using NUnit.Framework;
@@ -56,7 +57,7 @@ namespace Colombo.Tests.Impl
         {
             var mocks = new MockRepository();
 
-            var request = mocks.Stub<Request<TestResponse>>();
+            var request = new TestRequest();
 
             var requestProcessor = mocks.DynamicMock<IRequestProcessor>();
 
@@ -77,8 +78,8 @@ namespace Colombo.Tests.Impl
         public void It_should_throw_an_exception_when_no_IRequestProcessor_can_process_with_multiple_requests()
         {
             var mocks = new MockRepository();
-            var request1 = mocks.Stub<SideEffectFreeRequest<TestResponse>>();
-            var request2 = mocks.Stub<SideEffectFreeRequest<TestResponse>>();
+            var request1 = new TestRequest();
+            var request2 = new TestRequest();
 
             var requestProcessor1 = mocks.DynamicMock<IRequestProcessor>();
             var requestProcessor2 = mocks.DynamicMock<IRequestProcessor>();
@@ -104,7 +105,7 @@ namespace Colombo.Tests.Impl
         public void It_should_throw_an_exception_when_too_many_IRequestProcessors_can_process()
         {
             var mocks = new MockRepository();
-            var request = mocks.Stub<Request<TestResponse>>();
+            var request = new TestRequest();
 
             var requestProcessor1 = mocks.StrictMock<IRequestProcessor>();
             var requestProcessor2 = mocks.StrictMock<IRequestProcessor>();
@@ -128,8 +129,8 @@ namespace Colombo.Tests.Impl
         public void It_should_throw_an_exception_when_too_many_IRequestProcessors_can_process_multiple_requests()
         {
             var mocks = new MockRepository();
-            var request1 = mocks.Stub<SideEffectFreeRequest<TestResponse>>();
-            var request2 = mocks.Stub<SideEffectFreeRequest<TestResponse>>();
+            var request1 = new TestRequest();
+            var request2 = new TestRequest();
 
             var requestProcessor1 = mocks.StrictMock<IRequestProcessor>();
             var requestProcessor2 = mocks.StrictMock<IRequestProcessor>();
@@ -155,7 +156,7 @@ namespace Colombo.Tests.Impl
         public void It_should_call_selected_IRequestProcessors_Process_method()
         {
             var mocks = new MockRepository();
-            var request = mocks.Stub<Request<TestResponse>>();
+            var request = new TestRequest();
             var requests = new BaseRequest[] { request };
             var response = new TestResponse();
             var responses = new ResponsesGroup
@@ -202,7 +203,7 @@ namespace Colombo.Tests.Impl
             {
                 var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor });
                 messageBus.Logger = GetConsoleLogger();
-                var responseTest = messageBus.Send<TestRequestForSendAction, TestResponse>(r =>
+                var responseTest = messageBus.Send<TestRequest, TestResponse>(r =>
                 {
                     Assert.That(() => r, Is.Not.Null);
                 });
@@ -215,7 +216,7 @@ namespace Colombo.Tests.Impl
         public void It_should_call_selected_IRequestProcessors_Process_method_with_sideeffectfree()
         {
             var mocks = new MockRepository();
-            var request = mocks.Stub<SideEffectFreeRequest<TestResponse>>();
+            var request = new TestRequest();
             var requests = new BaseRequest[] { request };
             var response = new TestResponse();
             var responses = new ResponsesGroup
@@ -243,13 +244,10 @@ namespace Colombo.Tests.Impl
         [Test]
         public void It_should_call_selected_IRequestProcessors_Process_method_multiple_requests()
         {
-            var mocks = new MockRepository();
-            var request1 = mocks.Stub<SideEffectFreeRequest<TestResponse>>();
-            var request2 = mocks.Stub<SideEffectFreeRequest<TestResponse>>();
-            var request3 = mocks.Stub<SideEffectFreeRequest<TestResponse>>();
-            var request4 = mocks.Stub<SideEffectFreeRequest<TestResponse>>();
-            var requestsForProcessor1 = new BaseRequest[] { request1, request3 };
-            var requestsForProcessor2 = new BaseRequest[] { request2, request4 };
+            var request1 = new TestRequest();
+            var request2 = new TestRequest();
+            var request3 = new TestRequest();
+            var request4 = new TestRequest();
             var response1 = new TestResponse();
             response1.CorrelationGuid = request1.CorrelationGuid;
             var response2 = new TestResponse();
@@ -271,7 +269,7 @@ namespace Colombo.Tests.Impl
 
             var requestProcessor1 = new TestRequestProcessor(responsesForProcessor1);
             var requestProcessor2 = new TestRequestProcessor(responsesForProcessor2);
-            
+
             var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor1, requestProcessor2 });
             messageBus.Logger = GetConsoleLogger();
             var responses = messageBus.Send(request1, request2, request3, request4);
@@ -310,7 +308,7 @@ namespace Colombo.Tests.Impl
         public void It_should_run_all_the_IMessageBusSendInterceptors()
         {
             var mocks = new MockRepository();
-            var request = mocks.Stub<Request<TestResponse>>();
+            var request = new TestRequest();
             var requests = new BaseRequest[] { request };
             var newCorrelationGuid = Guid.NewGuid();
             var responseFromProcessor = new TestResponse();
@@ -369,11 +367,11 @@ namespace Colombo.Tests.Impl
         public void It_should_run_all_the_IMessageBusSendInterceptors_multiple_requests()
         {
             var mocks = new MockRepository();
-            var request1 = mocks.Stub<SideEffectFreeRequest<TestResponse>>();
-            var request2 = mocks.Stub<SideEffectFreeRequest<TestResponse>>();
+            var request1 = new TestRequest();
+            var request2 = new TestRequest();
             var requests = new BaseRequest[] { request1, request2 };
             var newCorrelationGuid = Guid.NewGuid();
-            
+
             var responseFromProcessor1 = new TestResponse();
             var responseFromProcessor2 = new TestResponse();
             var responsesFromProcessor = new ResponsesGroup
@@ -439,7 +437,7 @@ namespace Colombo.Tests.Impl
         public void It_should_be_able_to_send_asynchronously()
         {
             var mocks = new MockRepository();
-            var request = mocks.Stub<Request<TestResponse>>();
+            var request = new TestRequest();
             var requests = new BaseRequest[] { request };
             var response = new TestResponse();
             var responses = new ResponsesGroup
@@ -473,7 +471,7 @@ namespace Colombo.Tests.Impl
         public void It_should_be_able_to_handle_exceptions_asynchronously()
         {
             var mocks = new MockRepository();
-            var request = mocks.Stub<Request<TestResponse>>();
+            var request = new TestRequest();
             var requests = new BaseRequest[] { request };
 
             var requestProcessor = mocks.StrictMock<IRequestProcessor>();
@@ -503,10 +501,82 @@ namespace Colombo.Tests.Impl
             });
         }
 
+        [Test]
+        public void It_should_include_ContextMeta()
+        {
+            var mocks = new MockRepository();
+            var request = new TestRequest();
+            var requests = new BaseRequest[] { request };
+            var response = new TestResponse();
+            var responses = new ResponsesGroup
+            {
+                { request, response}
+            };
+
+            IList<BaseRequest> collectedRequests = null;
+
+            var requestProcessor = mocks.StrictMock<IRequestProcessor>();
+
+            With.Mocks(mocks).Expecting(() =>
+            {
+                Expect.Call(requestProcessor.CanProcess(request)).Return(true);
+                Expect.Call(requestProcessor.Process(requests)).Do(new ProcessDelegate(r =>
+                {
+                    collectedRequests = r;
+                    return responses;
+                }));
+            }).Verify(() =>
+            {
+                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor }) { Logger = GetConsoleLogger() };
+                messageBus.Send(request);
+
+                Assert.That(collectedRequests, Is.Not.Null);
+                Assert.That(collectedRequests.First().Context[ContextMeta.SenderMachineName], Is.EqualTo(Environment.MachineName));
+            });
+        }
+
+        [Test]
+        public void It_should_not_include_ContextMeta_when_disabled()
+        {
+            var mocks = new MockRepository();
+            var request = new TestRequest();
+            var requests = new BaseRequest[] { request };
+            var response = new TestResponse();
+            var responses = new ResponsesGroup
+            {
+                { request, response}
+            };
+
+            IList<BaseRequest> collectedRequests = null;
+
+            var requestProcessor = mocks.StrictMock<IRequestProcessor>();
+
+            With.Mocks(mocks).Expecting(() =>
+            {
+                Expect.Call(requestProcessor.CanProcess(request)).Return(true);
+                Expect.Call(requestProcessor.Process(requests)).Do(new ProcessDelegate(r =>
+                {
+                    collectedRequests = r;
+                    return responses;
+                }));
+            }).Verify(() =>
+            {
+                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor })
+                                     {
+                                         DoNotManageContextMeta = true,
+                                         Logger = GetConsoleLogger()
+                                     };
+                messageBus.Send(request);
+
+                Assert.That(collectedRequests, Is.Not.Null);
+                Assert.That(collectedRequests.First().Context.ContainsKey(ContextMeta.SenderMachineName), Is.False);
+            });
+        }
+
         public delegate void InterceptSendDelegate(IColomboSendInvocation invocation);
         public delegate ResponsesGroup ProcessDelegate(IList<BaseRequest> requests);
 
-        public class TestRequestForSendAction : SideEffectFreeRequest<TestResponse>
+        public class TestRequest : SideEffectFreeRequest<TestResponse>
         {
             public string Name { get; set; }
         }

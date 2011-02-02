@@ -69,6 +69,8 @@ namespace Colombo.Impl
             }
         }
 
+        public bool DoNotManageContextMeta { get; set; }
+
         /// <summary>
         /// Send synchronously a request and returns the response.
         /// </summary>
@@ -196,6 +198,14 @@ namespace Colombo.Impl
         /// </summary>
         protected virtual ResponsesGroup InternalSend(IList<BaseRequest> requests)
         {
+            if (!DoNotManageContextMeta)
+            {
+                foreach (var request in requests)
+                {
+                    request.Context[ContextMeta.SenderMachineName] = Environment.MachineName;
+                }
+            }
+
             var topInvocation = BuildSendInvocationChain();
             topInvocation.Requests = requests;
             topInvocation.Proceed();
