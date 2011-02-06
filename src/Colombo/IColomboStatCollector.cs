@@ -7,6 +7,8 @@ namespace Colombo
 {
     public interface IColomboStatCollector
     {
+        bool StatsAvailable { get; }
+
         ColomboStats GetStats();
 
         void IncrementRequestsHandled(int numRequests, TimeSpan timeSpent);

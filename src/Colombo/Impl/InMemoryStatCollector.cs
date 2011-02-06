@@ -15,6 +15,11 @@ namespace Colombo.Impl
 
         private long totalTicks;
 
+        public bool StatsAvailable
+        {
+            get { return true; }
+        }
+
         public ColomboStats GetStats()
         {
             return new ColomboStats

@@ -24,6 +24,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Threading.Tasks;
@@ -50,6 +51,16 @@ namespace Colombo.Impl
         {
             get { return logger; }
             set { logger = value; }
+        }
+
+        private IColomboStatCollector statCollector = NullStatCollector.Instance;
+        /// <summary>
+        /// Logger.
+        /// </summary>
+        public IColomboStatCollector StatCollector
+        {
+            get { return statCollector; }
+            set { statCollector = value; }
         }
 
         private IRequestHandlerHandleInterceptor[] requestHandlerInterceptors = new IRequestHandlerHandleInterceptor[0];
@@ -104,6 +115,9 @@ namespace Colombo.Impl
         /// </summary>
         public ResponsesGroup Process(IList<BaseRequest> requests)
         {
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
+
             if (!DoNotManageMetaContextKeys)
             {
                 foreach (var request in requests)
@@ -156,6 +170,9 @@ namespace Colombo.Impl
             {
                 responses[request] = tasksRequestAssociation[request].Result;
             }
+
+            stopWatch.Stop();
+            StatCollector.IncrementRequestsHandled(requests.Count, stopWatch.Elapsed);
 
             Contract.Assume(responses.Count == requests.Count);
             return responses;

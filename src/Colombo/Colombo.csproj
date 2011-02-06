@@ -98,6 +98,7 @@
     <Compile Include="IColomboStatCollector.cs" />
     <Compile Include="IMetaContextKeysManager.cs" />
     <Compile Include="Impl\InMemoryStatCollector.cs" />
+    <Compile Include="Impl\NullStatCollector.cs" />
     <Compile Include="MetaContextKeys.cs" />
     <Compile Include="Impl\BaseMessageBus.cs" />
     <Compile Include="Interceptors\ExceptionsHandleInterceptor.cs" />

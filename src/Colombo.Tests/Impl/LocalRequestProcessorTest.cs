@@ -245,6 +245,50 @@ namespace Colombo.Tests.Impl
             });
         }
 
+
+
+        [Test]
+        public void It_should_use_StatCollector()
+        {
+            var mocks = new MockRepository();
+            var request1 = new TestRequest();
+            var request2 = new TestRequest();
+            var requests = new List<BaseRequest> { request1, request2 };
+            var response1 = new TestResponse();
+            var response2 = new TestResponse();
+            var requestHandlerFactory = mocks.StrictMock<IRequestHandlerFactory>();
+            var requestHandler1 = new TestRequestHandler(response1);
+            var requestHandler2 = new TestRequestHandler(response2);
+
+            var statCollector = mocks.StrictMock<IColomboStatCollector>();
+
+            With.Mocks(mocks).Expecting(() =>
+            {
+                Expect.Call(requestHandlerFactory.CreateRequestHandlerFor(request1)).Return(requestHandler1);
+                Expect.Call(requestHandlerFactory.CreateRequestHandlerFor(request2)).Return(requestHandler2);
+                requestHandlerFactory.DisposeRequestHandler(requestHandler1);
+                requestHandlerFactory.DisposeRequestHandler(requestHandler2);
+
+                statCollector.IncrementRequestsHandled(2, TimeSpan.Zero);
+                LastCall.IgnoreArguments().Constraints(
+                    Rhino.Mocks.Constraints.Is.Equal(2),
+                    Rhino.Mocks.Constraints.Is.NotEqual(TimeSpan.Zero)
+                );
+            }).Verify(() =>
+            {
+                var processor = new LocalRequestProcessor(requestHandlerFactory)
+                                    {
+                                        Logger = GetConsoleLogger(),
+                                        StatCollector = statCollector
+                                    };
+                var responses = processor.Process(requests);
+                Assert.That(() => responses[request1],
+                    Is.SameAs(response1));
+                Assert.That(() => responses[request2],
+                    Is.SameAs(response2));
+            });
+        }
+
         public delegate void InterceptDelegate(IColomboRequestHandleInvocation invocation);
     }
 }
