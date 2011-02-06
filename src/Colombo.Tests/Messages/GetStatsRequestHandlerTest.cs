@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Colombo.Messages;
+using Colombo.TestSupport;
 using NUnit.Framework;
 using Rhino.Mocks;
 
@@ -11,6 +12,13 @@ namespace Colombo.Tests.Messages
     [TestFixture]
     public class GetStatsRequestHandlerTest
     {
+        [Test]
+        public void Messages_should_be_conform()
+        {
+            ColomboTest.AssertThat.RequestIsConform<GetStatsRequest>();
+            ColomboTest.AssertThat.ResponseIsConform<GetStatsResponse>();
+        }
+
         [Test]
         public void It_should_return_response_if_stats_unavailable()
         {
@@ -46,7 +54,7 @@ namespace Colombo.Tests.Messages
                 Assert.That(response.StatsAvailable, Is.True);
                 Assert.That(response.AverageTimePerRequestHandled, Is.EqualTo(colomboStats.AverageTimePerRequestHandled));
                 Assert.That(response.NumRequestsHandled, Is.EqualTo(colomboStats.NumRequestsHandled));
-                Assert.That(response.ColomboVersion, Is.EqualTo(colomboStats.ColomboVersion));
+                Assert.That(response.ColomboVersion, Is.EqualTo(colomboStats.ColomboVersion.ToString()));
                 Assert.That(response.Uptime, Is.EqualTo(colomboStats.Uptime));
             });
         }

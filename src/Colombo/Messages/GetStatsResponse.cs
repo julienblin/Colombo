@@ -15,6 +15,6 @@ namespace Colombo.Messages
 
         public virtual TimeSpan AverageTimePerRequestHandled { get; set; }
 
-        public virtual Version ColomboVersion { get; set; }
+        public virtual string ColomboVersion { get; set; }
     }
 }

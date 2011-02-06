@@ -30,7 +30,7 @@ namespace Colombo.Messages
             if (stats == null) return;
 
             Response.Uptime = stats.Uptime;
-            Response.ColomboVersion = stats.ColomboVersion;
+            Response.ColomboVersion = stats.ColomboVersion.ToString();
             Response.NumRequestsHandled = stats.NumRequestsHandled;
             Response.AverageTimePerRequestHandled = stats.AverageTimePerRequestHandled;
         }
