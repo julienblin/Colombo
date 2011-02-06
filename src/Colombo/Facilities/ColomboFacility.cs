@@ -23,8 +23,10 @@
 #endregion
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using Castle.Facilities.Startable;
 using Castle.MicroKernel.Facilities;
 using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.Resolvers.SpecializedResolvers;
@@ -103,6 +105,8 @@ namespace Colombo.Facilities
             Contract.Assume(Kernel.Resolver != null);
 
             Kernel.Resolver.AddSubResolver(new ArrayResolver(Kernel, true));
+            if (!Kernel.GetFacilities().Any(x => x is StartableFacility))
+                Kernel.AddFacility<StartableFacility>();
 
             if (testSupportMode)
             {
@@ -129,7 +133,10 @@ namespace Colombo.Facilities
                     Component.For<IStatefulMessageBus>()
                         .LifeStyle.Transient
                         .ImplementedBy<StatefulMessageBus>()
-                        .OnCreate((kernel, item) => item.MaxAllowedNumberOfSend = maxAllowedNumberOfSendForStatefulMessageBus)
+                        .OnCreate((kernel, item) => item.MaxAllowedNumberOfSend = maxAllowedNumberOfSendForStatefulMessageBus),
+
+                    Component.For<IColomboStatCollector>()
+                        .ImplementedBy<InMemoryStatCollector>()
                 );
             }
 
