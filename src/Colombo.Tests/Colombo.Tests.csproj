@@ -71,7 +71,8 @@
     <Compile Include="Facilities\ColomboFacilityTest.cs" />
     <Compile Include="Facilities\PerRequestHandlingLifestyleTest.cs" />
     <Compile Include="FullTest.cs" />
-    <Compile Include="HealthCheck\HealthCheckRequestHandlerTest.cs" />
+    <Compile Include="Messages\GetStatsRequestHandlerTest.cs" />
+    <Compile Include="Messages\HealthCheckRequestHandlerTest.cs" />
     <Compile Include="Impl\InMemoryStatCollectorTest.cs" />
     <Compile Include="Impl\KernelRequestHandlerFactoryTest.cs" />
     <Compile Include="Impl\LocalRequestProcessorTest.cs" />

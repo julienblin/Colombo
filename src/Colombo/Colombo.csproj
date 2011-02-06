@@ -99,6 +99,9 @@
     <Compile Include="IMetaContextKeysManager.cs" />
     <Compile Include="Impl\InMemoryStatCollector.cs" />
     <Compile Include="Impl\NullStatCollector.cs" />
+    <Compile Include="Messages\GetStatsRequest.cs" />
+    <Compile Include="Messages\GetStatsRequestHandler.cs" />
+    <Compile Include="Messages\GetStatsResponse.cs" />
     <Compile Include="MetaContextKeys.cs" />
     <Compile Include="Impl\BaseMessageBus.cs" />
     <Compile Include="Interceptors\ExceptionsHandleInterceptor.cs" />
@@ -129,8 +132,8 @@
     <Compile Include="Facilities\ColomboFacility.cs" />
     <Compile Include="Facilities\LifestyleRegistrationExtensions.cs" />
     <Compile Include="Facilities\PerRequestHandlingLifestyleManager.cs" />
-    <Compile Include="HealthCheck\HealthCheckRequest.cs" />
-    <Compile Include="HealthCheck\HealthCheckRequestHandler.cs" />
+    <Compile Include="Messages\HealthCheckRequest.cs" />
+    <Compile Include="Messages\HealthCheckRequestHandler.cs" />
     <Compile Include="IAsyncCallback.cs" />
     <Compile Include="ICacheable.cs" />
     <Compile Include="IColomboAlert.cs" />
@@ -216,6 +219,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

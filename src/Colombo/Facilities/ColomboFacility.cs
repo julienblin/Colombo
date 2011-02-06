@@ -32,11 +32,11 @@ using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.Resolvers.SpecializedResolvers;
 using Colombo.Caching;
 using Colombo.Caching.Impl;
-using Colombo.HealthCheck;
 using Colombo.Impl;
 using Colombo.Impl.Alerters;
 using Colombo.Impl.RequestHandle;
 using Colombo.Interceptors;
+using Colombo.Messages;
 using Colombo.TestSupport;
 using Colombo.Wcf;
 
@@ -171,7 +171,10 @@ namespace Colombo.Facilities
                             .ImplementedBy<LocalRequestProcessor>(),
                         Component.For<ISideEffectFreeRequestHandler<HealthCheckRequest, ACKResponse>>()
                             .LifeStyle.Transient
-                            .ImplementedBy<HealthCheckRequestHandler>()
+                            .ImplementedBy<HealthCheckRequestHandler>(),
+                        Component.For<ISideEffectFreeRequestHandler<GetStatsRequest, GetStatsResponse>>()
+                            .LifeStyle.Transient
+                            .ImplementedBy<GetStatsRequestHandler>()
                         );
 
                     if (enableInMemoryCaching)

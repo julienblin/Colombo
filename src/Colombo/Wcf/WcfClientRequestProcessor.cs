@@ -31,7 +31,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using Castle.Core.Logging;
 using Colombo.Alerts;
-using Colombo.HealthCheck;
+using Colombo.Messages;
 
 namespace Colombo.Wcf
 {

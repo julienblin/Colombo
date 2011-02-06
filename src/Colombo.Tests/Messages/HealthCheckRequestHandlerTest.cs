@@ -21,17 +21,26 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 #endregion
-namespace Colombo.HealthCheck
+
+using Colombo.Messages;
+using NUnit.Framework;
+
+namespace Colombo.Tests.Messages
 {
-    /// <summary>
-    /// Handler for <see cref="HealthCheckRequest"/>. Merely do anything than respond.
-    /// </summary>
-    public class HealthCheckRequestHandler : SideEffectFreeRequestHandler<HealthCheckRequest, ACKResponse>
+    [TestFixture]
+    public class HealthCheckRequestHandlerTest
     {
-        /// <summary>
-        /// Handles the request.
-        /// </summary>
-        protected override void Handle()
-        { }
+        [Test]
+        public void It_should_return_an_ACKResponse()
+        {
+            var healthCheckRequestHandler = new HealthCheckRequestHandler();
+            var response = healthCheckRequestHandler.Handle(new HealthCheckRequest());
+
+            Assert.That(() => response,
+                Is.Not.Null);
+
+            Assert.That(() => response,
+                Is.TypeOf<ACKResponse>());
+        }
     }
 }

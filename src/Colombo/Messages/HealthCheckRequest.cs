@@ -21,7 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 #endregion
-namespace Colombo.HealthCheck
+namespace Colombo.Messages
 {
     /// <summary>
     /// Request that can be send to a Colombo server, and for which a response will indicate that this server is up and running.

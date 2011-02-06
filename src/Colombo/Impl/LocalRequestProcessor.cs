@@ -55,7 +55,7 @@ namespace Colombo.Impl
 
         private IColomboStatCollector statCollector = NullStatCollector.Instance;
         /// <summary>
-        /// Logger.
+        /// Stats collector.
         /// </summary>
         public IColomboStatCollector StatCollector
         {

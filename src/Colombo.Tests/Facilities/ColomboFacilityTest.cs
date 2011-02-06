@@ -28,10 +28,10 @@ using Castle.Windsor;
 using Colombo.Caching;
 using Colombo.Caching.Impl;
 using Colombo.Facilities;
-using Colombo.HealthCheck;
 using Colombo.Impl;
 using Colombo.Impl.Alerters;
 using Colombo.Interceptors;
+using Colombo.Messages;
 using Colombo.TestSupport;
 using Colombo.Wcf;
 using NUnit.Framework;
@@ -159,6 +159,22 @@ namespace Colombo.Tests.Facilities
             container.AddFacility<ColomboFacility>(f => f.ClientOnly());
 
             Assert.That(() => container.Resolve<ISideEffectFreeRequestHandler<HealthCheckRequest, ACKResponse>>(),
+                Throws.Exception.TypeOf<ComponentNotFoundException>());
+        }
+
+        [Test]
+        public void It_should_register_GetStatsRequestHandler()
+        {
+            var container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>();
+
+            Assert.That(() => container.Resolve<ISideEffectFreeRequestHandler<GetStatsRequest, GetStatsResponse>>(),
+                Is.TypeOf<GetStatsRequestHandler>());
+
+            container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>(f => f.ClientOnly());
+
+            Assert.That(() => container.Resolve<ISideEffectFreeRequestHandler<GetStatsRequest, GetStatsResponse>>(),
                 Throws.Exception.TypeOf<ComponentNotFoundException>());
         }
 

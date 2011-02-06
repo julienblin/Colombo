@@ -22,25 +22,17 @@
 // THE SOFTWARE.
 #endregion
 
-using Colombo.HealthCheck;
-using NUnit.Framework;
-
-namespace Colombo.Tests.HealthCheck
+namespace Colombo.Messages
 {
-    [TestFixture]
-    public class HealthCheckRequestHandlerTest
+    /// <summary>
+    /// Handler for <see cref="HealthCheckRequest"/>. Merely do anything than respond.
+    /// </summary>
+    public class HealthCheckRequestHandler : SideEffectFreeRequestHandler<HealthCheckRequest, ACKResponse>
     {
-        [Test]
-        public void It_should_return_an_ACKResponse()
-        {
-            var healthCheckRequestHandler = new HealthCheckRequestHandler();
-            var response = healthCheckRequestHandler.Handle(new HealthCheckRequest());
-
-            Assert.That(() => response,
-                Is.Not.Null);
-
-            Assert.That(() => response,
-                Is.TypeOf<ACKResponse>());
-        }
+        /// <summary>
+        /// Handles the request.
+        /// </summary>
+        protected override void Handle()
+        { }
     }
 }
