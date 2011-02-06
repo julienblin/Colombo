@@ -23,9 +23,9 @@
 #endregion
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Linq;
 using Castle.Facilities.Startable;
 using Castle.MicroKernel.Facilities;
 using Castle.MicroKernel.Registration;
