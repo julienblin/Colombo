@@ -37,6 +37,8 @@ namespace Colombo.Impl
 
         private int numRequestsHandled;
 
+        private int numErrorsHandled;
+
         private long totalTicks;
 
         /// <summary>
@@ -58,7 +60,9 @@ namespace Colombo.Impl
                            Uptime = (DateTime.UtcNow - startTimeUtc),
                            ColomboVersion = typeof(IMessageBus).Assembly.GetName().Version,
                            NumRequestsHandled = numRequestsHandled,
-                           AverageTimePerRequestHandled = totalTicks == 0 ? new TimeSpan(0) : new TimeSpan(totalTicks / numRequestsHandled)
+                           NumErrors = numErrorsHandled,
+                           AverageTimePerRequestHandled = totalTicks == 0 ? TimeSpan.Zero : new TimeSpan(totalTicks / numRequestsHandled),
+                           ErrorRate = numRequestsHandled == 0 ? 0 : ((numErrorsHandled / Convert.ToDecimal(numRequestsHandled)) * 100m)
                        };
         }
 
@@ -71,6 +75,15 @@ namespace Colombo.Impl
         {
             Interlocked.Add(ref numRequestsHandled, numRequests);
             Interlocked.Add(ref totalTicks, timeSpent.Ticks * numRequests);
+        }
+
+        /// <summary>
+        /// Increments the count for errors (Exceptions) in handled requests. Thread-safe.
+        /// </summary>
+        /// <param name="numErrors">Number of errors to increment.</param>
+        public void IncrementErrors(int numErrors)
+        {
+            Interlocked.Add(ref numErrorsHandled, numErrors);
         }
 
         /// <summary>

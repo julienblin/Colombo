@@ -55,7 +55,9 @@ namespace Colombo.Messages
             Response.Uptime = stats.Uptime;
             Response.ColomboVersion = stats.ColomboVersion.ToString();
             Response.NumRequestsHandled = stats.NumRequestsHandled;
+            Response.NumErrors = stats.NumErrors;
             Response.AverageTimePerRequestHandled = stats.AverageTimePerRequestHandled;
+            Response.ErrorRate = stats.ErrorRate;
         }
     }
 }

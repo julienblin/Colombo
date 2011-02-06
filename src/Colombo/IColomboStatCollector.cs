@@ -49,5 +49,11 @@ namespace Colombo
         /// <param name="numRequests">Number of requests to increment.</param>
         /// <param name="timeSpent">Time spent to handle all the requests.</param>
         void IncrementRequestsHandled(int numRequests, TimeSpan timeSpent);
+
+        /// <summary>
+        /// Increments the count for errors (Exceptions) in handled requests. Thread-safe.
+        /// </summary>
+        /// <param name="numErrors">Number of errors to increment.</param>
+        void IncrementErrors(int numErrors);
     }
 }

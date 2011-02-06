@@ -59,5 +59,13 @@ namespace Colombo.Impl
         {
             
         }
+
+        /// <summary>
+        /// Do nothing.
+        /// </summary>
+        public void IncrementErrors(int numErrors)
+        {
+            
+        }
     }
 }

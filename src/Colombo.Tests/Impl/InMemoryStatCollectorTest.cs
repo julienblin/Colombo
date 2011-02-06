@@ -84,5 +84,35 @@ namespace Colombo.Tests.Impl
             stats = statCollector.GetStats();
             Assert.That(stats.AverageTimePerRequestHandled, Is.EqualTo(new TimeSpan(0, 0, 0, 0, 320)));
         }
+
+        [Test]
+        public void It_should_report_num_errors()
+        {
+            var statCollector = new InMemoryStatCollector();
+
+            var stats = statCollector.GetStats();
+            Assert.That(stats.NumErrors, Is.EqualTo(0));
+
+            statCollector.IncrementErrors(2);
+            statCollector.IncrementErrors(4);
+
+            stats = statCollector.GetStats();
+            Assert.That(stats.NumErrors, Is.EqualTo(6));
+        }
+
+        [Test]
+        public void It_should_report_error_rate()
+        {
+            var statCollector = new InMemoryStatCollector();
+
+            var stats = statCollector.GetStats();
+            Assert.That(stats.ErrorRate, Is.EqualTo(0));
+
+            statCollector.IncrementErrors(5);
+            statCollector.IncrementRequestsHandled(10, TimeSpan.Zero);
+
+            stats = statCollector.GetStats();
+            Assert.That(stats.ErrorRate, Is.EqualTo(50m));
+        }
     }
 }

@@ -111,26 +111,6 @@ namespace Colombo.Tests.Impl
             });
         }
 
-        public class TestRequest : Request<TestResponse>
-        {}
-
-        public class TestRequestHandler : RequestHandler<TestRequest, TestResponse>
-        {
-            private readonly TestResponse response;
-            public BaseRequest ReceivedRequest { get; set; }
-
-            public TestRequestHandler(TestResponse response)
-            {
-                this.response = response;
-            }
-
-            protected override void Handle()
-            {
-                ReceivedRequest = Request;
-                Response = response;
-            }
-        }
-
         [Test]
         public void It_should_run_all_the_IRequestHandlerHandleInterceptors()
         {
@@ -245,10 +225,8 @@ namespace Colombo.Tests.Impl
             });
         }
 
-
-
         [Test]
-        public void It_should_use_StatCollector()
+        public void It_should_use_StatCollector_to_increment_requests()
         {
             var mocks = new MockRepository();
             var request1 = new TestRequest();
@@ -289,6 +267,66 @@ namespace Colombo.Tests.Impl
             });
         }
 
+        [Test]
+        public void It_should_use_StatCollector_to_increment_errors()
+        {
+            var mocks = new MockRepository();
+            var request1 = new TestRequest();
+            var request2 = new TestRequest();
+            var requests = new List<BaseRequest> { request1, request2 };
+            var requestHandlerFactory = mocks.StrictMock<IRequestHandlerFactory>();
+            var requestHandler1 = new ErrorTestRequestHandler();
+            var requestHandler2 = new ErrorTestRequestHandler();
+
+            var statCollector = mocks.StrictMock<IColomboStatCollector>();
+
+            With.Mocks(mocks).Expecting(() =>
+            {
+                Expect.Call(requestHandlerFactory.CreateRequestHandlerFor(request1)).Return(requestHandler1);
+                Expect.Call(requestHandlerFactory.CreateRequestHandlerFor(request2)).Return(requestHandler2);
+                requestHandlerFactory.DisposeRequestHandler(requestHandler1);
+                requestHandlerFactory.DisposeRequestHandler(requestHandler2);
+
+                statCollector.IncrementErrors(2);
+            }).Verify(() =>
+            {
+                var processor = new LocalRequestProcessor(requestHandlerFactory)
+                {
+                    Logger = GetConsoleLogger(),
+                    StatCollector = statCollector
+                };
+                Assert.That(() => processor.Process(requests), Throws.Exception);
+            });
+        }
+
+        public class TestRequest : Request<TestResponse>
+        {}
+
+        public class TestRequestHandler : RequestHandler<TestRequest, TestResponse>
+        {
+            private readonly TestResponse response;
+            public BaseRequest ReceivedRequest { get; set; }
+
+            public TestRequestHandler(TestResponse response)
+            {
+                this.response = response;
+            }
+
+            protected override void Handle()
+            {
+                ReceivedRequest = Request;
+                Response = response;
+            }
+        }
+
         public delegate void InterceptDelegate(IColomboRequestHandleInvocation invocation);
+
+        public class ErrorTestRequestHandler : RequestHandler<TestRequest, TestResponse>
+        {
+            protected override void Handle()
+            {
+                throw new NotImplementedException();
+            }
+        }
     }
 }

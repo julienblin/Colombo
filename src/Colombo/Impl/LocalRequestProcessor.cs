@@ -158,6 +158,8 @@ namespace Colombo.Impl
                 Logger.Error(message, ex);
                 foreach (var innerEx in ex.InnerExceptions)
                     Logger.Error(innerEx.ToString());
+
+                StatCollector.IncrementErrors(requests.Count);
                 throw new ColomboException(message, ex);
             }
 

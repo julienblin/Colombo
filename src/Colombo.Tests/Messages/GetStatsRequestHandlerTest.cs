@@ -58,8 +58,10 @@ namespace Colombo.Tests.Messages
                                    {
                                        AverageTimePerRequestHandled = new TimeSpan(TimeSpan.TicksPerDay),
                                        NumRequestsHandled = 10,
+                                       NumErrors = 5,
                                        ColomboVersion = new Version(1,1),
-                                       Uptime = new TimeSpan(TimeSpan.TicksPerMinute)
+                                       Uptime = new TimeSpan(TimeSpan.TicksPerMinute),
+                                       ErrorRate = 50m
                                    };
 
             With.Mocks(mocks).Expecting(() =>
@@ -75,8 +77,10 @@ namespace Colombo.Tests.Messages
                 Assert.That(response.StatsAvailable, Is.True);
                 Assert.That(response.AverageTimePerRequestHandled, Is.EqualTo(colomboStats.AverageTimePerRequestHandled));
                 Assert.That(response.NumRequestsHandled, Is.EqualTo(colomboStats.NumRequestsHandled));
+                Assert.That(response.NumErrors, Is.EqualTo(colomboStats.NumErrors));
                 Assert.That(response.ColomboVersion, Is.EqualTo(colomboStats.ColomboVersion.ToString()));
                 Assert.That(response.Uptime, Is.EqualTo(colomboStats.Uptime));
+                Assert.That(response.ErrorRate, Is.EqualTo(colomboStats.ErrorRate));
             });
         }
     }

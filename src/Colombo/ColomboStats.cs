@@ -42,9 +42,19 @@ namespace Colombo
         public int NumRequestsHandled { get; set; }
 
         /// <summary>
+        /// Number of errors (Exception) that occured when handling requests.
+        /// </summary>
+        public int NumErrors { get; set; }
+
+        /// <summary>
         /// Average time spent per request handled by the local processor.
         /// </summary>
         public TimeSpan AverageTimePerRequestHandled { get; set; }
+
+        /// <summary>
+        /// The percentage of errors / requests handled.
+        /// </summary>
+        public decimal ErrorRate { get; set; }
 
         /// <summary>
         /// Version number for the Colombo component.

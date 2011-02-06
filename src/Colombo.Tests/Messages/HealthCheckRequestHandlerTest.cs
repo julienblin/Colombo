@@ -23,6 +23,7 @@
 #endregion
 
 using Colombo.Messages;
+using Colombo.TestSupport;
 using NUnit.Framework;
 
 namespace Colombo.Tests.Messages
@@ -30,6 +31,13 @@ namespace Colombo.Tests.Messages
     [TestFixture]
     public class HealthCheckRequestHandlerTest
     {
+        [Test]
+        public void Messages_should_be_conform()
+        {
+            ColomboTest.AssertThat.RequestIsConform<HealthCheckRequest>();
+            ColomboTest.AssertThat.ResponseIsConform<HealthCheckResponse>();
+        }
+
         [Test]
         public void It_should_return_an_ACKResponse()
         {
