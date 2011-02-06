@@ -40,7 +40,7 @@ namespace Colombo.Tests.Messages
                 Is.Not.Null);
 
             Assert.That(() => response,
-                Is.TypeOf<ACKResponse>());
+                Is.TypeOf<HealthCheckResponse>());
         }
     }
 }

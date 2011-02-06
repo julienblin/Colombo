@@ -89,7 +89,6 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="ACKResponse.cs" />
     <Compile Include="Alerts\ExceptionAlert.cs" />
     <Compile Include="Alerts\HealthCheckFailedAlert.cs" />
     <Compile Include="Alerts\MemcachedUnreachableAlert.cs" />
@@ -102,6 +101,7 @@
     <Compile Include="Messages\GetStatsRequest.cs" />
     <Compile Include="Messages\GetStatsRequestHandler.cs" />
     <Compile Include="Messages\GetStatsResponse.cs" />
+    <Compile Include="Messages\HealthCheckResponse.cs" />
     <Compile Include="MetaContextKeys.cs" />
     <Compile Include="Impl\BaseMessageBus.cs" />
     <Compile Include="Interceptors\ExceptionsHandleInterceptor.cs" />

@@ -21,12 +21,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 #endregion
-namespace Colombo
+
+namespace Colombo.Messages
 {
     /// <summary>
-    /// Represent a simple acknowledgement response.
+    /// Response associated with <see cref="HealthCheckRequest"/>.
     /// </summary>
-    public class ACKResponse : Response
+    public class HealthCheckResponse : Response
     {
     }
 }

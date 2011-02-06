@@ -26,7 +26,7 @@ namespace Colombo.Messages
     /// <summary>
     /// Handler for <see cref="HealthCheckRequest"/>. Merely do anything than respond.
     /// </summary>
-    public class HealthCheckRequestHandler : SideEffectFreeRequestHandler<HealthCheckRequest, ACKResponse>
+    public class HealthCheckRequestHandler : SideEffectFreeRequestHandler<HealthCheckRequest, HealthCheckResponse>
     {
         /// <summary>
         /// Handles the request.

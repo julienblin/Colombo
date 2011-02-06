@@ -152,13 +152,13 @@ namespace Colombo.Tests.Facilities
             var container = new WindsorContainer();
             container.AddFacility<ColomboFacility>();
 
-            Assert.That(() => container.Resolve<ISideEffectFreeRequestHandler<HealthCheckRequest, ACKResponse>>(),
+            Assert.That(() => container.Resolve<ISideEffectFreeRequestHandler<HealthCheckRequest, HealthCheckResponse>>(),
                 Is.TypeOf<HealthCheckRequestHandler>());
 
             container = new WindsorContainer();
             container.AddFacility<ColomboFacility>(f => f.ClientOnly());
 
-            Assert.That(() => container.Resolve<ISideEffectFreeRequestHandler<HealthCheckRequest, ACKResponse>>(),
+            Assert.That(() => container.Resolve<ISideEffectFreeRequestHandler<HealthCheckRequest, HealthCheckResponse>>(),
                 Throws.Exception.TypeOf<ComponentNotFoundException>());
         }
 

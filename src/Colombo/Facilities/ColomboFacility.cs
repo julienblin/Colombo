@@ -169,7 +169,7 @@ namespace Colombo.Facilities
                             .ImplementedBy<KernelRequestHandlerFactory>(),
                         Component.For<ILocalRequestProcessor, IRequestProcessor, IMetaContextKeysManager>()
                             .ImplementedBy<LocalRequestProcessor>(),
-                        Component.For<ISideEffectFreeRequestHandler<HealthCheckRequest, ACKResponse>>()
+                        Component.For<ISideEffectFreeRequestHandler<HealthCheckRequest, HealthCheckResponse>>()
                             .LifeStyle.Transient
                             .ImplementedBy<HealthCheckRequestHandler>(),
                         Component.For<ISideEffectFreeRequestHandler<GetStatsRequest, GetStatsResponse>>()
