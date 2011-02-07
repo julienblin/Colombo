@@ -22,6 +22,8 @@
 // THE SOFTWARE.
 #endregion
 
+using System;
+using System.Linq;
 using Colombo.Impl;
 
 namespace Colombo.Messages
@@ -46,6 +48,12 @@ namespace Colombo.Messages
         /// </summary>
         protected override void Handle()
         {
+            Response.Assemblies = AppDomain.CurrentDomain.GetAssemblies()
+                .Where(x => !(x.GetName().FullName.StartsWith("System") || x.GetName().FullName.StartsWith("mscorlib")))
+                .Select(x => x.GetName().FullName)
+                .OrderBy(x => x)
+                .ToList();
+
             Response.StatsAvailable = StatCollector.StatsAvailable;
             if (!StatCollector.StatsAvailable) return;
 
@@ -53,7 +61,6 @@ namespace Colombo.Messages
             if (stats == null) return;
 
             Response.Uptime = stats.Uptime;
-            Response.ColomboVersion = stats.ColomboVersion.ToString();
             Response.NumRequestsHandled = stats.NumRequestsHandled;
             Response.NumErrors = stats.NumErrors;
             Response.AverageTimePerRequestHandled = stats.AverageTimePerRequestHandled;

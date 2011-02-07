@@ -23,6 +23,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 
 namespace Colombo.Messages
 {
@@ -62,8 +63,8 @@ namespace Colombo.Messages
         public virtual decimal ErrorRate { get; set; }
 
         /// <summary>
-        /// Version number for the Colombo component.
+        /// List of loaded assemblies and their version number.
         /// </summary>
-        public virtual string ColomboVersion { get; set; }
+        public virtual IList<string> Assemblies { get; set; } 
     }
 }

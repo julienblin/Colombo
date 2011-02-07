@@ -46,16 +46,6 @@ namespace Colombo.Tests.Impl
         }
 
         [Test]
-        public void It_should_report_Colombo_version()
-        {
-            var statCollector = new InMemoryStatCollector();
-
-            var stats = statCollector.GetStats();
-
-            Assert.That(stats.ColomboVersion, Is.EqualTo(typeof(IMessageBus).Assembly.GetName().Version));
-        }
-
-        [Test]
         public void It_should_report_num_requests_handled()
         {
             var statCollector = new InMemoryStatCollector();

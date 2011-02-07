@@ -23,6 +23,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 
 namespace Colombo
 {
@@ -55,10 +56,5 @@ namespace Colombo
         /// The percentage of errors / requests handled.
         /// </summary>
         public decimal ErrorRate { get; set; }
-
-        /// <summary>
-        /// Version number for the Colombo component.
-        /// </summary>
-        public Version ColomboVersion { get; set; }
     }
 }

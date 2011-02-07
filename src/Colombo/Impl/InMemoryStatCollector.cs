@@ -23,6 +23,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using Castle.Core;
 
@@ -58,7 +59,6 @@ namespace Colombo.Impl
             return new ColomboStats
                        {
                            Uptime = (DateTime.UtcNow - startTimeUtc),
-                           ColomboVersion = typeof(IMessageBus).Assembly.GetName().Version,
                            NumRequestsHandled = numRequestsHandled,
                            NumErrors = numErrorsHandled,
                            AverageTimePerRequestHandled = totalTicks == 0 ? TimeSpan.Zero : new TimeSpan(totalTicks / numRequestsHandled),

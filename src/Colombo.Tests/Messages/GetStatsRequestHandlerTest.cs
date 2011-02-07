@@ -23,6 +23,7 @@
 #endregion
 
 using System;
+using System.Linq;
 using Colombo.Messages;
 using Colombo.TestSupport;
 using NUnit.Framework;
@@ -59,7 +60,6 @@ namespace Colombo.Tests.Messages
                                        AverageTimePerRequestHandled = new TimeSpan(TimeSpan.TicksPerDay),
                                        NumRequestsHandled = 10,
                                        NumErrors = 5,
-                                       ColomboVersion = new Version(1,1),
                                        Uptime = new TimeSpan(TimeSpan.TicksPerMinute),
                                        ErrorRate = 50m
                                    };
@@ -78,10 +78,21 @@ namespace Colombo.Tests.Messages
                 Assert.That(response.AverageTimePerRequestHandled, Is.EqualTo(colomboStats.AverageTimePerRequestHandled));
                 Assert.That(response.NumRequestsHandled, Is.EqualTo(colomboStats.NumRequestsHandled));
                 Assert.That(response.NumErrors, Is.EqualTo(colomboStats.NumErrors));
-                Assert.That(response.ColomboVersion, Is.EqualTo(colomboStats.ColomboVersion.ToString()));
                 Assert.That(response.Uptime, Is.EqualTo(colomboStats.Uptime));
                 Assert.That(response.ErrorRate, Is.EqualTo(colomboStats.ErrorRate));
             });
+        }
+
+        [Test]
+        public void It_should_return_a_list_of_loaded_assemblies()
+        {
+            var handler = new GetStatsRequestHandler();
+            var response = handler.Handle(new GetStatsRequest());
+
+            Assert.That(response.Assemblies.Any(x => x.Equals(GetType().Assembly.GetName().FullName)));
+
+            Assert.That(!response.Assemblies.Any(x => x.StartsWith("System")));
+            Assert.That(!response.Assemblies.Any(x => x.StartsWith("mscorlib")));
         }
     }
 }
