@@ -109,10 +109,10 @@ namespace Colombo.Tests.Impl
             Assert.That(stats.ErrorRate, Is.EqualTo(0));
 
             statCollector.IncrementErrors(5);
-            statCollector.IncrementRequestsHandled(10, TimeSpan.Zero);
+            statCollector.IncrementRequestsHandled(15, TimeSpan.Zero);
 
             stats = statCollector.GetStats();
-            Assert.That(stats.ErrorRate, Is.EqualTo(50m));
+            Assert.That(stats.ErrorRate, Is.EqualTo(25m));
         }
     }
 }

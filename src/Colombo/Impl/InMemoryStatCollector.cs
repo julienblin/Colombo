@@ -29,7 +29,7 @@ using Castle.Core;
 namespace Colombo.Impl
 {
     /// <summary>
-    /// Implementation of <see cref="IColomboStatCollector"/> that keep stats in memory.
+    /// Implementation of <see cref="IColomboStatCollector"/> that keeps stats in memory.
     /// </summary>
     public class InMemoryStatCollector : IColomboStatCollector, IStartable
     {
@@ -62,7 +62,7 @@ namespace Colombo.Impl
                            NumRequestsHandled = numRequestsHandled,
                            NumErrors = numErrorsHandled,
                            AverageTimePerRequestHandled = totalTicks == 0 ? TimeSpan.Zero : new TimeSpan(totalTicks / numRequestsHandled),
-                           ErrorRate = numRequestsHandled == 0 ? 0 : ((numErrorsHandled / Convert.ToDecimal(numRequestsHandled)) * 100m)
+                           ErrorRate = numErrorsHandled == 0 ? 0 : ((numErrorsHandled / Convert.ToDecimal(numRequestsHandled + numErrorsHandled)) * 100m)
                        };
         }
 
