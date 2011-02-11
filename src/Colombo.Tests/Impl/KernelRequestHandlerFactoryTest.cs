@@ -135,79 +135,7 @@ namespace Colombo.Tests.Impl
                 Throws.Exception.TypeOf<ColomboException>()
                 .With.Message.Contains(request1.ToString()));
         }
-
-        [Test]
-        public void It_should_select_the_appropriate_RequestHandler_when_specialized()
-        {
-            var kernel = new DefaultKernel();
-            kernel.Register(
-                Component.For<IRequestHandler<TestRequest, TestResponse>>().ImplementedBy<GeneralTestRequestHandler>().LifeStyle.Transient,
-                Component.For<IRequestHandler<TestRequest, TestResponse>>().ImplementedBy<SpecificTestRequestHandler1>().LifeStyle.Transient
-            );
-
-            var factory = new KernelRequestHandlerFactory(kernel);
-
-            var requestWithoutTenantId = new TestRequest();
-            Assert.That(() => factory.CreateRequestHandlerFor(requestWithoutTenantId),
-                Is.TypeOf<GeneralTestRequestHandler>());
-
-            var requestWithTenantId = new TestRequest();
-            requestWithTenantId.Context["TenantId"] = "456";
-            Assert.That(() => factory.CreateRequestHandlerFor(requestWithTenantId),
-                Is.TypeOf<SpecificTestRequestHandler1>());
-        }
-
-        [Test]
-        public void It_should_throw_an_exception_when_too_many_RequestHandlers_can_be_chosen()
-        {
-            var kernel = new DefaultKernel();
-            kernel.Register(
-                Component.For<IRequestHandler<TestRequest, TestResponse>>().ImplementedBy<GeneralTestRequestHandler>().LifeStyle.Transient,
-                Component.For<IRequestHandler<TestRequest, TestResponse>>().ImplementedBy<SpecificTestRequestHandler2>().LifeStyle.Transient
-            );
-
-            var factory = new KernelRequestHandlerFactory(kernel);
-
-            var requestWithoutTenantId = new TestRequest();
-            Assert.That(() => factory.CreateRequestHandlerFor(requestWithoutTenantId),
-                Is.TypeOf<GeneralTestRequestHandler>());
-
-            var requestWithTenantId123 = new TestRequest();
-            requestWithTenantId123.Context["TenantId"] = "123";
-            Assert.That(() => factory.CreateRequestHandlerFor(requestWithTenantId123),
-                Is.TypeOf<SpecificTestRequestHandler2>());
-
-            kernel.Register(
-                Component.For<IRequestHandler<TestRequest, TestResponse>>().ImplementedBy<SpecificTestRequestHandler1>().LifeStyle.Transient
-            );
-
-            var requestWithTenantId456 = new TestRequest();
-            requestWithTenantId456.Context["TenantId"] = "456";
-            Assert.That(() => factory.CreateRequestHandlerFor(requestWithTenantId456),
-                Is.TypeOf<SpecificTestRequestHandler1>());
-
-            requestWithTenantId123 = new TestRequest();
-            requestWithTenantId123.Context["TenantId"] = "123";
-            Assert.That(() => factory.CreateRequestHandlerFor(requestWithTenantId123),
-                Throws.Exception.TypeOf<ColomboException>()
-                .With.Message.Contains(requestWithTenantId123.ToString()));
-
-            kernel.Register(
-                Component.For<IRequestHandler<TestRequest, TestResponse>>().ImplementedBy<GeneralTestRequestHandler2>().LifeStyle.Transient
-            );
-
-            requestWithTenantId456 = new TestRequest();
-            requestWithTenantId456.Context["TenantId"] = "456";
-            Assert.That(() => factory.CreateRequestHandlerFor(requestWithTenantId456),
-                Is.TypeOf<SpecificTestRequestHandler1>());
-
-            requestWithoutTenantId = new TestRequest();
-            Assert.That(() => factory.CreateRequestHandlerFor(requestWithoutTenantId),
-                Throws.Exception.TypeOf<ColomboException>()
-                .With.Message.Contains(requestWithoutTenantId.ToString())
-                .With.Message.Contains("GeneralTestRequestHandler")
-                .With.Message.Contains("GeneralTestRequestHandler2"));
-        }
+        
 
         public class TestRequest : Request<TestResponse> { }
 
@@ -222,24 +150,6 @@ namespace Colombo.Tests.Impl
         {
             protected override void Handle()
             {
-            }
-        }
-
-        [ChooseWhenRequestContextContains("TenantId")]
-        public class SpecificTestRequestHandler1 : RequestHandler<TestRequest, TestResponse>
-        {
-            protected override void Handle()
-            {
-                
-            }
-        }
-
-        [ChooseWhenRequestContextContains("TenantId", "123")]
-        public class SpecificTestRequestHandler2 : RequestHandler<TestRequest, TestResponse>
-        {
-            protected override void Handle()
-            {
-
             }
         }
     }

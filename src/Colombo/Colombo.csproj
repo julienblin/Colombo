@@ -189,7 +189,6 @@
     <Compile Include="SideEffectFreeRequest.cs" />
     <Compile Include="SideEffectFreeRequestHandler.cs" />
     <Compile Include="SLAAttribute.cs" />
-    <Compile Include="ChooseWhenRequestContextContainsAttribute.cs" />
     <Compile Include="TestSupport\BaseExpectation.cs" />
     <Compile Include="TestSupport\ColomboExpectationException.cs" />
     <Compile Include="TestSupport\ColomboTest.cs" />

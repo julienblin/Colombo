@@ -71,35 +71,15 @@ namespace Colombo.Impl.RequestHandle
             Contract.EndContractBlock();
 
             var requestHandlerType = CreateRequestHandlerTypeFrom(request);
-            var allRequestHandlers = (IRequestHandler[])kernel.ResolveAll(requestHandlerType);
 
-            Contract.Assume(allRequestHandlers != null);
-            var chosenRequestsHandlers = allRequestHandlers
-                .Where(h =>
-                {
-                    var chooseAttr = h.GetCustomAttribute<ChooseWhenRequestContextContainsAttribute>();
-                    return ((chooseAttr == null) || (chooseAttr.IsChoosen(request)));
-                }).ToArray();
-
-
-            if (chosenRequestsHandlers.Length == 1)
-                return chosenRequestsHandlers[0];
-
-            if (chosenRequestsHandlers.Length > 1)
+            try
             {
-                var specializedRequestsHandler = chosenRequestsHandlers
-                    .Where(h => h.GetCustomAttribute<ChooseWhenRequestContextContainsAttribute>() != null)
-                    .ToArray();
-
-                if (specializedRequestsHandler.Length == 1)
-                    return specializedRequestsHandler[0];
-                
-                throw new ColomboException(string.Format("Too many request handlers to choose from for {0}: {1}",
-                    request,
-                    string.Join(", ", chosenRequestsHandlers.Select(x => x.ToString()))));
+                return (IRequestHandler)kernel.Resolve(requestHandlerType);
             }
-
-            throw new ColomboException(string.Format("Request Handler {0} not found for {1}.", requestHandlerType, request));
+            catch (ComponentNotFoundException)
+            {
+                throw new ColomboException(string.Format("Request Handler {0} not found for {1}.", requestHandlerType, request));
+            }
         }
 
         /// <summary>
