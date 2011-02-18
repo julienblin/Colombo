@@ -24,6 +24,7 @@
 
 using System.Linq;
 using Castle.MicroKernel;
+using Castle.MicroKernel.Lifestyle;
 using Castle.Windsor;
 using Colombo.Caching;
 using Colombo.Caching.Impl;
@@ -408,6 +409,27 @@ namespace Colombo.Tests.Facilities
             Assert.That(localRequestProcessor.DoNotManageMetaContextKeys, Is.True);
 
             Assert.That(WcfServices.DoNotManageMetaContextKeys, Is.True);
+        }
+
+        [Test]
+        public void It_should_allow_the_customization_of_lifestyle_for_IStatefulMessageBus()
+        {
+            var container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>();
+
+            Assert.That(() => container.Resolve<IStatefulMessageBus>(),
+                Is.Not.Null);
+            Assert.That(() => container.Resolve<IStatefulMessageBus>(),
+                Is.Not.SameAs(container.Resolve<IStatefulMessageBus>()));
+
+            container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>(
+                f => f.StatefulMessageBusLifestyle(typeof (SingletonLifestyleManager)));
+
+            Assert.That(() => container.Resolve<IStatefulMessageBus>(),
+                Is.Not.Null);
+            Assert.That(() => container.Resolve<IStatefulMessageBus>(),
+                Is.SameAs(container.Resolve<IStatefulMessageBus>()));
         }
     }
 }

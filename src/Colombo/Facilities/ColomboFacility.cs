@@ -26,9 +26,13 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using Castle.Core;
 using Castle.Facilities.Startable;
+using Castle.MicroKernel;
 using Castle.MicroKernel.Facilities;
+using Castle.MicroKernel.Lifestyle;
 using Castle.MicroKernel.Registration;
+using Castle.MicroKernel.Resolvers;
 using Castle.MicroKernel.Resolvers.SpecializedResolvers;
 using Colombo.Caching;
 using Colombo.Caching.Impl;
@@ -67,6 +71,7 @@ namespace Colombo.Facilities
         bool registerLocalProcessing = true;
         int maxAllowedNumberOfSendForStatefulMessageBus = DefaultMaxAllowedNumberOfSendForStatefulMessageBus;
         int healthCheckHeartBeatInSeconds = DefaultHealthCheckHeartBeatInSeconds;
+        Type statefulMessageBusLifestyleManager = typeof(TransientLifestyleManager);
 
         bool enableInMemoryCaching;
         bool enableMemcachedCaching;
@@ -105,6 +110,7 @@ namespace Colombo.Facilities
             Contract.Assume(Kernel.Resolver != null);
 
             Kernel.Resolver.AddSubResolver(new ArrayResolver(Kernel, true));
+            
             if (!Kernel.GetFacilities().Any(x => x is StartableFacility))
                 Kernel.AddFacility<StartableFacility>();
 
@@ -123,16 +129,20 @@ namespace Colombo.Facilities
             {
                 Kernel.Register(
                     Component.For<IColomboServiceFactory>()
-                        .ImplementedBy<ColomboServiceFactory>(),
+                        .ImplementedBy<ColomboServiceFactory>()
+                        .Unless((k, m) => k.HasComponent(typeof(IColomboServiceFactory))),
                     Component.For<IRequestProcessor>()
                         .ImplementedBy<WcfClientRequestProcessor>()
+                        .Unless((k, m) => k.HasComponent(typeof(IRequestProcessor)))
                         .OnCreate((kernel, item) => ((WcfClientRequestProcessor)item).HealthCheckHeartBeatInSeconds = healthCheckHeartBeatInSeconds),
 
                     Component.For<IMessageBus, IMetaContextKeysManager>()
-                        .ImplementedBy<MessageBus>(),
+                        .ImplementedBy<MessageBus>()
+                        .Unless((k, m) => k.HasComponent(typeof(IMessageBus))),
                     Component.For<IStatefulMessageBus>()
-                        .LifeStyle.Transient
+                        .LifeStyle.Custom(statefulMessageBusLifestyleManager)
                         .ImplementedBy<StatefulMessageBus>()
+                        .Unless((k, m) => k.HasComponent(typeof(IStatefulMessageBus)))
                         .OnCreate((kernel, item) => item.MaxAllowedNumberOfSend = maxAllowedNumberOfSendForStatefulMessageBus),
 
                     Component.For<IColomboStatCollector>()
@@ -166,15 +176,19 @@ namespace Colombo.Facilities
                 {
                     Kernel.Register(
                         Component.For<IRequestHandlerFactory>()
-                            .ImplementedBy<KernelRequestHandlerFactory>(),
+                            .ImplementedBy<KernelRequestHandlerFactory>()
+                            .Unless((k, m) => k.HasComponent(typeof(IRequestHandlerFactory))),
                         Component.For<ILocalRequestProcessor, IRequestProcessor, IMetaContextKeysManager>()
-                            .ImplementedBy<LocalRequestProcessor>(),
+                            .ImplementedBy<LocalRequestProcessor>()
+                            .Unless((k, m) => k.HasComponent(typeof(ILocalRequestProcessor))),
                         Component.For<ISideEffectFreeRequestHandler<HealthCheckRequest, HealthCheckResponse>>()
                             .LifeStyle.Transient
-                            .ImplementedBy<HealthCheckRequestHandler>(),
+                            .ImplementedBy<HealthCheckRequestHandler>()
+                            .Unless((k, m) => k.HasComponent(typeof(ISideEffectFreeRequestHandler<HealthCheckRequest, HealthCheckResponse>))),
                         Component.For<ISideEffectFreeRequestHandler<GetStatsRequest, GetStatsResponse>>()
                             .LifeStyle.Transient
                             .ImplementedBy<GetStatsRequestHandler>()
+                            .Unless((k, m) => k.HasComponent(typeof(ISideEffectFreeRequestHandler<GetStatsRequest, GetStatsResponse>)))
                         );
 
                     if (enableInMemoryCaching)
@@ -356,6 +370,16 @@ namespace Colombo.Facilities
         public void DoNotManageMetaContextKeys()
         {
             doNotManageMetaContextKeys = true;
+        }
+
+        /// <summary>
+        /// Allow the customization of the <see cref="ILifestyleManager"/> associated with the <see cref="IStatefulMessageBus"/>.
+        /// Default value is Transient.
+        /// </summary>
+        /// <param name="lifestyleManagerType">The type of <see cref="ILifestyleManager"/> to associate with the <see cref="IStatefulMessageBus"/>.</param>
+        public void StatefulMessageBusLifestyle(Type lifestyleManagerType)
+        {
+            statefulMessageBusLifestyleManager = lifestyleManagerType;
         }
     }
 }
