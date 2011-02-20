@@ -64,8 +64,11 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="EndPointTest.cs" />
     <Compile Include="Internal\ArgsParserTest.cs" />
+    <Compile Include="Internal\AssemblyScannerTest.cs" />
     <Compile Include="Internal\HostServiceTest.cs" />
+    <Compile Include="ProgramTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

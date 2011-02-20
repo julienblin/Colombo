@@ -71,6 +71,7 @@ namespace Colombo.Host.Internal
             return assemblies.SelectMany(assembly => assembly.GetTypes().Where(t => typeof(IAmAnEndpoint).IsAssignableFrom(t)
                                                                                     && !t.IsInterface
                                                                                     && !t.IsAbstract
+                                                                                    && t.IsPublic
                                                          ));
         }
 

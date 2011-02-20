@@ -128,8 +128,8 @@ namespace Colombo.Host.Tests.Internal
             }
         }
 
-        public class TestEndPointBadContainer : IAmAnEndpoint,
-                                                IWantToCreateTheContainer
+        private class TestEndPointBadContainer : IAmAnEndpoint,
+                                                 IWantToCreateTheContainer
         {
             public IWindsorContainer CreateContainer()
             {
