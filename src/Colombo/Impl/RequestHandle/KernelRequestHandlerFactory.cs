@@ -24,7 +24,6 @@
 
 using System;
 using System.Diagnostics.Contracts;
-using System.Linq;
 using Castle.MicroKernel;
 
 namespace Colombo.Impl.RequestHandle
