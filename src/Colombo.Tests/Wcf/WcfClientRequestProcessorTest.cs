@@ -59,10 +59,8 @@ namespace Colombo.Tests.Wcf
                 var processor = new WcfClientRequestProcessor(wcfServiceFactory);
                 processor.Logger = GetConsoleLogger();
 
-                Assert.That(() => processor.CanProcess(requestInThisAssembly),
-                    Is.True);
-                Assert.That(() => processor.CanProcess(requestInDynamicAssembly),
-                    Is.False);
+                Assert.That(processor.CanProcess(requestInThisAssembly), Is.True);
+                Assert.That(processor.CanProcess(requestInDynamicAssembly), Is.False);
             });
         }
 
@@ -116,14 +114,10 @@ namespace Colombo.Tests.Wcf
 
                     var responses = processor.Process(requests);
 
-                    Assert.That(responses.GetFrom(request1).Name,
-                        Is.EqualTo(request1.Name));
-                    Assert.That(responses.GetFrom(request2).Name,
-                        Is.EqualTo(request2.Name));
-                    Assert.That(responses.GetFrom(request3).Name,
-                        Is.EqualTo(request3.Name));
-                    Assert.That(responses.GetFrom(request4).Name,
-                        Is.EqualTo(request4.Name));
+                    Assert.That(responses.GetFrom(request1).Name, Is.EqualTo(request1.Name));
+                    Assert.That(responses.GetFrom(request2).Name, Is.EqualTo(request2.Name));
+                    Assert.That(responses.GetFrom(request3).Name, Is.EqualTo(request3.Name));
+                    Assert.That(responses.GetFrom(request4).Name, Is.EqualTo(request4.Name));
                 });
             }
         }

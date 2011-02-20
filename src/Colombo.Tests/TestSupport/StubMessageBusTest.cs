@@ -42,8 +42,7 @@ namespace Colombo.Tests.TestSupport
                 .ExpectSend<TestRequest2, TestResponse2>()
                 .Reply((request, response) => response.Name = request.Name);
 
-            Assert.That(() => stubMessageBus.Send(new TestRequest2() { Name = "TheName" }),
-                Is.Not.Null.And.Property("Name").EqualTo("TheName"));
+            Assert.That(stubMessageBus.Send(new TestRequest2() { Name = "TheName" }), Is.Not.Null.And.Property("Name").EqualTo("TheName"));
 
             Assert.DoesNotThrow(() => stubMessageBus.Verify());
         }
@@ -58,8 +57,7 @@ namespace Colombo.Tests.TestSupport
 
             stubMessageBus.SendAsync(new TestRequest2() { Name = "TheName" }).Register(response =>
             {
-                Assert.That(() => response,
-                    Is.Not.Null.And.Property("Name").EqualTo("TheName"));
+                Assert.That(response, Is.Not.Null.And.Property("Name").EqualTo("TheName"));
             });
 
             Thread.Sleep(200);
@@ -74,7 +72,7 @@ namespace Colombo.Tests.TestSupport
                 .ExpectSend<TestSideEffectFreeRequest2, TestResponse2>()
                 .Reply((request, response) => response.Name = request.Name);
 
-            Assert.That(() => stubMessageBus.Send(new TestSideEffectFreeRequest2() { Name = "TheName" }),
+            Assert.That(stubMessageBus.Send(new TestSideEffectFreeRequest2() { Name = "TheName" }),
                 Is.Not.Null.And.Property("Name").EqualTo("TheName"));
 
             Thread.Sleep(200);
@@ -89,7 +87,7 @@ namespace Colombo.Tests.TestSupport
                 .ExpectSend<TestSideEffectFreeRequest2, TestResponse2>()
                 .Reply((request, response) => response.Name = request.Name);
 
-            Assert.That(() => stubMessageBus.Send<TestSideEffectFreeRequest2, TestResponse2>(r => r.Name = "TheName"),
+            Assert.That(stubMessageBus.Send<TestSideEffectFreeRequest2, TestResponse2>(r => r.Name = "TheName"),
                 Is.Not.Null.And.Property("Name").EqualTo("TheName"));
 
             Assert.DoesNotThrow(() => stubMessageBus.Verify());
@@ -105,8 +103,7 @@ namespace Colombo.Tests.TestSupport
 
             stubMessageBus.SendAsync(new TestSideEffectFreeRequest2() { Name = "TheName" }).Register(response =>
             {
-                Assert.That(() => response,
-                    Is.Not.Null.And.Property("Name").EqualTo("TheName"));
+                Assert.That(response, Is.Not.Null.And.Property("Name").EqualTo("TheName"));
             });
 
             Thread.Sleep(200);
@@ -127,11 +124,8 @@ namespace Colombo.Tests.TestSupport
 
             var responses = stubMessageBus.Send(request1, request2);
 
-            Assert.That(() => responses.GetFrom(request1),
-                Is.Not.Null.And.Property("Name").EqualTo("Req1"));
-
-            Assert.That(() => responses.GetFrom(request2),
-                Is.Not.Null.And.Property("Name").EqualTo("Req2"));
+            Assert.That(responses.GetFrom(request1), Is.Not.Null.And.Property("Name").EqualTo("Req1"));
+            Assert.That(responses.GetFrom(request2), Is.Not.Null.And.Property("Name").EqualTo("Req2"));
 
             Assert.DoesNotThrow(() => stubMessageBus.Verify());
         }
@@ -162,9 +156,7 @@ namespace Colombo.Tests.TestSupport
 
             stubMessageBus.TestHandler<TestRequestHandler2>();
 
-            Assert.That(() => stubMessageBus.Send(new TestRequest2() { Name = "TheName" }),
-                Is.Not.Null.And.Property("Name").EqualTo("HandlerTheName"));
-
+            Assert.That(stubMessageBus.Send(new TestRequest2() { Name = "TheName" }), Is.Not.Null.And.Property("Name").EqualTo("HandlerTheName"));
             Assert.DoesNotThrow(() => stubMessageBus.Verify());
         }
 
@@ -206,8 +198,7 @@ namespace Colombo.Tests.TestSupport
             stubMessageBus.AllowUnexpectedMessages = true;
 
             var testRequest2 = new TestRequest2();
-            Assert.That(() => stubMessageBus.Send(testRequest2),
-                Is.Not.Null.And.Property("CorrelationGuid").EqualTo(testRequest2.CorrelationGuid));
+            Assert.That(stubMessageBus.Send(testRequest2), Is.Not.Null.And.Property("CorrelationGuid").EqualTo(testRequest2.CorrelationGuid));
         }
 
         [Test]
@@ -223,9 +214,7 @@ namespace Colombo.Tests.TestSupport
 
             stubMessageBus.TestHandler<TestRequestHandler22>();
 
-            Assert.That(() => stubMessageBus.Send(new TestRequest2()),
-                        Is.Not.Null.And.Property("Name").EqualTo("SubHandler"));
-
+            Assert.That(stubMessageBus.Send(new TestRequest2()), Is.Not.Null.And.Property("Name").EqualTo("SubHandler"));
             Assert.DoesNotThrow(() => stubMessageBus.Verify());
         }
 
@@ -277,7 +266,7 @@ namespace Colombo.Tests.TestSupport
                     .ExpectSend<TestRequest2, TestResponse2>()
                     .Reply((request, response) => response.Name = request.Name);
 
-                Assert.That(() => stubMessageBus.Send(new TestRequest2() { Name = "TheName" }),
+                Assert.That(stubMessageBus.Send(new TestRequest2() { Name = "TheName" }),
                     Is.Not.Null.And.Property("Name").EqualTo("TheName"));
 
                 Assert.DoesNotThrow(() => stubMessageBus.Verify());
@@ -304,7 +293,7 @@ namespace Colombo.Tests.TestSupport
                     .ExpectSend<TestRequest2, TestResponse2>()
                     .Reply((request, response) => response.Name = request.Name);
 
-                Assert.That(() => stubMessageBus.Send(new TestRequest2() { Name = "TheName" }),
+                Assert.That(stubMessageBus.Send(new TestRequest2() { Name = "TheName" }),
                     Is.Not.Null.And.Property("Name").EqualTo("TheName"));
 
                 Assert.DoesNotThrow(() => stubMessageBus.Verify());

@@ -43,13 +43,8 @@ namespace Colombo.Tests.Interceptors
             var interceptor = new DataAnnotationsValidationHandleInterceptor();
             var invocation1 = mocks.StrictMock<IColomboRequestHandleInvocation>();
             var invocation2 = mocks.StrictMock<IColomboRequestHandleInvocation>();
-            var request1 = new TestRequest();
-            request1.FirstName = "FirstName";
-            request1.LastName = "LastName";
-
-            var request2 = new TestRequestWithResults();
-            request2.FirstName = "FirstName";
-            request2.LastName = "LastName";
+            var request1 = new TestRequest { FirstName = "FirstName", LastName = "LastName" };
+            var request2 = new TestRequestWithResults { FirstName = "FirstName", LastName = "LastName" };
 
             With.Mocks(mocks).Expecting(() =>
             {
@@ -94,16 +89,11 @@ namespace Colombo.Tests.Interceptors
 
             interceptor.Intercept(invocation);
 
-            Assert.That(() => invocation.Response,
-                Is.TypeOf<TestResponseWithResults>());
-            Assert.That(() => ((TestResponseWithResults)invocation.Response).CorrelationGuid,
-                    Is.EqualTo(request.CorrelationGuid));
-            Assert.That(() => ((TestResponseWithResults)invocation.Response).ValidationResults.Count,
-                Is.EqualTo(2));
-            Assert.That(() => ((TestResponseWithResults)invocation.Response).ValidationResults[0].MemberNames.First(),
-                Is.EqualTo("FirstName"));
-            Assert.That(() => ((TestResponseWithResults)invocation.Response).ValidationResults[1].MemberNames.First(),
-                Is.EqualTo("LastName"));
+            Assert.That(invocation.Response, Is.TypeOf<TestResponseWithResults>());
+            Assert.That(invocation.Response.CorrelationGuid, Is.EqualTo(request.CorrelationGuid));
+            Assert.That(((TestResponseWithResults)invocation.Response).ValidationResults.Count, Is.EqualTo(2));
+            Assert.That(((TestResponseWithResults)invocation.Response).ValidationResults[0].MemberNames.First(), Is.EqualTo("FirstName"));
+            Assert.That(((TestResponseWithResults)invocation.Response).ValidationResults[1].MemberNames.First(), Is.EqualTo("LastName"));
         }
 
         internal class TestHandleInvocation : BaseRequestHandleInvocation

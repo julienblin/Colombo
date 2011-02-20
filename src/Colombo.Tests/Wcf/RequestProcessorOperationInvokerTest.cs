@@ -41,11 +41,9 @@ namespace Colombo.Tests.Wcf
             var invoker = new RequestProcessorOperationInvoker(typeof(TestRequest));
             var allocateInputs = invoker.AllocateInputs();
 
-            Assert.That(() => allocateInputs.Length,
-                Is.EqualTo(1));
+            Assert.That(allocateInputs.Length, Is.EqualTo(1));
 
-            Assert.That(() => allocateInputs[0],
-                Is.TypeOf<TestRequest>());
+            Assert.That(allocateInputs[0], Is.TypeOf<TestRequest>());
         }
 
         [Test]
@@ -79,8 +77,7 @@ namespace Colombo.Tests.Wcf
                 var invoker = new RequestProcessorOperationInvoker(typeof(TestRequest));
                 object[] outputs;
                 var response = invoker.Invoke(null, new[] {new TestRequest()}, out outputs);
-                Assert.That(() => response,
-                    Is.TypeOf<TestResponse>());
+                Assert.That(response, Is.TypeOf<TestResponse>());
             });
         }
 

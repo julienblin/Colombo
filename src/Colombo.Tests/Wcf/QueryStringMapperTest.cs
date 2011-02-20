@@ -65,13 +65,13 @@ namespace Colombo.Tests.Wcf
         {
             var request = (TestArrayRequest)QueryStringMapper.Map("Names=Foo&Names=Bar", typeof(TestArrayRequest));
             Assert.AreEqual(2, request.Names.Length);
-            Assert.That(() => request.Names, Contains.Item("Foo"));
-            Assert.That(() => request.Names, Contains.Item("Bar"));
+            Assert.That(request.Names, Contains.Item("Foo"));
+            Assert.That(request.Names, Contains.Item("Bar"));
 
             request = (TestArrayRequest)QueryStringMapper.Map("Names[0]=Foo&Names[1]=Bar", typeof(TestArrayRequest));
             Assert.AreEqual(2, request.Names.Length);
-            Assert.That(() => request.Names, Contains.Item("Foo"));
-            Assert.That(() => request.Names, Contains.Item("Bar"));
+            Assert.That(request.Names, Contains.Item("Foo"));
+            Assert.That(request.Names, Contains.Item("Bar"));
         }
 
         [Test]

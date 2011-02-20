@@ -40,8 +40,7 @@ namespace Colombo.Tests
             }
             catch (ColomboException ex)
             {
-                Assert.That(() => ex.ToString(),
-                    Contains.Substring("TestExceptionContent"));
+                Assert.That(ex.ToString(), Contains.Substring("TestExceptionContent"));
             }
         }
 
@@ -58,7 +57,7 @@ namespace Colombo.Tests
             catch (ColomboException ex)
             {
                 Console.WriteLine(ex);
-                Assert.That(() => ex.ToString(),
+                Assert.That(ex.ToString(),
                     Contains.Substring("TestExceptionContent")
                     .And.Contains("TestException2Content"));
             }

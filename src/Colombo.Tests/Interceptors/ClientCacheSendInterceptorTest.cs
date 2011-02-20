@@ -70,8 +70,7 @@ namespace Colombo.Tests.Interceptors
                 invocation.Proceed();
             }).Verify(() =>
             {
-                var interceptor = new ClientCacheSendInterceptor(cache);
-                interceptor.Logger = GetConsoleLogger();
+                var interceptor = new ClientCacheSendInterceptor(cache) { Logger = GetConsoleLogger() };
                 interceptor.Intercept(invocation);
             });
         }
@@ -84,14 +83,6 @@ namespace Colombo.Tests.Interceptors
             var request1 = new TestRequestWithCacheNoCacheKey();
             var request2 = new TestRequestWithoutCache();
             var requests = new List<BaseRequest> { request1, request2 };
-
-            var response1 = new TestResponse();
-            var response2 = new TestResponse();
-            var responses = new ResponsesGroup
-            {
-                { request1, response1 },
-                { request2, response2 }
-            };
 
             var invocation = mocks.StrictMock<IColomboSendInvocation>();
             var cache = mocks.StrictMock<IColomboCache>();
@@ -140,8 +131,7 @@ namespace Colombo.Tests.Interceptors
                 cache.Store(null, request1.GetCacheKey(), response1, new TimeSpan(0, 0, 30));
             }).Verify(() =>
             {
-                var interceptor = new ClientCacheSendInterceptor(cache);
-                interceptor.Logger = GetConsoleLogger();
+                var interceptor = new ClientCacheSendInterceptor(cache) { Logger = GetConsoleLogger() };
                 interceptor.Intercept(invocation);
             });
         }
@@ -175,14 +165,11 @@ namespace Colombo.Tests.Interceptors
                 Expect.Call(cache.Get(null, typeof(TestResponse), request1.GetCacheKey())).Return(response1);
             }).Verify(() =>
             {
-                var interceptor = new ClientCacheSendInterceptor(cache);
-                interceptor.Logger = GetConsoleLogger();
+                var interceptor = new ClientCacheSendInterceptor(cache) { Logger = GetConsoleLogger() };
                 interceptor.Intercept(invocation);
                 var responsesVerify = invocation.Responses;
-                Assert.That(() => responsesVerify[request1],
-                    Is.EqualTo(response1));
-                Assert.That(() => responsesVerify[request2],
-                    Is.EqualTo(response2));
+                Assert.That(responsesVerify[request1], Is.EqualTo(response1));
+                Assert.That(responsesVerify[request2], Is.EqualTo(response2));
             });
         }
 
@@ -219,10 +206,8 @@ namespace Colombo.Tests.Interceptors
                 interceptor.Logger = GetConsoleLogger();
                 interceptor.Intercept(invocation);
                 var responsesVerify = invocation.Responses;
-                Assert.That(() => responsesVerify[request1],
-                    Is.EqualTo(response1));
-                Assert.That(() => responsesVerify[request2],
-                    Is.EqualTo(response2));
+                Assert.That(responsesVerify[request1], Is.EqualTo(response1));
+                Assert.That(responsesVerify[request2], Is.EqualTo(response2));
             });
         }
 
@@ -254,18 +239,17 @@ namespace Colombo.Tests.Interceptors
                 cache.Store(null, request1.GetCacheKey(), response1, new TimeSpan(0, 0, 30));
             }).Verify(() =>
             {
-                var interceptor = new ClientCacheSendInterceptor(cache);
-                interceptor.Logger = GetConsoleLogger();
+                var interceptor = new ClientCacheSendInterceptor(cache) { Logger = GetConsoleLogger() };
                 interceptor.Intercept(invocation);
             });
         }
 
         public class TestRequestWithoutCache : Request<TestResponse> { }
 
-        [EnableClientCaching(Seconds=30)]
+        [EnableClientCaching(Seconds = 30)]
         public class TestRequestWithCacheNoCacheKey : Request<TestResponse> { }
 
-        [EnableClientCaching(Seconds=30)]
+        [EnableClientCaching(Seconds = 30)]
         public class TestRequestWithCache : SideEffectFreeRequest<TestResponse>
         {
             public override string GetCacheKey()
@@ -275,7 +259,7 @@ namespace Colombo.Tests.Interceptors
         }
 
         [EnableClientCaching(Seconds = 30)]
-        [CacheSegment(FromContextKey="Bar", Name="DefaultSegment")]
+        [CacheSegment(FromContextKey = "Bar", Name = "DefaultSegment")]
         public class TestRequestWithCacheSegment : Request<TestResponse>
         {
             public override string GetCacheKey()

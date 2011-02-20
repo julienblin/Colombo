@@ -79,23 +79,18 @@ namespace Colombo.Tests.Caching.Impl
 
             }).Verify(() =>
             {
-                var cache = new MemcachedCache(serverUri);
-                cache.Alerters = new IColomboAlerter[] { alerter };
-                var request1 = new TestRequest();
-                request1.Name = "Foo";
+                var cache = new MemcachedCache(serverUri) { Alerters = new IColomboAlerter[] { alerter } };
+                var request1 = new TestRequest { Name = "Foo" };
                 cache.Store("mysegment", request1.GetCacheKey(), request1, new TimeSpan(0, 0, 30));
 
-                var request2 = new TestRequest();
-                request2.Name = "Bar";
+                var request2 = new TestRequest { Name = "Bar" };
                 cache.Store(null, request2.GetCacheKey(), request2, new TimeSpan(0, 0, 30));
 
                 var retrieved = (TestRequest)cache.Get("mysegment", typeof(TestRequest), request1.GetCacheKey());
-                Assert.That(() => retrieved.Name,
-                    Is.EqualTo(request1.Name));
+                Assert.That(retrieved.Name, Is.EqualTo(request1.Name));
 
                 retrieved = (TestRequest)cache.Get(null, typeof(TestRequest), request2.GetCacheKey());
-                Assert.That(() => retrieved.Name,
-                    Is.EqualTo(request2.Name));
+                Assert.That(retrieved.Name, Is.EqualTo(request2.Name));
             });
         }
 
@@ -103,16 +98,15 @@ namespace Colombo.Tests.Caching.Impl
         public void It_should_store_and_not_retrieve_expired_objects()
         {
             var cache = new MemcachedCache(serverUri);
-            var request = new TestRequest();
-            request.Name = "Foo";
+            var request = new TestRequest { Name = "Foo" };
             cache.Store(null, request.GetCacheKey(), request, new TimeSpan(0, 0, 0, 1));
 
-            Assert.That(() => (TestRequest)cache.Get(null, typeof(TestRequest), request.GetCacheKey()),
+            Assert.That(cache.Get(null, typeof(TestRequest), request.GetCacheKey()),
                 Has.Property("Name").EqualTo("Foo"));
 
             Thread.Sleep(1500);
 
-            Assert.That(() => (TestRequest)cache.Get(null, typeof(TestRequest), request.GetCacheKey()),
+            Assert.That(cache.Get(null, typeof(TestRequest), request.GetCacheKey()),
                 Is.Null);
 
         }
@@ -121,48 +115,38 @@ namespace Colombo.Tests.Caching.Impl
         public void It_should_flush_all_object_of_type()
         {
             var cache = new MemcachedCache(serverUri);
-            var request1 = new TestRequest();
-            request1.Name = "Foo";
+            var request1 = new TestRequest { Name = "Foo" };
             cache.Store(null, request1.GetCacheKey(), request1, new TimeSpan(1, 0, 0));
 
-            var request2 = new TestRequest2();
-            request2.Name = "Bar";
+            var request2 = new TestRequest2 { Name = "Bar" };
             cache.Store(null, request2.GetCacheKey(), request2, new TimeSpan(1, 0, 0));
 
-            Assert.That(() => (TestRequest)cache.Get(null, typeof(TestRequest), request1.GetCacheKey()),
+            Assert.That(cache.Get(null, typeof(TestRequest), request1.GetCacheKey()),
                 Has.Property("Name").EqualTo("Foo"));
 
-            Assert.That(() => (TestRequest2)cache.Get(null, typeof(TestRequest2), request2.GetCacheKey()),
+            Assert.That(cache.Get(null, typeof(TestRequest2), request2.GetCacheKey()),
                 Has.Property("Name").EqualTo("Bar"));
 
             cache.Flush(null, typeof(TestRequest2));
 
-            Assert.That(() => (TestRequest)cache.Get(null, typeof(TestRequest), request1.GetCacheKey()),
-                Is.Not.Null);
-
-            Assert.That(() => (TestRequest2)cache.Get(null, typeof(TestRequest2), request2.GetCacheKey()),
-                Is.Null);
+            Assert.That(cache.Get(null, typeof(TestRequest), request1.GetCacheKey()), Is.Not.Null);
+            Assert.That(cache.Get(null, typeof(TestRequest2), request2.GetCacheKey()), Is.Null);
         }
 
         [Test]
         public void It_should_flush_all()
         {
             var cache = new MemcachedCache(serverUri);
-            var request1 = new TestRequest();
-            request1.Name = "Foo";
+            var request1 = new TestRequest { Name = "Foo" };
             cache.Store(null, request1.GetCacheKey(), request1, new TimeSpan(1, 0, 0));
 
-            var request2 = new TestRequest2();
-            request2.Name = "Bar";
+            var request2 = new TestRequest2 { Name = "Bar" };
             cache.Store(null, request2.GetCacheKey(), request2, new TimeSpan(1, 0, 0));
 
             cache.FlushAll();
 
-            Assert.That(() => (TestRequest2)cache.Get(null, typeof(TestRequest), request1.GetCacheKey()),
-                Is.Null);
-
-            Assert.That(() => (TestRequest2)cache.Get(null, typeof(TestRequest2), request2.GetCacheKey()),
-                Is.Null);
+            Assert.That(cache.Get(null, typeof(TestRequest), request1.GetCacheKey()), Is.Null);
+            Assert.That(cache.Get(null, typeof(TestRequest2), request2.GetCacheKey()), Is.Null);
         }
 
         [Test]
@@ -181,8 +165,7 @@ namespace Colombo.Tests.Caching.Impl
                 );
             }).Verify(() =>
             {
-                var cache = new MemcachedCache(serverUri);
-                cache.Alerters = new IColomboAlerter[] { alerter };
+                var cache = new MemcachedCache(serverUri) { Alerters = new[] { alerter } };
 
                 memcachedServerProcess.Kill();
                 memcachedServerProcess = null;

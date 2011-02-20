@@ -83,18 +83,12 @@ namespace Colombo.Tests.Impl
             var statefulMB = new StatefulMessageBus(messageBus);
             var response = statefulMB.FutureSend(new TestSideEffectFreeRequest());
 
-            Assert.That(() => response.GetType(),
-                Is.Not.EqualTo(typeof(TestResponse)));
-            Assert.That(() => response,
-                Is.AssignableTo<TestResponse>());
-            Assert.That(() => response as TestResponse,
-                Is.Not.Null);
+            Assert.That(response.GetType(), Is.Not.EqualTo(typeof(TestResponse)));
+            Assert.That(response, Is.AssignableTo<TestResponse>());
+            Assert.That(response, Is.Not.Null);
 
-            Assert.That(() => statefulMB.NumberOfSend,
-                Is.EqualTo(0));
-
-            Assert.That(() => messageBus.NumSendCalled,
-                Is.EqualTo(0));
+            Assert.That(statefulMB.NumberOfSend, Is.EqualTo(0));
+            Assert.That(messageBus.NumSendCalled, Is.EqualTo(0));
         }
 
         [Test]
@@ -107,17 +101,10 @@ namespace Colombo.Tests.Impl
             var statefulMB = new StatefulMessageBus(messageBus);
             var responseProxy = statefulMB.FutureSend(request);
 
-            Assert.That(() => statefulMB.NumberOfSend,
-                Is.EqualTo(0));
-
-            Assert.That(() => responseProxy.CorrelationGuid,
-                Is.EqualTo(request.CorrelationGuid));
-
-            Assert.That(() => messageBus.NumSendCalled,
-                Is.EqualTo(1));
-
-            Assert.That(() => statefulMB.NumberOfSend,
-                Is.EqualTo(1));
+            Assert.That(statefulMB.NumberOfSend, Is.EqualTo(0));
+            Assert.That(responseProxy.CorrelationGuid, Is.EqualTo(request.CorrelationGuid));
+            Assert.That(messageBus.NumSendCalled, Is.EqualTo(1));
+            Assert.That(statefulMB.NumberOfSend, Is.EqualTo(1));
         }
 
         [Test]
@@ -125,30 +112,19 @@ namespace Colombo.Tests.Impl
         {
             var request1 = new TestSideEffectFreeRequest();
             var request2 = new TestSideEffectFreeRequest();
-            var response1 = new TestResponse();
-            response1.CorrelationGuid = request1.CorrelationGuid;
-            var response2 = new TestResponse();
-            response2.CorrelationGuid = request2.CorrelationGuid;
+            var response1 = new TestResponse { CorrelationGuid = request1.CorrelationGuid };
+            var response2 = new TestResponse { CorrelationGuid = request2.CorrelationGuid };
 
             var messageBus = new TestMessageBus(response1, response2);
             var statefulMB = new StatefulMessageBus(messageBus);
             var responseProxy1 = statefulMB.FutureSend(request1);
             var responseProxy2 = statefulMB.FutureSend(request2);
 
-            Assert.That(() => statefulMB.NumberOfSend,
-                Is.EqualTo(0));
-
-            Assert.That(() => responseProxy1.CorrelationGuid,
-                Is.EqualTo(request1.CorrelationGuid));
-
-            Assert.That(() => responseProxy2.CorrelationGuid,
-                Is.EqualTo(request2.CorrelationGuid));
-
-            Assert.That(() => messageBus.NumSendCalled,
-                Is.EqualTo(1));
-
-            Assert.That(() => statefulMB.NumberOfSend,
-                Is.EqualTo(1));
+            Assert.That(statefulMB.NumberOfSend, Is.EqualTo(0));
+            Assert.That(responseProxy1.CorrelationGuid, Is.EqualTo(request1.CorrelationGuid));
+            Assert.That(responseProxy2.CorrelationGuid, Is.EqualTo(request2.CorrelationGuid));
+            Assert.That(messageBus.NumSendCalled, Is.EqualTo(1));
+            Assert.That(statefulMB.NumberOfSend, Is.EqualTo(1));
         }
 
         [Test]
@@ -156,16 +132,14 @@ namespace Colombo.Tests.Impl
         {
             var request1 = new TestSideEffectFreeRequest();
             var request2 = new TestSideEffectFreeRequest();
-            var response1 = new TestResponse();
-            response1.CorrelationGuid = request1.CorrelationGuid;
+            var response1 = new TestResponse { CorrelationGuid = request1.CorrelationGuid };
 
             var messageBus = new TestMessageBus(response1);
             var statefulMB = new StatefulMessageBus(messageBus);
             statefulMB.MaxAllowedNumberOfSend = 1;
             var responseProxy1 = statefulMB.FutureSend(request1);
 
-            Assert.That(() => responseProxy1.CorrelationGuid,
-                Is.EqualTo(request1.CorrelationGuid));
+            Assert.That(responseProxy1.CorrelationGuid, Is.EqualTo(request1.CorrelationGuid));
 
             Assert.That(() => statefulMB.FutureSend(request2),
                 Throws.Exception.TypeOf<ColomboException>()
@@ -176,36 +150,28 @@ namespace Colombo.Tests.Impl
         public void It_should_not_throw_an_exception_when_send_quota_is_not_over()
         {
             var request1 = new TestSideEffectFreeRequest();
-            var response1 = new TestResponse();
-            response1.CorrelationGuid = request1.CorrelationGuid;
+            var response1 = new TestResponse { CorrelationGuid = request1.CorrelationGuid };
 
             var messageBus = new TestMessageBus(response1);
-            var statefulMB = new StatefulMessageBus(messageBus);
-            statefulMB.MaxAllowedNumberOfSend = 1;
+            var statefulMB = new StatefulMessageBus(messageBus) { MaxAllowedNumberOfSend = 1 };
             var responseProxy1 = statefulMB.FutureSend(request1);
 
-            Assert.That(() => responseProxy1.CorrelationGuid,
-                Is.EqualTo(request1.CorrelationGuid));
-
-            Assert.That(() => statefulMB.NumberOfSend,
-                Is.EqualTo(1));
+            Assert.That(responseProxy1.CorrelationGuid, Is.EqualTo(request1.CorrelationGuid));
+            Assert.That(statefulMB.NumberOfSend, Is.EqualTo(1));
         }
 
         [Test]
         public void It_should_not_throw_an_exception_when_send_quota_is_zero_or_negative()
         {
             var request1 = new TestSideEffectFreeRequest();
-            var request2 = new TestSideEffectFreeRequest();
-            var response1 = new TestResponse();
-            response1.CorrelationGuid = request1.CorrelationGuid;
+            var response1 = new TestResponse { CorrelationGuid = request1.CorrelationGuid };
 
             var messageBus = new TestMessageBus(response1);
             var statefulMB = new StatefulMessageBus(messageBus);
             statefulMB.MaxAllowedNumberOfSend = 0;
             var responseProxy1 = statefulMB.FutureSend(request1);
 
-            Assert.That(() => responseProxy1.CorrelationGuid,
-                Is.EqualTo(request1.CorrelationGuid));
+            Assert.That(responseProxy1.CorrelationGuid, Is.EqualTo(request1.CorrelationGuid));
         }
 
         [Test]
@@ -238,8 +204,7 @@ namespace Colombo.Tests.Impl
             catch (Exception ex)
             {
                 var proxyStackStraceLines = ex.StackTrace.Split('\n');
-                Assert.That(() => proxyStackStraceLines[0],
-                    Is.EqualTo(stackTraceOriginalLines[0]));
+                Assert.That(proxyStackStraceLines[0], Is.EqualTo(stackTraceOriginalLines[0]));
             }
         }
 

@@ -44,11 +44,8 @@ namespace Colombo.Tests.Messages
             var healthCheckRequestHandler = new HealthCheckRequestHandler();
             var response = healthCheckRequestHandler.Handle(new HealthCheckRequest());
 
-            Assert.That(() => response,
-                Is.Not.Null);
-
-            Assert.That(() => response,
-                Is.TypeOf<HealthCheckResponse>());
+            Assert.That(response, Is.Not.Null);
+            Assert.That(response, Is.TypeOf<HealthCheckResponse>());
         }
     }
 }

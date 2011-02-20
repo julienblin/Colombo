@@ -39,15 +39,11 @@ namespace Colombo.Tests.Wcf
             ClientRestService.RegisterRequest<TestRequest>();
             ClientRestService.RegisterRequest<TestSideEffectFreeRequest>();
 
-            Assert.That(() => ClientRestService.PostTypeMapping["Test"],
-                Is.EqualTo(typeof(TestRequest)));
-            Assert.That(() => ClientRestService.PostTypeMapping["TestRequest"],
-                Is.EqualTo(typeof(TestRequest)));
+            Assert.That(ClientRestService.PostTypeMapping["Test"], Is.EqualTo(typeof(TestRequest)));
+            Assert.That(ClientRestService.PostTypeMapping["TestRequest"], Is.EqualTo(typeof(TestRequest)));
 
-            Assert.That(() => ClientRestService.GetTypeMapping["TestSideEffectFree"],
-                Is.EqualTo(typeof(TestSideEffectFreeRequest)));
-            Assert.That(() => ClientRestService.GetTypeMapping["TestSideEffectFreeRequest"],
-                Is.EqualTo(typeof(TestSideEffectFreeRequest)));
+            Assert.That(ClientRestService.GetTypeMapping["TestSideEffectFree"], Is.EqualTo(typeof(TestSideEffectFreeRequest)));
+            Assert.That(ClientRestService.GetTypeMapping["TestSideEffectFreeRequest"], Is.EqualTo(typeof(TestSideEffectFreeRequest)));
 
             Assert.IsFalse(ClientRestService.PostTypeMapping.ContainsKey("TestSideEffectFree"));
             Assert.IsFalse(ClientRestService.PostTypeMapping.ContainsKey("TestSideEffectFreeRequest"));
@@ -56,16 +52,16 @@ namespace Colombo.Tests.Wcf
 
             var knownTypes = ClientRestService.GetKnownTypes(null).ToArray();
 
-            Assert.That(() => knownTypes.Length, Is.EqualTo(3));
-            Assert.That(() => knownTypes, Contains.Item(typeof(TestResponse)));
-            Assert.That(() => knownTypes, Contains.Item(typeof(TestRequest)));
-            Assert.That(() => knownTypes, Contains.Item(typeof(TestSideEffectFreeRequest)));
+            Assert.That(knownTypes.Length, Is.EqualTo(3));
+            Assert.That(knownTypes, Contains.Item(typeof(TestResponse)));
+            Assert.That(knownTypes, Contains.Item(typeof(TestRequest)));
+            Assert.That(knownTypes, Contains.Item(typeof(TestSideEffectFreeRequest)));
 
             ClientRestService.ClearRegistrations();
             knownTypes = ClientRestService.GetKnownTypes(null).ToArray();
-            Assert.That(() => knownTypes.Length, Is.EqualTo(0));
-            Assert.That(() => ClientRestService.GetTypeMapping.Count, Is.EqualTo(0));
-            Assert.That(() => ClientRestService.PostTypeMapping.Count, Is.EqualTo(0));
+            Assert.That(knownTypes.Length, Is.EqualTo(0));
+            Assert.That(ClientRestService.GetTypeMapping.Count, Is.EqualTo(0));
+            Assert.That(ClientRestService.PostTypeMapping.Count, Is.EqualTo(0));
         }
 
         [Test]

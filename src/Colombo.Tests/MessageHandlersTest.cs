@@ -36,26 +36,24 @@ namespace Colombo.Tests
         public void RequestHandler_inherited_functionality_should_work()
         {
             var requestHandler = new TestRequestHandler();
-            var request = new TestRequest();
-            request.CorrelationGuid = CorrelationGuid;
+            var request = new TestRequest { CorrelationGuid = CorrelationGuid };
             request.Context["SomeKey"] = "SomeValue";
 
             requestHandler.Handle(request);
-            Assert.That(() => requestHandler.HandleWasCalled,
-                Is.True);
+
+            Assert.That(requestHandler.HandleWasCalled, Is.True);
         }
 
         [Test]
         public void SideEffectFreeRequestHandler_inherited_functionality_should_work()
         {
             var sefRequestHandler = new TestSideEffectFreeRequestHandler();
-            var sefRequest = new TestSideEffectFreeRequest();
-            sefRequest.CorrelationGuid = CorrelationGuid;
+            var sefRequest = new TestSideEffectFreeRequest { CorrelationGuid = CorrelationGuid };
             sefRequest.Context["SomeKey"] = "SomeValue";
 
             sefRequestHandler.Handle(sefRequest);
-            Assert.That(() => sefRequestHandler.HandleWasCalled,
-                Is.True);
+
+            Assert.That(sefRequestHandler.HandleWasCalled,Is.True);
         }
 
 
@@ -70,14 +68,11 @@ namespace Colombo.Tests
             protected override void Handle()
             {
                 HandleWasCalled = true;
-                Assert.That(() => Response.CorrelationGuid,
-                    Is.EqualTo(CorrelationGuid));
+                Assert.That(Response.CorrelationGuid, Is.EqualTo(CorrelationGuid));
 
                 var newRequest = CreateRequest<TestRequest>();
-                Assert.That(() => newRequest.CorrelationGuid,
-                    Is.EqualTo(Request.CorrelationGuid));
-                Assert.That(() => newRequest.Context,
-                    Is.EqualTo(Request.Context));
+                Assert.That(newRequest.CorrelationGuid, Is.EqualTo(Request.CorrelationGuid));
+                Assert.That(newRequest.Context, Is.EqualTo(Request.Context));
             }
         }
 
@@ -90,15 +85,11 @@ namespace Colombo.Tests
             protected override void Handle()
             {
                 HandleWasCalled = true;
-                Assert.That(() => Response.CorrelationGuid,
-                    Is.EqualTo(CorrelationGuid));
+                Assert.That(Response.CorrelationGuid, Is.EqualTo(CorrelationGuid));
 
                 var newRequest = CreateRequest<TestRequest>();
-                Assert.That(() => newRequest.CorrelationGuid,
-                    Is.EqualTo(Request.CorrelationGuid));
-                Assert.That(() => newRequest.Context,
-                    Is.EqualTo(Request.Context));
-
+                Assert.That(newRequest.CorrelationGuid, Is.EqualTo(Request.CorrelationGuid));
+                Assert.That(newRequest.Context, Is.EqualTo(Request.Context));
             }
         }
 

@@ -46,17 +46,15 @@ namespace Colombo.Tests.Interceptors
                 invocation.Proceed();
                 LastCall.Do(new ProceedDelegate(() =>
                 {
-                    Assert.That(() => Transaction.Current,
-                        Is.Not.Null);
+                    Assert.That(Transaction.Current, Is.Not.Null);
                 }));
             }).Verify(() =>
             {
-                Assert.That(() => Transaction.Current,
+                Assert.That(Transaction.Current,
                         Is.Null);
                 var interceptor = new TransactionScopeRequestHandleInterceptor();
                 interceptor.Intercept(invocation);
-                Assert.That(() => Transaction.Current,
-                        Is.Null);
+                Assert.That(Transaction.Current, Is.Null);
             });
         }
 

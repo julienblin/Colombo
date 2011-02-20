@@ -56,8 +56,7 @@ namespace Colombo.Tests.Interceptors
                 invocation.Proceed();
             }).Verify(() =>
             {
-                var interceptor = new CacheHandleInterceptor(cache);
-                interceptor.Logger = GetConsoleLogger();
+                var interceptor = new CacheHandleInterceptor(cache) { Logger = GetConsoleLogger() };
                 interceptor.Intercept(invocation);
             });
         }
@@ -80,8 +79,7 @@ namespace Colombo.Tests.Interceptors
                 cache.Flush("CacheSegment", typeof(TestResponse2));
             }).Verify(() =>
             {
-                var interceptor = new CacheHandleInterceptor(cache);
-                interceptor.Logger = GetConsoleLogger();
+                var interceptor = new CacheHandleInterceptor(cache) { Logger = GetConsoleLogger() };
                 interceptor.Intercept(invocation);
             });
         }
@@ -93,7 +91,7 @@ namespace Colombo.Tests.Interceptors
 #pragma warning disable 3016 // CLS Compliant
         [InvalidateCachedInstancesOf(typeof(TestResponse), typeof(TestResponse2))]
 #pragma warning restore 3016
-        [CacheSegment(Name="CacheSegment")]
+        [CacheSegment(Name = "CacheSegment")]
         public class TestRequestInvalidate : Request<TestResponse>
         {
         }

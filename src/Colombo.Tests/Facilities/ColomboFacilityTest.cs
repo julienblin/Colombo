@@ -48,21 +48,14 @@ namespace Colombo.Tests.Facilities
             var container = new WindsorContainer();
             container.AddFacility<ColomboFacility>();
 
-            Assert.That(() => container.Resolve<IMessageBus>(),
-                Is.Not.Null);
-            Assert.That(() => container.Resolve<IRequestProcessor>(),
-                Is.Not.Null);
-            Assert.That(() => container.Resolve<ILocalRequestProcessor>(),
-                Is.Not.Null);
-            Assert.That(() => container.Resolve<IRequestHandlerFactory>(),
-                Is.Not.Null);
-            Assert.That(() => container.Resolve<IColomboStatCollector>(),
-                Is.Not.Null);
+            Assert.That(container.Resolve<IMessageBus>(), Is.Not.Null);
+            Assert.That(container.Resolve<IRequestProcessor>(), Is.Not.Null);
+            Assert.That(container.Resolve<ILocalRequestProcessor>(), Is.Not.Null);
+            Assert.That(container.Resolve<IRequestHandlerFactory>(), Is.Not.Null);
+            Assert.That(container.Resolve<IColomboStatCollector>(), Is.Not.Null);
 
-            Assert.That(() => container.Resolve<IStatefulMessageBus>(),
-                Is.Not.Null);
-            Assert.That(() => container.Resolve<IStatefulMessageBus>(),
-                Is.Not.SameAs(container.Resolve<IStatefulMessageBus>()));
+            Assert.That(container.Resolve<IStatefulMessageBus>(), Is.Not.Null);
+            Assert.That(container.Resolve<IStatefulMessageBus>(), Is.Not.SameAs(container.Resolve<IStatefulMessageBus>()));
         }
 
         [Test]
@@ -71,33 +64,25 @@ namespace Colombo.Tests.Facilities
             var container = new WindsorContainer();
             container.AddFacility<ColomboFacility>();
 
-            Assert.That(() => WcfServices.Kernel,
-                Is.SameAs(container.Kernel));
+            Assert.That(WcfServices.Kernel, Is.SameAs(container.Kernel));
         }
 
         [Test]
         public void It_should_register_necessaries_components_with_ClientOnly_option()
         {
             var container = new WindsorContainer();
-            container.AddFacility<ColomboFacility>(f =>
-            {
-                f.ClientOnly();
-            });
+            container.AddFacility<ColomboFacility>(f => f.ClientOnly());
 
-            Assert.That(() => container.Resolve<IMessageBus>(),
-                Is.Not.Null);
+            Assert.That(container.Resolve<IMessageBus>(), Is.Not.Null);
 
-            Assert.That(() => container.Resolve<IStatefulMessageBus>(),
-                Is.Not.Null);
-            Assert.That(() => container.Resolve<IStatefulMessageBus>(),
-                Is.Not.SameAs(container.Resolve<IStatefulMessageBus>()));
+            Assert.That(container.Resolve<IStatefulMessageBus>(), Is.Not.Null);
+            Assert.That(container.Resolve<IStatefulMessageBus>(), Is.Not.SameAs(container.Resolve<IStatefulMessageBus>()));
 
             var messageProcessors = container.ResolveAll<IRequestProcessor>();
-            Assert.That(() => messageProcessors.Length,
-                Is.AtLeast(1));
+            Assert.That(messageProcessors.Length, Is.AtLeast(1));
             foreach (var processor in messageProcessors)
             {
-                Assert.That(() => processor,
+                Assert.That(processor,
                 Is.Not.AssignableFrom<ILocalRequestProcessor>());
             }
 
@@ -113,14 +98,13 @@ namespace Colombo.Tests.Facilities
             var container = new WindsorContainer();
             container.AddFacility<ColomboFacility>();
 
-            Assert.That(() => container.Resolve<IStatefulMessageBus>().MaxAllowedNumberOfSend,
+            Assert.That(container.Resolve<IStatefulMessageBus>().MaxAllowedNumberOfSend,
                 Is.EqualTo(ColomboFacility.DefaultMaxAllowedNumberOfSendForStatefulMessageBus));
 
             container = new WindsorContainer();
             container.AddFacility<ColomboFacility>(f => f.MaxAllowedNumberOfSendForStatefulMessageBus(50));
 
-            Assert.That(() => container.Resolve<IStatefulMessageBus>().MaxAllowedNumberOfSend,
-                Is.EqualTo(50));
+            Assert.That(container.Resolve<IStatefulMessageBus>().MaxAllowedNumberOfSend, Is.EqualTo(50));
         }
 
         [Test]
@@ -130,21 +114,17 @@ namespace Colombo.Tests.Facilities
             container.AddFacility<ColomboFacility>();
 
             var wcfClientMessageProcessor = (WcfClientRequestProcessor)container.ResolveAll<IRequestProcessor>().Where(x => x is WcfClientRequestProcessor).FirstOrDefault();
-            Assert.That(() => wcfClientMessageProcessor,
-                Is.Not.Null);
+            Assert.That(wcfClientMessageProcessor, Is.Not.Null);
 
-            Assert.That(() => wcfClientMessageProcessor.HealthCheckHeartBeatInSeconds,
+            Assert.That(wcfClientMessageProcessor.HealthCheckHeartBeatInSeconds,
                 Is.EqualTo(ColomboFacility.DefaultHealthCheckHeartBeatInSeconds));
 
             container = new WindsorContainer();
             container.AddFacility<ColomboFacility>(f => f.HealthCheckHeartBeatInSeconds(50));
 
             wcfClientMessageProcessor = (WcfClientRequestProcessor)container.ResolveAll<IRequestProcessor>().Where(x => x is WcfClientRequestProcessor).FirstOrDefault();
-            Assert.That(() => wcfClientMessageProcessor,
-                Is.Not.Null);
-
-            Assert.That(() => wcfClientMessageProcessor.HealthCheckHeartBeatInSeconds,
-                Is.EqualTo(50));
+            Assert.That(wcfClientMessageProcessor, Is.Not.Null);
+            Assert.That(wcfClientMessageProcessor.HealthCheckHeartBeatInSeconds, Is.EqualTo(50));
         }
 
         [Test]
@@ -153,7 +133,7 @@ namespace Colombo.Tests.Facilities
             var container = new WindsorContainer();
             container.AddFacility<ColomboFacility>();
 
-            Assert.That(() => container.Resolve<ISideEffectFreeRequestHandler<HealthCheckRequest, HealthCheckResponse>>(),
+            Assert.That(container.Resolve<ISideEffectFreeRequestHandler<HealthCheckRequest, HealthCheckResponse>>(),
                 Is.TypeOf<HealthCheckRequestHandler>());
 
             container = new WindsorContainer();
@@ -169,7 +149,7 @@ namespace Colombo.Tests.Facilities
             var container = new WindsorContainer();
             container.AddFacility<ColomboFacility>();
 
-            Assert.That(() => container.Resolve<ISideEffectFreeRequestHandler<GetStatsRequest, GetStatsResponse>>(),
+            Assert.That(container.Resolve<ISideEffectFreeRequestHandler<GetStatsRequest, GetStatsResponse>>(),
                 Is.TypeOf<GetStatsRequestHandler>());
 
             container = new WindsorContainer();
@@ -188,10 +168,7 @@ namespace Colombo.Tests.Facilities
             Assert.That(container.ResolveAll<IRequestHandlerHandleInterceptor>().Any(x => x is TransactionScopeRequestHandleInterceptor));
 
             container = new WindsorContainer();
-            container.AddFacility<ColomboFacility>(f =>
-            {
-                f.DoNotHandleInsideTransactionScope();
-            });
+            container.AddFacility<ColomboFacility>(f => f.DoNotHandleInsideTransactionScope());
             Assert.That(!container.ResolveAll<IRequestHandlerHandleInterceptor>().Any(x => x is TransactionScopeRequestHandleInterceptor));
         }
 
@@ -205,17 +182,11 @@ namespace Colombo.Tests.Facilities
             Assert.That(container.ResolveAll<IRequestHandlerHandleInterceptor>().Any(x => x is CurrentCultureHandleInterceptor));
 
             container = new WindsorContainer();
-            container.AddFacility<ColomboFacility>(f =>
-            {
-                f.ClientOnly();
-            });
+            container.AddFacility<ColomboFacility>(f => f.ClientOnly());
             Assert.That(container.ResolveAll<IMessageBusSendInterceptor>().Any(x => x is CurrentCultureSendInterceptor));
 
             container = new WindsorContainer();
-            container.AddFacility<ColomboFacility>(f =>
-            {
-                f.DoNotManageCurrentCulture();
-            });
+            container.AddFacility<ColomboFacility>(f => f.DoNotManageCurrentCulture());
             Assert.That(!container.ResolveAll<IMessageBusSendInterceptor>().Any(x => x is CurrentCultureSendInterceptor));
             Assert.That(!container.ResolveAll<IRequestHandlerHandleInterceptor>().Any(x => x is CurrentCultureHandleInterceptor));
         }
@@ -229,10 +200,7 @@ namespace Colombo.Tests.Facilities
             Assert.That(container.ResolveAll<IRequestHandlerHandleInterceptor>().Any(x => x is RequiredInContextHandleInterceptor));
 
             container = new WindsorContainer();
-            container.AddFacility<ColomboFacility>(f =>
-            {
-                f.DoNotEnforceRequiredInContext();
-            });
+            container.AddFacility<ColomboFacility>(f => f.DoNotEnforceRequiredInContext());
             Assert.That(!container.ResolveAll<IRequestHandlerHandleInterceptor>().Any(x => x is RequiredInContextHandleInterceptor));
         }
 
@@ -246,10 +214,7 @@ namespace Colombo.Tests.Facilities
             Assert.That(container.ResolveAll<IRequestHandlerHandleInterceptor>().Any(x => x is DataAnnotationsValidationHandleInterceptor));
 
             container = new WindsorContainer();
-            container.AddFacility<ColomboFacility>(f =>
-            {
-                f.DoNotValidateDataAnnotations();
-            });
+            container.AddFacility<ColomboFacility>(f => f.DoNotValidateDataAnnotations());
             Assert.That(!container.ResolveAll<IMessageBusSendInterceptor>().Any(x => x is DataAnnotationsValidationSendInterceptor));
             Assert.That(!container.ResolveAll<IRequestHandlerHandleInterceptor>().Any(x => x is DataAnnotationsValidationHandleInterceptor));
         }
@@ -263,10 +228,7 @@ namespace Colombo.Tests.Facilities
             Assert.That(container.ResolveAll<IColomboAlerter>().Any(x => x is EventLogColomboAlerter));
 
             container = new WindsorContainer();
-            container.AddFacility<ColomboFacility>(f =>
-            {
-                f.DoNotAlertInApplicationEventLog();
-            });
+            container.AddFacility<ColomboFacility>(f => f.DoNotAlertInApplicationEventLog());
             Assert.That(!container.ResolveAll<IColomboAlerter>().Any(x => x is EventLogColomboAlerter));
         }
 
@@ -279,10 +241,7 @@ namespace Colombo.Tests.Facilities
             Assert.That(container.ResolveAll<IMessageBusSendInterceptor>().Any(x => x is SLASendInterceptor));
 
             container = new WindsorContainer();
-            container.AddFacility<ColomboFacility>(f =>
-            {
-                f.DoNotManageSLA();
-            });
+            container.AddFacility<ColomboFacility>(f => f.DoNotManageSLA());
             Assert.That(!container.ResolveAll<IMessageBusSendInterceptor>().Any(x => x is SLASendInterceptor));
         }
 
@@ -311,10 +270,7 @@ namespace Colombo.Tests.Facilities
             Assert.That(!container.ResolveAll<IMessageBusSendInterceptor>().Any(x => x is PerfCounterSendInterceptor));
 
             container = new WindsorContainer();
-            container.AddFacility<ColomboFacility>(f =>
-            {
-                f.MonitorWithPerformanceCounters();
-            });
+            container.AddFacility<ColomboFacility>(f => f.MonitorWithPerformanceCounters());
             Assert.That(container.ResolveAll<IRequestHandlerHandleInterceptor>().Any(x => x is PerfCounterHandleInterceptor));
             Assert.That(container.ResolveAll<IMessageBusSendInterceptor>().Any(x => x is PerfCounterSendInterceptor));
         }
@@ -375,14 +331,14 @@ namespace Colombo.Tests.Facilities
         {
             var container = new WindsorContainer();
             container.AddFacility<ColomboFacility>();
-            Assert.That(() => container.Resolve<IMessageBus>(), Is.TypeOf<MessageBus>());
+            Assert.That(container.Resolve<IMessageBus>(), Is.TypeOf<MessageBus>());
             Assert.That(() => container.Resolve<IStubMessageBus>(), Throws.Exception.TypeOf<ComponentNotFoundException>());
 
             container = new WindsorContainer();
             container.AddFacility<ColomboFacility>(f => f.TestSupportMode());
 
-            Assert.That(() => container.Resolve<IMessageBus>(), Is.TypeOf<StubMessageBus>());
-            Assert.That(() => container.Resolve<IStubMessageBus>(), Is.TypeOf<StubMessageBus>());
+            Assert.That(container.Resolve<IMessageBus>(), Is.TypeOf<StubMessageBus>());
+            Assert.That(container.Resolve<IStubMessageBus>(), Is.TypeOf<StubMessageBus>());
         }
 
         [Test]
@@ -417,19 +373,14 @@ namespace Colombo.Tests.Facilities
             var container = new WindsorContainer();
             container.AddFacility<ColomboFacility>();
 
-            Assert.That(() => container.Resolve<IStatefulMessageBus>(),
-                Is.Not.Null);
-            Assert.That(() => container.Resolve<IStatefulMessageBus>(),
-                Is.Not.SameAs(container.Resolve<IStatefulMessageBus>()));
+            Assert.That(container.Resolve<IStatefulMessageBus>(), Is.Not.Null);
+            Assert.That(container.Resolve<IStatefulMessageBus>(), Is.Not.SameAs(container.Resolve<IStatefulMessageBus>()));
 
             container = new WindsorContainer();
-            container.AddFacility<ColomboFacility>(
-                f => f.StatefulMessageBusLifestyle(typeof (SingletonLifestyleManager)));
+            container.AddFacility<ColomboFacility>(f => f.StatefulMessageBusLifestyle(typeof (SingletonLifestyleManager)));
 
-            Assert.That(() => container.Resolve<IStatefulMessageBus>(),
-                Is.Not.Null);
-            Assert.That(() => container.Resolve<IStatefulMessageBus>(),
-                Is.SameAs(container.Resolve<IStatefulMessageBus>()));
+            Assert.That(container.Resolve<IStatefulMessageBus>(), Is.Not.Null);
+            Assert.That(container.Resolve<IStatefulMessageBus>(), Is.SameAs(container.Resolve<IStatefulMessageBus>()));
         }
     }
 }

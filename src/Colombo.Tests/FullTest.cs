@@ -66,15 +66,11 @@ namespace Colombo.Tests
                 var response1 = responses.GetFrom(request1);
                 var response2 = responses.GetFrom(request2);
 
-                Assert.That(() => response1.Name,
-                    Is.EqualTo(request1.Name));
-                Assert.That(() => response1.CorrelationGuid,
-                    Is.EqualTo(request1.CorrelationGuid));
+                Assert.That(response1.Name, Is.EqualTo(request1.Name));
+                Assert.That(response1.CorrelationGuid, Is.EqualTo(request1.CorrelationGuid));
 
-                Assert.That(() => response2.Name,
-                    Is.EqualTo(request2.Name));
-                Assert.That(() => response2.CorrelationGuid,
-                    Is.EqualTo(request2.CorrelationGuid));
+                Assert.That(response2.Name, Is.EqualTo(request2.Name));
+                Assert.That(response2.CorrelationGuid, Is.EqualTo(request2.CorrelationGuid));
             }
         }
 
@@ -107,15 +103,11 @@ namespace Colombo.Tests
                 var response1 = messageBus.FutureSend(request1);
                 var response2 = messageBus.FutureSend(request2);
 
-                Assert.That(() => response1.Name,
-                    Is.EqualTo(request1.Name));
-                Assert.That(() => response1.CorrelationGuid,
-                    Is.EqualTo(request1.CorrelationGuid));
+                Assert.That(response1.Name, Is.EqualTo(request1.Name));
+                Assert.That(response1.CorrelationGuid, Is.EqualTo(request1.CorrelationGuid));
 
-                Assert.That(() => response2.Name,
-                    Is.EqualTo(request2.Name));
-                Assert.That(() => response2.CorrelationGuid,
-                    Is.EqualTo(request2.CorrelationGuid));
+                Assert.That(response2.Name, Is.EqualTo(request2.Name));
+                Assert.That(response2.CorrelationGuid, Is.EqualTo(request2.CorrelationGuid));
             }
         }
 
@@ -158,25 +150,17 @@ namespace Colombo.Tests
                 var response3 = responses.GetFrom(request3);
                 var response4 = responses.GetFrom(request4);
 
-                Assert.That(() => response1.Name,
-                    Is.EqualTo(request1.Name));
-                Assert.That(() => response1.CorrelationGuid,
-                    Is.EqualTo(request1.CorrelationGuid));
+                Assert.That(response1.Name, Is.EqualTo(request1.Name));
+                Assert.That(response1.CorrelationGuid, Is.EqualTo(request1.CorrelationGuid));
 
-                Assert.That(() => response2.Name,
-                    Is.EqualTo(request2.Name));
-                Assert.That(() => response2.CorrelationGuid,
-                    Is.EqualTo(request2.CorrelationGuid));
+                Assert.That(response2.Name, Is.EqualTo(request2.Name));
+                Assert.That(response2.CorrelationGuid, Is.EqualTo(request2.CorrelationGuid));
 
-                Assert.That(() => response3.Name,
-                    Is.EqualTo(request3.Name));
-                Assert.That(() => response3.CorrelationGuid,
-                    Is.EqualTo(request3.CorrelationGuid));
+                Assert.That(response3.Name, Is.EqualTo(request3.Name));
+                Assert.That(response3.CorrelationGuid, Is.EqualTo(request3.CorrelationGuid));
 
-                Assert.That(() => response4.Name,
-                    Is.EqualTo(request4.Name));
-                Assert.That(() => response4.CorrelationGuid,
-                    Is.EqualTo(request4.CorrelationGuid));
+                Assert.That(response4.Name, Is.EqualTo(request4.Name));
+                Assert.That(response4.CorrelationGuid, Is.EqualTo(request4.CorrelationGuid));
             }
         }
 

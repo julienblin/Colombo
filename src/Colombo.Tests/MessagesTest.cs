@@ -76,8 +76,7 @@ namespace Colombo.Tests
         {
             var options = new ProxyGenerationOptions(new NonVirtualCheckProxyGenerationHook());
             var proxyGen = new ProxyGenerator();
-            Assert.That(() => proxyGen.CreateClassProxy<Response>(options),
-                Is.Not.Null);
+            Assert.That(proxyGen.CreateClassProxy<Response>(options), Is.Not.Null);
         }
 
         [Test]
@@ -85,8 +84,7 @@ namespace Colombo.Tests
         {
             var options = new ProxyGenerationOptions(new NonVirtualCheckProxyGenerationHook());
             var proxyGen = new ProxyGenerator();
-            Assert.That(() => proxyGen.CreateClassProxy<ValidatedResponse>(options),
-                Is.Not.Null);
+            Assert.That(proxyGen.CreateClassProxy<ValidatedResponse>(options), Is.Not.Null);
         }
 
         [Test]

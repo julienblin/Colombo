@@ -62,19 +62,13 @@ namespace Colombo.Tests.Caching.Impl
 
             cache.Store(null, "foo", @object1, new TimeSpan(1, 0, 0));
 
-            Assert.That(() => cache.Get(null, typeof(object), "foo"),
-                Is.SameAs(@object1));
-
-            Assert.That(() => cache.Get(null, typeof(object), "foo"),
-                Is.SameAs(@object1));
-
-            Assert.That(() => cache.Get(null, typeof(object), "bar"),
-                Is.Null);
+            Assert.That(cache.Get(null, typeof(object), "foo"), Is.SameAs(@object1));
+            Assert.That(cache.Get(null, typeof(object), "foo"), Is.SameAs(@object1));
+            Assert.That(cache.Get(null, typeof(object), "bar"), Is.Null);
 
             var @object2 = new object();
             cache.Store("another", "foo", @object2, new TimeSpan(1, 0, 0));
-            Assert.That(() => cache.Get("another", typeof(object), "foo"),
-                Is.Not.SameAs(@object1));
+            Assert.That(cache.Get("another", typeof(object), "foo"), Is.Not.SameAs(@object1));
         }
 
         [Test]
@@ -86,13 +80,11 @@ namespace Colombo.Tests.Caching.Impl
 
             cache.Store(null, "foo", @object, new TimeSpan(0, 0, 0, 0, 500));
 
-            Assert.That(() => cache.Get(null, typeof(object), "foo"),
-                Is.SameAs(@object));
+            Assert.That(cache.Get(null, typeof(object), "foo"), Is.SameAs(@object));
 
             Thread.Sleep(1000);
 
-            Assert.That(() => cache.Get(null, typeof(object), "foo"),
-                Is.Null);
+            Assert.That(cache.Get(null, typeof(object), "foo"), Is.Null);
         }
 
         [Test]
@@ -109,8 +101,7 @@ namespace Colombo.Tests.Caching.Impl
             cache.ScavengingTimerElapsed(null, null);
 
             Assert.AreEqual(1, cache.Count);
-            Assert.That(() => cache.Get("asegment", typeof(object), "bar"),
-                Is.Not.Null);
+            Assert.That(cache.Get("asegment", typeof(object), "bar"), Is.Not.Null);
         }
 
         [Test]

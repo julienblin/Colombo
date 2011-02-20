@@ -52,13 +52,11 @@ namespace Colombo.Tests.Interceptors
 
                 request.Context[CurrentCultureConstant.CultureContextKey] = "ar-LB";
                 interceptor.Intercept(invocation);
-                Assert.That(() => Thread.CurrentThread.CurrentUICulture,
-                    Is.EqualTo(CultureInfo.GetCultureInfo("ar-LB")));
+                Assert.That(Thread.CurrentThread.CurrentUICulture, Is.EqualTo(CultureInfo.GetCultureInfo("ar-LB")));
 
                 request.Context[CurrentCultureConstant.CultureContextKey] = "en-ZW";
                 interceptor.Intercept(invocation);
-                Assert.That(() => Thread.CurrentThread.CurrentUICulture,
-                    Is.EqualTo(CultureInfo.GetCultureInfo("en-ZW")));
+                Assert.That(Thread.CurrentThread.CurrentUICulture, Is.EqualTo(CultureInfo.GetCultureInfo("en-ZW")));
             });
         }
 
@@ -79,8 +77,7 @@ namespace Colombo.Tests.Interceptors
                 var interceptor = new CurrentCultureHandleInterceptor();
 
                 interceptor.Intercept(invocation);
-                Assert.That(() => Thread.CurrentThread.CurrentUICulture,
-                    Is.EqualTo(CultureInfo.InvariantCulture));
+                Assert.That(Thread.CurrentThread.CurrentUICulture, Is.EqualTo(CultureInfo.InvariantCulture));
             });
         }
 

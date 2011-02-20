@@ -37,22 +37,17 @@ namespace Colombo.Tests.Wcf
         public void It_should_check_WCF_client_configuration_to_determine_if_it_can_create_Channel()
         {
             var factory = new ColomboServiceFactory();
-            Assert.That(() => factory.CanCreateChannelForRequestGroup("Colombo.Tests"),
-                Is.True);
-            Assert.That(() => factory.CanCreateChannelForRequestGroup("AnotherGroupName"),
-                Is.False);
+            Assert.That(factory.CanCreateChannelForRequestGroup("Colombo.Tests"), Is.True);
+            Assert.That(factory.CanCreateChannelForRequestGroup("AnotherGroupName"), Is.False);
         }
 
         [Test]
         public void It_should_return_address_from_WCF_configuration()
         {
             var factory = new ColomboServiceFactory();
-            Assert.That(() => factory.GetAddressForRequestGroup("Colombo.Tests"),
-                Is.EqualTo(@"http://localhost/Colombo.svc"));
-            Assert.That(() => factory.GetAddressForRequestGroup("AnotherAssembly"),
-                Is.EqualTo(@"http://somewhereelse/Colombo.svc"));
-            Assert.That(() => factory.GetAddressForRequestGroup("SomethingElse"),
-                Is.Null);
+            Assert.That(factory.GetAddressForRequestGroup("Colombo.Tests"), Is.EqualTo(@"http://localhost/Colombo.svc"));
+            Assert.That(factory.GetAddressForRequestGroup("AnotherAssembly"), Is.EqualTo(@"http://somewhereelse/Colombo.svc"));
+            Assert.That(factory.GetAddressForRequestGroup("SomethingElse"), Is.Null);
         }
 
         [Test]
@@ -62,8 +57,7 @@ namespace Colombo.Tests.Wcf
 
             var wcfService = factory.CreateChannel("Colombo.Tests");
 
-            Assert.That(() => ((IClientChannel)wcfService).RemoteAddress.Uri,
-                Is.EqualTo(new Uri(@"http://localhost/Colombo.svc")));
+            Assert.That(((IClientChannel)wcfService).RemoteAddress.Uri, Is.EqualTo(new Uri(@"http://localhost/Colombo.svc")));
 
             Assert.That(() => factory.CreateChannel("SomethingElse"),
                 Throws.Exception.TypeOf<ColomboException>()
@@ -76,14 +70,9 @@ namespace Colombo.Tests.Wcf
             var factory = new ColomboServiceFactory();
             var allChannels = factory.CreateChannelsForAllEndPoints().ToArray();
 
-            Assert.That(() => allChannels.Length,
-                Is.EqualTo(3));
-
-            Assert.That(() => ((IClientChannel)allChannels[0]).RemoteAddress.Uri,
-                Is.EqualTo(new Uri(@"http://localhost/Colombo.svc")));
-
-            Assert.That(() => ((IClientChannel)allChannels[1]).RemoteAddress.Uri,
-                Is.EqualTo(new Uri(@"http://somewhereelse/Colombo.svc")));
+            Assert.That(allChannels.Length, Is.EqualTo(3));
+            Assert.That(((IClientChannel)allChannels[0]).RemoteAddress.Uri, Is.EqualTo(new Uri(@"http://localhost/Colombo.svc")));
+            Assert.That(((IClientChannel)allChannels[1]).RemoteAddress.Uri, Is.EqualTo(new Uri(@"http://somewhereelse/Colombo.svc")));
         }
     }
 }

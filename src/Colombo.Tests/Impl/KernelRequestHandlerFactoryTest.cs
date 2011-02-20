@@ -54,10 +54,8 @@ namespace Colombo.Tests.Impl
             );
 
             var factory = new KernelRequestHandlerFactory(kernel);
-            Assert.That(() => factory.CanCreateRequestHandlerFor(new Request1()),
-                Is.True);
-            Assert.That(() => factory.CanCreateRequestHandlerFor(new Request2()),
-                Is.False);
+            Assert.That(factory.CanCreateRequestHandlerFor(new Request1()), Is.True);
+            Assert.That(factory.CanCreateRequestHandlerFor(new Request2()), Is.False);
         }
 
         public class Request1 : Request<TestResponse>
@@ -88,8 +86,7 @@ namespace Colombo.Tests.Impl
             );
 
             var factory = new KernelRequestHandlerFactory(kernel);
-            Assert.That(() => factory.CreateRequestHandlerFor(new Request1()),
-                Is.SameAs(requestHandler1));
+            Assert.That(factory.CreateRequestHandlerFor(new Request1()), Is.SameAs(requestHandler1));
         }
 
         [Test]
@@ -104,15 +101,12 @@ namespace Colombo.Tests.Impl
             );
 
             var factory = new KernelRequestHandlerFactory(kernel);
-            Assert.That(() => factory.CreateRequestHandlerFor(new SideEffectFreeRequest1()),
-                Is.SameAs(requestHandler1));
+            Assert.That(factory.CreateRequestHandlerFor(new SideEffectFreeRequest1()), Is.SameAs(requestHandler1));
         }
 
         [Test]
         public void It_should_throw_an_exception_when_no_RequestHandlers_can_be_created()
         {
-            var mocks = new MockRepository();
-
             var kernel = new DefaultKernel();
             var request1 = new Request1();
 

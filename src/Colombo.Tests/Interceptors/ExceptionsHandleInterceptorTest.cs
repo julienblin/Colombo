@@ -57,9 +57,7 @@ namespace Colombo.Tests.Interceptors
 
             }).Verify(() =>
             {
-                var interceptor = new ExceptionsHandleInterceptor();
-                interceptor.Logger = logger;
-                interceptor.Alerters = new[] { alerter1 };
+                var interceptor = new ExceptionsHandleInterceptor { Logger = logger, Alerters = new[] { alerter1 } };
                 interceptor.Intercept(invocation);
             });
         }
@@ -85,10 +83,8 @@ namespace Colombo.Tests.Interceptors
                 LastCall.IgnoreArguments();
             }).Verify(() =>
             {
-                var interceptor = new ExceptionsHandleInterceptor();
-                interceptor.Logger = logger;
-                Assert.That(() => interceptor.Intercept(invocation),
-                            Throws.Exception);
+                var interceptor = new ExceptionsHandleInterceptor { Logger = logger };
+                Assert.That(() => interceptor.Intercept(invocation), Throws.Exception);
             });
         }
 
@@ -123,10 +119,8 @@ namespace Colombo.Tests.Interceptors
                 );
             }).Verify(() =>
             {
-                var interceptor = new ExceptionsHandleInterceptor();
-                interceptor.Alerters = new[] { alerter1, alerter2 };
-                Assert.That(() => interceptor.Intercept(invocation),
-                            Throws.Exception);
+                var interceptor = new ExceptionsHandleInterceptor { Alerters = new[] { alerter1, alerter2 } };
+                Assert.That(() => interceptor.Intercept(invocation), Throws.Exception);
             });
         }
 

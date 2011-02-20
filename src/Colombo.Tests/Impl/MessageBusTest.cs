@@ -50,7 +50,7 @@ namespace Colombo.Tests.Impl
                 Throws.Exception.TypeOf<ArgumentException>()
                 .With.Message.Contains("requestProcessors"));
 
-            var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor });
+            new MessageBus(new IRequestProcessor[] { requestProcessor });
         }
 
         [Test]
@@ -67,8 +67,8 @@ namespace Colombo.Tests.Impl
                 Expect.Call(requestProcessor.CanProcess(request)).Return(false);
             }).Verify(() =>
             {
-                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor });
-                messageBus.Logger = GetConsoleLogger();
+                var messageBus = new MessageBus(new[] { requestProcessor }) { Logger = GetConsoleLogger() };
+
                 Assert.That(() => messageBus.Send(request),
                     Throws.Exception.TypeOf<ColomboException>()
                     .With.Message.Contains(requestProcessor.GetType().Name));
@@ -93,8 +93,8 @@ namespace Colombo.Tests.Impl
                 Expect.Call(requestProcessor2.CanProcess(request2)).Return(false);
             }).Verify(() =>
             {
-                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor1, requestProcessor2 });
-                messageBus.Logger = GetConsoleLogger();
+                var messageBus = new MessageBus(new[] { requestProcessor1, requestProcessor2 }) { Logger = GetConsoleLogger() };
+
                 Assert.That(() => messageBus.Send(request1, request2),
                     Throws.Exception.TypeOf<ColomboException>()
                     .With.Message.Contains(requestProcessor1.GetType().Name)
@@ -117,8 +117,8 @@ namespace Colombo.Tests.Impl
                 Expect.Call(requestProcessor2.CanProcess(request)).Return(true);
             }).Verify(() =>
             {
-                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor1, requestProcessor2 });
-                messageBus.Logger = GetConsoleLogger();
+                var messageBus = new MessageBus(new[] { requestProcessor1, requestProcessor2 }) { Logger = GetConsoleLogger() };
+
                 Assert.That(() => messageBus.Send(request),
                     Throws.Exception.TypeOf<ColomboException>()
                     .With.Message.Contains(requestProcessor1.GetType().Name)
@@ -144,8 +144,8 @@ namespace Colombo.Tests.Impl
                 Expect.Call(requestProcessor2.CanProcess(request2)).Return(true);
             }).Verify(() =>
             {
-                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor1, requestProcessor2 });
-                messageBus.Logger = GetConsoleLogger();
+                var messageBus = new MessageBus(new[] { requestProcessor1, requestProcessor2 }) { Logger = GetConsoleLogger() };
+
                 Assert.That(() => messageBus.Send(request1, request2),
                     Throws.Exception.TypeOf<ColomboException>()
                     .With.Message.Contains(requestProcessor1.GetType().Name)
@@ -175,10 +175,9 @@ namespace Colombo.Tests.Impl
                 Expect.Call(requestProcessor2.Process(requests)).Return(responses);
             }).Verify(() =>
             {
-                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor1, requestProcessor2 });
-                messageBus.Logger = GetConsoleLogger();
-                Assert.That(() => messageBus.Send(request),
-                    Is.SameAs(response));
+                var messageBus = new MessageBus(new[] { requestProcessor1, requestProcessor2 }) { Logger = GetConsoleLogger() };
+
+                Assert.That(messageBus.Send(request), Is.SameAs(response));
             });
         }
 
@@ -202,14 +201,12 @@ namespace Colombo.Tests.Impl
                 }));
             }).Verify(() =>
             {
-                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor });
-                messageBus.Logger = GetConsoleLogger();
+                var messageBus = new MessageBus(new[] { requestProcessor }) { Logger = GetConsoleLogger() };
                 var responseTest = messageBus.Send<TestRequest, TestResponse>(r =>
                 {
-                    Assert.That(() => r, Is.Not.Null);
+                    Assert.That(r, Is.Not.Null);
                 });
-                Assert.That(() => responseTest,
-                    Is.SameAs(response));
+                Assert.That(responseTest, Is.SameAs(response));
             });
         }
 
@@ -235,10 +232,9 @@ namespace Colombo.Tests.Impl
                 Expect.Call(requestProcessor2.Process(requests)).Return(responses);
             }).Verify(() =>
             {
-                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor1, requestProcessor2 });
-                messageBus.Logger = GetConsoleLogger();
-                Assert.That(() => messageBus.Send(request),
-                    Is.SameAs(response));
+                var messageBus = new MessageBus(new[] { requestProcessor1, requestProcessor2 }) { Logger = GetConsoleLogger() };
+
+                Assert.That(messageBus.Send(request), Is.SameAs(response));
             });
         }
 
@@ -249,14 +245,10 @@ namespace Colombo.Tests.Impl
             var request2 = new TestRequest();
             var request3 = new TestRequest();
             var request4 = new TestRequest();
-            var response1 = new TestResponse();
-            response1.CorrelationGuid = request1.CorrelationGuid;
-            var response2 = new TestResponse();
-            response2.CorrelationGuid = request2.CorrelationGuid;
-            var response3 = new TestResponse();
-            response3.CorrelationGuid = request3.CorrelationGuid;
-            var response4 = new TestResponse();
-            response4.CorrelationGuid = request4.CorrelationGuid;
+            var response1 = new TestResponse { CorrelationGuid = request1.CorrelationGuid };
+            var response2 = new TestResponse { CorrelationGuid = request2.CorrelationGuid };
+            var response3 = new TestResponse { CorrelationGuid = request3.CorrelationGuid };
+            var response4 = new TestResponse { CorrelationGuid = request4.CorrelationGuid };
             var responsesForProcessor1 = new ResponsesGroup
             {
                 { request1, response1 },
@@ -271,17 +263,13 @@ namespace Colombo.Tests.Impl
             var requestProcessor1 = new TestRequestProcessor(responsesForProcessor1);
             var requestProcessor2 = new TestRequestProcessor(responsesForProcessor2);
 
-            var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor1, requestProcessor2 });
-            messageBus.Logger = GetConsoleLogger();
+            var messageBus = new MessageBus(new[] { requestProcessor1, requestProcessor2 }) { Logger = GetConsoleLogger() };
             var responses = messageBus.Send(request1, request2, request3, request4);
-            Assert.That(() => responses[request1],
-                Is.SameAs(response1));
-            Assert.That(() => responses[request2],
-                Is.SameAs(response2));
-            Assert.That(() => responses[request3],
-                Is.SameAs(response3));
-            Assert.That(() => responses[request4],
-                Is.SameAs(response4));
+
+            Assert.That(responses[request1], Is.SameAs(response1));
+            Assert.That(responses[request2], Is.SameAs(response2));
+            Assert.That(responses[request3], Is.SameAs(response3));
+            Assert.That(responses[request4], Is.SameAs(response4));
         }
 
         public class TestRequestProcessor : ILocalRequestProcessor
@@ -337,8 +325,7 @@ namespace Colombo.Tests.Impl
                 interceptor1.Intercept(null);
                 LastCall.IgnoreArguments().Do(new InterceptSendDelegate((invocation) =>
                 {
-                    Assert.That(() => invocation.Requests[0].CorrelationGuid,
-                        Is.EqualTo(request.CorrelationGuid));
+                    Assert.That(invocation.Requests[0].CorrelationGuid, Is.EqualTo(request.CorrelationGuid));
                     invocation.Requests[0].CorrelationGuid = newCorrelationGuid;
                     invocation.Proceed();
                 }));
@@ -346,8 +333,7 @@ namespace Colombo.Tests.Impl
                 interceptor2.Intercept(null);
                 LastCall.IgnoreArguments().Do(new InterceptSendDelegate((invocation) =>
                 {
-                    Assert.That(() => invocation.Requests[0].CorrelationGuid,
-                        Is.EqualTo(newCorrelationGuid));
+                    Assert.That(invocation.Requests[0].CorrelationGuid, Is.EqualTo(newCorrelationGuid));
                     invocation.Proceed();
                     invocation.Responses = responsesFromInterceptor;
                 }));
@@ -356,11 +342,13 @@ namespace Colombo.Tests.Impl
                 Expect.Call(requestProcessor.Process(requests)).Return(responsesFromProcessor);
             }).Verify(() =>
             {
-                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor });
-                messageBus.Logger = GetConsoleLogger();
-                messageBus.MessageBusSendInterceptors = new IMessageBusSendInterceptor[] { interceptor1, interceptor2 };
-                Assert.That(() => messageBus.Send(request),
-                    Is.SameAs(responseFromInterceptor));
+                var messageBus = new MessageBus(new[] { requestProcessor })
+                                     {
+                                         Logger = GetConsoleLogger(),
+                                         MessageBusSendInterceptors = new[] { interceptor1, interceptor2 }
+                                     };
+
+                Assert.That(messageBus.Send(request), Is.SameAs(responseFromInterceptor));
             });
         }
 
@@ -402,9 +390,9 @@ namespace Colombo.Tests.Impl
                 interceptor2.Intercept(null);
                 LastCall.IgnoreArguments().Do(new InterceptSendDelegate((invocation) =>
                 {
-                    Assert.That(() => invocation.Requests[0].CorrelationGuid,
+                    Assert.That(invocation.Requests[0].CorrelationGuid,
                         Is.EqualTo(request1.CorrelationGuid));
-                    Assert.That(() => invocation.Requests[1].CorrelationGuid,
+                    Assert.That(invocation.Requests[1].CorrelationGuid,
                         Is.EqualTo(request2.CorrelationGuid));
                     invocation.Requests[1].CorrelationGuid = newCorrelationGuid;
                     invocation.Proceed();
@@ -413,9 +401,9 @@ namespace Colombo.Tests.Impl
                 interceptor1.Intercept(null);
                 LastCall.IgnoreArguments().Do(new InterceptSendDelegate((invocation) =>
                 {
-                    Assert.That(() => invocation.Requests[0].CorrelationGuid,
+                    Assert.That(invocation.Requests[0].CorrelationGuid,
                         Is.EqualTo(request1.CorrelationGuid));
-                    Assert.That(() => invocation.Requests[1].CorrelationGuid,
+                    Assert.That(invocation.Requests[1].CorrelationGuid,
                         Is.EqualTo(newCorrelationGuid));
                     invocation.Proceed();
                     invocation.Responses = responsesFromInterceptor;
@@ -426,11 +414,13 @@ namespace Colombo.Tests.Impl
                 Expect.Call(requestProcessor.Process(requests)).Return(responsesFromProcessor);
             }).Verify(() =>
             {
-                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor });
-                messageBus.Logger = GetConsoleLogger();
-                messageBus.MessageBusSendInterceptors = new IMessageBusSendInterceptor[] { interceptor1, interceptor2 };
-                Assert.That(() => messageBus.Send(request1, request2),
-                    Is.SameAs(responsesFromInterceptor));
+                var messageBus = new MessageBus(new[] { requestProcessor })
+                                     {
+                                         Logger = GetConsoleLogger(),
+                                         MessageBusSendInterceptors = new[] { interceptor1, interceptor2 }
+                                     };
+
+                Assert.That(messageBus.Send(request1, request2), Is.SameAs(responsesFromInterceptor));
             });
         }
 
@@ -454,17 +444,16 @@ namespace Colombo.Tests.Impl
                 Expect.Call(requestProcessor.Process(requests)).Return(responses);
             }).Verify(() =>
             {
-                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor });
-                messageBus.Logger = GetConsoleLogger();
+                var messageBus = new MessageBus(new[] { requestProcessor }) { Logger = GetConsoleLogger() };
                 var callbackThreadId = 0;
                 messageBus.SendAsync(request).Register(r =>
                 {
                     Assert.AreSame(r, response);
                     callbackThreadId = Thread.CurrentThread.ManagedThreadId;
                 });
+
                 Thread.Sleep(500);
-                Assert.That(() => callbackThreadId,
-                    Is.Not.EqualTo(Thread.CurrentThread.ManagedThreadId));
+                Assert.That(callbackThreadId, Is.Not.EqualTo(Thread.CurrentThread.ManagedThreadId));
             });
         }
 
@@ -483,8 +472,7 @@ namespace Colombo.Tests.Impl
                 Expect.Call(requestProcessor.Process(requests)).Throw(new Exception("Test exception"));
             }).Verify(() =>
             {
-                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor });
-                messageBus.Logger = GetConsoleLogger();
+                var messageBus = new MessageBus(new[] { requestProcessor }) { Logger = GetConsoleLogger() };
                 var callbackThreadId = 0;
                 messageBus.SendAsync(request).Register(r =>
                 {
@@ -492,13 +480,11 @@ namespace Colombo.Tests.Impl
                 },
                 e =>
                 {
-                    Assert.That(() => e.ToString(),
-                        Contains.Substring("Test exception"));
+                    Assert.That(e.ToString(), Contains.Substring("Test exception"));
                     callbackThreadId = Thread.CurrentThread.ManagedThreadId;
                 });
                 Thread.Sleep(500);
-                Assert.That(() => callbackThreadId,
-                    Is.Not.EqualTo(Thread.CurrentThread.ManagedThreadId));
+                Assert.That(callbackThreadId, Is.Not.EqualTo(Thread.CurrentThread.ManagedThreadId));
             });
         }
 
@@ -528,7 +514,7 @@ namespace Colombo.Tests.Impl
                 }));
             }).Verify(() =>
             {
-                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor }) { Logger = GetConsoleLogger() };
+                var messageBus = new MessageBus(new[] { requestProcessor }) { Logger = GetConsoleLogger() };
                 messageBus.Send(request);
 
                 Assert.That(collectedRequests, Is.Not.Null);
@@ -563,7 +549,7 @@ namespace Colombo.Tests.Impl
                 }));
             }).Verify(() =>
             {
-                var messageBus = new MessageBus(new IRequestProcessor[] { requestProcessor })
+                var messageBus = new MessageBus(new[] { requestProcessor })
                                      {
                                          DoNotManageMetaContextKeys = true,
                                          Logger = GetConsoleLogger()

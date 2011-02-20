@@ -38,8 +38,10 @@ namespace Colombo.Host.Tests.Internal
         [Test]
         public void It_should_call_all_the_defined_interfaces_in_endpoint()
         {
-            var hostService = new HostService();
-            hostService.ConfigureThisEndpointType = typeof (TestEndPoint);
+            var hostService = new HostService
+                                  {
+                                      ConfigureThisEndpointType = typeof (TestEndPoint)
+                                  };
             hostService.Start();
             hostService.Stop();
 
@@ -58,12 +60,14 @@ namespace Colombo.Host.Tests.Internal
         [Test]
         public void It_should_throw_an_exception_when_create_container_returns_null()
         {
-            var hostService = new HostService();
-            hostService.ConfigureThisEndpointType = typeof(TestEndPointBadContainer);
+            var hostService = new HostService
+                                  {
+                                      ConfigureThisEndpointType = typeof (TestEndPointBadContainer)
+                                  };
 
             Assert.That(() => hostService.Start(),
                        Throws.Exception.TypeOf<ColomboHostException>()
-                           .With.Message.Contains("container"));
+                       .With.Message.Contains("container"));
         }
 
         public class TestEndPoint : IAmAnEndpoint,

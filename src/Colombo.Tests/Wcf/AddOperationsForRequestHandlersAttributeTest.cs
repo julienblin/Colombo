@@ -61,8 +61,7 @@ namespace Colombo.Tests.Wcf
 
             addOperations.AddBindingParameters(contractDescription, null, null);
 
-            Assert.That(() => contractDescription.Operations.Count,
-                Is.EqualTo(0));
+            Assert.That(contractDescription.Operations.Count, Is.EqualTo(0));
         }
 
         [Test]
@@ -80,8 +79,7 @@ namespace Colombo.Tests.Wcf
 
             addOperations.AddBindingParameters(contractDescription, null, null);
 
-            Assert.That(() => contractDescription.Operations.Count,
-                Is.EqualTo(2));
+            Assert.That(contractDescription.Operations.Count, Is.EqualTo(2));
         }
 
         [Test]

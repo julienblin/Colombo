@@ -53,10 +53,8 @@ namespace Colombo.Tests.Impl
                 Expect.Call(requestHandlerFactory.CanCreateRequestHandlerFor(request)).Return(false);
             }).Verify(() =>
             {
-                var processor = new LocalRequestProcessor(requestHandlerFactory);
-                processor.Logger = GetConsoleLogger();
-                Assert.That(() => processor.CanProcess(request),
-                    Is.False);
+                var processor = new LocalRequestProcessor(requestHandlerFactory) { Logger = GetConsoleLogger() };
+                Assert.That(processor.CanProcess(request), Is.False);
             });
         }
 
@@ -73,8 +71,7 @@ namespace Colombo.Tests.Impl
                 Expect.Call(requestHandlerFactory.CreateRequestHandlerFor(request)).Return(null);
             }).Verify(() =>
             {
-                var processor = new LocalRequestProcessor(requestHandlerFactory);
-                processor.Logger = GetConsoleLogger();
+                var processor = new LocalRequestProcessor(requestHandlerFactory) { Logger = GetConsoleLogger() };
                 Assert.That(() => processor.Process(requests),
                     Throws.Exception.TypeOf<ColomboException>());
             });
@@ -101,13 +98,11 @@ namespace Colombo.Tests.Impl
                 requestHandlerFactory.DisposeRequestHandler(requestHandler2);
             }).Verify(() =>
             {
-                var processor = new LocalRequestProcessor(requestHandlerFactory);
-                processor.Logger = GetConsoleLogger();
+                var processor = new LocalRequestProcessor(requestHandlerFactory) { Logger = GetConsoleLogger() };
                 var responses = processor.Process(requests);
-                Assert.That(() => responses[request1],
-                    Is.SameAs(response1));
-                Assert.That(() => responses[request2],
-                    Is.SameAs(response2));
+
+                Assert.That(responses[request1], Is.SameAs(response1));
+                Assert.That(responses[request2], Is.SameAs(response2));
             });
         }
 
@@ -153,14 +148,15 @@ namespace Colombo.Tests.Impl
                 requestHandlerFactory.DisposeRequestHandler(requestHandler2);
             }).Verify(() =>
             {
-                var processor = new LocalRequestProcessor(requestHandlerFactory);
-                processor.Logger = GetConsoleLogger();
-                processor.RequestHandlerInterceptors = new IRequestHandlerHandleInterceptor[] { interceptor1, interceptor2 };
+                var processor = new LocalRequestProcessor(requestHandlerFactory)
+                                    {
+                                        Logger = GetConsoleLogger(),
+                                        RequestHandlerInterceptors = new[] { interceptor1, interceptor2 }
+                                    };
                 var responses = processor.Process(requests);
-                Assert.That(() => responses[request1],
-                    Is.SameAs(response2));
-                Assert.That(() => responses[request2],
-                    Is.SameAs(response2));
+
+                Assert.That(responses[request1], Is.SameAs(response2));
+                Assert.That(responses[request2], Is.SameAs(response2));
             });
         }
 
@@ -185,8 +181,7 @@ namespace Colombo.Tests.Impl
                 requestHandlerFactory.DisposeRequestHandler(requestHandler2);
             }).Verify(() =>
             {
-                var processor = new LocalRequestProcessor(requestHandlerFactory);
-                processor.Logger = GetConsoleLogger();
+                var processor = new LocalRequestProcessor(requestHandlerFactory) { Logger = GetConsoleLogger() };
                 processor.Process(requests);
 
                 Assert.That(requestHandler1.ReceivedRequest.Context[MetaContextKeys.HandlerMachineName], Is.EqualTo(Environment.MachineName));
@@ -260,9 +255,9 @@ namespace Colombo.Tests.Impl
                                         StatCollector = statCollector
                                     };
                 var responses = processor.Process(requests);
-                Assert.That(() => responses[request1],
+                Assert.That(responses[request1],
                     Is.SameAs(response1));
-                Assert.That(() => responses[request2],
+                Assert.That(responses[request2],
                     Is.SameAs(response2));
             });
         }
@@ -300,7 +295,7 @@ namespace Colombo.Tests.Impl
         }
 
         public class TestRequest : Request<TestResponse>
-        {}
+        { }
 
         public class TestRequestHandler : RequestHandler<TestRequest, TestResponse>
         {

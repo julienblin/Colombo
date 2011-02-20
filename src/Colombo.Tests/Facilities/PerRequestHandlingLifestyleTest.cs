@@ -54,23 +54,16 @@ namespace Colombo.Tests.Facilities
             var dependency1 = container.Resolve<IDependency>();
             var dependency2 = container.Resolve<IDependency>();
 
-            Assert.That(() => subDependency1,
-                Is.Not.Null);
-
-            Assert.That(() => subDependency2,
-                Is.EqualTo(subDependency1));
-
-            Assert.That(() => dependency1.SubDependency,
-                Is.EqualTo(subDependency1));
-
-            Assert.That(() => dependency2.SubDependency,
-                Is.EqualTo(subDependency1));
+            Assert.That(subDependency1, Is.Not.Null);
+            Assert.That(subDependency2, Is.EqualTo(subDependency1));
+            Assert.That(dependency1.SubDependency, Is.EqualTo(subDependency1));
+            Assert.That(dependency2.SubDependency,Is.EqualTo(subDependency1));
         }
 
         [Test]
         public void It_should_manage_Lifestyle_properly_inside_handling()
         {
-            const int NumberOfRequests = 100;
+            const int numberOfRequests = 100;
 
             var container = new WindsorContainer();
             container.AddFacility<ColomboFacility>();
@@ -92,21 +85,20 @@ namespace Colombo.Tests.Facilities
 
             var messageBus = container.Resolve<IMessageBus>();
 
-            for (var i = 0; i < NumberOfRequests; i++)
+            for (var i = 0; i < numberOfRequests; i++)
             {
                 messageBus.Send(new TestRequest());
             }
 
             var instanceTracker = container.Resolve<InstanceTracker>();
 
-            Assert.That(() => instanceTracker.NumInstanceCreated,
-                Is.EqualTo(NumberOfRequests));
+            Assert.That(instanceTracker.NumInstanceCreated, Is.EqualTo(numberOfRequests));
         }
 
         [Test]
         public void It_should_manage_Lifestyle_properly_inside_handling_with_parallelism()
         {
-            const int NumberOfRequests = 100;
+            const int numberOfRequests = 100;
 
             var container = new WindsorContainer();
             container.AddFacility<ColomboFacility>();
@@ -128,15 +120,14 @@ namespace Colombo.Tests.Facilities
 
             var messageBus = container.Resolve<IMessageBus>();
 
-            for (var i = 0; i < NumberOfRequests; i++)
+            for (var i = 0; i < numberOfRequests; i++)
             {
                 messageBus.Send(new TestRequest(), new TestRequest(), new TestRequest(), new TestRequest());
             }
 
             var instanceTracker = container.Resolve<InstanceTracker>();
 
-            Assert.That(() => instanceTracker.NumInstanceCreated,
-                Is.EqualTo(NumberOfRequests * 4));
+            Assert.That(instanceTracker.NumInstanceCreated, Is.EqualTo(numberOfRequests * 4));
         }
 
         public class TestRequest : SideEffectFreeRequest<TestResponse>
@@ -202,15 +193,13 @@ namespace Colombo.Tests.Facilities
 
             public void ItShouldNotExists(ISubDependency subDependency)
             {
-                Assert.That(() => subDependencies.Contains(subDependency),
-                    Is.False);
+                Assert.That(subDependencies.Contains(subDependency), Is.False);
                 subDependencies.Add(subDependency);
             }
 
             public void ItShouldExists(ISubDependency subDependency)
             {
-                Assert.That(() => subDependencies.Contains(subDependency),
-                    Is.True);
+                Assert.That(subDependencies.Contains(subDependency), Is.True);
             }
 
             public void AddInstanceIfNotThere(ISubDependency subDependency)

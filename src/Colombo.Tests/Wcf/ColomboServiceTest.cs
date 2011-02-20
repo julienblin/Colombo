@@ -63,7 +63,7 @@ namespace Colombo.Tests.Wcf
             Thread.Sleep(200);
             while (testedException == null) ;
 
-            Assert.That(() => testedException,
+            Assert.That(testedException,
                 Is.TypeOf<ColomboException>()
                 .With.Message.Contains("Kernel"));
         }
@@ -91,7 +91,7 @@ namespace Colombo.Tests.Wcf
             Thread.Sleep(200);
             while (testedException == null) ;
 
-            Assert.That(() => testedException,
+            Assert.That(testedException,
                 Is.TypeOf<ColomboException>()
                 .With.Message.Contains("ILocalMessageProcessor"));
         }
@@ -127,7 +127,7 @@ namespace Colombo.Tests.Wcf
                 Thread.Sleep(200);
                 while (testedException == null) ;
 
-                Assert.That(() => testedException,
+                Assert.That(testedException,
                     Is.TypeOf<ColomboException>()
                     .With.Message.Contains("locally"));
             });
@@ -175,10 +175,8 @@ namespace Colombo.Tests.Wcf
                 Thread.Sleep(200);
                 while (responses == null) ;
 
-                Assert.That(() => responses[0],
-                    Is.SameAs(response1));
-                Assert.That(() => responses[1],
-                    Is.SameAs(response2));
+                Assert.That(responses[0], Is.SameAs(response1));
+                Assert.That(responses[1], Is.SameAs(response2));
             });
         }
 
@@ -230,10 +228,8 @@ namespace Colombo.Tests.Wcf
                     asyncResult.AsyncWaitHandle.WaitOne();
                     var responses = wcfService.EndProcessAsync(asyncResult);
 
-                    Assert.That(() => responses[0].CorrelationGuid,
-                    Is.EqualTo(response1.CorrelationGuid));
-                    Assert.That(() => responses[1].CorrelationGuid,
-                        Is.EqualTo(response2.CorrelationGuid));
+                    Assert.That(responses[0].CorrelationGuid, Is.EqualTo(response1.CorrelationGuid));
+                    Assert.That(responses[1].CorrelationGuid, Is.EqualTo(response2.CorrelationGuid));
 
                     Assert.That(receivedRequests[0].Context[MetaContextKeys.EndpointAddressUri], Is.EqualTo(IPCAddress));
                     Assert.That(receivedRequests[1].Context[MetaContextKeys.EndpointAddressUri], Is.EqualTo(IPCAddress));

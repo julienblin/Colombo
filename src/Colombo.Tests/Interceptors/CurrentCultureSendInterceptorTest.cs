@@ -56,24 +56,18 @@ namespace Colombo.Tests.Interceptors
 
                 Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
                 interceptor.Intercept(invocation);
-                Assert.That(() => request1.Context.ContainsKey(CurrentCultureConstant.CultureContextKey),
-                    Is.False);
-                Assert.That(() => request2.Context.ContainsKey(CurrentCultureConstant.CultureContextKey),
-                    Is.False);
+                Assert.That(request1.Context.ContainsKey(CurrentCultureConstant.CultureContextKey), Is.False);
+                Assert.That(request2.Context.ContainsKey(CurrentCultureConstant.CultureContextKey), Is.False);
 
                 Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo("ar-LB");
                 interceptor.Intercept(invocation);
-                Assert.That(() => request1.Context[CurrentCultureConstant.CultureContextKey],
-                    Is.EqualTo("ar-LB"));
-                Assert.That(() => request2.Context[CurrentCultureConstant.CultureContextKey],
-                    Is.EqualTo("ar-LB"));
+                Assert.That(request1.Context[CurrentCultureConstant.CultureContextKey], Is.EqualTo("ar-LB"));
+                Assert.That(request2.Context[CurrentCultureConstant.CultureContextKey], Is.EqualTo("ar-LB"));
 
                 Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo("en-ZW");
                 interceptor.Intercept(invocation);
-                Assert.That(() => request1.Context[CurrentCultureConstant.CultureContextKey],
-                    Is.EqualTo("en-ZW"));
-                Assert.That(() => request2.Context[CurrentCultureConstant.CultureContextKey],
-                    Is.EqualTo("en-ZW"));
+                Assert.That(request1.Context[CurrentCultureConstant.CultureContextKey], Is.EqualTo("en-ZW"));
+                Assert.That(request2.Context[CurrentCultureConstant.CultureContextKey], Is.EqualTo("en-ZW"));
             });
         }
 

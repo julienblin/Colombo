@@ -36,12 +36,11 @@ namespace Colombo.Tests
         public void It_should_create_a_default_response_and_set_CorrelationGuid()
         {
             var requestHandler = new TestSideEffectFreeRequestHandler();
-            var request = new TestSideEffectFreeRequest();
-            request.CorrelationGuid = CorrelationGuid;
+            var request = new TestSideEffectFreeRequest { CorrelationGuid = CorrelationGuid };
 
             requestHandler.Handle(request);
-            Assert.That(() => requestHandler.HandleWasCalled,
-                Is.True);
+
+            Assert.That(requestHandler.HandleWasCalled, Is.True);
         }
 
         public class TestSideEffectFreeRequest : SideEffectFreeRequest<TestResponse>
@@ -55,9 +54,7 @@ namespace Colombo.Tests
             protected override void Handle()
             {
                 HandleWasCalled = true;
-                Assert.That(() => Response.CorrelationGuid,
-                    Is.EqualTo(CorrelationGuid));
-
+                Assert.That(Response.CorrelationGuid, Is.EqualTo(CorrelationGuid));
             }
         }
 
