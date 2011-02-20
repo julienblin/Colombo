@@ -115,6 +115,9 @@ namespace Colombo.Impl
         /// </summary>
         public ResponsesGroup Process(IList<BaseRequest> requests)
         {
+            if (requests == null) throw new ArgumentNullException("requests");
+            Contract.EndContractBlock();
+
             var stopWatch = new Stopwatch();
             stopWatch.Start();
 
@@ -127,9 +130,6 @@ namespace Colombo.Impl
                         request.Context[MetaContextKeys.EndpointAddressUri] = LocalMetaContextKeyEndpointAddressUri;
                 }
             }
-
-            if (requests == null) throw new ArgumentNullException("requests");
-            Contract.EndContractBlock();
 
             Logger.Debug("Parallel processing of the requests with local handlers...");
             var tasks = new List<Task<Response>>();

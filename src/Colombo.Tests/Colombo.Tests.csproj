@@ -71,6 +71,8 @@
     <Compile Include="Facilities\ColomboFacilityTest.cs" />
     <Compile Include="Facilities\PerRequestHandlingLifestyleTest.cs" />
     <Compile Include="FullTest.cs" />
+    <Compile Include="Impl\Alerters\EventLogColomboAlerterTest.cs" />
+    <Compile Include="Interceptors\PerfCounterFactoryTest.cs" />
     <Compile Include="Messages\GetStatsRequestHandlerTest.cs" />
     <Compile Include="Messages\HealthCheckRequestHandlerTest.cs" />
     <Compile Include="Impl\InMemoryStatCollectorTest.cs" />
@@ -119,6 +121,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -294,6 +294,21 @@ namespace Colombo.Tests.Impl
             });
         }
 
+        [Test]
+        public void It_should_validate_inputs()
+        {
+            var mocks = new MockRepository();
+            var requestHandlerFactory = mocks.Stub<IRequestHandlerFactory>();
+            var processor = new LocalRequestProcessor(requestHandlerFactory)
+            {
+                Logger = GetConsoleLogger(),
+            };
+
+            Assert.That(() => processor.CanProcess(null), Throws.Exception.TypeOf<ArgumentNullException>());
+            Assert.That(() => processor.Process(null), Throws.Exception.TypeOf<ArgumentNullException>());
+            Assert.That(() => processor.RequestHandlerInterceptors = null, Throws.Exception.TypeOf<ArgumentNullException>());
+        }
+
         public class TestRequest : Request<TestResponse>
         { }
 
