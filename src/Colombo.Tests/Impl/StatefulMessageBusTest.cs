@@ -208,6 +208,15 @@ namespace Colombo.Tests.Impl
             }
         }
 
+        [Test]
+        public void It_should_allow_initialization_of_virtual_members_in_ctor()
+        {
+            var messageBus = new TestMessageBus();
+            var statefulMB = new StatefulMessageBus(messageBus);
+
+            Assert.DoesNotThrow(() => statefulMB.FutureSend(new TestRequestWithInitInCtor()));
+        }
+
         public class TestResponseNonVirtual : Response
         {
             public virtual string Name { get; set; }
@@ -244,6 +253,21 @@ namespace Colombo.Tests.Impl
 
         public class TestRequestException : SideEffectFreeRequest<TestResponseException>
         {
+        }
+
+        public class TestResponseWithInitInCtor : Response
+        {
+            public TestResponseWithInitInCtor()
+            {
+                Values = new List<string>();
+            }
+
+            public virtual IEnumerable<string> Values { get; set; }
+        }
+
+        public class TestRequestWithInitInCtor : SideEffectFreeRequest<TestResponseWithInitInCtor>
+        {
+            
         }
 
         public class TestMessageBus : IMessageBus

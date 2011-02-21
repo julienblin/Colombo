@@ -51,6 +51,12 @@ namespace Colombo.Impl.Async
 
         public void Intercept(IInvocation invocation)
         {
+            if(invocation.Method.IsSpecialName && invocation.Method.Name.StartsWith("set_"))
+            {
+                invocation.Proceed();
+                return;
+            }
+
             if (internalResponse == null)
             {
                 internalResponse = statefulMessageBus.GetResponseForPendingRequest(request);
