@@ -56,6 +56,16 @@ namespace Colombo.Tests
             Assert.That(sefRequestHandler.HandleWasCalled,Is.True);
         }
 
+        [Test]
+        public void SideEffectFreeRequestHandler_inherited_should_SetPaginationInfo()
+        {
+            var sefRequestHandler = new TestPaginatedRequestHandler();
+            var sefRequest = new TestPaginatedRequest { CurrentPage = 2, PerPage = 50 };
+
+            sefRequestHandler.Handle(sefRequest);
+
+            Assert.That(sefRequestHandler.HandleWasCalled, Is.True);
+        }
 
         public class TestRequest : Request<TestResponse>
         {
@@ -92,6 +102,32 @@ namespace Colombo.Tests
                 Assert.That(newRequest.Context, Is.EqualTo(Request.Context));
             }
         }
+
+        public class TestPaginatedResponse : PaginatedResponse { }
+
+        public class TestPaginatedRequest : PaginatedRequest<TestPaginatedResponse> { }
+
+        public class TestPaginatedRequestHandler : SideEffectFreeRequestHandler<TestPaginatedRequest, TestPaginatedResponse>
+        {
+            public bool HandleWasCalled { get; set; }
+
+            protected override void Handle()
+            {
+                HandleWasCalled = true;
+                SetPaginationInfo(230);
+                Assert.That(Response.CurrentPage, Is.EqualTo(Request.CurrentPage));
+                Assert.That(Response.PerPage, Is.EqualTo(Request.PerPage));
+                Assert.That(Response.TotalEntries, Is.EqualTo(230));
+
+                var fullyFilledPages = Response.TotalEntries / Response.PerPage;
+                var remainingPage = ((Response.TotalEntries % Response.PerPage) > 0) ? 1 : 0;
+                var expectedTotalPages = fullyFilledPages + remainingPage;
+
+                Assert.That(Response.TotalPages, Is.EqualTo(expectedTotalPages));
+            }
+        }
+
+
 
         public delegate void HandleDelegate();
     }

@@ -98,6 +98,7 @@
     <Compile Include="IMetaContextKeysManager.cs" />
     <Compile Include="Impl\InMemoryStatCollector.cs" />
     <Compile Include="Impl\NullStatCollector.cs" />
+    <Compile Include="IPaginationInfo.cs" />
     <Compile Include="Messages\GetStatsRequest.cs" />
     <Compile Include="Messages\GetStatsRequestHandler.cs" />
     <Compile Include="Messages\GetStatsResponse.cs" />

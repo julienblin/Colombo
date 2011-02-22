@@ -47,7 +47,7 @@ namespace Colombo
         /// <summary>
         /// Handles the request.
         /// </summary>
-        public Response Handle(BaseRequest request)
+        public virtual Response Handle(BaseRequest request)
         {
             if (request == null) throw new ArgumentNullException("request");
             Contract.EndContractBlock();
@@ -58,7 +58,7 @@ namespace Colombo
         /// <summary>
         /// Handles the request.
         /// </summary>
-        public TResponse Handle(TRequest request)
+        public virtual TResponse Handle(TRequest request)
         {
             Request = request;
             Response = new TResponse { CorrelationGuid = request.CorrelationGuid };
@@ -75,7 +75,7 @@ namespace Colombo
         /// Create a new request to be used inside this request handler.
         /// The CorrelationGuid and the Context are copied.
         /// </summary>
-        protected TNewRequest CreateRequest<TNewRequest>()
+        protected virtual TNewRequest CreateRequest<TNewRequest>()
             where TNewRequest : BaseRequest, new()
         {
             var result = new TNewRequest { CorrelationGuid = Request.CorrelationGuid, Context = Request.Context };
@@ -83,10 +83,35 @@ namespace Colombo
         }
 
         /// <summary>
+        /// Set pagination information to <see cref="Response"/> based on Request and <paramref name="totalEntries"/>.
+        /// Compute Response.TotalPages based on Response.PerPage value.
+        /// Response.PerPage must be > 0.
+        /// </summary>
+        /// <exception cref="ColomboException">If Response.PerPage &lt;= 0.</exception>
+        protected virtual void SetPaginationInfo(int totalEntries)
+        {
+            var paginatedRequest = Request as IPaginationInfo;
+            var paginatedResponse = Response as PaginatedResponse;
+            if ((paginatedRequest == null) || (paginatedResponse == null))
+                throw new ColomboException("Request must implement IPaginationInfo and Response must be a PaginatedResponse to set pagination info.");
+
+            paginatedResponse.CurrentPage = paginatedRequest.CurrentPage;
+            paginatedResponse.PerPage = paginatedRequest.PerPage;
+            paginatedResponse.TotalEntries = totalEntries;
+
+            if(paginatedResponse.PerPage <= 0)
+                throw new ColomboException("Response.PerPage must be > 0 to compute TotalPages.");
+
+            var fullyFilledPages = totalEntries / paginatedResponse.PerPage;
+            var remainingPage = ((totalEntries % paginatedResponse.PerPage) > 0) ? 1 : 0;
+            paginatedResponse.TotalPages = fullyFilledPages + remainingPage;
+        }
+
+        /// <summary>
         /// Get the type of request that this request handler handles.
         /// </summary>
         /// <returns></returns>
-        public Type GetRequestType()
+        public virtual Type GetRequestType()
         {
             return typeof(TRequest);
         }
@@ -95,9 +120,10 @@ namespace Colombo
         /// Get the type of response that this request handler produces.
         /// </summary>
         /// <returns></returns>
-        public Type GetResponseType()
+        public virtual Type GetResponseType()
         {
             return typeof(TResponse);
         }
+
     }
 }

@@ -75,7 +75,7 @@ namespace Colombo
         /// Create a new request to be used inside this request handler.
         /// The CorrelationGuid and the Context are copied.
         /// </summary>
-        protected TNewRequest CreateRequest<TNewRequest>()
+        protected virtual TNewRequest CreateRequest<TNewRequest>()
             where TNewRequest : BaseRequest, new()
         {
             var result = new TNewRequest { CorrelationGuid = Request.CorrelationGuid, Context = Request.Context };
@@ -86,7 +86,7 @@ namespace Colombo
         /// Get the type of request that this request handler handles.
         /// </summary>
         /// <returns></returns>
-        public Type GetRequestType()
+        public virtual Type GetRequestType()
         {
             return typeof(TRequest);
         }
@@ -95,7 +95,7 @@ namespace Colombo
         /// Get the type of response that this request handler produces.
         /// </summary>
         /// <returns></returns>
-        public Type GetResponseType()
+        public virtual Type GetResponseType()
         {
             return typeof(TResponse);
         }

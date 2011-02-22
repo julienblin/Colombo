@@ -22,42 +22,22 @@
 // THE SOFTWARE.
 #endregion
 
-using System;
-using NUnit.Framework;
-
-namespace Colombo.Tests
+namespace Colombo
 {
-    [TestFixture]
-    public class SideEffectFreeRequestHandlerTest
+    /// <summary>
+    /// Represents information for pagination.
+    /// Meant to be used through <see cref="PaginatedResponse"/> and <see cref="PaginatedRequest{TResponse}"/>
+    /// </summary>
+    public interface IPaginationInfo
     {
-        static Guid CorrelationGuid = Guid.NewGuid();
+        /// <summary>
+        /// Current page number, starts at 1 (and not 0).
+        /// </summary>
+        int CurrentPage { get; set; }
 
-        [Test]
-        public void It_should_create_a_default_response_and_set_CorrelationGuid()
-        {
-            var requestHandler = new TestSideEffectFreeRequestHandler();
-            var request = new TestSideEffectFreeRequest { CorrelationGuid = CorrelationGuid };
-
-            requestHandler.Handle(request);
-
-            Assert.That(requestHandler.HandleWasCalled, Is.True);
-        }
-
-        public class TestSideEffectFreeRequest : SideEffectFreeRequest<TestResponse>
-        {
-        }
-
-        public class TestSideEffectFreeRequestHandler : SideEffectFreeRequestHandler<TestSideEffectFreeRequest, TestResponse>
-        {
-            public bool HandleWasCalled { get; set; }
-
-            protected override void Handle()
-            {
-                HandleWasCalled = true;
-                Assert.That(Response.CorrelationGuid, Is.EqualTo(CorrelationGuid));
-            }
-        }
-
-        public delegate void HandleDelegate();
+        /// <summary>
+        /// Number of entries per page.
+        /// </summary>
+        int PerPage { get; set; }
     }
 }

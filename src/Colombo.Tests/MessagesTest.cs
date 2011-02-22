@@ -193,6 +193,17 @@ namespace Colombo.Tests
             Assert.That(result, !Contains.Substring(MetaContextKeys.MetaPrefix + "key2=value2"));
         }
 
+        [Test]
+        public void PaginatedRequests_should_use_default_values()
+        {
+            var request = new TestPaginatedRequest();
+            Assert.That(request.PerPage, Is.EqualTo(PaginatedRequest.DefaultPerPageValueIfNotSet));
+
+            PaginatedRequest.DefaultPerPageValue = 1000;
+            request = new TestPaginatedRequest();
+            Assert.That(request.PerPage, Is.EqualTo(1000));
+        }
+
         public class TestRequest : Request<TestResponse> { }
 
         public class TestSideEffectFreeRequest : SideEffectFreeRequest<TestResponse> { }
