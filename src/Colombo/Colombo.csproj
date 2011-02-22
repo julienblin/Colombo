@@ -106,6 +106,8 @@
     <Compile Include="Impl\BaseMessageBus.cs" />
     <Compile Include="Interceptors\ExceptionsHandleInterceptor.cs" />
     <Compile Include="Interceptors\ExceptionsSendInterceptor.cs" />
+    <Compile Include="PaginatedRequest.cs" />
+    <Compile Include="PaginatedResponse.cs" />
     <Compile Include="Properties\AssemblyVisibility.cs" />
     <Compile Include="BaseMessage.cs" />
     <Compile Include="BaseRequest.cs" />

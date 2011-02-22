@@ -72,6 +72,30 @@ namespace Colombo.Tests
         }
 
         [Test]
+        public void PaginatedResponses_should_be_serializables_using_the_DataContractSerializer()
+        {
+            using (var stream = new MemoryStream())
+            {
+                var serializer = new DataContractSerializer(typeof(TestPaginatedResponse));
+                var reference = new TestPaginatedResponse();
+                reference.CurrentPage = 1;
+                reference.PerPage = 30;
+                reference.TotalEntries = 200;
+                reference.TotalPages = 50;
+                serializer.WriteObject(stream, reference);
+                stream.Position = 0;
+                var deserialized = (TestPaginatedResponse)serializer.ReadObject(stream);
+                Assert.AreNotSame(deserialized, reference);
+                Assert.AreEqual(deserialized.CorrelationGuid, reference.CorrelationGuid);
+                Assert.AreEqual(deserialized.UtcTimestamp, reference.UtcTimestamp);
+                Assert.AreEqual(deserialized.CurrentPage, reference.CurrentPage);
+                Assert.AreEqual(deserialized.PerPage, reference.PerPage);
+                Assert.AreEqual(deserialized.TotalEntries, reference.TotalEntries);
+                Assert.AreEqual(deserialized.TotalPages, reference.TotalPages);
+            }
+        }
+
+        [Test]
         public void Responses_should_be_usable_with_proxy()
         {
             var options = new ProxyGenerationOptions(new NonVirtualCheckProxyGenerationHook());
@@ -85,6 +109,14 @@ namespace Colombo.Tests
             var options = new ProxyGenerationOptions(new NonVirtualCheckProxyGenerationHook());
             var proxyGen = new ProxyGenerator();
             Assert.That(proxyGen.CreateClassProxy<ValidatedResponse>(options), Is.Not.Null);
+        }
+
+        [Test]
+        public void PaginatedResponses_should_be_usable_with_proxy()
+        {
+            var options = new ProxyGenerationOptions(new NonVirtualCheckProxyGenerationHook());
+            var proxyGen = new ProxyGenerator();
+            Assert.That(proxyGen.CreateClassProxy<PaginatedResponse>(options), Is.Not.Null);
         }
 
         [Test]
@@ -124,6 +156,28 @@ namespace Colombo.Tests
         }
 
         [Test]
+        public void PaginatedRequests_should_be_serializables_using_the_DataContractSerializer()
+        {
+            using (var stream = new MemoryStream())
+            {
+                var serializer = new DataContractSerializer(typeof(TestPaginatedRequest));
+                var reference = new TestPaginatedRequest();
+                reference.CurrentPage = 10;
+                reference.PerPage = 50;
+                reference.Context[@"SomeKey"] = "SomeValue";
+                serializer.WriteObject(stream, reference);
+                stream.Position = 0;
+                var deserialized = (TestPaginatedRequest)serializer.ReadObject(stream);
+                Assert.AreNotSame(deserialized, reference);
+                Assert.AreEqual(deserialized.CorrelationGuid, reference.CorrelationGuid);
+                Assert.AreEqual(deserialized.UtcTimestamp, reference.UtcTimestamp);
+                Assert.AreEqual(deserialized.CurrentPage, reference.CurrentPage);
+                Assert.AreEqual(deserialized.PerPage, reference.PerPage);
+                Assert.AreEqual(deserialized.Context[@"SomeKey"], reference.Context[@"SomeKey"]);
+            }
+        }
+
+        [Test]
         public void BaseRequest_should_default_ToString_to_Type_CorrelationGuid_TimeStamp_and_Context_without_Meta()
         {
             var request = new TestRequest();
@@ -144,5 +198,9 @@ namespace Colombo.Tests
         public class TestSideEffectFreeRequest : SideEffectFreeRequest<TestResponse> { }
 
         public class TestValidatedResponse : ValidatedResponse { }
+
+        public class TestPaginatedResponse : PaginatedResponse { }
+
+        public class TestPaginatedRequest : PaginatedRequest<TestPaginatedResponse> { }
     }
 }
