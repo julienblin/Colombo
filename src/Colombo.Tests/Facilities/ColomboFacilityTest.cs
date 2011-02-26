@@ -93,6 +93,22 @@ namespace Colombo.Tests.Facilities
         }
 
         [Test]
+        public void It_should_not_register_WcfClientRequestProcessor_and_ColomboServiceFactory_when_DisableSendingThroughWcf()
+        {
+            var container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>();
+
+            Assert.That(container.ResolveAll<IRequestProcessor>().Any(x => x is WcfClientRequestProcessor));
+            Assert.That(container.Resolve<IColomboServiceFactory>(), Is.TypeOf<ColomboServiceFactory>());
+
+            container = new WindsorContainer();
+            container.AddFacility<ColomboFacility>(f => f.DisableSendingThroughWcf());
+
+            Assert.That(!container.ResolveAll<IRequestProcessor>().Any(x => x is WcfClientRequestProcessor));
+            Assert.That(!container.Kernel.HasComponent(typeof(IColomboServiceFactory)));
+        }
+
+        [Test]
         public void It_should_position_value_for_MaxAllowedNumberOfSendForStatefulMessageBus()
         {
             var container = new WindsorContainer();

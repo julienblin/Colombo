@@ -67,6 +67,7 @@ namespace Colombo.Facilities
         public const int DefaultHealthCheckHeartBeatInSeconds = 30;
 
         bool registerLocalProcessing = true;
+        bool disableSendingThroughWcf;
         int maxAllowedNumberOfSendForStatefulMessageBus = DefaultMaxAllowedNumberOfSendForStatefulMessageBus;
         int healthCheckHeartBeatInSeconds = DefaultHealthCheckHeartBeatInSeconds;
         Type statefulMessageBusLifestyleManager = typeof(TransientLifestyleManager);
@@ -126,14 +127,6 @@ namespace Colombo.Facilities
             else
             {
                 Kernel.Register(
-                    Component.For<IColomboServiceFactory>()
-                        .ImplementedBy<ColomboServiceFactory>()
-                        .Unless((k, m) => k.HasComponent(typeof(IColomboServiceFactory))),
-                    Component.For<IRequestProcessor>()
-                        .ImplementedBy<WcfClientRequestProcessor>()
-                        .Unless((k, m) => k.HasComponent(typeof(IRequestProcessor)))
-                        .OnCreate((kernel, item) => ((WcfClientRequestProcessor)item).HealthCheckHeartBeatInSeconds = healthCheckHeartBeatInSeconds),
-
                     Component.For<IMessageBus, IMetaContextKeysManager>()
                         .ImplementedBy<MessageBus>()
                         .Unless((k, m) => k.HasComponent(typeof(IMessageBus))),
@@ -146,6 +139,18 @@ namespace Colombo.Facilities
                     Component.For<IColomboStatCollector>()
                         .ImplementedBy<InMemoryStatCollector>()
                 );
+
+                if (!disableSendingThroughWcf)
+                {
+                    Kernel.Register(
+                        Component.For<IColomboServiceFactory>()
+                            .ImplementedBy<ColomboServiceFactory>()
+                            .Unless((k, m) => k.HasComponent(typeof(IColomboServiceFactory))),
+                        Component.For<IRequestProcessor>()
+                            .ImplementedBy<WcfClientRequestProcessor>()
+                            .OnCreate((kernel, item) => ((WcfClientRequestProcessor)item).HealthCheckHeartBeatInSeconds = healthCheckHeartBeatInSeconds)
+                    );
+                }
             }
 
             WcfServices.Kernel = Kernel;
@@ -228,6 +233,14 @@ namespace Colombo.Facilities
         public void ClientOnly()
         {
             registerLocalProcessing = false;
+        }
+
+        /// <summary>
+        /// Disable the send operations using WCF.
+        /// </summary>
+        public void DisableSendingThroughWcf(bool value = true)
+        {
+            disableSendingThroughWcf = value;
         }
 
         /// <summary>
