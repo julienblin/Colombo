@@ -238,9 +238,9 @@ namespace Colombo.Facilities
         /// <summary>
         /// Disable the send operations using WCF.
         /// </summary>
-        public void DisableSendingThroughWcf(bool value = true)
+        public void DisableSendingThroughWcf()
         {
-            disableSendingThroughWcf = value;
+            disableSendingThroughWcf = true;
         }
 
         /// <summary>
