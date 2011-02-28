@@ -24,6 +24,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -32,11 +33,31 @@ namespace Colombo.Host.Internal
 {
     internal class AssemblyScanner
     {
+        private const string EndPointAppSettingsKey = @"EndpointType";
+
         private readonly DirectoryInfo baseDirectory;
 
         internal AssemblyScanner(DirectoryInfo baseDirectory)
         {
             this.baseDirectory = baseDirectory;
+        }
+
+        internal Type GetEndPointType()
+        {
+            if (string.IsNullOrEmpty(ConfigurationManager.AppSettings[EndPointAppSettingsKey]))
+                return FindUniqueConfigureThisEndPoint();
+
+            var endPointTypeStr = ConfigurationManager.AppSettings[EndPointAppSettingsKey];
+            var endPointType = Type.GetType(endPointTypeStr);
+
+            if(endPointType == null)
+                throw new ColomboHostException(string.Format("Unable to load type {0} specified by app settings key {1}.", endPointTypeStr, EndPointAppSettingsKey));
+
+            if (!typeof(IAmAnEndpoint).IsAssignableFrom(endPointType))
+                throw new ColomboHostException(string.Format("Type {0} specified by app settings key {1} doesn't implement {2}: Unable to start the host.",
+                    endPointType, EndPointAppSettingsKey, typeof(IAmAnEndpoint)));
+
+            return endPointType;
         }
 
         internal Type FindUniqueConfigureThisEndPoint()
@@ -47,20 +68,29 @@ namespace Colombo.Host.Internal
             if (configureThisEndpointTypes.Length == 0)
             {
                 throw new ColomboHostException(string.Format("No endpoint configuration found in scanned assemblies.\n" +
-                    "This usually happens when Colombo.Host fails to load your assembly contaning IConfigureThisEndpoint.\n" +
-                    "Scanned path: {0}.\n" +
-                    "Assemblies found: {1}.",
+                    "This usually happens when Colombo.Host fails to load your assembly containing {0}.\n" +
+                    "Scanned path: {1}.\n" +
+                    "Assemblies found: {2}.\n" +
+                    "You can specify a type using the app settings key {3} in {4}:\n" +
+                    "<appSettings>\n<add key=\"{3}\" value=\"[AssemblyQualifiedName]\"/>\n</appSettings>",
+                    typeof(IAmAnEndpoint),
                     AppDomain.CurrentDomain.BaseDirectory,
-                    string.Join(", ", scannableAssemblies.Select(a => a.GetName().Name))));
+                    string.Join(", ", scannableAssemblies.Select(a => a.GetName().Name)),
+                    EndPointAppSettingsKey,
+                    Path.GetFileName(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile)));
             }
 
             if (configureThisEndpointTypes.Length > 1)
             {
                 throw new ColomboHostException(string.Format("Host doesn't support hosting of multiple endpoints.\n" +
-                                                             "Endpoint classes found: {0}.\n" +
-                                                             "You may have some old assemblies in your runtime directory." +
-                                                             " Try right-clicking your VS project, and selecting 'Clean'.",
-                                                             string.Join(", ", configureThisEndpointTypes.Select( e => e.AssemblyQualifiedName).ToArray())));
+                    "Endpoint classes found: {0}.\n" +
+                    "You may have some old assemblies in your runtime directory." +
+                    " Try right-clicking your VS project, and selecting 'Clean'.\n" +
+                    "You can specify a type using the app settings key {1} in {2}:\n" +
+                    "<appSettings>\n<add key=\"{1}\" value=\"[AssemblyQualifiedName]\"/>\n</appSettings>",
+                    string.Join(", ", configureThisEndpointTypes.Select( e => e.AssemblyQualifiedName).ToArray()),
+                    EndPointAppSettingsKey,
+                    Path.GetFileName(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile)));
             }
 
             return configureThisEndpointTypes[0];
@@ -87,7 +117,7 @@ namespace Colombo.Host.Internal
                 try
                 {
                     assembly = Assembly.LoadFrom(assemblyFile.FullName);
-                    //will throw if assembly cant be loaded
+                    //will throw if assembly can't be loaded
                     assembly.GetTypes();
                 }
                 catch

@@ -47,7 +47,7 @@ namespace Colombo.Host
             {
                 var baseDirectory = new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory);
                 var assemblyScanner = new AssemblyScanner(baseDirectory);
-                var configureThisEndpointType = assemblyScanner.FindUniqueConfigureThisEndPoint();
+                var configureThisEndpointType = assemblyScanner.GetEndPointType();
 
                 var cfg = RunnerConfigurator.New(x =>
                 {
