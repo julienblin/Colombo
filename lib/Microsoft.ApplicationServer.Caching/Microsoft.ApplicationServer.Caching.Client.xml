@@ -1,0 +1,490 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+	<assembly>
+		<name>Microsoft.ApplicationServer.Caching.Client</name>
+	</assembly>
+	<members>
+		<member name="T:Microsoft.ApplicationServer.Caching.DataCache">
+			<summary>The object that is used by cache-enabled applications for storing and retrieving objects from the cache cluster. An instance of this object is referred to as the cache client.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.Add(System.String,System.Object)">
+			<summary>Adds an object to the cache.</summary>
+			<returns>A  <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItemVersion"></see> object that represents the version of the object saved to the cache under the key value.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.Add(System.String,System.Object,System.Collections.Generic.IEnumerable{Microsoft.ApplicationServer.Caching.DataCacheTag})">
+			<summary>Adds an object to the cache. This method enables associating tags with the cached object.</summary>
+			<returns>A <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItemVersion"></see> object that represents the version of the object saved to the cache under the key value.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.Add(System.String,System.Object,System.String)">
+			<summary>Adds an object to a region in the cache.</summary>
+			<returns>A <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItemVersion"></see> object that represents the version of the object saved to the cache under the key value.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.Add(System.String,System.Object,System.TimeSpan)">
+			<summary>Adds an object to the cache. This method provides the ability to specify when the object should be expired.</summary>
+			<returns>A <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItemVersion"></see> object that represents the version of the object saved to the cache under the key value.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.Add(System.String,System.Object,System.Collections.Generic.IEnumerable{Microsoft.ApplicationServer.Caching.DataCacheTag},System.String)">
+			<summary>Adds an object to a region in the cache. This method enables association of tags with objects in the cache.</summary>
+			<returns>A <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItemVersion"></see> object that represents the version of the object saved to the cache under the key value.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.Add(System.String,System.Object,System.TimeSpan,System.Collections.Generic.IEnumerable{Microsoft.ApplicationServer.Caching.DataCacheTag})">
+			<summary>Adds an object to the cache. This method enables associating tags with the cached object and specifying when the object should be expired.</summary>
+			<returns>A <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItemVersion"></see> object that represents the version of the object saved to the cache under the key value.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.Add(System.String,System.Object,System.TimeSpan,System.String)">
+			<summary>Adds an object to a region in the cache. This method provides the ability to specify when the object should be expired.</summary>
+			<returns>A <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItemVersion"></see>object that represents the version of the object saved to the cache under the key value.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.Add(System.String,System.Object,System.TimeSpan,System.Collections.Generic.IEnumerable{Microsoft.ApplicationServer.Caching.DataCacheTag},System.String)">
+			<summary>Adds an object to a region in the cache. This method enables associating tags with the cached object and specifying when the object should be expired.</summary>
+			<returns>A <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItemVersion"></see> object that represents the version of the object saved to the cache under the key value.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.AddCacheLevelBulkCallback(Microsoft.ApplicationServer.Caching.DataCacheBulkNotificationCallback)">
+			<summary>Adds a bulk cache notification callback for cache operations occurring on all regions and items.</summary>
+			<returns>A <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheNotificationDescriptor"></see> object used to identify the cache bulk notification callback.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.AddCacheLevelCallback(Microsoft.ApplicationServer.Caching.DataCacheOperations,Microsoft.ApplicationServer.Caching.DataCacheNotificationCallback)">
+			<summary>Adds a cache notification callback for cache operations occurring on all regions and items.</summary>
+			<returns>A <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheNotificationDescriptor"></see> object used to identify the cache notification callback.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.AddFailureNotificationCallback(Microsoft.ApplicationServer.Caching.DataCacheFailureNotificationCallback)">
+			<summary>Adds a failure notification callback, for notifications indicating that a client has missed one or more cache notifications.</summary>
+			<returns>A <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheNotificationDescriptor"></see> object used to identify the cache notification callback.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.AddItemLevelCallback(System.String,Microsoft.ApplicationServer.Caching.DataCacheOperations,Microsoft.ApplicationServer.Caching.DataCacheNotificationCallback)">
+			<summary>Adds a cache notification callback for cache operations occurring on one specific item that is not stored in a region.</summary>
+			<returns>A <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheNotificationDescriptor"></see> object used to identify the cache notification callback.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.AddItemLevelCallback(System.String,Microsoft.ApplicationServer.Caching.DataCacheOperations,Microsoft.ApplicationServer.Caching.DataCacheNotificationCallback,System.String)">
+			<summary>Adds a cache notification callback for cache operations occurring on one specific item that is stored in region.</summary>
+			<returns>A <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheNotificationDescriptor"></see> object used to identify the cache notification callback.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.AddRegionLevelCallback(System.String,Microsoft.ApplicationServer.Caching.DataCacheOperations,Microsoft.ApplicationServer.Caching.DataCacheNotificationCallback)">
+			<summary>Adds a cache notification callback for cache operations occurring on one specific region.</summary>
+			<returns>A <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheNotificationDescriptor"></see> object used to identify the cache notification callback.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.BulkGet(System.Collections.Generic.IEnumerable{System.String},System.String)">
+			<summary>Returns objects for the specified keys from the specified region of the cache.</summary>
+			<returns>Returns an <see cref="T:System.Collections.Generic.IEnumerable`1"></see> object with a list of key and value pairs.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.ClearRegion(System.String)">
+			<summary>Deletes all objects in the specified region.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.CreateRegion(System.String)">
+			<summary>Creates a region.</summary>
+			<returns>Returns a<see cref="T:System.Boolean"></see> value..</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.Get(System.String)">
+			<summary>Gets an object from the cache using the specified key.</summary>
+			<returns>The object that was cached by using the specified key. Null is returned if the key does not exist.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.Get(System.String,Microsoft.ApplicationServer.Caching.DataCacheItemVersion@)">
+			<summary>Gets an object from the cache using the specified key. You may also provide the version to obtain a specific version of a key, if that version is still the most current in the cache.</summary>
+			<returns>The object that was cached by using the specified key. Null is returned if the key does not exist. Even if the key does exist, Null may also be returned because the object has been updated to a new version.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.Get(System.String,System.String)">
+			<summary>Gets an object from the specified region by using the specified key.</summary>
+			<returns>The object that was cached by using the specified key. Null is returned if the key does not exist.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.Get(System.String,Microsoft.ApplicationServer.Caching.DataCacheItemVersion@,System.String)">
+			<summary>Gets an object from the specified region by using the specified key. You may also provide the version to obtain the specific version of a key, if that version is still the most current in the region.</summary>
+			<returns>The object that was cached by using the specified key. Null is returned if the key does not exist. Even if the key does exist, Null may also be returned because the object has been updated to a new version.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.GetAndLock(System.String,System.TimeSpan,Microsoft.ApplicationServer.Caching.DataCacheLockHandle@)">
+			<summary>Locks the key if the key is present and it is not locked and returns the object corresponding to the key.</summary>
+			<returns>Returns <see cref="T:System.Object"></see> matching the specified key parameter if the <see cref="T:System.Object"></see> is present and is not locked. If the key does not exist, a DataCacheException object is thrown with the ErrorCode set to <see cref="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.KeyDoesNotExist"></see>. Create objects based on the referenced key to resolve this error.If the object is already locked by another cache client, a DataCacheException object is thrown with the ErrorCode set to <see cref="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.ObjectLocked"></see>. The object will be inaccessible until it is unlocked by the locking client.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.GetAndLock(System.String,System.TimeSpan,Microsoft.ApplicationServer.Caching.DataCacheLockHandle@,System.Boolean)">
+			<summary>Lock the key if key is present and it is not locked by any clients and returns the object corresponding to the key.</summary>
+			<returns>Returns <see cref="T:System.Object"></see> matching the specified key parameter if the <see cref="T:System.Object"></see> is present and is not locked. If the key does not exist, a DataCacheException object is thrown with the ErrorCode set to <see cref="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.KeyDoesNotExist"></see>. Create objects based on the referenced key to resolve this error.If the object is already locked by another cache client, a DataCacheException object is thrown with the ErrorCode set to <see cref="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.ObjectLocked"></see>. The object will be inaccessible until it is unlocked by the locking client.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.GetAndLock(System.String,System.TimeSpan,Microsoft.ApplicationServer.Caching.DataCacheLockHandle@,System.String)">
+			<summary>Locks the key if the key is present and is not locked and returns the object corresponding to the key. For objects stored in regions.</summary>
+			<returns>Returns <see cref="T:System.Object"></see> matching the specified key parameter if the <see cref="T:System.Object"></see> is present and is not locked.If the key does not exist, a DataCacheException object is thrown with the ErrorCode set to <see cref="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.KeyDoesNotExist"></see>. Create objects based on the referenced key to resolve this error.If the object is already locked by another cache client, a DataCacheException object is thrown with the ErrorCode set to <see cref="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.ObjectLocked"></see>. The object will be inaccessible until it is unlocked by the locking client.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.GetAndLock(System.String,System.TimeSpan,Microsoft.ApplicationServer.Caching.DataCacheLockHandle@,System.String,System.Boolean)">
+			<summary>Lock the key if key is present and it is not locked by any clients and returns the object corresponding to the key. For objects stored in regions.</summary>
+			<returns>Returns <see cref="T:System.Object"></see> matching the specified key parameter if the <see cref="T:System.Object"></see> is present and is not locked.If the key does not exist, a DataCacheException object is thrown with the ErrorCode set to <see cref="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.KeyDoesNotExist"></see>. Create objects based on the referenced key to resolve this error.If the object is already locked by another cache client, a DataCacheException object is thrown with the ErrorCode set to <see cref="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.ObjectLocked"></see>. The object will be inaccessible until it is unlocked by the locking client.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.GetCacheItem(System.String)">
+			<summary>Gets a <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItem"></see> object to retrieve all information associated with your cached object in the cluster.</summary>
+			<returns>A<see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItem"></see> object that contains all information associated with your cached object. Null is returned if the key does not exist.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.GetCacheItem(System.String,System.String)">
+			<summary>Gets a <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItem"></see> object to retrieve all information associated with your cached object in the cluster. For objects stored in regions.</summary>
+			<returns>A <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItem"></see> object that contains all information associated with your cached object. Null is returned if the key does not exist.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.GetIfNewer(System.String,Microsoft.ApplicationServer.Caching.DataCacheItemVersion@)">
+			<summary>Gets an object from the cache, but only if a newer version of the object resides in the cache.</summary>
+			<returns>If the version in the cache differs from the version parameter, the corresponding cached object is returned. If the version in the cache is the same as the version parameter, null is returned.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.GetIfNewer(System.String,Microsoft.ApplicationServer.Caching.DataCacheItemVersion@,System.String)">
+			<summary>Gets an object from the specified region, but only if a newer version of the object resides in the region.</summary>
+			<returns>If the version in the region differs from the version parameter, the corresponding cached object is returned. If the version in the region is the same as the version parameter, null is returned.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.GetObjectsByAllTags(System.Collections.Generic.IEnumerable{Microsoft.ApplicationServer.Caching.DataCacheTag},System.String)">
+			<summary>Gets an enumerable list of all cached objects in the specified region that have all the same tags in common.</summary>
+			<returns>An enumerable list of all cached objects in the specified region that have all the same tags in common.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.GetObjectsByAnyTag(System.Collections.Generic.IEnumerable{Microsoft.ApplicationServer.Caching.DataCacheTag},System.String)">
+			<summary>Gets an enumerable list of all cached objects in the specified region that have any of the same tags in common.</summary>
+			<returns>An enumerable list of all cached objects in the specified region that have any of the same tags in common. Null is returned if no objects in the specified region have any of the tags specified.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.GetObjectsByTag(Microsoft.ApplicationServer.Caching.DataCacheTag,System.String)">
+			<summary>Gets an enumerable list of all cached objects in the specified region that have the specified tag.</summary>
+			<returns>An enumerable list of all cached objects in the specified region that have the specified tag. Null is returned if no objects in the specified region have the tag specified.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.GetObjectsInRegion(System.String)">
+			<summary>Gets an enumerable list of all cached objects in the specified region.</summary>
+			<returns>An enumerable list of all cached objects in the specified region.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.GetSystemRegionName(System.String)">
+			<summary>Returns the name of the region for the specified key.</summary>
+			<returns>Returns the region name as a <see cref="T:System.String"></see>.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.GetSystemRegions">
+			<summary>Used to determine the default regions for the cache.</summary>
+			<returns>Returns an enumerable list of default regions for the cache as an <see cref="T:System.Collections.Generic.IEnumerable`1"></see> object.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.Put(System.String,System.Object)">
+			<summary>Adds or replaces an object in the cache.</summary>
+			<returns>A <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItemVersion"></see> object that represents the version of the object saved to the cache under the key value.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.Put(System.String,System.Object,Microsoft.ApplicationServer.Caching.DataCacheItemVersion)">
+			<summary>Adds or replaces an object in the cache if it is at the specified version.</summary>
+			<returns>A <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItemVersion"></see> object that represents the version of the object saved to the cache under the key value.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.Put(System.String,System.Object,System.Collections.Generic.IEnumerable{Microsoft.ApplicationServer.Caching.DataCacheTag})">
+			<summary>Adds or replaces an object in the cache. Associates tags with the cached object.</summary>
+			<returns>A <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItemVersion"></see> object that represents the version of the object saved to the cache under the key value.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.Put(System.String,System.Object,System.String)">
+			<summary>Adds or replaces an object in the specified region.</summary>
+			<returns>A <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItemVersion"></see> object that represents the version of the object saved to the cache under the key value.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.Put(System.String,System.Object,System.TimeSpan)">
+			<summary>Adds or replaces an object in the cache. Specifies the timeout value of the cached object.</summary>
+			<returns>A <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItemVersion"></see> object that represents the version of the object saved to the cache under the key value.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.Put(System.String,System.Object,Microsoft.ApplicationServer.Caching.DataCacheItemVersion,System.Collections.Generic.IEnumerable{Microsoft.ApplicationServer.Caching.DataCacheTag})">
+			<summary>Adds or replaces an object in the cache if it is at the specified version. Associates tags with the cached object.</summary>
+			<returns>A <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItemVersion"></see> object that represents the version of the object saved to the cache under the key value.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.Put(System.String,System.Object,Microsoft.ApplicationServer.Caching.DataCacheItemVersion,System.String)">
+			<summary>Adds or replaces an object in the specified region if it is at the specified version.</summary>
+			<returns>A <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItemVersion"></see> object that represents the version of the object saved to the cache under the key value.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.Put(System.String,System.Object,Microsoft.ApplicationServer.Caching.DataCacheItemVersion,System.TimeSpan)">
+			<summary>Adds or replaces an object in the cache if it is at the specified version. Specifies the timeout value of the cached object.</summary>
+			<returns>A <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItemVersion"></see> object that represents the version of the object saved to the cache under the key value.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.Put(System.String,System.Object,System.Collections.Generic.IEnumerable{Microsoft.ApplicationServer.Caching.DataCacheTag},System.String)">
+			<summary>Adds or replaces an object in the specified region. Associates tags with the cached object.</summary>
+			<returns>A <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItemVersion"></see> object that represents the version of the object saved to the cache under the key value.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.Put(System.String,System.Object,System.TimeSpan,System.Collections.Generic.IEnumerable{Microsoft.ApplicationServer.Caching.DataCacheTag})">
+			<summary>Adds or replaces an object in the cache. Specifies the timeout value and associates tags with the cached object.</summary>
+			<returns>A <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItemVersion"></see> object that represents the version of the object saved to the cache under the key value.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.Put(System.String,System.Object,System.TimeSpan,System.String)">
+			<summary>Adds or replaces an object in the specified region. Specifies the timeout value of the cached object.</summary>
+			<returns>A <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItemVersion"></see> object that represents the version of the object saved to the cache under the key value.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.Put(System.String,System.Object,Microsoft.ApplicationServer.Caching.DataCacheItemVersion,System.Collections.Generic.IEnumerable{Microsoft.ApplicationServer.Caching.DataCacheTag},System.String)">
+			<summary>Adds or replaces an object in the specified region if it is at the specified version. Associates tags with the cached object.</summary>
+			<returns>A <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItemVersion"></see> object that represents the version of the object saved to the cache under the key value.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.Put(System.String,System.Object,Microsoft.ApplicationServer.Caching.DataCacheItemVersion,System.TimeSpan,System.Collections.Generic.IEnumerable{Microsoft.ApplicationServer.Caching.DataCacheTag})">
+			<summary>Adds or replaces an object in the cache if it is at the specified version. Specifies the timeout value and associates tags with the cached object.</summary>
+			<returns>A <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItemVersion"></see> object that represents the version of the object saved to the cache under the key value.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.Put(System.String,System.Object,Microsoft.ApplicationServer.Caching.DataCacheItemVersion,System.TimeSpan,System.String)">
+			<summary>Adds or replaces an object in the specified region if it is at the specified version. Specifies the timeout value of the cached object.</summary>
+			<returns>A <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItemVersion"></see> object that represents the version of the object saved to the cache under the key value.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.Put(System.String,System.Object,System.TimeSpan,System.Collections.Generic.IEnumerable{Microsoft.ApplicationServer.Caching.DataCacheTag},System.String)">
+			<summary>Adds or replaces an object in the specified region. Specifies the timeout value and associates tags with the cached object.</summary>
+			<returns>A <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItemVersion"></see> object that represents the version of the object saved to the cache under the key value.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.Put(System.String,System.Object,Microsoft.ApplicationServer.Caching.DataCacheItemVersion,System.TimeSpan,System.Collections.Generic.IEnumerable{Microsoft.ApplicationServer.Caching.DataCacheTag},System.String)">
+			<summary>Adds or replaces an object in the specified region if it is at the specified version. Specifies the timeout value and associates tags with the cached object.</summary>
+			<returns>A <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItemVersion"></see> object that represents the version of the object saved to the cache under the key value.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.PutAndUnlock(System.String,System.Object,Microsoft.ApplicationServer.Caching.DataCacheLockHandle)">
+			<summary>Replaces and unlocks an object in the cache.</summary>
+			<returns>A <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItemVersion"></see> object that represents the version of the cached object after it has been updated by this method. </returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.PutAndUnlock(System.String,System.Object,Microsoft.ApplicationServer.Caching.DataCacheLockHandle,System.Collections.Generic.IEnumerable{Microsoft.ApplicationServer.Caching.DataCacheTag})">
+			<summary>Replaces and unlocks an object in the cache. Associates tags with the cached object.</summary>
+			<returns>A <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItemVersion"></see> object that represents the version of the cached object after it has been updated by this method.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.PutAndUnlock(System.String,System.Object,Microsoft.ApplicationServer.Caching.DataCacheLockHandle,System.String)">
+			<summary>Replaces and unlocks an object in the specified region.</summary>
+			<returns>A <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItemVersion"></see> object that represents the version of the cached object after it has been updated by this method.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.PutAndUnlock(System.String,System.Object,Microsoft.ApplicationServer.Caching.DataCacheLockHandle,System.TimeSpan)">
+			<summary>Replaces and unlocks an object in the cache. Specifies the timeout value of the cached object.</summary>
+			<returns>A <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItemVersion"></see> object that represents the version of the cached object after it has been updated by this method.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.PutAndUnlock(System.String,System.Object,Microsoft.ApplicationServer.Caching.DataCacheLockHandle,System.Collections.Generic.IEnumerable{Microsoft.ApplicationServer.Caching.DataCacheTag},System.String)">
+			<summary>Replaces and unlocks an object in the specified region. Associates tags with the cached object.</summary>
+			<returns>A <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItemVersion"></see> object that represents the version of the cached object after it has been updated by this method.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.PutAndUnlock(System.String,System.Object,Microsoft.ApplicationServer.Caching.DataCacheLockHandle,System.TimeSpan,System.Collections.Generic.IEnumerable{Microsoft.ApplicationServer.Caching.DataCacheTag})">
+			<summary>Replaces and unlocks an object in the cache. Specifies the timeout value and associates tags with the cached object.</summary>
+			<returns>A <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItemVersion"></see> object that represents the version of the cached object after it has been updated by this method.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.PutAndUnlock(System.String,System.Object,Microsoft.ApplicationServer.Caching.DataCacheLockHandle,System.TimeSpan,System.String)">
+			<summary>Replaces and unlocks an object in the specified region. Specifies the timeout value of the cached object.</summary>
+			<returns>A <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItemVersion"></see> object that represents the version of the cached object after it has been updated by this method. The timeout value associated with the cached object overrides expiration settings specified in the named cache configuration. For more information, see Expiration and Eviction.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.PutAndUnlock(System.String,System.Object,Microsoft.ApplicationServer.Caching.DataCacheLockHandle,System.TimeSpan,System.Collections.Generic.IEnumerable{Microsoft.ApplicationServer.Caching.DataCacheTag},System.String)">
+			<summary>Replaces and unlocks an object in the specified region. Specifies the timeout value and associates tags with the cached object.</summary>
+			<returns>A <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItemVersion"></see> object that represents the version of the cached object after it has been updated by this method.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.Remove(System.String)">
+			<summary>Removes an object from the cache.</summary>
+			<returns>Returns true if the object identified by the key is removed. Returns false if the key was not found.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.Remove(System.String,Microsoft.ApplicationServer.Caching.DataCacheItemVersion)">
+			<summary>Removes an object from the cache if it is at the specified version.</summary>
+			<returns>Returns true if the object is removed. Returns false if an object with the specified key and version was not found.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.Remove(System.String,Microsoft.ApplicationServer.Caching.DataCacheLockHandle)">
+			<summary>Removes an object from the cache.</summary>
+			<returns>Returns <see cref="T:System.Boolean"></see>.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.Remove(System.String,System.String)">
+			<summary>Removes an object from the specified region.</summary>
+			<returns>Returns <see cref="T:System.Boolean"></see>.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.Remove(System.String,Microsoft.ApplicationServer.Caching.DataCacheItemVersion,System.String)">
+			<summary>Removes an object from the specified region if it is at the specified version.</summary>
+			<returns>Returns true if the object is removed. Returns false if an object with the specified key and version was not found in the region.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.Remove(System.String,Microsoft.ApplicationServer.Caching.DataCacheLockHandle,System.String)">
+			<summary>Removes an object from the specified region.</summary>
+			<returns>Returns <see cref="T:System.Boolean"></see>.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.RemoveCallback(Microsoft.ApplicationServer.Caching.DataCacheNotificationDescriptor)">
+			<summary>Removes a cache notification callback.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.RemoveRegion(System.String)">
+			<summary>Deletes a region. All cached objects inside the region are also removed.</summary>
+			<returns>Returns true if the region is removed. Returns false if the region does not exist.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.ResetObjectTimeout(System.String,System.TimeSpan)">
+			<summary>Resets the object timeout value, defining how long objects reside in the cache before expiring. The value specified for the object overrides the default settings for the cache.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.ResetObjectTimeout(System.String,System.TimeSpan,System.String)">
+			<summary>Resets the object timeout value, defining how long objects reside in the region before expiring. The value specified for the object overrides the default settings for the cache.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.Unlock(System.String,Microsoft.ApplicationServer.Caching.DataCacheLockHandle)">
+			<summary>Releases objects locked in the cache. This method supports pessimistic concurrency by making sure that the appropriate DataCacheLockHandle is used for unlocking the object.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.Unlock(System.String,Microsoft.ApplicationServer.Caching.DataCacheLockHandle,System.String)">
+			<summary>Releases objects locked in the specified region. This method supports pessimistic concurrency by making sure that the appropriate DataCacheLockHandle is used for unlocking the object.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.Unlock(System.String,Microsoft.ApplicationServer.Caching.DataCacheLockHandle,System.TimeSpan)">
+			<summary>Releases objects locked in the cache. This method supports pessimistic concurrency by making sure that the appropriate DataCacheLockHandle is used for unlocking the object. Specifies a new timeout value for the cached object.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCache.Unlock(System.String,Microsoft.ApplicationServer.Caching.DataCacheLockHandle,System.TimeSpan,System.String)">
+			<summary>Releases objects locked in the specified region. This method supports pessimistic concurrency by making sure that the appropriate DataCacheLockHandle is used for unlocking the object. Specifies a new timeout value for the cached object.</summary>
+		</member>
+		<member name="P:Microsoft.ApplicationServer.Caching.DataCache.Item(System.String)">
+			<summary>Allows for the use of array notation to access cached objects.</summary>
+			<returns>A deserialized object that was saved to the cache cluster that uses the key.</returns>
+		</member>
+		<member name="T:Microsoft.ApplicationServer.Caching.DataCacheBulkNotificationCallback">
+			<summary>Specifies a callback which is called with a list of cache operations.</summary>
+		</member>
+		<member name="T:Microsoft.ApplicationServer.Caching.DataCacheFactory">
+			<summary>Provides methods to return <see cref="T:Microsoft.ApplicationServer.Caching.DataCache"></see> objects that are mapped to a named cache. This class also enables programmatic configuration of the cache client.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheFactory.#ctor">
+			<summary>Used for configuring a cache client based on the application configuration file.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheFactory.#ctor(Microsoft.ApplicationServer.Caching.DataCacheFactoryConfiguration)">
+			<summary>Used for programmatically configuring a cache client.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheFactory.Dispose">
+			<summary>Closes the <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheFactory"></see> object and releases all associated resources.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheFactory.GetCache(System.String)">
+			<summary>Returns the cache client, an instance of the <see cref="T:Microsoft.ApplicationServer.Caching.DataCache"></see> object.</summary>
+			<returns>The cache client, an instance of the DataCache object.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheFactory.GetDefaultCache">
+			<summary>Returns the cache client corresponding to the default cache, an instance of the <see cref="T:Microsoft.ApplicationServer.Caching.DataCache"></see> object.</summary>
+			<returns>The cache client, an instance of the DataCache object.</returns>
+		</member>
+		<member name="T:Microsoft.ApplicationServer.Caching.DataCacheFactoryConfiguration">
+			<summary>Specifies the configuration settings for a new cache client.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheFactoryConfiguration.#ctor">
+			<summary>Initializes a new instance of the <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheFactoryConfiguration"></see> class.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheFactoryConfiguration.Clone">
+			<summary>Create a duplicate DataCacheFactoryConfiguration object.</summary>
+			<returns>Returns a<see cref="T:System.Object"></see> that can be cast to a <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheFactoryConfiguration"></see> object.</returns>
+		</member>
+		<member name="P:Microsoft.ApplicationServer.Caching.DataCacheFactoryConfiguration.ChannelOpenTimeout">
+			<summary>Gets or sets the length of time that the cache client waits to establish a network connection with the server.</summary>
+			<returns>A <see cref="T:System.TimeSpan"></see> object..</returns>
+		</member>
+		<member name="P:Microsoft.ApplicationServer.Caching.DataCacheFactoryConfiguration.LocalCacheProperties">
+			<summary>Gets or sets the local cache settings for the cache client.</summary>
+			<returns>A <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheLocalCacheProperties"></see> object.</returns>
+		</member>
+		<member name="P:Microsoft.ApplicationServer.Caching.DataCacheFactoryConfiguration.MaxConnectionsToServer">
+			<summary>Specifies the maximum number of channels to open to the cache cluster.</summary>
+			<returns>Returns <see cref="T:System.Int32"></see>.</returns>
+		</member>
+		<member name="P:Microsoft.ApplicationServer.Caching.DataCacheFactoryConfiguration.NotificationProperties">
+			<summary>Gets or sets the notification settings for the cache client.</summary>
+			<returns>A <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheNotificationProperties"></see> object.</returns>
+		</member>
+		<member name="P:Microsoft.ApplicationServer.Caching.DataCacheFactoryConfiguration.RequestTimeout">
+			<summary>Gets or sets the length of time that the cache client waits for a response from the server for each request.</summary>
+			<returns>A <see cref="T:System.TimeSpan"></see>object.</returns>
+		</member>
+		<member name="P:Microsoft.ApplicationServer.Caching.DataCacheFactoryConfiguration.SecurityProperties">
+			<summary>Gets or sets the security properties for the cache client, which includes the ability to sign and/or encrypt data sent between the client and server.</summary>
+			<returns>A <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheSecurity"></see> object.</returns>
+		</member>
+		<member name="P:Microsoft.ApplicationServer.Caching.DataCacheFactoryConfiguration.Servers">
+			<summary>Gets or sets an array of <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheServerEndpoint"></see> objects. Each DataCacheServerEndpoint represents a cache host in the cache cluster.</summary>
+			<returns>Returns <see cref="T:System.Collections.Generic.IEnumerable`1"></see>.</returns>
+		</member>
+		<member name="T:Microsoft.ApplicationServer.Caching.DataCacheFailureNotificationCallback">
+			<summary>Specifies the parameters required for a method to be invoked by a failure notification when the cache client misses cache notifications.</summary>
+		</member>
+		<member name="T:Microsoft.ApplicationServer.Caching.DataCacheLocalCacheInvalidationPolicy">
+			<summary>Specifies the way locally cached objects should be invalidated.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheLocalCacheInvalidationPolicy.NotificationBased">
+			<summary>Specifies that objects will stay in local cache until they are automatically invalidated by a cache notification. </summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheLocalCacheInvalidationPolicy.TimeoutBased">
+			<summary>Specifies that objects will stay in local cache until their lifetime reaches the localCacheTimeout duration specified in the DataCacheFactory constructor. </summary>
+		</member>
+		<member name="T:Microsoft.ApplicationServer.Caching.DataCacheLocalCacheProperties">
+			<summary>Specifies the local cache settings for a cache client.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheLocalCacheProperties.#ctor">
+			<summary>Creates a new instance of the <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheLocalCacheProperties"></see> class.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheLocalCacheProperties.#ctor(System.Int64,System.TimeSpan,Microsoft.ApplicationServer.Caching.DataCacheLocalCacheInvalidationPolicy)">
+			<summary>Creates a new instance of the <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheLocalCacheProperties"></see> class. This overloaded constructor accepts parameters that configure the properties of local cache.</summary>
+		</member>
+		<member name="P:Microsoft.ApplicationServer.Caching.DataCacheLocalCacheProperties.DefaultTimeout">
+			<summary>Gets the default timeout for items in the local cache.</summary>
+			<returns>Returns <see cref="T:System.TimeSpan"></see>.</returns>
+		</member>
+		<member name="P:Microsoft.ApplicationServer.Caching.DataCacheLocalCacheProperties.InvalidationPolicy">
+			<summary>Gets the invalidation policy for items in the local cache.</summary>
+			<returns>Returns <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheLocalCacheInvalidationPolicy"></see>.</returns>
+		</member>
+		<member name="P:Microsoft.ApplicationServer.Caching.DataCacheLocalCacheProperties.IsEnabled">
+			<summary>Gets a Boolean value indicating whether local cache is enabled for the cache client.</summary>
+			<returns>Returns <see cref="T:System.Boolean"></see>.</returns>
+		</member>
+		<member name="P:Microsoft.ApplicationServer.Caching.DataCacheLocalCacheProperties.ObjectCount">
+			<summary>Gets the maximum number of objects permitted in the local cache.</summary>
+			<returns>Returns <see cref="T:System.Int64"></see>.</returns>
+		</member>
+		<member name="T:Microsoft.ApplicationServer.Caching.DataCacheNotificationCallback">
+			<summary>Represents a callback method that is to be invoked by a cache notification when one or more cache operations take place.</summary>
+		</member>
+		<member name="T:Microsoft.ApplicationServer.Caching.DataCacheNotificationDescriptor">
+			<summary>Identifies a cache notification callback. This identifier is required to remove the corresponding cache notification callback.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheNotificationDescriptor.ToString">
+			<summary>Creates a copy of the <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheNotificationDescriptor"></see> object.</summary>
+			<returns>A string value representing the <see cref="P:Microsoft.ApplicationServer.Caching.DataCacheNotificationDescriptor.CacheName"></see> and <see cref="P:Microsoft.ApplicationServer.Caching.DataCacheNotificationDescriptor.DelegateID"></see> property values.</returns>
+		</member>
+		<member name="P:Microsoft.ApplicationServer.Caching.DataCacheNotificationDescriptor.CacheName">
+			<summary>The name of the cache triggering the cache notification.</summary>
+			<returns>A string value represents the name of the cache triggering the cache notification.</returns>
+		</member>
+		<member name="P:Microsoft.ApplicationServer.Caching.DataCacheNotificationDescriptor.DelegateId">
+			<summary>Identifier for the <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheNotificationDescriptor"></see> object. Used to distinguish between DataCacheNotificationDescriptor objects.</summary>
+			<returns>A <see cref="T:System.Int64"></see> value used to identify DataCacheNotificationDescriptor objects.</returns>
+		</member>
+		<member name="T:Microsoft.ApplicationServer.Caching.DataCacheNotificationProperties">
+			<summary>Specifies the notification settings for a cache client.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheNotificationProperties.#ctor(System.Int64,System.TimeSpan)">
+			<summary>Creates a new instance of the <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheNotificationProperties"></see> class.</summary>
+		</member>
+		<member name="P:Microsoft.ApplicationServer.Caching.DataCacheNotificationProperties.MaxQueueLength">
+			<summary>Gets the maximum queue length for notifications on the cache cluster.</summary>
+			<returns>Returns <see cref="T:System.Int64"></see>.</returns>
+		</member>
+		<member name="P:Microsoft.ApplicationServer.Caching.DataCacheNotificationProperties.PollInterval">
+			<summary>Gets the polling interval that the cache client uses to check for notifications on the cache cluster.</summary>
+			<returns>Returns <see cref="T:System.TimeSpan"></see>.</returns>
+		</member>
+		<member name="T:Microsoft.ApplicationServer.Caching.DataCacheServerEndpoint">
+			<summary>Used to specify an individual cache host when programmatically configuring the cache client.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheServerEndpoint.#ctor(System.String,System.Int32)">
+			<summary>Used to define a cache host in the cache cluster for programmatic configuration of the cache client.</summary>
+		</member>
+		<member name="P:Microsoft.ApplicationServer.Caching.DataCacheServerEndpoint.CachePort">
+			<summary>The cache port on the cache server.</summary>
+			<returns>A <see cref="T:System.Int32"></see> value that represents the cache port number on the cache server.</returns>
+		</member>
+		<member name="P:Microsoft.ApplicationServer.Caching.DataCacheServerEndpoint.HostName">
+			<summary>The computer name of the cache server.</summary>
+			<returns>A string representing the computer name of the cache server.</returns>
+		</member>
+		<member name="T:Microsoft.ApplicationServer.Caching.DataCacheSessionStoreProvider">
+			<summary>A session storage provider that enables Web applications to store session-state data to a distributed cache system.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheSessionStoreProvider.#ctor">
+			<summary>Initializes a new instance of the <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheSessionStoreProvider"></see> class.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheSessionStoreProvider.CreateNewStoreData(System.Web.HttpContext,System.Int32)">
+			<summary>Creates a new data storage object for the current request.</summary>
+			<returns>A SessionStateStoreData object, used for storing session data in the distributed cache.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheSessionStoreProvider.CreateUninitializedItem(System.Web.HttpContext,System.String,System.Int32)">
+			<summary>Adds a new session state to the distributed cache. </summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheSessionStoreProvider.Dispose">
+			<summary>Releases all resources used by the <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheSessionStoreProvider"></see> class.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheSessionStoreProvider.EndRequest(System.Web.HttpContext)">
+			<summary>Called by the SessionStateModule class at the end of a request</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheSessionStoreProvider.GetItem(System.Web.HttpContext,System.String,System.Boolean@,System.TimeSpan@,System.Object@,System.Web.SessionState.SessionStateActions@)">
+			<summary>Returns read-only session-state data from the cache.</summary>
+			<returns>A SessionStateStoreData object populated with session values and information from the cache</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheSessionStoreProvider.GetItemExclusive(System.Web.HttpContext,System.String,System.Boolean@,System.TimeSpan@,System.Object@,System.Web.SessionState.SessionStateActions@)">
+			<summary>Returns and locks the read-only session-state data from the cache.</summary>
+			<returns>A SessionStateStoreData object populated with session values and information from the cache.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheSessionStoreProvider.Initialize(System.String,System.Collections.Specialized.NameValueCollection)">
+			<summary>Initializes the distributed cache provider.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheSessionStoreProvider.ReleaseItemExclusive(System.Web.HttpContext,System.String,System.Object)">
+			<summary>Releases a lock on the session data in the cache.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheSessionStoreProvider.RemoveItem(System.Web.HttpContext,System.String,System.Object,System.Web.SessionState.SessionStateStoreData)">
+			<summary>Deletes session data from the cache.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheSessionStoreProvider.SetAndReleaseItemExclusive(System.Web.HttpContext,System.String,System.Web.SessionState.SessionStateStoreData,System.Object,System.Boolean)">
+			<summary>Updates the session item information in the cache with values from the current request and clears the lock on the session item.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheSessionStoreProvider.SetItemExpireCallback(System.Web.SessionState.SessionStateItemExpireCallback)">
+			<summary>Sets a reference to the SessionStateItemExpireCallback delegate for the Session_OnEnd event defined in the Global.asax file.</summary>
+			<returns>Cache does not support notification of the expiration; therefore this method always returns false.</returns>
+		</member>
+		<member name="P:Microsoft.ApplicationServer.Caching.DataCacheSessionStoreProvider.ApplicationName">
+			<summary>The application name. This is used to differentiate sessions in the data source by application.</summary>
+			<returns>Returns <see cref="T:System.String"></see>.</returns>
+		</member>
+	</members>
+</doc>

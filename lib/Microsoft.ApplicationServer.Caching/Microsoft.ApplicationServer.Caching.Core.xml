@@ -1,0 +1,628 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+	<assembly>
+		<name>Microsoft.ApplicationServer.Caching.Core</name>
+	</assembly>
+	<members>
+		<member name="N:Microsoft.ApplicationServer.Caching">
+			<summary>The Microsoft.ApplicationServer.Caching namespace provides access to an in-memory application cache application for developing scalable, high-performance applications. This namespace can be used to cache any common language runtime (CLR) object and provides access through simple APIs.</summary>
+		</member>
+		<member name="T:Microsoft.ApplicationServer.Caching.BaseOperationNotification">
+			<summary>The base class for an event used for notifications.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.BaseOperationNotification.#ctor(System.String,Microsoft.ApplicationServer.Caching.DataCacheOperations,Microsoft.ApplicationServer.Caching.DataCacheItemVersion)">
+			<summary>Initializes a new instance of the <see cref="T:Microsoft.ApplicationServer.Caching.BaseOperationNotification"></see> class.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.BaseOperationNotification.ToString">
+			<summary>Returns the string representation of the BaseOperationNotification event.</summary>
+			<returns>Returns <see cref="T:System.String"></see>.</returns>
+		</member>
+		<member name="P:Microsoft.ApplicationServer.Caching.BaseOperationNotification.CacheName">
+			<summary>Name of the cache in which the operation occurred.</summary>
+			<returns>Returns <see cref="T:System.String"></see>.</returns>
+		</member>
+		<member name="P:Microsoft.ApplicationServer.Caching.BaseOperationNotification.OperationType">
+			<summary>The type of the operation which caused the notification.</summary>
+			<returns>Returns <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheOperations"></see>.</returns>
+		</member>
+		<member name="P:Microsoft.ApplicationServer.Caching.BaseOperationNotification.Version">
+			<summary>The version of the operation which caused the notification.</summary>
+			<returns>Returns <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItemVersion"></see>.</returns>
+		</member>
+		<member name="T:Microsoft.ApplicationServer.Caching.ConfigStoreEntry">
+			<summary>Represents a key-value pair that can be used by a custom provider for the cache cluster configuration store.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.ConfigStoreEntry.#ctor(System.String,System.Byte[],System.Int64)">
+			<summary>Creates a new instance of the <see cref="T:Microsoft.ApplicationServer.Caching.ConfigStoreEntry"></see> class.</summary>
+		</member>
+		<member name="P:Microsoft.ApplicationServer.Caching.ConfigStoreEntry.Key">
+			<summary>The key of the entry.</summary>
+			<returns>A <see cref="T:System.String"></see> object.</returns>
+		</member>
+		<member name="P:Microsoft.ApplicationServer.Caching.ConfigStoreEntry.Version">
+			<summary>The version of the entry.</summary>
+			<returns>A <see cref="T:System.Int64"></see> value that is greater than 0.</returns>
+		</member>
+		<member name="T:Microsoft.ApplicationServer.Caching.ConfigStoreException">
+			<summary>An exception that should be thrown from an implementation of the <see cref="T:Microsoft.ApplicationServer.Caching.ICustomProvider"></see> interface.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.ConfigStoreException.#ctor">
+			<summary>Creates a new instance of the <see cref="T:Microsoft.ApplicationServer.Caching.ConfigStoreException"></see> class.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.ConfigStoreException.#ctor(System.String)">
+			<summary>Creates a new instance of the <see cref="T:Microsoft.ApplicationServer.Caching.ConfigStoreException"></see> class.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.ConfigStoreException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+			<summary>Creates a new instance of the <see cref="T:Microsoft.ApplicationServer.Caching.ConfigStoreException"></see> class.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.ConfigStoreException.#ctor(System.String,System.Exception)">
+			<summary>Creates a new instance of the <see cref="T:Microsoft.ApplicationServer.Caching.ConfigStoreException"></see> class.</summary>
+		</member>
+		<member name="T:Microsoft.ApplicationServer.Caching.DataCacheClientLogManager">
+			<summary>Provides support for changing the logging level of Windows Server AppFabric caching features.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheClientLogManager.ChangeLogLevel(System.Diagnostics.TraceLevel)">
+			<summary>Changes the logging level of the Event Tracing for Windows (ETW) log for Windows Server AppFabric caching features.</summary>
+			<returns>Returns <see cref="T:System.Diagnostics.TraceLevel"></see>.</returns>
+		</member>
+		<member name="T:Microsoft.ApplicationServer.Caching.DataCacheErrorCode">
+			<summary>A static class used to store global error codes.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.AdminAlreadyConfigured">
+			<summary>Cache Administration is already configured on the machine.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.AdminNotConfigured">
+			<summary>Cache Administration is not configured on the machine.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminCacheAlreadyPresent">
+			<summary>The named cache already exists in the cache cluster.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminCacheCreationInconsistencyFailure">
+			<summary>The named cache could not be created due to a detected inconsistency in the configuration store.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminCacheNotCreated">
+			<summary>An unexpected error occurred while attempting to create the named cache.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminCacheNotPresent">
+			<summary>The specified named cache does not exist in the cache cluster.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminCacheNotRemoved">
+			<summary>An unexpected error occurred attempting to remove a named cache.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminClusterDown">
+			<summary>The cache cluster is not running.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminClusterNotReady">
+			<summary>The cache cluster is not ready to perform the requested operation.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminClusterRefreshFailed">
+			<summary>The cache cluster experienced an error while attempting to refresh the list of cache hosts on all of the cache hosts.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminClusterSettingsReadError">
+			<summary>An error occurred attempting to read the configuration store provider name and connection string from the registry.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminClusterTimeout">
+			<summary>A Cache Administration timeout occurred.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminConfigAddHostError">
+			<summary>An error occurred attempt to add a cache host to the cache cluster configuration store.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminConfigDeleteHostError">
+			<summary>An error occurred attempting to delete a cache host from the cache cluster configuration store.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminDefaultCacheCreateFailure">
+			<summary>An error occurred while creating the default cache.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminDeleteInProgress">
+			<summary>The specified cache is in the process of being removed.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminGrantClientAccountErrorFormat">
+			<summary>An error occurred attempting to add an account to the allowed client accounts list.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminHostNameResolveFailure">
+			<summary>The name 'localhost' is unable to be resolved to the current host name.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminHostNotPresent">
+			<summary>The specified cache host is not part of the cache cluster.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminHostNotRunning">
+			<summary>The specified cache host is not currently running.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminHostRefreshFailed">
+			<summary>The cache cluster experienced an error while attempting to refresh the list of cache hosts on each of the specified cache host.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminHostRunning">
+			<summary>The specified cache host is already in the running state.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminHostsNotRunning">
+			<summary>No cache hosts are running in the cache cluster.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminHostsRunning">
+			<summary>One or more cache hosts are running in the cache cluster.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminInstallPathReadError">
+			<summary>An error occurred reading the installation path from the registry.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminInvalidClusterSettings">
+			<summary>The specified provider string or connection string is invalid. </summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminInvalidOperation">
+			<summary>The specified operation is invalid.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminInvalidSecuritySettings">
+			<summary>The specified security settings are invalid.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminMaxCachesCreated">
+			<summary>The specified named cache cannot be created, because the cache cluster has reached the maximum number of named caches.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminNoHosts">
+			<summary>There are no cache hosts in the cache cluster.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminNoQuorumIfHostStopped">
+			<summary>The specified host cannot be stopped, because the number of hosts would drop below the required quorum.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminNoSeedNodes">
+			<summary>There are no seed nodes present in the cache cluster.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminNullArgs">
+			<summary>A required argument is null.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminPortsDuplicated">
+			<summary>One or more port numbers have duplicate values.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminQuorumNotUp">
+			<summary>The required quorum of hosts is not running.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminRegionNotPresent">
+			<summary>The specified region does not exist in the cache cluster.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminRemoteRegistryAccessFailed">
+			<summary>An error occurred while attempting to access the registry on a remote cache host.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminRequestTimeoutResultUnknown">
+			<summary>The request timed out, but the result of the request is unknown.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminRevokeClientAccountErrorFormat">
+			<summary>An error occurred attempting to remove an account from the list of allowed client accounts.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminStatsIncorrect">
+			<summary>The returned status information might be incorrect, because one or more cache hosts could not be reached.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminStoreAccessFailure">
+			<summary>An error occurred attempting to access the cache cluster configuration store.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminTimeout">
+			<summary>A timeout occurred.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminUnknownError">
+			<summary>An unknown error occurred.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminWindowsAccountAlreadyPresent">
+			<summary>The specified Windows account already exists in the list of allowed client accounts.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminWindowsAccountInvalid">
+			<summary>The specified Windows account is not valid.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheAdminWindowsAccountNotPresent">
+			<summary>The specified Windows account is not present in the list of allowed client accounts.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.CacheItemVersionMismatch">
+			<summary>The object in the cache does not match with the specified version.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.ClientServerVersionMismatch">
+			<summary>The cache client assemblies are a different version than the cache host assemblies.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.ClusterAlreadyInitialized">
+			<summary>The cache cluster has already been initialized.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.ClusterConfigConnectionError">
+			<summary>An error occurred while attempting to connect to the cache cluster configuration store.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.ClusterConfigReadError">
+			<summary>An error occurred while reading the cache cluster configuration store.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.ClusterNotInitialized">
+			<summary>The cache cluster is not initialized.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.ConfigurationStateSaveError">
+			<summary>An error occurred while attempting to save the configuration state.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.ConnectionSettingsRegistrySaveError">
+			<summary>An error occurred while attempting to save the connection settings to the registry.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.ConnectionTerminated">
+			<summary>The connection was terminated. This could be caused by server or network problems.</summary>
+		</member>
+    <member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.DomainBlockedAccount">
+      <summary>The account is blocked for the domain configuration.</summary>
+    </member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.GetComputerDomainError">
+			<summary>An error occurred while attempting to get the computer domain.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.HostAdditionFailureError">
+			<summary>An error occurred while attempting to add a cache host to the cache cluster.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.HostDeletionFailureError">
+			<summary>An error occurred while attempting to remove a host from the cache cluster.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.HostEntryNotFound">
+			<summary>The specified cache host entry was not found in the cache cluster configuration.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.IncompleteConnectionParameters">
+			<summary>The specified connection parameters are incomplete.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.InstallPathMissingError">
+			<summary>An error occurred while attempting to read the install path from the registry.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.InvalidArgument">
+			<summary>The argument is not valid.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.InvalidCacheLockHandle">
+			<summary>The specified lock handle is not valid.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.InvalidEnumerator">
+			<summary>An invalid enumerator is specified.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.KeyAlreadyExists">
+			<summary>The key is already present in the cache or region.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.KeyDoesNotExist">
+			<summary>An object cached with the specified key does not exist in the cache or region.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.MaxNamedCacheCountExceeded">
+			<summary>The named cache count exceeded the maximum value.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.NamedCacheDoesNotExist">
+			<summary>The named cache does not exist.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.NetworkShareAsLocalPathError">
+			<summary>A network path was expected, but a local path was provided.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.NetworkShareFilePermissionsError">
+			<summary>The specified network file share does not have appropriate permissions.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.NetworkShareFolderConnectionError">
+			<summary>An error occurred while attempting to connect to the shared network folder.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.NewNetworkShareSetupError">
+			<summary>An error occurred attempting to write the configuration store files at the specified shared network folder.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.NonDomainBlockedAccount">
+			<summary>The domain account is blocked for the workgroup configuration.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.NonDomainNWService">
+			<summary>The Network Service account is not permitted for a workgroup-based configuration of the Caching Service.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.NotificationInvalidationNotSupported">
+			<summary>Cache notifications are not supported because the named cache has been created without notifications enabled.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.ObjectLocked">
+			<summary>The cached object has already been locked.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.ObjectNotLocked">
+			<summary>The object is not locked.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.PermissionsError">
+			<summary>An error occurred while setting permissions on the cache cluster configuration.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.PortAlreadyInUseError">
+			<summary>The specified port is already in-use.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.PortDuplicationError">
+			<summary>One or more ports have duplicate values.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.RegionAlreadyExists">
+			<summary>The region already exists.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.RegionDoesNotExist">
+			<summary>The region does not exist.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.RegistryAccessFailed">
+			<summary>An error occurred while attempting to access the registry.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.RegistryKeyOpenFailure">
+			<summary>An error occurred while attempting to open a registry key for reading.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.RetryLater">
+			<summary>Temporary failure, retry the operation later.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.SerializationException">
+			<summary>An exception was encountered during object serialization.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.ServerNull">
+			<summary>The server passed to the <see cref="T:Microsoft.Data.Caching.DataCacheFactory"></see> constructor is null.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.ServiceAccessError">
+			<summary>An error occurred while accessing the Caching Service.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.ServiceAlreadyConfigured">
+			<summary>The Caching Service is already configured on the specified cache host.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.ServiceNotConfigured">
+			<summary>The Caching Service is not configured on the specified cache host.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.ServiceNotStopped">
+			<summary>The operation cannot be completed, because the Caching Service is still running.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.TestConnectionFailed">
+			<summary>The test connection failed.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.Timeout">
+			<summary>Communications with the cache cluster has experienced a delay past the timeout value.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorCode.UndefinedError">
+			<summary>An unknown error has occurred.</summary>
+		</member>
+		<member name="T:Microsoft.ApplicationServer.Caching.DataCacheErrorSubStatus">
+			<summary>Used to retrieve substatus codes for errors returned to the client.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorSubStatus.CacheServerUnavailable">
+			<summary>The primary cache server is unavailable.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorSubStatus.None">
+			<summary>There is no specific substatus code.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorSubStatus.NotPrimary">
+			<summary>The request did not find the primary server.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorSubStatus.NoWriteQuorum">
+			<summary>Unable to satisfy the specified write quorum of cache hosts.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorSubStatus.ReplicationQueueFull">
+			<summary>The replication queue is full.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheErrorSubStatus.Throttled">
+			<summary>The requested operation failed, because the required cache host is in a throttled state.</summary>
+		</member>
+		<member name="T:Microsoft.ApplicationServer.Caching.DataCacheException">
+			<summary>Used for cache-related exceptions.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheException.#ctor">
+			<summary>Initializes a new instance of the <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheException"></see> class.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheException.#ctor(System.String)">
+			<summary>Initializes a new instance of the <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheException"></see> class; allows you to provide a message with the exception.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+			<summary>Initializes a new instance of the <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheException"></see> class; allows you to provide serialization information with the exception.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheException.#ctor(System.String,System.Exception)">
+			<summary>Initializes a new instance of the <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheException"></see> class; allows you to provide a message and another exception with the exception.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheException.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+			<summary>The interface that is used for serialization.</summary>
+		</member>
+		<member name="P:Microsoft.ApplicationServer.Caching.DataCacheException.ErrorCode">
+			<summary>The integer used to identify the type of exception encountered.</summary>
+			<returns>An <see cref="T:System.Int32"></see> specifying the type of exception encountered.</returns>
+		</member>
+		<member name="P:Microsoft.ApplicationServer.Caching.DataCacheException.HelpLink">
+			<summary>A link to help for the exception.</summary>
+			<returns>Returns <see cref="T:System.String"></see>.</returns>
+		</member>
+		<member name="P:Microsoft.ApplicationServer.Caching.DataCacheException.Message">
+			<summary>The description of the exception encountered.</summary>
+			<returns>A <see cref="T:System.String"></see> that describes the type of exception encountered.</returns>
+		</member>
+		<member name="P:Microsoft.ApplicationServer.Caching.DataCacheException.SubStatus">
+			<summary>The <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheErrorSubstatus"></see> of the exception encountered.</summary>
+			<returns>An <see cref="T:System.Int32"></see> indicating the exception substatus.</returns>
+		</member>
+		<member name="T:Microsoft.ApplicationServer.Caching.DataCacheItem">
+			<summary>Used to retrieve all information associated with the cached object in the cluster.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheItem.#ctor">
+			<summary>Initializes a new instance of the <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItem"></see> class.</summary>
+		</member>
+		<member name="P:Microsoft.ApplicationServer.Caching.DataCacheItem.CacheName">
+			<summary>The name of the cache where the object is stored.</summary>
+			<returns>A string value that represents the name of the cache where the object is stored.</returns>
+		</member>
+		<member name="P:Microsoft.ApplicationServer.Caching.DataCacheItem.Key">
+			<summary>The identifier that is used to distinguish the cached object in the cache or region.</summary>
+			<returns>A string value that represents the identifier that is used to distinguish the cached object in the cache or region.</returns>
+		</member>
+		<member name="P:Microsoft.ApplicationServer.Caching.DataCacheItem.RegionName">
+			<summary>If applicable, the name of the region where the object is stored.</summary>
+			<returns>A string value that represents, if applicable, the name of the region where the object is stored.</returns>
+		</member>
+		<member name="P:Microsoft.ApplicationServer.Caching.DataCacheItem.Tags">
+			<summary>A generic list of tags associated with the cached object.</summary>
+			<returns>An generic list of <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheTag"></see> objects associated with the cached object.</returns>
+		</member>
+		<member name="P:Microsoft.ApplicationServer.Caching.DataCacheItem.Timeout">
+			<summary>Specifies the length of time for which the object will remain in the cache.</summary>
+			<returns>Returns <see cref="T:System.TimeSpan"></see>.</returns>
+		</member>
+		<member name="P:Microsoft.ApplicationServer.Caching.DataCacheItem.Value">
+			<summary>The object stored in cache.</summary>
+			<returns>An object representing the deserialized form of the cached object.</returns>
+		</member>
+		<member name="P:Microsoft.ApplicationServer.Caching.DataCacheItem.Version">
+			<summary>The version of the cached object.</summary>
+			<returns>The <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItemVersion"></see>.</returns>
+		</member>
+		<member name="T:Microsoft.ApplicationServer.Caching.DataCacheItemVersion">
+			<summary>Used to represent the version of a cached object.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheItemVersion.CompareTo(Microsoft.ApplicationServer.Caching.DataCacheItemVersion)">
+			<summary>Used to compare two versions of the same item, specified with the same key.</summary>
+			<returns>An <see cref="T:System.Int32"></see>value: 0 if the versions are equal, greater than zero if the instance is greater than the version parameter value, or less than zero if the instance is less than the version parameter value.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheItemVersion.Equals(System.Object)">
+			<summary>Used to determine whether another object is the same.</summary>
+			<returns>A <see cref="T:System.Boolean"></see>value: true, if the objects are the same; false, if they are different.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheItemVersion.GetHashCode">
+			<summary>Returns the hash code of the <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItemVersion"></see> object.</summary>
+			<returns>An <see cref="T:System.Int32"></see>value that represents the hash code of the DataCacheItemVersion object.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheItemVersion.op_Equality(Microsoft.ApplicationServer.Caching.DataCacheItemVersion,Microsoft.ApplicationServer.Caching.DataCacheItemVersion)">
+			<summary>Compares two <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItemVersion"></see> objects for equality.</summary>
+			<returns>Returns <see cref="T:System.Boolean"></see>.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheItemVersion.op_GreaterThan(Microsoft.ApplicationServer.Caching.DataCacheItemVersion,Microsoft.ApplicationServer.Caching.DataCacheItemVersion)">
+			<summary>Determines whether the <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItemVersion"></see> object is greater.</summary>
+			<returns>Returns <see cref="T:System.Boolean"></see>.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheItemVersion.op_Inequality(Microsoft.ApplicationServer.Caching.DataCacheItemVersion,Microsoft.ApplicationServer.Caching.DataCacheItemVersion)">
+			<summary>Determines whether the two <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItemVersion"></see> objects are unequal.</summary>
+			<returns>Returns <see cref="T:System.Boolean"></see>.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheItemVersion.op_LessThan(Microsoft.ApplicationServer.Caching.DataCacheItemVersion,Microsoft.ApplicationServer.Caching.DataCacheItemVersion)">
+			<summary>Determines whether the <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheItemVersion"></see> object is less.</summary>
+			<returns>Returns <see cref="T:System.Boolean"></see>.</returns>
+		</member>
+		<member name="T:Microsoft.ApplicationServer.Caching.DataCacheLockHandle">
+			<summary>The structure used as a key to lock and unlock cached objects in a pessimistic concurrency scenario.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheLockHandle.ToString">
+			<returns>Returns <see cref="T:System.String"></see>.</returns>
+		</member>
+		<member name="T:Microsoft.ApplicationServer.Caching.DataCacheOperationDescriptor">
+			<summary>Represents a notification event for operations performed against the cache [Add Item, Remove Item, Replace Item, Clear Region, Create Region, Remove Region]</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheOperationDescriptor.#ctor(System.String,System.String,System.String,Microsoft.ApplicationServer.Caching.DataCacheOperations,Microsoft.ApplicationServer.Caching.DataCacheItemVersion)">
+			<summary>Creates a new instance of the DataCacheOperationDescriptor class using the specified parameters.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheOperationDescriptor.ToString">
+			<summary>Returns the string representation of the <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheOperationDescriptor"></see> object.</summary>
+			<returns>A string representing the current value of the <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheOperationDescriptor"></see> object.</returns>
+		</member>
+		<member name="P:Microsoft.ApplicationServer.Caching.DataCacheOperationDescriptor.Key">
+			<summary>Returns the <see cref="P:Microsoft.ApplicationServer.Caching.DataCacheOperationDescriptor.Key"></see> property.</summary>
+			<returns>A string representing the current value of the <see cref="P:Microsoft.ApplicationServer.Caching.DataCacheOperationDescriptor.Key"></see> property.</returns>
+		</member>
+		<member name="P:Microsoft.ApplicationServer.Caching.DataCacheOperationDescriptor.RegionName">
+			<summary>Returns the <see cref="P:Microsoft.ApplicationServer.Caching.DataCacheOperationDescriptor.RegionName"></see> property.</summary>
+			<returns>A string representing the current value of the <see cref="P:Microsoft.ApplicationServer.Caching.DataCacheOperationDescriptor.RegionName"></see> property.</returns>
+		</member>
+		<member name="T:Microsoft.ApplicationServer.Caching.DataCacheOperations">
+			<summary>An enumeration used to specify specific item or region events that can trigger a cache notification.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheOperations.AddItem">
+			<summary>Indicates that an object was added to the cache.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheOperations.ClearRegion">
+			<summary>Indicates that a region in the cache was cleared with the <see cref="M:Microsoft.ApplicationServer.Caching.DataCache.ClearRegion(System.String)"></see> method.</summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheOperations.CreateRegion">
+			<summary>Indicates that a region in the cache was created with the <see cref="M:Microsoft.ApplicationServer.Caching.DataCache.CreateRegion(System.String,System.Boolean)"></see> method. </summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheOperations.RemoveItem">
+			<summary>Indicates that an object was removed from the cache. </summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheOperations.RemoveRegion">
+			<summary>Indicates that a region in the cache was removed with the <see cref="M:Microsoft.ApplicationServer.Caching.DataCache.RemoveRegion(System.String)"></see> method. </summary>
+		</member>
+		<member name="F:Microsoft.ApplicationServer.Caching.DataCacheOperations.ReplaceItem">
+			<summary>Indicates that an object was replaced in the cache. </summary>
+		</member>
+		<member name="T:Microsoft.ApplicationServer.Caching.DataCacheProtectionLevel">
+			<summary>Enumeration indicating whether data sent between client and server is signed and/or encrypted. Possible return values are no signing or encryption; integer value equals 1, signing only; integer value equals 2 and both encryption and signing; integer value equals 3.</summary>
+		</member>
+		<member name="T:Microsoft.ApplicationServer.Caching.DataCacheSecurity">
+			<summary>Used to enable signing and/or encryption of data sent between client and server.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheSecurity.#ctor">
+			<summary>Initializes a new instance of the <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheSecurity"></see> class.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheSecurity.#ctor(Microsoft.ApplicationServer.Caching.DataCacheSecurityMode,Microsoft.ApplicationServer.Caching.DataCacheProtectionLevel)">
+			<summary>Initializes a new instance of the <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheSecurity"></see> class, allows you to specify the <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheSecurityMode"></see> and <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheProtectionLevel"></see> for the instance.</summary>
+		</member>
+		<member name="P:Microsoft.ApplicationServer.Caching.DataCacheSecurity.ProtectionLevel">
+			<summary>The <see cref="P:Microsoft.ApplicationServer.Caching.DataCacheSecurity.ProtectionLevel"></see> set for the <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheSecurity"></see> object.</summary>
+			<returns>Returns the <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheProtectionLevel"></see> set for the <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheSecurity"></see> object..</returns>
+		</member>
+		<member name="P:Microsoft.ApplicationServer.Caching.DataCacheSecurity.SecurityMode">
+			<summary>The <see cref="P:Microsoft.ApplicationServer.Caching.DataCacheSecurity.SecurityMode"></see> set for the <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheSecurity"></see> object.</summary>
+			<returns>Returns the <see cref="P:Microsoft.ApplicationServer.Caching.DataCacheSecurity.SecurityMode"></see> set for the <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheSecurity"></see> object.</returns>
+		</member>
+		<member name="T:Microsoft.ApplicationServer.Caching.DataCacheSecurityMode">
+			<summary>Enumeration indicating whether channel security is enabled for data sent between client and server. Possible return values are None; integer value equals 1 and Transport; integer value equals 2.</summary>
+		</member>
+		<member name="T:Microsoft.ApplicationServer.Caching.DataCacheTag">
+			<summary>Represents an optional string-based identifier that you can associate with a cached object.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheTag.#ctor(System.String)">
+			<summary>Initializes a new instance of the <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheTag"></see> class.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheTag.Equals(System.Object)">
+			<summary>Compares the current DataCacheTag object for equality with the specified DataCacheTag object.</summary>
+			<returns>True if the object implements the ToString method and its value is the same as the string representation of the current DataCacheTag; otherwise, false.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheTag.GetHashCode">
+			<summary>Returns the hash code for the current <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheTag"></see> object.</summary>
+			<returns>An integer representing the hash code for the current DataCacheTag object.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.DataCacheTag.ToString">
+			<summary>Returns the string representation of the current <see cref="T:Microsoft.ApplicationServer.Caching.DataCacheTag"></see> object.</summary>
+			<returns>A string representing the current value of the DataCacheTag object</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.ICustomProvider.AddUser(System.String,System.String)">
+			<summary>Adds a Windows account to the list of allowed users that have access to the configuration store..</summary>
+			<returns>Returns a<see cref="T:System.Object"></see> that can be passed to the <see cref="M:Microsoft.ApplicationServer.Caching.ICustomProvider.RemoveUser(System.String,System.String,System.Object)"></see> method in the case of a rollback.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.ICustomProvider.BeginTransaction">
+			<summary>Begins a transaction to provide isolation from other configuration store access.</summary>
+			<returns>Returns a<see cref="T:System.Object"></see> that represents the transaction context..</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.ICustomProvider.Cleanup">
+			<summary>Enables the provider to clean up any data in the cache cluster configuration store.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.ICustomProvider.Delete(System.Object,System.String)">
+			<summary>Deletes an existing entry from the configuration store.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.ICustomProvider.Delete(System.Object,System.String,System.String,System.Int64)">
+			<summary>Deletes an existing entry from the configuration store.</summary>
+			<returns>Returns <see cref="T:System.Boolean"></see>. If the deletion succeeds, the return value is true. If the entry does not exist or if the version does not match, the return value is false.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.ICustomProvider.EndTransaction(System.Object,System.Boolean)">
+			<summary>Commits or rollbacks a transaction previously started with the <see cref="M:Microsoft.ApplicationServer.Caching.ICustomProvider.BeginTransaction"></see> method.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.ICustomProvider.GetEntries(System.Object,System.String)">
+			<summary>Enumerates all the entries of the specified type.</summary>
+			<returns>Returns a<see cref="T:System.Collections.Generic.ICollection`1"></see> of entries.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.ICustomProvider.GetEntry(System.Object,System.String,System.String)">
+			<summary>Retrieves a <see cref="T:Microsoft.ApplicationServer.Caching.ConfigStoreEntry"></see> object from the configuration store.</summary>
+			<returns>Returns a<see cref="T:Microsoft.ApplicationServer.Caching.ConfigStoreEntry"></see> object.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.ICustomProvider.GetStoreUtcTime(System.Object)">
+			<summary>Obtains the current UTC time based on the clock for the configuration store.</summary>
+			<returns>Returns <see cref="T:System.DateTime"></see>.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.ICustomProvider.GetValue(System.Object,System.String,System.String)">
+			<summary>Gets the value of a specific entry in the configuration store.</summary>
+			<returns>Returns <see cref="T:System.Byte"></see>.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.ICustomProvider.Initialize">
+			<summary>Enables the custom provider to initialize the cache cluster configuration store.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.ICustomProvider.Insert(System.Object,System.String,System.String,System.Byte[],System.Int64)">
+			<summary>Inserts an entry into the configuration store.</summary>
+			<returns>Return true if the entry is successfully inserted. Return false if the entry with the same key and type already exists. For all other failures, a <see cref="T:Microsoft.ApplicationServer.Caching.ConfigStoreException"></see> must be thrown.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.ICustomProvider.IsInitialized">
+			<summary>Gets the initialization status of the configuration store.</summary>
+			<returns>Returns true if the configuration store is initialized.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.ICustomProvider.Open(System.String)">
+			<summary>Initializes the configuration store with a connection string that is used for subsequent calls.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.ICustomProvider.RemoveUser(System.String,System.String,System.Object)">
+			<summary>Removes a Windows account from the list of accounts that have permission t the access the configuration store.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.ICustomProvider.RetrieveStoreVersion">
+			<summary>Retrieves the version of the configuration store.</summary>
+			<returns>Returns <see cref="T:System.Version"></see>.</returns>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.ICustomProvider.TestConnection">
+			<summary>Determines whether the configuration store is available.</summary>
+		</member>
+		<member name="M:Microsoft.ApplicationServer.Caching.ICustomProvider.Update(System.Object,System.String,System.String,System.Byte[],System.Int64)">
+			<summary>Updates an entry in the store.</summary>
+			<returns>Returns <see cref="T:System.Boolean"></see>. If the update succeeds, the return value is true. If the entry does not exist or if the version does not match, the return value is false.</returns>
+		</member>
+	</members>
+</doc>
