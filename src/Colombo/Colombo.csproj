@@ -115,7 +115,6 @@
     <Compile Include="BaseSideEffectFreeRequest.cs" />
     <Compile Include="CacheSegmentAttribute.cs" />
     <Compile Include="Caching\IColomboCache.cs" />
-    <Compile Include="Caching\Impl\InMemoryCache.cs" />
     <Compile Include="Caching\Impl\MemcachedCache.cs" />
     <Compile Include="Contracts\ColomboCacheContract.cs" />
     <Compile Include="EnableCacheAttribute.cs" />

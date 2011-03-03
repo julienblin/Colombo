@@ -65,7 +65,6 @@
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="BaseTest.cs" />
-    <Compile Include="Caching\Impl\InMemoryCacheTest.cs" />
     <Compile Include="Caching\Impl\MemcachedCacheTest.cs" />
     <Compile Include="ColomboExceptionTest.cs" />
     <Compile Include="Facilities\ColomboFacilityTest.cs" />
