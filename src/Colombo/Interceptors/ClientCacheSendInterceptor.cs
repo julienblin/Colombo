@@ -31,11 +31,10 @@ using Colombo.Caching;
 namespace Colombo.Interceptors
 {
     /// <summary>
-    /// Interceptor that puts request in the cache when possible, and also invalidates them.
+    /// Interceptor that consult the cache before sending and returns a response directly if there is a match.
     /// </summary>
     /// <see cref="EnableCacheAttribute"/>
     /// <see cref="CacheSegmentAttribute"/>
-    /// <see cref="InvalidateCachedInstancesOfAttribute"/>
     public class ClientCacheSendInterceptor : IMessageBusSendInterceptor
     {
         private ILogger logger = NullLogger.Instance;
@@ -63,9 +62,8 @@ namespace Colombo.Interceptors
         }
 
         /// <summary>
-        /// Puts request marked with a <see cref="EnableCacheAttribute"/> attribute in the cache.
+        /// Check requests marked with a <see cref="EnableCacheAttribute"/> attribute for the cache.
         /// The segment is determined by the <see cref="CacheSegmentAttribute"/> attribute if any, otherwise <c>null</c> will be use.
-        /// It also invalidates the cache using <see cref="InvalidateCachedInstancesOfAttribute"/>.
         /// </summary>
         public void Intercept(IColomboSendInvocation nextInvocation)
         {
@@ -76,21 +74,6 @@ namespace Colombo.Interceptors
             var responsesGroup = new ResponsesGroup();
             foreach (var request in nextInvocation.Requests)
             {
-                var invalidateCachedInstancesOfAttributes = request.GetCustomAttributes<InvalidateCachedInstancesOfAttribute>();
-                foreach (var invalidateCachedInstancesOfAttribute in invalidateCachedInstancesOfAttributes)
-                {
-                    foreach (var responseType in invalidateCachedInstancesOfAttribute.ResponsesTypes)
-                    {
-                        string cacheSegmentForCache = null;
-                        var cacheSegmentAttributeForCache = request.GetCustomAttribute<CacheSegmentAttribute>();
-                        if (cacheSegmentAttributeForCache != null)
-                            cacheSegmentForCache = cacheSegmentAttributeForCache.GetCacheSegment(request);
-
-                        Logger.DebugFormat("Invalidating all responses of type {0} from cache segment {1}", responseType, cacheSegmentForCache);
-                        cache.Flush(cacheSegmentForCache, responseType);
-                    }
-                }
-
                 var enableClientCachingAttribute = request.GetCustomAttribute<EnableCacheAttribute>();
                 if (enableClientCachingAttribute == null) continue;
 
@@ -114,22 +97,6 @@ namespace Colombo.Interceptors
                 nextInvocation.Requests.Remove(request);
 
             nextInvocation.Proceed();
-
-            foreach (var request in nextInvocation.Requests)
-            {
-                var enableClientCachingAttribute = request.GetCustomAttribute<EnableCacheAttribute>();
-                if (enableClientCachingAttribute == null) continue;
-
-                var cacheKey = request.GetCacheKey();
-
-                string cacheSegment = null;
-                var cacheSegmentAttribute = request.GetCustomAttribute<CacheSegmentAttribute>();
-                if (cacheSegmentAttribute != null)
-                    cacheSegment = cacheSegmentAttribute.GetCacheSegment(request);
-
-                Logger.DebugFormat("Caching {0} in segment {1} with cacheKey {2} for {3}", request, cacheSegment, cacheKey, enableClientCachingAttribute.Duration);
-                cache.Store(cacheSegment, cacheKey, nextInvocation.Responses[request], enableClientCachingAttribute.Duration);
-            }
 
             if (responsesGroup.Count <= 0) return;
 

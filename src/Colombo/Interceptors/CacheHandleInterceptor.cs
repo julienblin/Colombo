@@ -30,9 +30,10 @@ using Colombo.Caching;
 namespace Colombo.Interceptors
 {
     /// <summary>
-    /// Interceptor used server-side to invalidate objects from the cache.
-    /// It does not put them in the cache, just invalidate the values.
+    /// Interceptor used server-side to put objects in cache and invalidate objects from the cache.
     /// </summary>
+    /// <see cref="EnableCacheAttribute"/>
+    /// <see cref="CacheSegmentAttribute"/>
     /// <see cref="InvalidateCachedInstancesOfAttribute"/>
     public class CacheHandleInterceptor : IRequestHandlerHandleInterceptor
     {
