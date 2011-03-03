@@ -33,7 +33,7 @@ namespace Colombo.Interceptors
     /// <summary>
     /// Interceptor that puts request in the cache when possible, and also invalidates them.
     /// </summary>
-    /// <see cref="EnableClientCachingAttribute"/>
+    /// <see cref="EnableCacheAttribute"/>
     /// <see cref="CacheSegmentAttribute"/>
     /// <see cref="InvalidateCachedInstancesOfAttribute"/>
     public class ClientCacheSendInterceptor : IMessageBusSendInterceptor
@@ -63,7 +63,7 @@ namespace Colombo.Interceptors
         }
 
         /// <summary>
-        /// Puts request marked with a <see cref="EnableClientCachingAttribute"/> attribute in the cache.
+        /// Puts request marked with a <see cref="EnableCacheAttribute"/> attribute in the cache.
         /// The segment is determined by the <see cref="CacheSegmentAttribute"/> attribute if any, otherwise <c>null</c> will be use.
         /// It also invalidates the cache using <see cref="InvalidateCachedInstancesOfAttribute"/>.
         /// </summary>
@@ -91,7 +91,7 @@ namespace Colombo.Interceptors
                     }
                 }
 
-                var enableClientCachingAttribute = request.GetCustomAttribute<EnableClientCachingAttribute>();
+                var enableClientCachingAttribute = request.GetCustomAttribute<EnableCacheAttribute>();
                 if (enableClientCachingAttribute == null) continue;
 
                 var cacheKey = request.GetCacheKey();
@@ -117,7 +117,7 @@ namespace Colombo.Interceptors
 
             foreach (var request in nextInvocation.Requests)
             {
-                var enableClientCachingAttribute = request.GetCustomAttribute<EnableClientCachingAttribute>();
+                var enableClientCachingAttribute = request.GetCustomAttribute<EnableCacheAttribute>();
                 if (enableClientCachingAttribute == null) continue;
 
                 var cacheKey = request.GetCacheKey();

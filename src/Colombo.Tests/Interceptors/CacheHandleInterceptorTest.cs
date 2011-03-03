@@ -42,7 +42,7 @@ namespace Colombo.Tests.Interceptors
         }
 
         [Test]
-        public void It_should_do_nothing_when_InvalidateCachedInstancesOf_is_not_present()
+        public void It_should_do_nothing_when_InvalidateCachedInstancesOf_or_EnableCache_is_not_present()
         {
             var mocks = new MockRepository();
 
@@ -84,16 +84,114 @@ namespace Colombo.Tests.Interceptors
             });
         }
 
+        [Test]
+        public void It_should_throw_an_exception_if_requests_does_not_implement_GetCacheKey()
+        {
+            var mocks = new MockRepository();
+
+            var request = new TestRequestCacheWithoutGetCacheKey();
+            var response = new TestResponse();
+            var invocation = mocks.StrictMock<IColomboRequestHandleInvocation>();
+            var cache = mocks.StrictMock<IColomboCache>();
+
+            With.Mocks(mocks).Expecting(() =>
+            {
+                SetupResult.For(invocation.Request).Return(request);
+                SetupResult.For(invocation.Response).Return(response);
+                invocation.Proceed();
+            }).Verify(() =>
+            {
+                var interceptor = new CacheHandleInterceptor(cache) { Logger = GetConsoleLogger() };
+                Assert.That(() => interceptor.Intercept(invocation),
+                    Throws.Exception.TypeOf<ColomboException>()
+                    .With.Message.Contains("GetCacheKey"));
+            });
+        }
+
+        [Test]
+        public void It_should_put_in_cache_request_that_enables_it()
+        {
+            var mocks = new MockRepository();
+
+            var request = new TestRequestCache();
+            var response = new TestResponse();
+            var invocation = mocks.StrictMock<IColomboRequestHandleInvocation>();
+            var cache = mocks.StrictMock<IColomboCache>();
+
+            With.Mocks(mocks).Expecting(() =>
+            {
+                SetupResult.For(invocation.Request).Return(request);
+                SetupResult.For(invocation.Response).Return(response);
+                invocation.Proceed();
+                cache.Store(null, request.GetCacheKey(), response, new TimeSpan(1, 0, 0));
+            }).Verify(() =>
+            {
+                var interceptor = new CacheHandleInterceptor(cache) { Logger = GetConsoleLogger() };
+                interceptor.Intercept(invocation);
+            });
+        }
+
+        [Test]
+        public void It_should_put_in_the_right_cache_segment()
+        {
+            var mocks = new MockRepository();
+
+            var request = new TestRequestCacheWithSegment();
+            request.Context["Foo"] = "Bar";
+            var response = new TestResponse();
+            var invocation = mocks.StrictMock<IColomboRequestHandleInvocation>();
+            var cache = mocks.StrictMock<IColomboCache>();
+
+            With.Mocks(mocks).Expecting(() =>
+            {
+                SetupResult.For(invocation.Request).Return(request);
+                SetupResult.For(invocation.Response).Return(response);
+                invocation.Proceed();
+                cache.Store("Bar", request.GetCacheKey(), response, new TimeSpan(0, 1, 0));
+            }).Verify(() =>
+            {
+                var interceptor = new CacheHandleInterceptor(cache) { Logger = GetConsoleLogger() };
+                interceptor.Intercept(invocation);
+            });
+        }
+
         public class TestRequest : Request<TestResponse> { }
 
         public class TestResponse2 : Response { }
 
 #pragma warning disable 3016 // CLS Compliant
+        
         [InvalidateCachedInstancesOf(typeof(TestResponse), typeof(TestResponse2))]
-#pragma warning restore 3016
         [CacheSegment(Name = "CacheSegment")]
         public class TestRequestInvalidate : Request<TestResponse>
         {
         }
+
+        [EnableCache(Hours = 1)]
+        [CacheSegment(Name = "CacheSegment")]
+        public class TestRequestCacheWithoutGetCacheKey : Request<TestResponse>
+        {
+        }
+
+        [EnableCache(Hours = 1)]
+        public class TestRequestCache : Request<TestResponse>
+        {
+            public override string GetCacheKey()
+            {
+                return GetType().Name;
+            }
+        }
+
+        [EnableCache(Minutes = 1)]
+        [CacheSegment(FromContextKey = "Foo")]
+        public class TestRequestCacheWithSegment : Request<TestResponse>
+        {
+            public override string GetCacheKey()
+            {
+                return GetType().Name;
+            }
+        }
+
+#pragma warning restore 3016
     }
 }

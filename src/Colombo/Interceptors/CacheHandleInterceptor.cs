@@ -81,6 +81,19 @@ namespace Colombo.Interceptors
             }
 
             nextInvocation.Proceed();
+
+            var enableClientCachingAttribute = nextInvocation.Request.GetCustomAttribute<EnableCacheAttribute>();
+            if (enableClientCachingAttribute == null) return;
+
+            var cacheKey = nextInvocation.Request.GetCacheKey();
+
+            string cacheSegmentAfter = null;
+            var cacheSegmentAttributeAfter = nextInvocation.Request.GetCustomAttribute<CacheSegmentAttribute>();
+            if (cacheSegmentAttributeAfter != null)
+                cacheSegmentAfter = cacheSegmentAttributeAfter.GetCacheSegment(nextInvocation.Request);
+
+            Logger.DebugFormat("Caching {0} in segment {1} with cacheKey {2} for {3}", nextInvocation.Request, cacheSegmentAfter, cacheKey, enableClientCachingAttribute.Duration);
+            cache.Store(cacheSegmentAfter, cacheKey, nextInvocation.Response, enableClientCachingAttribute.Duration);
         }
 
         /// <summary>

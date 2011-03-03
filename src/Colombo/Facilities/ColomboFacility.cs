@@ -332,7 +332,7 @@ namespace Colombo.Facilities
         }
 
         /// <summary>
-        /// Enable caching of the requests marked with <see cref="EnableClientCachingAttribute"/> in-memory.
+        /// Enable caching of the requests marked with <see cref="EnableCacheAttribute"/> in-memory.
         /// Incompatible with <see cref="EnableMemcachedCaching"/>.
         /// </summary>
         public void EnableInMemoryCaching()
@@ -346,7 +346,7 @@ namespace Colombo.Facilities
         }
 
         /// <summary>
-        /// Enable caching of the requests marked with <see cref="EnableClientCachingAttribute"/> using memcached servers.
+        /// Enable caching of the requests marked with <see cref="EnableCacheAttribute"/> using memcached servers.
         /// Incompatible with <see cref="EnableInMemoryCaching"/>.
         /// </summary>
         /// <param name="servers">List of memcached servers addresses.</param>

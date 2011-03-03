@@ -76,7 +76,7 @@ namespace Colombo.Tests.Interceptors
         }
 
         [Test]
-        public void It_should_throw_an_exception_if_requests_does_not_implement_GetCacheKey()
+        public void It_should_throw_an_exception_if_request_does_not_implement_GetCacheKey()
         {
             var mocks = new MockRepository();
 
@@ -246,10 +246,10 @@ namespace Colombo.Tests.Interceptors
 
         public class TestRequestWithoutCache : Request<TestResponse> { }
 
-        [EnableClientCaching(Seconds = 30)]
+        [EnableCache(Seconds = 30)]
         public class TestRequestWithCacheNoCacheKey : Request<TestResponse> { }
 
-        [EnableClientCaching(Seconds = 30)]
+        [EnableCache(Seconds = 30)]
         public class TestRequestWithCache : SideEffectFreeRequest<TestResponse>
         {
             public override string GetCacheKey()
@@ -258,7 +258,7 @@ namespace Colombo.Tests.Interceptors
             }
         }
 
-        [EnableClientCaching(Seconds = 30)]
+        [EnableCache(Seconds = 30)]
         [CacheSegment(FromContextKey = "Bar", Name = "DefaultSegment")]
         public class TestRequestWithCacheSegment : Request<TestResponse>
         {
@@ -268,7 +268,7 @@ namespace Colombo.Tests.Interceptors
             }
         }
 
-        [EnableClientCaching(Seconds = 30)]
+        [EnableCache(Seconds = 30)]
         [InvalidateCachedInstancesOf(typeof(TestResponse))]
         public class TestRequestInvalidate : Request<TestResponse>
         {
