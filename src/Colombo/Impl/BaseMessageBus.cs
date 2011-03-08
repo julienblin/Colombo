@@ -148,21 +148,6 @@ namespace Colombo.Impl
         }
 
         /// <summary>
-        /// Send synchronously a request and returns the response.
-        /// </summary>
-        public virtual TResponse Send<TRequest, TResponse>(Action<TRequest> action)
-            where TRequest : SideEffectFreeRequest<TResponse>, new()
-            where TResponse : Response, new()
-        {
-            if (action == null) throw new ArgumentNullException("action");
-            Contract.EndContractBlock();
-
-            var request = new TRequest();
-            action(request);
-            return Send(request);
-        }
-
-        /// <summary>
         /// Send a request asynchronously. You must register a callback with the result to get the response or the error.
         /// </summary>
         public virtual IAsyncCallback<TResponse> SendAsync<TResponse>(SideEffectFreeRequest<TResponse> request)

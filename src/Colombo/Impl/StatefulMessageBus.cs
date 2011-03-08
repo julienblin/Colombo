@@ -169,19 +169,6 @@ namespace Colombo.Impl
         }
 
         /// <summary>
-        /// Send synchronously a request and returns the response.
-        /// </summary>
-        public TResponse Send<TRequest, TResponse>(Action<TRequest> action)
-            where TRequest : SideEffectFreeRequest<TResponse>, new()
-            where TResponse : Response, new()
-        {
-            if (action == null) throw new ArgumentNullException("action");
-            Contract.EndContractBlock();
-            CheckNumberOfSend();
-            return messageBus.Send<TRequest, TResponse>(action);
-        }
-
-        /// <summary>
         /// Send a request asynchronously. You must register a callback with the result to get the response or the error.
         /// </summary>
         public IAsyncCallback<TResponse> SendAsync<TResponse>(SideEffectFreeRequest<TResponse> request)

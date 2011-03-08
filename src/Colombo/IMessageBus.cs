@@ -58,13 +58,6 @@ namespace Colombo
             where TResponse : Response, new();
 
         /// <summary>
-        /// Send synchronously a request and returns the response.
-        /// </summary>
-        TResponse Send<TRequest, TResponse>(Action<TRequest> action)
-            where TRequest : SideEffectFreeRequest<TResponse>, new()
-            where TResponse : Response, new();
-
-        /// <summary>
         /// Send a request asynchronously. You must register a callback with the result to get the response or the error.
         /// </summary>
         IAsyncCallback<TResponse> SendAsync<TResponse>(SideEffectFreeRequest<TResponse> request)

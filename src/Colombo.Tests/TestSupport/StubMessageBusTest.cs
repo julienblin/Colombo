@@ -80,20 +80,6 @@ namespace Colombo.Tests.TestSupport
         }
 
         [Test]
-        public void It_should_work_with_expectation_SendAction()
-        {
-            var stubMessageBus = new StubMessageBus();
-            stubMessageBus
-                .ExpectSend<TestSideEffectFreeRequest2, TestResponse2>()
-                .Reply((request, response) => response.Name = request.Name);
-
-            Assert.That(stubMessageBus.Send<TestSideEffectFreeRequest2, TestResponse2>(r => r.Name = "TheName"),
-                Is.Not.Null.And.Property("Name").EqualTo("TheName"));
-
-            Assert.DoesNotThrow(() => stubMessageBus.Verify());
-        }
-
-        [Test]
         public void It_should_work_with_expectation_SendAsyncSideEffectFreeRequest()
         {
             var stubMessageBus = new StubMessageBus();
