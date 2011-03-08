@@ -23,6 +23,7 @@
 #endregion
 
 using System;
+using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using Castle.Core.Logging;
@@ -71,6 +72,7 @@ namespace Colombo.Interceptors
         /// <summary>
         /// Alerts when exceptions.
         /// </summary>
+        [DebuggerStepThrough]
         public void Intercept(IColomboRequestHandleInvocation nextInvocation)
         {
             try
