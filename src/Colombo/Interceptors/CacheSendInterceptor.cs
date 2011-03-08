@@ -35,7 +35,7 @@ namespace Colombo.Interceptors
     /// </summary>
     /// <see cref="EnableCacheAttribute"/>
     /// <see cref="CacheSegmentAttribute"/>
-    public class ClientCacheSendInterceptor : IMessageBusSendInterceptor
+    public class CacheSendInterceptor : IMessageBusSendInterceptor
     {
         private ILogger logger = NullLogger.Instance;
         /// <summary>
@@ -53,7 +53,7 @@ namespace Colombo.Interceptors
         /// Constructor
         /// </summary>
         /// <param name="cache">The cache to use</param>
-        public ClientCacheSendInterceptor(IColomboCache cache)
+        public CacheSendInterceptor(IColomboCache cache)
         {
             if (cache == null) throw new ArgumentNullException("cache");
             Contract.EndContractBlock();

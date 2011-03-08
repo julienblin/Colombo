@@ -162,7 +162,7 @@
     <Compile Include="Impl\StatefulMessageBus.cs" />
     <Compile Include="Impl\Async\StatefulReponseInterceptor.cs" />
     <Compile Include="Interceptors\CacheHandleInterceptor.cs" />
-    <Compile Include="Interceptors\ClientCacheSendInterceptor.cs" />
+    <Compile Include="Interceptors\CacheSendInterceptor.cs" />
     <Compile Include="Interceptors\CurrentCultureConstant.cs" />
     <Compile Include="Interceptors\CurrentCultureHandleInterceptor.cs" />
     <Compile Include="Interceptors\CurrentCultureSendInterceptor.cs" />

@@ -32,12 +32,12 @@ using Rhino.Mocks;
 namespace Colombo.Tests.Interceptors
 {
     [TestFixture]
-    public class ClientCacheSendInterceptorTest : BaseTest
+    public class CacheSendInterceptorTest : BaseTest
     {
         [Test]
         public void It_should_ensure_that_it_has_an_ICacheFactory()
         {
-            Assert.That(() => new ClientCacheSendInterceptor(null),
+            Assert.That(() => new CacheSendInterceptor(null),
                 Throws.Exception.TypeOf<ArgumentNullException>()
                 .With.Message.Contains("cache"));
         }
@@ -70,7 +70,7 @@ namespace Colombo.Tests.Interceptors
                 invocation.Proceed();
             }).Verify(() =>
             {
-                var interceptor = new ClientCacheSendInterceptor(cache) { Logger = GetConsoleLogger() };
+                var interceptor = new CacheSendInterceptor(cache) { Logger = GetConsoleLogger() };
                 interceptor.Intercept(invocation);
             });
         }
@@ -92,7 +92,7 @@ namespace Colombo.Tests.Interceptors
                 SetupResult.For(invocation.Requests).Return(requests);
             }).Verify(() =>
             {
-                var interceptor = new ClientCacheSendInterceptor(cache);
+                var interceptor = new CacheSendInterceptor(cache);
                 interceptor.Logger = GetConsoleLogger();
                 Assert.That(() => interceptor.Intercept(invocation),
                     Throws.Exception.TypeOf<ColomboException>()
@@ -129,7 +129,7 @@ namespace Colombo.Tests.Interceptors
                 Expect.Call(cache.Get(null, typeof(TestResponse), request1.GetCacheKey())).Return(response1);
             }).Verify(() =>
             {
-                var interceptor = new ClientCacheSendInterceptor(cache) { Logger = GetConsoleLogger() };
+                var interceptor = new CacheSendInterceptor(cache) { Logger = GetConsoleLogger() };
                 interceptor.Intercept(invocation);
                 var responsesVerify = invocation.Responses;
                 Assert.That(responsesVerify[request1], Is.EqualTo(response1));
@@ -166,7 +166,7 @@ namespace Colombo.Tests.Interceptors
                 Expect.Call(cache.Get("CacheSegmentFromContext", typeof(TestResponse), request2.GetCacheKey())).Return(response2);
             }).Verify(() =>
             {
-                var interceptor = new ClientCacheSendInterceptor(cache);
+                var interceptor = new CacheSendInterceptor(cache);
                 interceptor.Logger = GetConsoleLogger();
                 interceptor.Intercept(invocation);
                 var responsesVerify = invocation.Responses;

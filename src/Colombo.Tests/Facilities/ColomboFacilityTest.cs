@@ -298,14 +298,14 @@ namespace Colombo.Tests.Facilities
             container.AddFacility<ColomboFacility>();
 
             Assert.That(!container.ResolveAll<IColomboCache>().Any(x => x is MemcachedCache));
-            Assert.That(!container.ResolveAll<IMessageBusSendInterceptor>().Any(x => x is ClientCacheSendInterceptor));
+            Assert.That(!container.ResolveAll<IMessageBusSendInterceptor>().Any(x => x is CacheSendInterceptor));
             Assert.That(!container.ResolveAll<IRequestHandlerHandleInterceptor>().Any(x => x is CacheHandleInterceptor));
 
             container = new WindsorContainer();
             container.AddFacility<ColomboFacility>(f => f.EnableMemcachedCaching(new string[] { "localhost" }));
 
             Assert.That(container.ResolveAll<IColomboCache>().Any(x => x is MemcachedCache));
-            Assert.That(container.ResolveAll<IMessageBusSendInterceptor>().Any(x => x is ClientCacheSendInterceptor));
+            Assert.That(container.ResolveAll<IMessageBusSendInterceptor>().Any(x => x is CacheSendInterceptor));
             Assert.That(container.ResolveAll<IRequestHandlerHandleInterceptor>().Any(x => x is CacheHandleInterceptor));
         }
 

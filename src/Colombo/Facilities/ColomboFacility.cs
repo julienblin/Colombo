@@ -336,7 +336,7 @@ namespace Colombo.Facilities
         {
             enableMemcachedCaching = true;
             memCachedServers = servers;
-            sendInterceptors.Add(typeof(ClientCacheSendInterceptor));
+            sendInterceptors.Add(typeof(CacheSendInterceptor));
             requestHandlerInterceptors.Add(typeof(CacheHandleInterceptor));
         }
 
