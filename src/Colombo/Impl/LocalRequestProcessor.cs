@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Castle.Core.Logging;
 using Colombo.Impl.RequestHandle;
@@ -82,6 +83,8 @@ namespace Colombo.Impl
 
         private readonly IRequestHandlerFactory requestHandlerFactory;
 
+        private ThreadLocal<IDictionary<int, BaseRequest>> threadLocalRequestReferences = new ThreadLocal<IDictionary<int, BaseRequest>>();
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -136,17 +139,31 @@ namespace Colombo.Impl
             var tasksRequestAssociation = new Dictionary<BaseRequest, Task<Response>>();
             foreach (var request in requests)
             {
-                var task = Task.Factory.StartNew(req =>
+                var task = new Task<Response>(req =>
                     {
-                        var topInvocation = BuildHandleInvocationChain();
-                        topInvocation.Request = (BaseRequest)req;
-                        topInvocation.Proceed();
+                        if (threadLocalRequestReferences.Value == null)
+                            threadLocalRequestReferences.Value = new Dictionary<int, BaseRequest>();
+
+                        threadLocalRequestReferences.Value[Task.CurrentId.Value] = (BaseRequest)req;
+
+                        IColomboRequestHandleInvocation topInvocation;
+                        try
+                        {
+                            topInvocation = BuildHandleInvocationChain();
+                            topInvocation.Request = (BaseRequest)req;
+                            topInvocation.Proceed();
+                        }
+                        finally
+                        {
+                            threadLocalRequestReferences.Value.Remove(Task.CurrentId.Value);
+                        }
                         return topInvocation.Response;
                     },
                     request
                     );
                 tasks.Add(task);
                 tasksRequestAssociation[request] = task;
+                task.Start();
             }
             try
             {
@@ -178,6 +195,20 @@ namespace Colombo.Impl
 
             Contract.Assume(responses.Count == requests.Count);
             return responses;
+        }
+
+        /// <summary>
+        /// Returns the current request being processed when inside an invocation chain, or <c>null</c> otherwise.
+        /// </summary>
+        public BaseRequest CurrentRequest
+        {
+            get
+            {
+                if ((threadLocalRequestReferences.Value != null) && (Task.CurrentId.HasValue) && (threadLocalRequestReferences.Value.ContainsKey(Task.CurrentId.Value)))
+                    return threadLocalRequestReferences.Value[Task.CurrentId.Value];
+
+                return null;
+            }
         }
 
         private IColomboRequestHandleInvocation BuildHandleInvocationChain()

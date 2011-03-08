@@ -309,6 +309,90 @@ namespace Colombo.Tests.Impl
             Assert.That(() => processor.RequestHandlerInterceptors = null, Throws.Exception.TypeOf<ArgumentNullException>());
         }
 
+        [Test]
+        public void It_should_return_null_for_CurrentRequest_when_not_inside_processing()
+        {
+            var mocks = new MockRepository();
+            var requestHandlerFactory = mocks.Stub<IRequestHandlerFactory>();
+            var processor = new LocalRequestProcessor(requestHandlerFactory)
+            {
+                Logger = GetConsoleLogger(),
+            };
+
+            Assert.That(processor.CurrentRequest, Is.Null);
+        }
+
+        [Test]
+        public void It_should_return_CurrentRequest_when_processing_in_parallel()
+        {
+            var mocks = new MockRepository();
+            var request1 = new TestRequest();
+            var request2 = new TestRequest();
+            var requests = new List<BaseRequest> { request1, request2 };
+            var response1 = new TestResponse();
+            var response2 = new TestResponse();
+            var requestHandlerFactory = mocks.StrictMock<IRequestHandlerFactory>();
+            var processor = new LocalRequestProcessor(requestHandlerFactory) { Logger = GetConsoleLogger() };
+            var requestHandler1 = new TestCurrentRequestRequestHandler(response1, processor);
+            var requestHandler2 = new TestCurrentRequestRequestHandler(response2, processor);
+
+            With.Mocks(mocks).Expecting(() =>
+            {
+                Expect.Call(requestHandlerFactory.CreateRequestHandlerFor(request1)).Return(requestHandler1).Repeat.AtLeastOnce();
+                Expect.Call(requestHandlerFactory.CreateRequestHandlerFor(request2)).Return(requestHandler2).Repeat.AtLeastOnce();
+                requestHandlerFactory.DisposeRequestHandler(requestHandler1);
+                LastCall.Repeat.AtLeastOnce();
+                requestHandlerFactory.DisposeRequestHandler(requestHandler2);
+                LastCall.Repeat.AtLeastOnce();
+            }).Verify(() =>
+            {
+                for (int i = 0; i < 50; i++)
+                {
+                    Assert.That(processor.CurrentRequest, Is.Null);
+                    processor.Process(requests);
+                    Assert.That(processor.CurrentRequest, Is.Null);
+                }
+            });
+        }
+
+        [Test]
+        public void It_should_return_CurrentRequest_in_interceptors()
+        {
+            var mocks = new MockRepository();
+            var request1 = new TestRequest();
+            var request2 = new TestRequest();
+            var requests = new List<BaseRequest> { request1, request2 };
+            var response = new TestResponse();
+            var requestHandlerFactory = mocks.StrictMock<IRequestHandlerFactory>();
+            var requestHandler = mocks.StrictMock<IRequestHandler>();
+
+            var processor = new LocalRequestProcessor(requestHandlerFactory)
+            {
+                Logger = GetConsoleLogger()
+            };
+
+            var interceptor = new TestCurrentRequestInterceptor(processor);
+            processor.RequestHandlerInterceptors = new[] {interceptor};
+
+            With.Mocks(mocks).Expecting(() =>
+            {
+                Expect.Call(requestHandlerFactory.CreateRequestHandlerFor(request1)).Return(requestHandler).Repeat.AtLeastOnce();
+                Expect.Call(requestHandlerFactory.CreateRequestHandlerFor(request2)).Return(requestHandler).Repeat.AtLeastOnce();
+                Expect.Call(requestHandler.Handle(request1)).Return(response).Repeat.AtLeastOnce();
+                Expect.Call(requestHandler.Handle(request2)).Return(response).Repeat.AtLeastOnce();
+                requestHandlerFactory.DisposeRequestHandler(requestHandler);
+                LastCall.Repeat.AtLeastOnce();
+            }).Verify(() =>
+            {
+                for (int i = 0; i < 50; i++)
+                {
+                    Assert.That(processor.CurrentRequest, Is.Null);
+                    processor.Process(requests);
+                    Assert.That(processor.CurrentRequest, Is.Null);
+                }
+            });
+        }
+
         public class TestRequest : Request<TestResponse>
         { }
 
@@ -326,6 +410,47 @@ namespace Colombo.Tests.Impl
             {
                 ReceivedRequest = Request;
                 Response = response;
+            }
+        }
+
+        public class TestCurrentRequestRequestHandler : RequestHandler<TestRequest, TestResponse>
+        {
+            private readonly TestResponse response;
+            private readonly ILocalRequestProcessor requestProcessor;
+            public BaseRequest ReceivedRequest { get; set; }
+
+            public TestCurrentRequestRequestHandler(TestResponse response, ILocalRequestProcessor requestProcessor)
+            {
+                this.response = response;
+                this.requestProcessor = requestProcessor;
+            }
+
+            protected override void Handle()
+            {
+                Assert.That(requestProcessor.CurrentRequest, Is.SameAs(Request));
+                ReceivedRequest = Request;
+                Response = response;
+            }
+        }
+
+        public class TestCurrentRequestInterceptor : IRequestHandlerHandleInterceptor
+        {
+            private readonly ILocalRequestProcessor requestProcessor;
+
+            public TestCurrentRequestInterceptor(ILocalRequestProcessor requestProcessor)
+            {
+                this.requestProcessor = requestProcessor;
+            }
+
+            public void Intercept(IColomboRequestHandleInvocation nextInvocation)
+            {
+                Assert.That(requestProcessor.CurrentRequest, Is.SameAs(nextInvocation.Request));
+                nextInvocation.Proceed();
+            }
+
+            public int InterceptionPriority
+            {
+                get { return InterceptionPrority.Medium; }
             }
         }
 

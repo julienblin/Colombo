@@ -28,5 +28,9 @@ namespace Colombo
     /// </summary>
     public interface ILocalRequestProcessor : IRequestProcessor
     {
+        /// <summary>
+        /// Returns the current request being processed when inside an invocation chain, or <c>null</c> otherwise.
+        /// </summary>
+        BaseRequest CurrentRequest { get; }
     }
 }

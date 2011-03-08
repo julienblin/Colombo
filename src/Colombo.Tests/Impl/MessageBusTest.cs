@@ -290,6 +290,11 @@ namespace Colombo.Tests.Impl
             {
                 return responsesGroup;
             }
+
+            public BaseRequest CurrentRequest
+            {
+                get { throw new NotImplementedException(); }
+            }
         }
 
 
