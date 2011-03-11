@@ -71,6 +71,23 @@ namespace Colombo.Tests.TestSupport
                 .With.Message.Contains("virtual"));
         }
 
+        [Test]
+        public void It_should_verify_that_requests_with_EnableCache_are_sideeffectfree()
+        {
+            Assert.That(() => ColomboTest.AssertThat.RequestIsConform<RequestEnableCacheNotSideEffectFree>(),
+                Throws.Exception.TypeOf<ColomboTestSupportException>()
+                .With.Message.Contains("EnableCache"));
+        }
+
+        [Test]
+        public void It_should_verify_that_requests_with_EnableCache_implements_GetCacheKey()
+        {
+            Assert.That(() => ColomboTest.AssertThat.RequestIsConform<RequestEnableCacheNotGetCacheKeyImplementation>(),
+               Throws.Exception.TypeOf<ColomboTestSupportException>()
+               .With.Message.Contains("EnableCache")
+               .And.Message.Contains("GetCacheKey"));
+        }
+
         public class RequestWithoutDefaultConstructor : Request<TestResponse>
         {
             public RequestWithoutDefaultConstructor(string name)
@@ -100,5 +117,11 @@ namespace Colombo.Tests.TestSupport
         {
             public string Name { get; set; }
         }
+
+        [EnableCache]
+        public class RequestEnableCacheNotSideEffectFree : Request<TestResponse> { }
+
+        [EnableCache]
+        public class RequestEnableCacheNotGetCacheKeyImplementation : SideEffectFreeRequest<TestResponse> { }
     }
 }

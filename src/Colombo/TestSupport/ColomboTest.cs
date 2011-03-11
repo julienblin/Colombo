@@ -29,6 +29,7 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using Castle.DynamicProxy;
 using Colombo.Impl.Async;
+using Colombo.Interceptors;
 
 namespace Colombo.TestSupport
 {
@@ -99,9 +100,10 @@ namespace Colombo.TestSupport
             /// </summary>
             public static void RequestIsConform(Type requestType)
             {
+                BaseRequest request = null;
                 try
                 {
-                    Activator.CreateInstance(requestType);
+                    request = (BaseRequest)Activator.CreateInstance(requestType);
                 }
                 catch (Exception ex)
                 {
@@ -113,7 +115,6 @@ namespace Colombo.TestSupport
                     try
                     {
                         var serializer = new DataContractSerializer(requestType);
-                        var request = Activator.CreateInstance(requestType);
                         serializer.WriteObject(stream, request);
                         stream.Position = 0;
                         serializer.ReadObject(stream);
@@ -121,6 +122,26 @@ namespace Colombo.TestSupport
                     catch (Exception ex)
                     {
                         throw new ColomboTestSupportException(string.Format("Request {0} should be serializable using the DataContractSerializer.", requestType), ex);
+                    }
+                }
+
+                var enableCacheAttribute = request.GetCustomAttribute<EnableCacheAttribute>();
+                if(enableCacheAttribute != null)
+                {
+                    if(!request.IsSideEffectFree)
+                        throw new ColomboTestSupportException(string.Format("Request {0} has EnableCache attribute but is not side effect free.", requestType));
+
+                    try
+                    {
+                        request.GetCacheKey();
+                    }
+                    catch (ColomboException ex)
+                    {
+                        throw new ColomboTestSupportException(string.Format("Request {0} has EnableCache attribute but do not implement GetCacheKey().", requestType), ex);
+                    }
+                    catch(Exception)
+                    {
+                        // Can be normal.
                     }
                 }
             }
