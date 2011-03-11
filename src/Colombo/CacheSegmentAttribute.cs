@@ -45,6 +45,12 @@ namespace Colombo
         public string FromContextKey { get; set; }
 
         /// <summary>
+        /// The name of a Property which value will be used for the cache segment.
+        /// If the value of the property is null and a <see cref="Name"/> is provided, the Name will be used instead.
+        /// </summary>
+        public string FromProperty { get; set; }
+
+        /// <summary>
         /// Specify the cache segment to use. Must be applied on a request.
         /// </summary>
         public CacheSegmentAttribute()
@@ -66,8 +72,11 @@ namespace Colombo
         /// </summary>
         public string GetCacheSegment(BaseRequest request)
         {
-            if (string.IsNullOrEmpty(Name) && string.IsNullOrEmpty(FromContextKey))
-                throw new ColomboException(string.Format("Unable to determine cache segment for {0}. You must specified either the Name or the FromContextKey member.", request));
+            if (string.IsNullOrEmpty(Name) && string.IsNullOrEmpty(FromContextKey) && string.IsNullOrEmpty(FromProperty))
+                throw new ColomboException(string.Format("Unable to determine cache segment for {0}. You must specified either the Name, the FromContextKey or the FromProperty member.", request));
+
+            if (!string.IsNullOrEmpty(FromContextKey) && !string.IsNullOrEmpty(FromProperty))
+                throw new ColomboException(string.Format("Unable to determine cache segment for {0}. You cannot specify both FromContextKey and FromProperty.", request));
 
             if (!string.IsNullOrEmpty(FromContextKey))
             {
@@ -78,6 +87,27 @@ namespace Colombo
                     throw new ColomboException(string.Format("The cache segment for {0} is supposed to come from the context key {1}, but it doesn't exists on Context and no Name has been given.",
                         request,
                         FromContextKey));
+            }
+
+            if (!string.IsNullOrEmpty(FromProperty))
+            {
+                var propertyInfo = request.GetType().GetProperty(FromProperty);
+                if(propertyInfo == null)
+                    throw new ColomboException(string.Format("Property {0} not found on {1} - unable to compute cache segment.", FromProperty, request));
+
+                var propertyGetMethod = propertyInfo.GetGetMethod();
+                if (propertyGetMethod == null)
+                    throw new ColomboException(string.Format("Property {0} on {1} doesn't have a public get accessor - unable to compute cache segment.", FromProperty, request));
+
+                var propertyValue = propertyGetMethod.Invoke(request, null);
+
+                if (propertyValue != null)
+                    return propertyValue.ToString();
+
+                if (string.IsNullOrEmpty(Name))
+                    throw new ColomboException(string.Format("The cache segment for {0} is supposed to come from the property {1}, but its value is null and no Name has been given.",
+                        request,
+                        FromProperty));
             }
 
             return Name;
