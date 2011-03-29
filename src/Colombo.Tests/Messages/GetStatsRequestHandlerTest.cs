@@ -35,13 +35,6 @@ namespace Colombo.Tests.Messages
     public class GetStatsRequestHandlerTest
     {
         [Test]
-        public void Messages_should_be_conform()
-        {
-            ColomboTest.AssertThat.RequestIsConform<GetStatsRequest>();
-            ColomboTest.AssertThat.ResponseIsConform<GetStatsResponse>();
-        }
-
-        [Test]
         public void It_should_return_response_if_stats_unavailable()
         {
             var handler = new GetStatsRequestHandler();

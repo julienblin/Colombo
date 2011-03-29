@@ -24,10 +24,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using Colombo.Impl.RequestHandle;
 using Colombo.Impl.Send;
+using Colombo.Interceptors;
 
 namespace Colombo.TestSupport
 {
@@ -48,7 +51,7 @@ namespace Colombo.TestSupport
             var tasksRequestAssociation = new Dictionary<BaseRequest, Task<Response>>();
             foreach (var request in Requests)
             {
-                var localRequest = request;
+                var localRequest = VerifyRequestAndGetSerializedVersion(request);
                 var task = Task.Factory.StartNew(() =>
                 {
                     var topInvocation = BuildHandleInvocationChain();
@@ -77,6 +80,53 @@ namespace Colombo.TestSupport
 
             foreach (var request in Requests)
                 Responses[request] = tasksRequestAssociation[request].Result;
+        }
+
+        private static BaseRequest VerifyRequestAndGetSerializedVersion(BaseRequest request)
+        {
+            try
+            {
+                Activator.CreateInstance(request.GetType());
+            }
+            catch (Exception ex)
+            {
+                throw new ColomboTestSupportException(string.Format("{0} cannot be instantiated. Probably because you forgot to include a default constructor.", request), ex);
+            }
+
+            var enableCacheAttribute = request.GetCustomAttribute<EnableCacheAttribute>();
+            if (enableCacheAttribute != null)
+            {
+                if (!request.IsSideEffectFree)
+                    throw new ColomboTestSupportException(string.Format("{0} has EnableCache attribute but is not side effect free.", request));
+
+                try
+                {
+                    request.GetCacheKey();
+                }
+                catch (ColomboException ex)
+                {
+                    throw new ColomboTestSupportException(string.Format("{0} has EnableCache attribute but do not implement GetCacheKey().", request), ex);
+                }
+                catch (Exception)
+                {
+                    // Can be normal.
+                }
+            }
+
+            try
+            {
+                using (var stream = new MemoryStream())
+                {
+                    var serializer = new NetDataContractSerializer();
+                    serializer.WriteObject(stream, request);
+                    stream.Position = 0;
+                    return (BaseRequest)serializer.ReadObject(stream);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new ColomboSerializationException(string.Format("{0} could not be serialized.", request), ex);
+            }
         }
 
         public IColomboRequestHandleInvocation BuildHandleInvocationChain()

@@ -22,6 +22,8 @@
 // THE SOFTWARE.
 #endregion
 
+using System;
+using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
@@ -315,6 +317,79 @@ namespace Colombo.Tests.TestSupport
             });
         }
 
+        [Test]
+        public void It_should_throw_a_ColomboSerializationException_if_request_is_not_serializable()
+        {
+            var stubMessageBus = new StubMessageBus();
+            stubMessageBus.AllowUnexpectedMessages = true;
+            var request = new RequestNotSerializable();
+
+            Assert.That(() => stubMessageBus.Send(request),
+                Throws.Exception.TypeOf<ColomboSerializationException>()
+                .With.Message.Contains(request.ToString()));
+        }
+
+        [Test]
+        public void It_should_throw_a_ColomboException_if_response_is_not_serializable()
+        {
+            var stubMessageBus = new StubMessageBus();
+            stubMessageBus.AllowUnexpectedMessages = true;
+            var request = new RequestWithResponseNotSerializable();
+
+            Assert.That(() => stubMessageBus.Send(request),
+                Throws.Exception.TypeOf<ColomboException>());
+        }
+
+        [Test]
+        public void It_should_throw_a_ColomboTestSupportException_if_request_cannot_be_activated()
+        {
+            var stubMessageBus = new StubMessageBus();
+            stubMessageBus.AllowUnexpectedMessages = true;
+            var request = new RequestWithoutDefaultConstructor("foo");
+
+            Assert.That(() => stubMessageBus.Send(request),
+                Throws.Exception.TypeOf<ColomboTestSupportException>()
+                .With.Message.Contains(request.ToString())
+                .And.Message.Contains("default constructor"));
+        }
+
+        [Test]
+        public void It_should_throw_a_ColomboTestSupportException_if_request_with_EnableCache_are_sideeffectfree()
+        {
+            var stubMessageBus = new StubMessageBus();
+            stubMessageBus.AllowUnexpectedMessages = true;
+            var request = new RequestEnableCacheNotSideEffectFree();
+
+            Assert.That(() => stubMessageBus.Send(request),
+                Throws.Exception.TypeOf<ColomboTestSupportException>()
+                .With.Message.Contains(request.ToString())
+                .And.Message.Contains("EnableCache"));
+        }
+
+        [Test]
+        public void It_should_throw_a_ColomboTestSupportException_if_request_with_EnableCache_implements_GetCacheKey()
+        {
+            var stubMessageBus = new StubMessageBus();
+            stubMessageBus.AllowUnexpectedMessages = true;
+            var request = new RequestEnableCacheNotGetCacheKeyImplementation();
+
+            Assert.That(() => stubMessageBus.Send(request),
+                Throws.Exception.TypeOf<ColomboTestSupportException>()
+                .With.Message.Contains(request.ToString())
+                .And.Message.Contains("GetCacheKey"));
+        }
+
+        [Test]
+        public void It_should_throw_a_ColomboException_if_response_has_a_member_not_virtual()
+        {
+            var stubMessageBus = new StubMessageBus();
+            stubMessageBus.AllowUnexpectedMessages = true;
+            var request = new RequestWithResponseWithNonVirtualMember();
+
+            Assert.That(() => stubMessageBus.Send(request),
+                Throws.Exception.TypeOf<ColomboException>());
+        }
+
         public class TestResponse2 : Response
         {
             public virtual string Name { get; set; }
@@ -353,6 +428,44 @@ namespace Colombo.Tests.TestSupport
         {
             public string Name { get; set; }
         }
+
+        public class RequestNotSerializable : Request<TestResponse>
+        {
+            public ValidationResult ValidationResult { get; set; }
+        }
+
+        public class ResponseNotSerializable : Response
+        {
+            public virtual ValidationResult ValidationResult { get; set; }
+        }
+
+        public class RequestWithResponseNotSerializable : Request<ResponseNotSerializable>
+        {
+            
+        }
+
+        public class RequestWithoutDefaultConstructor : Request<TestResponse>
+        {
+            public RequestWithoutDefaultConstructor(string name)
+            {
+            }
+        }
+
+        public class ResponseWithNonVirtualMember : Response
+        {
+            public string Name { get; set; }
+        }
+
+        public class RequestWithResponseWithNonVirtualMember : SideEffectFreeRequest<ResponseWithNonVirtualMember>
+        {
+
+        }
+
+        [EnableCache]
+        public class RequestEnableCacheNotSideEffectFree : Request<TestResponse> { }
+
+        [EnableCache]
+        public class RequestEnableCacheNotGetCacheKeyImplementation : SideEffectFreeRequest<TestResponse> { }
 
         public delegate void InterceptSendDelegate(IColomboSendInvocation invocation);
         public delegate void InterceptRequestHandleDelegate(IColomboRequestHandleInvocation nextInvocation);

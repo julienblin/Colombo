@@ -23,6 +23,10 @@
 #endregion
 
 using System;
+using System.IO;
+using System.Runtime.Serialization;
+using Castle.DynamicProxy;
+using Colombo.Impl.Async;
 using Colombo.Impl.RequestHandle;
 
 namespace Colombo.TestSupport
@@ -42,12 +46,45 @@ namespace Colombo.TestSupport
 
             if (expectation == null)
             {
-                Response = (Response)Activator.CreateInstance(Request.GetResponseType());
-                Response.CorrelationGuid = Request.CorrelationGuid;
+                var response = (Response)Activator.CreateInstance(Request.GetResponseType());
+                response.CorrelationGuid = Request.CorrelationGuid;
+                Response = GetSerializedVersion(response);
             }
             else
             {
-                Response = (Response)expectation.Execute(Request);
+                Response = GetSerializedVersion(expectation.Execute(Request));
+            }
+
+            if(Request.IsSideEffectFree)
+            {
+                try
+                {
+                    var options = new ProxyGenerationOptions(new NonVirtualCheckProxyGenerationHook());
+                    var proxyGen = new ProxyGenerator();
+                    proxyGen.CreateClassProxy(Request.GetResponseType(), options);
+                }
+                catch (Exception ex)
+                {
+                    throw new ColomboTestSupportException(string.Format("Response {0} cannot be proxied, probably because one or several of its members are not virtual.", Request.GetResponseType()), ex);
+                }
+            }
+        }
+
+        private static Response GetSerializedVersion(object response)
+        {
+            try
+            {
+                using (var stream = new MemoryStream())
+                {
+                    var serializer = new NetDataContractSerializer();
+                    serializer.WriteObject(stream, response);
+                    stream.Position = 0;
+                    return (Response)serializer.ReadObject(stream);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new ColomboSerializationException(string.Format("{0} could not be serialized.", response), ex);
             }
         }
     }

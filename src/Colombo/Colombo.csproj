@@ -193,7 +193,7 @@
     <Compile Include="SLAAttribute.cs" />
     <Compile Include="TestSupport\BaseExpectation.cs" />
     <Compile Include="TestSupport\ColomboExpectationException.cs" />
-    <Compile Include="TestSupport\ColomboTest.cs" />
+    <Compile Include="TestSupport\ColomboSerializationException.cs" />
     <Compile Include="TestSupport\ColomboTestSupportException.cs" />
     <Compile Include="TestSupport\IStubMessageBus.cs" />
     <Compile Include="TestSupport\MessageBusSendExpectation.cs" />

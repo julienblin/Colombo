@@ -32,13 +32,6 @@ namespace Colombo.Tests.Messages
     public class HealthCheckRequestHandlerTest
     {
         [Test]
-        public void Messages_should_be_conform()
-        {
-            ColomboTest.AssertThat.RequestIsConform<HealthCheckRequest>();
-            ColomboTest.AssertThat.ResponseIsConform<HealthCheckResponse>();
-        }
-
-        [Test]
         public void It_should_return_an_ACKResponse()
         {
             var healthCheckRequestHandler = new HealthCheckRequestHandler();
