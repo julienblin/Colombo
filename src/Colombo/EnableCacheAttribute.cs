@@ -29,7 +29,7 @@ namespace Colombo
     /// <summary>
     /// Allow a Colombo client to puts responses associated with requests of this type to puts them in a cache.
     /// To enable caching, you have to either register a <see cref="Colombo.Caching.IColomboCache"/> or use 
-    /// <seealso cref="Colombo.Facilities.ColomboFacility.EnableInMemoryCaching"/> / <seealso cref="Colombo.Facilities.ColomboFacility.EnableMemcachedCaching"/>.
+    /// <seealso cref="Colombo.Facilities.ColomboFacility.EnableMemcachedCaching"/>.
     /// To allow a request to be put in cache you have to implement <see cref="ICacheable.GetCacheKey"/>.
     /// Cache segments can be controlled via <see cref="CacheSegmentAttribute"/>, and expiration is time-based or controlled by <see cref="InvalidateCachedInstancesOfAttribute"/>.
     /// </summary>

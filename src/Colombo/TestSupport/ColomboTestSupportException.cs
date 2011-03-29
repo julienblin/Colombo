@@ -29,7 +29,6 @@ namespace Colombo.TestSupport
 {
     /// <summary>
     /// An exception that occured inside a test support utilization.
-    /// <see cref="ColomboTest"/>
     /// </summary>
     [Serializable]
     public class ColomboTestSupportException : Exception

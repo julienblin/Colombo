@@ -22,6 +22,7 @@
 // THE SOFTWARE.
 #endregion
 
+using System;
 using System.Diagnostics;
 using Colombo.Interceptors;
 using NUnit.Framework;
@@ -37,8 +38,12 @@ namespace Colombo.Tests.Interceptors
         {
             const string instanceName = "InstanceName";
 
-            PerformanceCounterCategory.Delete(PerfCounterFactory.PerfCounterCategoryRequestHandling);
-            PerformanceCounterCategory.Delete(PerfCounterFactory.PerfCounterCategoryMessageSending);
+            try
+            {
+                PerformanceCounterCategory.Delete(PerfCounterFactory.PerfCounterCategoryRequestHandling);
+                PerformanceCounterCategory.Delete(PerfCounterFactory.PerfCounterCategoryMessageSending);
+            }
+            catch { }
 
             var factory = new PerfCounterFactory {Logger = GetConsoleLogger()};
             Assert.That(factory.GetPerfCounter(PerfCounter.NumMessagesSent, instanceName),

@@ -8,7 +8,7 @@ namespace Colombo.TestSupport
 {
     /// <summary>
     /// An exception thrown when requests or responses could not be serialized.
-    /// <see cref="ColomboTest"/>
+    /// <see cref="ColomboTestSupportException"/>
     /// </summary>
     [Serializable]
     public class ColomboSerializationException : ColomboTestSupportException
