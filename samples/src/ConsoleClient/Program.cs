@@ -19,10 +19,7 @@ namespace Colombo.Samples.ConsoleClient
             var name = Console.ReadLine().Trim();
             while (!string.IsNullOrEmpty(name))
             {
-                var response = messageBus.Send<HelloWorldRequest, HelloWorldResponse>(r =>
-                {
-                    r.Name = name;
-                });
+                var response = messageBus.Send(new HelloWorldRequest{ Name = name });
 
                 if (response.IsValid())
                     Console.WriteLine(response.Message);
